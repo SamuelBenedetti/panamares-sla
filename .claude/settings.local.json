@@ -1,6 +1,33 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(pandoc \"C:/Users/sbene/Downloads/panamares_ia_final_v2.docx\" -o /tmp/panamares.md)",
+      "Read(//tmp/**)",
+      "Bash(python \"C:/Users/sbene/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/c52f6e45-a4a4-41e4-b3e3-9eb9f34401cc/ac42673f-8190-4b81-affe-7ae7614301cc/skills/docx/scripts/office/unpack.py\" \"C:/Users/sbene/Downloads/panamares_ia_final_v2.docx\" /tmp/panamares_unpacked/)",
+      "Bash(python \"C:/Users/sbene/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/c52f6e45-a4a4-41e4-b3e3-9eb9f34db18a/ac42673f-8190-4b81-affe-7ae7614301cc/skills/docx/scripts/office/unpack.py\" \"C:/Users/sbene/Downloads/panamares_ia_final_v2.docx\" \"C:/Users/sbene/AppData/Local/Temp/panamares_unpacked/\")",
+      "Bash(pip install:*)",
+      "Bash(npx tsc:*)",
+      "WebSearch",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -X POST \"https://mcp.figma.com/mcp\" -H \"X-Figma-Token: figd_rVD8w-itKohPtFzfZOaegR_HiyvhvZohVpNfD9II\" -H \"Content-Type: application/json\" -d '{\"\"jsonrpc\"\":\"\"2.0\"\",\"\"method\"\":\"\"ping\"\",\"\"id\"\":1}')",
+      "mcp__figma-remote-mcp__whoami",
+      "mcp__figma-remote-mcp__get_design_context",
+      "mcp__figma-remote-mcp__get_metadata",
+      "Bash(timeout 30 tail -f \"C:\\\\Users\\\\sbene\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-sbene-Desktop-nuevo-proyecto\\\\0b904029-d1f8-4e97-9fb9-af90a07e7938\\\\tasks\\\\a0d1a97d96a20d5db.output\")",
+      "Bash(\"C:/Users/sbene/Desktop/nuevo-proyecto/src/app/\\(site\\)/contacto/page.tsx\")",
+      "Bash(find:*)",
+      "Bash(curl -s \"https://2hojajwk.api.sanity.io/v2024-01-01/data/query/production?query=*[_type==%22property%22]{_id,title,listingStatus,businessType,propertyType,zone}\")",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(python:*)",
+      "Bash(ls \"C:/Users/sbene/Desktop/nuevo-proyecto/src/app/\\(site\\)/propiedades-en-venta/\")",
+      "Bash(python3 -c \":*)",
+      "Bash(py --version)",
+      "Bash(py:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "elementor"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

@@ -1,0 +1,187 @@
+import { groq } from "next-sanity";
+
+// Shared field set for listing cards
+const CARD_FIELDS = groq`
+  _id,
+  title,
+  slug,
+  businessType,
+  propertyType,
+  listingStatus,
+  price,
+  bedrooms,
+  bathrooms,
+  area,
+  zone,
+  buildingName,
+  mainImage,
+  featured
+`;
+
+// Properties — all active (used for old /propiedades page)
+export const allPropertiesQuery = groq`
+  *[_type == "property" && listingStatus == "activa"] | order(_createdAt desc) {
+    ${CARD_FIELDS},
+    "agent": agent->{name, slug, photo}
+  }
+`;
+
+// Homepage — featured active listings
+export const featuredPropertiesQuery = groq`
+  *[_type == "property" && featured == true && listingStatus == "activa"] | order(_createdAt desc) [0...6] {
+    ${CARD_FIELDS}
+  }
+`;
+
+// Listing detail page
+export const propertyBySlugQuery = groq`
+  *[_type == "property" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    businessType,
+    propertyType,
+    listingStatus,
+    price,
+    adminFee,
+    bedrooms,
+    bathrooms,
+    halfBathrooms,
+    area,
+    parking,
+    province,
+    zone,
+    buildingName,
+    description,
+    featuresInterior,
+    featuresBuilding,
+    featuresLocation,
+    features,
+    gallery[] { asset->, alt },
+    mainImage,
+    location,
+    featured,
+    "agent": agent->{_id, name, slug, photo, phone, whatsapp, email, role}
+  }
+`;
+
+// Related listings — same neighborhood + type, exclude current
+export const relatedPropertiesQuery = groq`
+  *[
+    _type == "property" &&
+    listingStatus == "activa" &&
+    zone == $zone &&
+    propertyType == $propertyType &&
+    slug.current != $currentSlug
+  ] | order(_createdAt desc) [0...6] {
+    ${CARD_FIELDS}
+  }
+`;
+
+// Tier 1 pillar pages — all active by intent
+export const propertiesByIntentQuery = groq`
+  *[_type == "property" && businessType == $businessType && listingStatus == "activa"] | order(_createdAt desc) {
+    ${CARD_FIELDS}
+  }
+`;
+
+// Tier 2 category pages — active by propertyType + businessType
+export const propertiesByCategoryQuery = groq`
+  *[_type == "property" && propertyType == $propertyType && businessType == $businessType && listingStatus == "activa"] | order(_createdAt desc) {
+    ${CARD_FIELDS}
+  }
+`;
+
+// Tier 3 geo-type pages — active by propertyType + businessType + zone
+export const propertiesByGeoTypeQuery = groq`
+  *[_type == "property" && propertyType == $propertyType && businessType == $businessType && zone == $neighborhood && listingStatus == "activa"] | order(_createdAt desc) {
+    ${CARD_FIELDS}
+  }
+`;
+
+// Intent + geo pages — all types, by businessType + zone (e.g. /propiedades-en-venta/avenida-balboa/)
+export const propertiesByIntentGeoQuery = groq`
+  *[_type == "property" && businessType == $businessType && zone == $neighborhood && listingStatus == "activa"] | order(_createdAt desc) {
+    ${CARD_FIELDS}
+  }
+`;
+
+// Tier 5 neighborhood guide pages — all active in a zone
+export const propertiesByNeighborhoodQuery = groq`
+  *[_type == "property" && zone == $neighborhood && listingStatus == "activa"] | order(_createdAt desc) {
+    ${CARD_FIELDS}
+  }
+`;
+
+// Homepage trust strip stats
+export const siteStatsQuery = groq`{
+  "activeListings": count(*[_type == "property" && listingStatus == "activa"]),
+  "agents": count(*[_type == "agent"])
+}`;
+
+// Homepage property type counts
+export const propertyTypeCountsQuery = groq`{
+  "apartamento": count(*[_type == "property" && propertyType == "apartamento" && listingStatus == "activa"]),
+  "casa": count(*[_type == "property" && propertyType == "casa" && listingStatus == "activa"]),
+  "penthouse": count(*[_type == "property" && propertyType == "penthouse" && listingStatus == "activa"]),
+  "oficina": count(*[_type == "property" && propertyType == "oficina" && listingStatus == "activa"]),
+  "local": count(*[_type == "property" && propertyType == "local" && listingStatus == "activa"]),
+  "terreno": count(*[_type == "property" && propertyType == "terreno" && listingStatus == "activa"])
+}`;
+
+// Neighborhood content (from Sanity CMS — optional editorial)
+export const neighborhoodContentQuery = groq`
+  *[_type == "neighborhood" && slug.current == $slug][0] {
+    _id,
+    name,
+    slug,
+    photo,
+    about,
+    avgPricePerM2,
+    seoBlock
+  }
+`;
+
+// All guides
+export const allGuidesQuery = groq`
+  *[_type == "guide"] | order(_createdAt desc) {
+    _id,
+    title,
+    slug,
+    category,
+    excerpt,
+    readTime,
+    coverImage
+  }
+`;
+
+// Agents
+export const allAgentsQuery = groq`
+  *[_type == "agent"] | order(name asc) {
+    _id,
+    name,
+    slug,
+    photo,
+    role,
+    phone,
+    whatsapp,
+    email
+  }
+`;
+
+export const agentBySlugQuery = groq`
+  *[_type == "agent" && slug.current == $slug][0] {
+    _id,
+    name,
+    slug,
+    photo,
+    role,
+    phone,
+    whatsapp,
+    email,
+    bio,
+    "properties": *[_type == "property" && references(^._id) && listingStatus == "activa"] | order(_createdAt desc) {
+      ${CARD_FIELDS}
+    }
+  }
+`;
