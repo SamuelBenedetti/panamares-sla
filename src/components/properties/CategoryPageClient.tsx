@@ -200,7 +200,7 @@ function SeoBlock({ text }: { text: string }) {
 }
 
 export default function CategoryPageClient({
-  properties, categorySlug, neighborhoodLinks, contextBlock, seoBlock,
+  properties, neighborhoodLinks, contextBlock, seoBlock,
 }: Props) {
   const [filters, setFilters] = useState<Filters>(INIT_FILTERS);
   const [sort, setSort] = useState<SortOption>("relevancia");

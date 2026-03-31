@@ -12,7 +12,6 @@ interface Props {
 export default function WhatsAppButton({
   message,
   variant = "card",
-  label = "WhatsApp",
 }: Props) {
   const href = whatsappLink(message);
 
