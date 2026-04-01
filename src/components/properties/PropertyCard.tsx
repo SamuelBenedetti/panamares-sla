@@ -38,14 +38,14 @@ export default function PropertyCard({ property }: { property: Property }) {
     : PLACEHOLDERS[placeholderIndex];
 
   const pricePerM2 = area && area > 0 ? Math.round(price / area) : null;
-  const waMessage = `Hola, me interesa esta propiedad: ${title} — ${BASE_URL}/propiedades/${slug.current}`;
+  const waMessage = `Hola, me interesa esta propiedad: ${title} — ${BASE_URL}/propiedades/${slug?.current}`;
   const waHref = whatsappLink(waMessage);
 
   return (
     <article className="bg-white border border-[rgba(233,231,226,0.5)] shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow">
       {/* Image */}
       <div className="relative h-[130px] md:h-[260px] shrink-0 overflow-hidden">
-        <Link href={`/propiedades/${slug.current}`} className="block size-full">
+        <Link href={`/propiedades/${slug?.current}`} className="block size-full">
           <Image
             src={imageUrl}
             alt={title}
@@ -67,7 +67,7 @@ export default function PropertyCard({ property }: { property: Property }) {
       <div className="flex flex-col gap-[8px] p-[10px] md:p-[20px] flex-1">
         {/* Title + description */}
         <div className="flex flex-col gap-[3px]">
-          <Link href={`/propiedades/${slug.current}`}>
+          <Link href={`/propiedades/${slug?.current}`}>
             <h3 className="font-body font-semibold text-[#0c1834] text-[15px] md:text-[22px] leading-tight tracking-[-0.2px] hover:opacity-70 transition-opacity line-clamp-2">
               {title}
             </h3>
@@ -103,7 +103,7 @@ export default function PropertyCard({ property }: { property: Property }) {
 
         {/* Price */}
         <div className="flex flex-col gap-[5px] pt-[8px]">
-          <Link href={`/propiedades/${slug.current}`}>
+          <Link href={`/propiedades/${slug?.current}`}>
             <span className="font-body font-bold text-[#0c1834] text-[18px] md:text-[20px] leading-normal tracking-[-0.2px]">
               {formatPrice(price)}
             </span>
@@ -129,7 +129,7 @@ className="w-full h-[42px] flex items-center justify-center bg-[#0d1835] hover:b
             Contáctenos
           </a>
           <Link
-            href={`/propiedades/${slug.current}`}
+            href={`/propiedades/${slug?.current}`}
             className="w-full h-[42px] flex items-center justify-center font-body font-medium text-[#0c1834] text-[14px] md:text-[16px] border border-[#dfe5ef] hover:bg-gray-50 transition-colors"
           >
             Ver propiedad

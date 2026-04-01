@@ -20,7 +20,7 @@ const CARD_FIELDS = groq`
 
 // Properties — all active (used for old /propiedades page)
 export const allPropertiesQuery = groq`
-  *[_type == "property" && listingStatus == "activa" && defined(slug.current)] | order(_createdAt desc) {
+  *[_type == "property" && listingStatus == "activa"] | order(_createdAt desc) {
     ${CARD_FIELDS},
     "agent": agent->{name, slug, photo}
   }
@@ -28,7 +28,7 @@ export const allPropertiesQuery = groq`
 
 // Homepage — featured active listings
 export const featuredPropertiesQuery = groq`
-  *[_type == "property" && featured == true && listingStatus == "activa" && defined(slug.current)] | order(_createdAt desc) [0...6] {
+  *[_type == "property" && featured == true && listingStatus == "activa"] | order(_createdAt desc) [0...6] {
     ${CARD_FIELDS}
   }
 `;
@@ -70,7 +70,6 @@ export const relatedPropertiesQuery = groq`
   *[
     _type == "property" &&
     listingStatus == "activa" &&
-    defined(slug.current) &&
     zone == $zone &&
     propertyType == $propertyType &&
     slug.current != $currentSlug
@@ -81,35 +80,35 @@ export const relatedPropertiesQuery = groq`
 
 // Tier 1 pillar pages — all active by intent
 export const propertiesByIntentQuery = groq`
-  *[_type == "property" && businessType == $businessType && listingStatus == "activa" && defined(slug.current)] | order(_createdAt desc) {
+  *[_type == "property" && businessType == $businessType && listingStatus == "activa"] | order(_createdAt desc) {
     ${CARD_FIELDS}
   }
 `;
 
 // Tier 2 category pages — active by propertyType + businessType
 export const propertiesByCategoryQuery = groq`
-  *[_type == "property" && propertyType == $propertyType && businessType == $businessType && listingStatus == "activa" && defined(slug.current)] | order(_createdAt desc) {
+  *[_type == "property" && propertyType == $propertyType && businessType == $businessType && listingStatus == "activa"] | order(_createdAt desc) {
     ${CARD_FIELDS}
   }
 `;
 
 // Tier 3 geo-type pages — active by propertyType + businessType + zone
 export const propertiesByGeoTypeQuery = groq`
-  *[_type == "property" && propertyType == $propertyType && businessType == $businessType && zone == $neighborhood && listingStatus == "activa" && defined(slug.current)] | order(_createdAt desc) {
+  *[_type == "property" && propertyType == $propertyType && businessType == $businessType && zone == $neighborhood && listingStatus == "activa"] | order(_createdAt desc) {
     ${CARD_FIELDS}
   }
 `;
 
 // Intent + geo pages — all types, by businessType + zone (e.g. /propiedades-en-venta/avenida-balboa/)
 export const propertiesByIntentGeoQuery = groq`
-  *[_type == "property" && businessType == $businessType && zone == $neighborhood && listingStatus == "activa" && defined(slug.current)] | order(_createdAt desc) {
+  *[_type == "property" && businessType == $businessType && zone == $neighborhood && listingStatus == "activa"] | order(_createdAt desc) {
     ${CARD_FIELDS}
   }
 `;
 
 // Tier 5 neighborhood guide pages — all active in a zone
 export const propertiesByNeighborhoodQuery = groq`
-  *[_type == "property" && zone == $neighborhood && listingStatus == "activa" && defined(slug.current)] | order(_createdAt desc) {
+  *[_type == "property" && zone == $neighborhood && listingStatus == "activa"] | order(_createdAt desc) {
     ${CARD_FIELDS}
   }
 `;
