@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { client } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import { CATEGORIES } from "@/lib/categories";
 import { NEIGHBORHOODS } from "@/lib/neighborhoods";
@@ -26,7 +26,7 @@ interface GuideSlim {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fetch all active listings
-  const activeProperties: PropertySlim[] = await client.fetch(groq`
+  const activeProperties: PropertySlim[] = await sanityFetch<PropertySlim[]>(groq`
     *[_type == "property" && listingStatus == "activa"] {
       "slug": slug.current,
       propertyType,
@@ -36,11 +36,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   `);
 
-  const agents: AgentSlim[] = await client.fetch(groq`
+  const agents: AgentSlim[] = await sanityFetch<AgentSlim[]>(groq`
     *[_type == "agent"] { "slug": slug.current, "updatedAt": _updatedAt }
   `);
 
-  const guides: GuideSlim[] = await client.fetch(groq`
+  const guides: GuideSlim[] = await sanityFetch<GuideSlim[]>(groq`
     *[_type == "guide"] { "slug": slug.current, "updatedAt": _updatedAt }
   `);
 
