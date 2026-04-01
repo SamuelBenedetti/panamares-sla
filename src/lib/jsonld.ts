@@ -129,7 +129,7 @@ export function agentSchema(agent: Agent) {
     "@context": "https://schema.org",
     "@type": "Person",
     name: agent.name,
-    url: `${BASE_URL}/agentes/${agent.slug.current}`,
+    url: `${BASE_URL}/agentes/${agent.slug?.current ?? ""}`,
     ...(agent.phone && { telephone: agent.phone }),
     ...(agent.email && { email: agent.email }),
     worksFor: {
@@ -145,7 +145,7 @@ export function neighborhoodSchema(neighborhood: Neighborhood) {
     "@context": "https://schema.org",
     "@type": "Place",
     name: neighborhood.name,
-    url: `${BASE_URL}/barrios/${neighborhood.slug.current}`,
+    url: `${BASE_URL}/barrios/${neighborhood.slug?.current ?? ""}`,
     containedInPlace: {
       "@type": "City",
       name: "Panama City",

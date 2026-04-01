@@ -92,7 +92,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       ? urlFor(nbhContent.photo).width(1600).height(700).url()
       : HOMEPAGE_IMAGES[params.slug] ?? "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1600&h=700&fit=crop";
 
-  const jsonLdPlace = nbhContent ? neighborhoodSchema(nbhContent) : null;
+  const jsonLdPlace = nbhContent?._id ? neighborhoodSchema(nbhContent) : null;
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: "Inicio", url: "/" },
     { name: "Barrios", url: "/barrios/" },
