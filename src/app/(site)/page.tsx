@@ -1,5 +1,5 @@
 import { sanityFetch } from "@/sanity/lib/client";
-import { featuredPropertiesQuery, propertyTypeCountsQuery } from "@/sanity/lib/queries";
+import { featuredPropertiesQuery, propertyTypeCountsQuery, neighborhoodCountsQuery } from "@/sanity/lib/queries";
 import type { Property } from "@/lib/types";
 import type { Metadata } from "next";
 
@@ -20,9 +20,10 @@ export const metadata: Metadata = {
 
 
 export default async function HomePage() {
-  const [featured, typeCounts] = await Promise.all([
+  const [featured, typeCounts, neighborhoodCounts] = await Promise.all([
     sanityFetch<Property[]>(featuredPropertiesQuery),
     sanityFetch<Record<string, number>>(propertyTypeCountsQuery),
+    sanityFetch<Record<string, number>>(neighborhoodCountsQuery),
   ]);
   const jsonLd = realEstateAgentSchema();
 
@@ -37,7 +38,7 @@ export default async function HomePage() {
       <PropertyTypeShortcuts counts={typeCounts} />
       <FeaturedProperties properties={featured} />
 
-      <NeighborhoodCards />
+      <NeighborhoodCards counts={neighborhoodCounts} />
       <TrustStrip />
       <CTA />
     </>

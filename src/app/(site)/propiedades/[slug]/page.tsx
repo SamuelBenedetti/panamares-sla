@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Bed, Bath, Maximize, Car, MapPin, Building, Check, MessageCircle, Phone } from "lucide-react";
+import { Bed, Bath, Maximize, Car, MapPin, Building, Check, Phone } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertyBySlugQuery, relatedPropertiesQuery } from "@/sanity/lib/queries";
@@ -13,6 +13,7 @@ import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { listingSchema, breadcrumbSchema } from "@/lib/jsonld";
 import { BASE_URL, whatsappLink } from "@/lib/config";
+import CTA from "@/components/home/CTA";
 import type { Metadata } from "next";
 
 interface Props {
@@ -61,18 +62,8 @@ export default async function PropertyDetailPage({ params }: Props) {
   if (galleryImages.length === 0 && property.mainImage) {
     galleryImages.push({ url: urlFor(property.mainImage).width(1200).height(800).url(), alt: property.title });
   }
-  // Fallback placeholders when no Sanity images exist (seed/demo data)
   if (galleryImages.length === 0) {
-    const PLACEHOLDERS = [
-      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&h=800&fit=crop",
-    ];
-    const seed = property._id.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    PLACEHOLDERS.forEach((url, i) => {
-      galleryImages.push({ url: PLACEHOLDERS[(seed + i) % PLACEHOLDERS.length], alt: `${property.title} — foto ${i + 1}` });
-    });
+    galleryImages.push({ url: "/placeholder-property.jpg", alt: property.title });
   }
 
   const categorySlug = (() => {
@@ -118,7 +109,8 @@ export default async function PropertyDetailPage({ params }: Props) {
       {/* Gallery — full width, outside any container */}
       <PropertyGallery images={galleryImages} />
 
-      <section className="bg-white px-[30px] xl:px-[260px] max-w-[1920px] mx-auto">
+      <section className="bg-[#f9f9f9] w-full">
+        <div className="px-[30px] xl:px-[260px] max-w-[1920px] mx-auto">
         <div className="max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-[40px] items-start">
 
@@ -127,14 +119,21 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* 1 — Header: zone · title · stats */}
               <div className="flex flex-col gap-[20px]">
-                {property.zone && (
-                  <div className="flex items-center gap-[8px]">
-                    <MapPin size={13} className="text-[#0d1835] shrink-0" />
-                    <span className="font-body font-normal text-[12px] text-[#0d1835] uppercase tracking-[1.2px] leading-4">
-                      {property.zone}
+                <div className="flex items-center gap-[6px] flex-wrap">
+                  {property.zone && (
+                    <div className="flex items-center gap-[8px]">
+                      <MapPin size={13} className="text-[#0d1835] shrink-0" />
+                      <span className="font-body font-normal text-[12px] text-[#0d1835] uppercase tracking-[1.2px] leading-4">
+                        {[property.zone, property.corregimiento].filter(Boolean).join(", ")}
+                      </span>
+                    </div>
+                  )}
+                  {property.condition && (
+                    <span className="font-body font-medium text-[11px] text-[#737b8c] bg-[#f0f0f0] px-[8px] py-[3px] uppercase tracking-[1px]">
+                      {property.condition === "nuevo" ? "Nuevo" : property.condition === "en_planos" ? "En planos" : property.condition === "en_construccion" ? "En construcción" : "Usado"}
                     </span>
-                  </div>
-                )}
+                  )}
+                </div>
                 <h1 className="font-body font-semibold text-[28px] md:text-[35px] text-[#0c1834] tracking-[-0.35px] leading-tight">
                   {property.title}
                 </h1>
@@ -165,12 +164,6 @@ export default async function PropertyDetailPage({ params }: Props) {
                       <Car size={16} className="text-[#0c1935] shrink-0" />
                       <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">{property.parking}</span>
                       <span className="font-body font-normal text-[14px] text-[#737b8c] leading-5">Plazas de aparcamiento</span>
-                    </div>
-                  )}
-                  {property.propertyType && (
-                    <div className="flex items-center gap-[8px]">
-                      <Building size={16} className="text-[#0c1935] shrink-0" />
-                      <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">{property.propertyType}</span>
                     </div>
                   )}
                   {property.buildingName && (
@@ -236,14 +229,14 @@ export default async function PropertyDetailPage({ params }: Props) {
 
             {/* ── RIGHT COLUMN ── */}
             <aside className="pt-[40px] lg:pt-[70px] order-1 lg:order-2">
-              <div className="border border-[#dfe5ef] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] p-[26px] flex flex-col gap-[25px]">
+              <div className="bg-white border border-[#dfe5ef] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] p-[26px] flex flex-col gap-[25px]">
 
                 {/* Price */}
                 <div className="flex flex-col gap-[4px]">
                   <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase text-center leading-4">
                     {property.businessType === "venta" ? "Precio de venta" : "Precio de alquiler"}
                   </p>
-                  <div className="flex items-end gap-[10px] flex-wrap">
+                  <div className="flex items-end gap-[10px] flex-wrap justify-center">
                     <span className="font-body font-bold text-[55px] text-[#0c1834] tracking-[-0.55px] leading-none">
                       {formatPrice(property.price)}
                     </span>
@@ -311,15 +304,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                 )}
 
                 {/* WhatsApp */}
-                <a
-                  href={whatsappLink(waMessage)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-[8px] bg-[#25d366] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] px-[20px] py-[12px] hover:bg-[#1ebe57] transition-colors"
-                >
-                  <MessageCircle size={22} className="text-white shrink-0" />
-                  <span className="font-body font-medium text-[14px] text-white leading-5">Consultar por WhatsApp</span>
-                </a>
+                <WhatsAppButton message={waMessage} />
 
                 {/* Call */}
                 {property.agent?.phone && (
@@ -335,17 +320,22 @@ export default async function PropertyDetailPage({ params }: Props) {
             </aside>
           </div>
 
-          {/* Related listings */}
-          {related.length > 0 && (
-            <div className="border-t border-[#dfe5ef] pt-[100px] pb-[100px]">
-              <h2 className="font-heading font-medium text-[40px] text-[#0c1834] tracking-[-1.2px] leading-tight mb-8">
-                Propiedades Relacionadas
-              </h2>
-              <PropertyGrid properties={related.slice(0, 3)} />
-            </div>
-          )}
+        </div>
         </div>
       </section>
+
+      {related.length > 0 && (
+        <section className="px-[30px] xl:px-[260px] py-[100px]">
+          <div className="max-w-[1400px] mx-auto">
+            <h2 className="font-heading font-medium text-[40px] text-[#0c1834] tracking-[-1.2px] leading-tight mb-8">
+              Propiedades Relacionadas
+            </h2>
+            <PropertyGrid properties={related.slice(0, 6)} />
+          </div>
+        </section>
+      )}
+
+      <CTA />
     </>
   );
 }

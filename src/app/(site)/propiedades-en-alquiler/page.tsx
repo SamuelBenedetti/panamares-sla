@@ -7,6 +7,7 @@ import { itemListSchema, breadcrumbSchema } from "@/lib/jsonld";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
+import CTA from "@/components/home/CTA";
 
 const H1 = "Propiedades en Alquiler en Panamá";
 const DESCRIPTION =
@@ -18,7 +19,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://panamares.com/propiedades-en-alquiler/" },
 };
 
-export default async function PropiedadesEnAlquilerPage() {
+export default async function PropiedadesEnAlquilerPage({
+  searchParams = {},
+}: {
+  searchParams?: { buscar?: string; habitaciones?: string; minPrice?: string; maxPrice?: string };
+}) {
   const properties = await sanityFetch<Property[]>(propertiesByIntentQuery, {
     businessType: "alquiler",
   });
@@ -60,7 +65,12 @@ export default async function PropiedadesEnAlquilerPage() {
         properties={properties}
         categorySlug="propiedades-en-alquiler"
         neighborhoodLinks={neighborhoodLinks}
+        initialSearch={searchParams.buscar ?? ""}
+        initialBedrooms={searchParams.habitaciones ? Number(searchParams.habitaciones) : 0}
+        initialMinPrice={searchParams.minPrice ?? ""}
+        initialMaxPrice={searchParams.maxPrice ?? ""}
       />
+      <CTA />
     </>
   );
 }

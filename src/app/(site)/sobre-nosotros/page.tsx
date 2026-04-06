@@ -64,7 +64,7 @@ export default async function SobreNosotrosPage() {
         <div className="max-w-[1920px] mx-auto">
           <div className="relative aspect-[390/720] xl:aspect-auto xl:h-[720px] overflow-hidden flex flex-col justify-end p-[30px] xl:p-0">
             <Image
-              src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&h=720&fit=crop"
+              src="/oficina.jpg"
               alt="Nuestra oficina en Punta Pacífica, Ciudad de Panamá"
               fill
               className="object-cover"
@@ -283,8 +283,19 @@ export default async function SobreNosotrosPage() {
         </div>
       </section>
       {/* ── CTA contacto ── */}
-      <section className="bg-[#121e3e] px-[30px] xl:px-[260px] py-[80px] xl:py-[130px]">
-        <div className="max-w-[1920px] mx-auto flex flex-col gap-[16px] items-center">
+      <section className="relative bg-[#121e3e] px-[30px] xl:px-[260px] py-[80px] xl:py-[130px] overflow-hidden">
+
+        {/* Palm tree — left */}
+        <div className="absolute left-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block">
+          <Image src="/palm-left.svg" alt="" fill className="object-cover object-right" sizes="300px" />
+        </div>
+
+        {/* Palm tree — right (flipped) */}
+        <div className="absolute right-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block" style={{ transform: "scaleX(-1)" }}>
+          <Image src="/palm-right.svg" alt="" fill className="object-cover object-left" sizes="300px" />
+        </div>
+
+        <div className="relative z-10 max-w-[1920px] mx-auto flex flex-col gap-[16px] items-center">
 
           {/* Eyebrow + Heading */}
           <div className="flex flex-col gap-[12px] items-center">

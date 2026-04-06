@@ -16,7 +16,7 @@ const BARRIOS = [
   { label: "San Francisco", href: "/barrios/san-francisco/" },
 ];
 
-export default function Footer() {
+export default function Footer({ activeSlugs }: { activeSlugs: Set<string> }) {
   const year = new Date().getFullYear();
 
   return (
@@ -64,7 +64,10 @@ export default function Footer() {
               Barrios
             </h4>
             <ul className="flex flex-col gap-[5px]">
-              {BARRIOS.map((item) => (
+              {BARRIOS.filter((item) => {
+                const slug = item.href.split("/barrios/")[1]?.replace("/", "");
+                return slug ? activeSlugs.has(slug) : true;
+              }).map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}

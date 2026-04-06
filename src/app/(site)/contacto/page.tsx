@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
+import PropertyMap from "@/components/properties/PropertyMap";
 
 export default function ContactoPage() {
   const [form, setForm] = useState({
@@ -44,52 +45,30 @@ export default function ContactoPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="bg-[#0c1834] px-[30px] xl:px-[260px] pt-[120px] xl:pt-[160px] pb-[60px] xl:pb-[80px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[40px] xl:gap-[80px]">
-          {/* Left: heading */}
-          <div className="flex flex-col gap-[20px] max-w-[600px]">
-            <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
-              Estamos para ayudarte
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] pt-[160px] pb-[80px]">
+        <div className="max-w-[768px]">
+          <div className="flex flex-col gap-[20px]">
+            <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+              Contáctenos
             </p>
-            <h1 className="flex flex-col text-white">
-              <span className="font-heading font-normal text-[clamp(38px,5vw,64px)] leading-none tracking-[-1.8px]">
-                Contacta con
+            <h1 className="flex flex-col gap-[3px] text-[#0c1834]">
+              <span className="font-heading font-normal text-[50px] xl:text-[60px] leading-none tracking-[-1.5px] xl:tracking-[-1.8px]">
+                Hablemos sobre
               </span>
-              <span className="font-heading font-medium italic text-[clamp(44px,6vw,72px)] leading-none tracking-[-2.1px]">
-                Panamares
+              <span className="font-heading font-medium italic text-[60px] xl:text-[70px] leading-none tracking-[-1.8px] xl:tracking-[-2.1px]">
+                tu propiedad
               </span>
             </h1>
-            <p className="font-body font-light text-[16px] xl:text-[18px] text-white/70 leading-relaxed max-w-[480px]">
-              Nuestro equipo responde en minutos. Cuéntanos qué buscas y te orientamos sin compromiso.
-            </p>
-          </div>
-
-          {/* Right: WhatsApp CTA — hero action */}
-          <div className="flex flex-col gap-[16px] shrink-0">
-            <p className="font-body font-medium text-[11px] text-white/40 tracking-[4px] uppercase">
-              Respuesta inmediata
-            </p>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-[12px] bg-[#25d366] hover:bg-[#1ebe57] px-[32px] py-[18px] font-body font-medium text-[16px] text-white tracking-[0.5px] transition-colors whitespace-nowrap"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2C6.477 2 2 6.477 2 12c0 1.9.52 3.68 1.43 5.21L2 22l4.89-1.41A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
-                <path d="M8.5 9c0-.5.5-2 2-2 .5 0 1 .5 1.5 1.5.3.7.1 1.3-.3 1.8-.4.5-.7.9-.5 1.4.3.8 1.3 2 2.1 2.5.5.3 1 .1 1.5-.2.5-.3 1-.5 1.5-.2.8.5 1.2 1 1.2 1.5 0 1-1 2-2 2-2 0-7.5-4.5-7.5-8.3z" fill="white"/>
-              </svg>
-              Escribir por WhatsApp
-            </a>
-            <p className="font-body text-[12px] text-white/40">
-              También puedes llenar el formulario abajo
+            <p className="font-body text-[18px] xl:text-[20px] text-[#737b8c] leading-relaxed max-w-[576px] pt-[11px]">
+              <span className="font-semibold">Nuestro equipo de asesores está disponible para responder tus preguntas,</span>{" "}
+              <span className="font-normal">agendar visitas y orientarte en cada paso del proceso.</span>
             </p>
           </div>
         </div>
       </section>
 
       {/* ── Form + Sidebar ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] py-[60px] xl:py-[100px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] pb-[128px]">
         <div className="max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 xl:grid-cols-[3fr_2fr] gap-[40px] xl:gap-[64px]">
 
@@ -107,14 +86,14 @@ export default function ContactoPage() {
                     href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-flex items-center gap-[8px] bg-[#25d366] px-[20px] py-[10px] font-body font-medium text-[14px] text-white w-fit"
+                    className="mt-4 inline-flex items-center gap-[8px] bg-[#00b424] px-[20px] py-[10px] font-body font-medium text-[14px] text-white w-fit"
                   >
                     Abrir WhatsApp
                   </a>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-[24px]">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-[20px]">
+                  <div className="grid grid-cols-2 gap-[20px]">
                     <div className="flex flex-col gap-[8px]">
                       <label className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4">
                         Nombre completo *
@@ -143,7 +122,7 @@ export default function ContactoPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-[20px]">
+                  <div className="grid grid-cols-2 gap-[20px]">
                     <div className="flex flex-col gap-[8px]">
                       <label className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4">
                         Teléfono / WhatsApp
@@ -197,19 +176,14 @@ export default function ContactoPage() {
                   </div>
 
                   <div className="flex flex-col gap-[10px] pt-[8px]">
-                    <div className="flex flex-row items-center gap-[16px]">
-                      <button
-                        type="submit"
-                        disabled={status === "loading"}
-                        className="bg-[#0d1835] inline-flex items-center gap-[8px] px-[32px] py-[14px] font-body font-medium text-[14px] text-white tracking-[1.4px] uppercase hover:opacity-80 transition-opacity whitespace-nowrap shrink-0 disabled:opacity-50"
-                      >
-                        {status === "loading" ? "Enviando..." : "Enviar mensaje"}
-                        <Send size={14} />
-                      </button>
-                      <p className="font-body font-normal text-[12px] text-[#737b8c]">
-                        También puedes escribirnos directamente por WhatsApp
-                      </p>
-                    </div>
+                    <button
+                      type="submit"
+                      disabled={status === "loading"}
+                      className="bg-[#0d1835] w-full xl:w-auto inline-flex items-center justify-center xl:justify-start gap-[8px] px-[32px] py-[14px] font-body font-medium text-[14px] text-white tracking-[1.4px] uppercase hover:opacity-80 transition-opacity whitespace-nowrap disabled:opacity-50"
+                    >
+                      {status === "loading" ? "Enviando..." : "Enviar mensaje"}
+                      <Send size={14} />
+                    </button>
                     {status === "error" && (
                       <p className="font-body text-[13px] text-red-500">
                         Error al enviar. Intenta de nuevo o escríbenos por WhatsApp.
@@ -220,7 +194,7 @@ export default function ContactoPage() {
               )}
 
               {/* WhatsApp banner */}
-              <div className="bg-[rgba(37,211,102,0.05)] border border-[rgba(37,211,102,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-[16px] p-[21px]">
+              <div className="bg-[rgba(0,180,36,0.05)] border border-[rgba(0,180,36,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-[16px] p-[21px]">
                 <div className="flex flex-col gap-[2px]">
                   <p className="font-body font-semibold text-[14px] text-[#0c1935] leading-5">
                     ¿Prefieres respuesta inmediata?
@@ -233,7 +207,7 @@ export default function ContactoPage() {
                   href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-[#25d366] inline-flex items-center gap-[8px] px-[20px] py-[10px] font-body font-medium text-[14px] text-white shrink-0 hover:opacity-90 transition-opacity"
+                  className="bg-[#00b424] inline-flex items-center gap-[8px] px-[20px] py-[10px] font-body font-medium text-[14px] text-white shrink-0 hover:opacity-90 transition-opacity"
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                     <path d="M12 2C6.477 2 2 6.477 2 12c0 1.9.52 3.68 1.43 5.21L2 22l4.89-1.41A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z" stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
@@ -248,7 +222,7 @@ export default function ContactoPage() {
             <div className="flex flex-col gap-[32px]">
 
               {/* Contact items */}
-              <div className="flex flex-col gap-[24px]">
+              <div className="flex flex-col">
                 {(
                   [
                     {
@@ -296,16 +270,19 @@ export default function ContactoPage() {
                       ),
                     },
                   ] as { icon: React.ReactNode; label: string; content: React.ReactNode }[]
-                ).map(({ icon, label, content }) => (
-                  <div key={label} className="flex gap-[16px] items-start min-h-[60px]">
-                    <div className="bg-[#0d1835] w-[40px] h-[40px] flex items-center justify-center shrink-0 mt-[2px]">
-                      {icon}
-                    </div>
-                    <div className="flex flex-col gap-[2px]">
-                      <p className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4">
-                        {label}
-                      </p>
-                      {content}
+                ).map(({ icon, label, content }, i) => (
+                  <div key={label}>
+                    {i > 0 && <div className="h-px bg-[#dfe5ef] my-[20px]" />}
+                    <div className="flex gap-[16px] items-start min-h-[60px]">
+                      <div className="bg-[#0d1835] w-[40px] h-[40px] flex items-center justify-center shrink-0 mt-[2px]">
+                        {icon}
+                      </div>
+                      <div className="flex flex-col gap-[2px]">
+                        <p className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4">
+                          {label}
+                        </p>
+                        {content}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -313,33 +290,18 @@ export default function ContactoPage() {
 
               <div className="h-px bg-[#dfe5ef]" />
 
-              {/* Map placeholder */}
+              {/* Map */}
               <div className="flex flex-col gap-[12px]">
                 <p className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
                   Nuestra ubicación
                 </p>
-                <div className="bg-white border border-[#dfe5ef] h-[208px] flex flex-col items-center justify-center gap-[12px] relative overflow-hidden">
-                  <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      backgroundImage:
-                        "linear-gradient(#737b8c 1px, transparent 1px), linear-gradient(90deg, #737b8c 1px, transparent 1px)",
-                      backgroundSize: "32px 32px",
-                    }}
+                <div className="border border-[#dfe5ef] overflow-hidden h-[260px]">
+                  <PropertyMap
+                    lat={8.9936}
+                    lng={-79.5197}
+                    title="Panamares — Torre Oceánica, Punta Pacífica"
+                    className="w-full h-[260px]"
                   />
-                  <MapPin size={27} className="text-[#0c1935] relative z-10" />
-                  <div className="text-center relative z-10">
-                    <p className="font-body font-medium text-[14px] text-[#0c1935] leading-5">Punta Pacífica</p>
-                    <p className="font-body font-normal text-[12px] text-[#737b8c] leading-4">Ciudad de Panamá, Panamá</p>
-                  </div>
-                  <a
-                    href="https://maps.google.com/?q=Punta+Pacifica+Panama+City"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-body font-medium text-[12px] text-[#0c1935] tracking-[0.3px] uppercase leading-4 relative z-10 hover:opacity-60 transition-opacity"
-                  >
-                    Ver en Google Maps →
-                  </a>
                 </div>
               </div>
 
@@ -367,13 +329,13 @@ export default function ContactoPage() {
       </section>
 
       {/* ── Únete al equipo ── */}
-      <section className="bg-[#121e3e] px-[30px] xl:px-[260px] py-[60px] xl:py-[80px]">
+      <section className="bg-[#121e3e] px-[30px] xl:px-[260px] py-[130px] xl:py-[80px]">
         <div className="max-w-[1400px] mx-auto flex flex-col items-center xl:items-start xl:flex-row xl:justify-between gap-[32px] xl:gap-[40px]">
           <div className="flex flex-col gap-[15px] items-center xl:items-start text-center xl:text-left">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
               ¿Eres agente independiente?
             </p>
-            <p className="font-heading font-normal text-[clamp(34px,4vw,60px)] text-white tracking-[-1.8px] leading-none">
+            <p className="font-heading font-normal text-[50px] xl:text-[clamp(34px,4vw,60px)] text-white tracking-[-1.5px] xl:tracking-[-1.8px] leading-[55px] xl:leading-none">
               Únete al equipo Panamares
             </p>
           </div>

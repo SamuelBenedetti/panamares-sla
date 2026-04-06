@@ -9,6 +9,7 @@ import type { Property, Neighborhood } from "@/lib/types";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import SeoBlock from "@/components/home/SeoBlock";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
+import CTA from "@/components/home/CTA";
 import PropertyMapMulti from "@/components/properties/PropertyMapMulti";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import { PortableText } from "@portabletext/react";
@@ -146,6 +147,7 @@ export default async function GeoTypePage({ params }: Props) {
           <PropertyMapMulti properties={mapProps} height="h-[300px]" />
         </div>
       )}
+      <CTA />
     </>
   );
 }

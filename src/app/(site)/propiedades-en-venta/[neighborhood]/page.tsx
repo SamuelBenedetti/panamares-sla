@@ -9,6 +9,7 @@ import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import SeoBlock from "@/components/home/SeoBlock";
+import CTA from "@/components/home/CTA";
 import { PortableText } from "@portabletext/react";
 
 const BASE_URL = "https://panamares.com";
@@ -105,6 +106,7 @@ export default async function VentaNeighborhoodPage({ params }: Props) {
         neighborhoodLinks={[]}
         contextBlock={contextBlock}
       />
+      <CTA />
     </>
   );
 }

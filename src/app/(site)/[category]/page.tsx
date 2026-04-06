@@ -9,6 +9,7 @@ import type { Property } from "@/lib/types";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
+import CTA from "@/components/home/CTA";
 
 const BASE_URL = "https://panamares.com";
 
@@ -91,6 +92,7 @@ export default async function CategoryPage({ params }: Props) {
         neighborhoodLinks={neighborhoodLinks}
         seoBlock={config.seoBlock}
       />
+      <CTA />
     </>
   );
 }

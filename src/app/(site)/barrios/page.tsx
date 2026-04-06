@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, ArrowRight } from "lucide-react";
-import { NEIGHBORHOODS } from "@/lib/neighborhoods";
+import { NEIGHBORHOODS, getSlugByName } from "@/lib/neighborhoods";
+import { sanityFetch } from "@/sanity/lib/client";
+import { activeZonesQuery } from "@/sanity/lib/queries";
 
 const BASE_URL = "https://panamares.com";
 
@@ -67,7 +69,7 @@ const NEIGHBORHOOD_IMAGES: Record<string, string> = {
 };
 
 // Same 4 neighborhoods + images as the homepage "Explorar por Ubicación" section
-const featured = [
+const FEATURED_NEIGHBORHOODS = [
   {
     name: "Punta Pacífica",
     slug: "punta-pacifica",
@@ -89,9 +91,22 @@ const featured = [
     image: "https://www.figma.com/api/mcp/asset/62c063c9-5fb1-4cda-bb0a-74f1968f41ec",
   },
 ];
-const rest = NEIGHBORHOODS.filter((n) => n.priority !== "HIGH");
 
-export default function BarriosPage() {
+export default async function BarriosPage() {
+  const activeZoneNames = await sanityFetch<string[]>(activeZonesQuery);
+  const activeSlugs = new Set(
+    activeZoneNames
+      .map((name) => getSlugByName(name))
+      .filter((s): s is string => s !== undefined)
+  );
+  activeSlugs.add("costa-del-este");
+
+  const featured = FEATURED_NEIGHBORHOODS.filter(
+    (n) => n.slug === "costa-del-este" || activeSlugs.has(n.slug)
+  );
+  const rest = NEIGHBORHOODS.filter(
+    (n) => n.priority !== "HIGH" && activeSlugs.has(n.slug)
+  );
   return (
     <>
       {/* ── Hero ── */}

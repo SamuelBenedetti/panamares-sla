@@ -104,7 +104,7 @@ export default async function AgentProfilePage({ params }: Props) {
                   href={waHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-[8px] bg-[#25d366] hover:bg-[#1ebe57] px-[16px] py-[9px] font-body font-medium text-[13px] text-white transition-colors"
+                  className="inline-flex items-center gap-[8px] bg-[#00b424] hover:bg-[#009e1f] px-[16px] py-[9px] font-body font-medium text-[13px] text-white transition-colors"
                 >
                   <MessageCircle size={14} />
                   WhatsApp
@@ -219,7 +219,7 @@ export default async function AgentProfilePage({ params }: Props) {
             href={waHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-[10px] bg-[#25d366] hover:bg-[#1ebe57] w-full xl:w-fit px-[32px] py-[15px] font-body font-medium text-[14px] text-white tracking-[1.4px] uppercase transition-colors whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-[10px] bg-[#00b424] hover:bg-[#009e1f] w-full xl:w-fit px-[32px] py-[15px] font-body font-medium text-[14px] text-white tracking-[1.4px] uppercase transition-colors whitespace-nowrap"
           >
             <MessageCircle size={16} />
             Abrir WhatsApp
