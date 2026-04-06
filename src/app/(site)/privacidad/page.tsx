@@ -22,7 +22,7 @@ export default function PrivacidadPage() {
 
           <div className="flex flex-col gap-[12px]">
             <h2 className="font-semibold text-[20px]">1. Responsable del tratamiento</h2>
-            <p>Panamares Realty S.A. ("Panamares", "nosotros") es responsable del tratamiento de los datos personales recabados a través del sitio web <strong>panamares.com</strong>. Para cualquier consulta puede contactarnos en <a href="mailto:info@panamares.com" className="text-[#0c1834] underline">info@panamares.com</a>.</p>
+            <p>Panamares Realty S.A. (&ldquo;Panamares&rdquo;, &ldquo;nosotros&rdquo;) es responsable del tratamiento de los datos personales recabados a través del sitio web <strong>panamares.com</strong>. Para cualquier consulta puede contactarnos en <a href="mailto:info@panamares.com" className="text-[#0c1834] underline">info@panamares.com</a>.</p>
           </div>
 
           <div className="flex flex-col gap-[12px]">

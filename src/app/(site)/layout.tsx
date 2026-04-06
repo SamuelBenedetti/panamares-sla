@@ -3,7 +3,7 @@ import Footer from "@/components/layout/Footer";
 import CompareBar from "@/components/properties/CompareBar";
 import { sanityFetch } from "@/sanity/lib/client";
 import { activeZonesQuery, navCountsQuery } from "@/sanity/lib/queries";
-import { NEIGHBORHOODS, getSlugByName } from "@/lib/neighborhoods";
+import { getSlugByName } from "@/lib/neighborhoods";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const [activeZoneNames, navCounts] = await Promise.all([
