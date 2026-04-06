@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Building2, Home, Layers, Briefcase, ShoppingBag, MapPin } from "lucide-react";
 
 const SHORTCUTS = [
@@ -15,6 +15,27 @@ const SHORTCUTS = [
 
 export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record<string, number> }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  function checkScroll() {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  }
+
+  useEffect(() => {
+    checkScroll();
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", checkScroll);
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, []);
 
   function scroll(dir: "left" | "right") {
     const el = scrollRef.current;
@@ -38,19 +59,21 @@ export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record
 
         {/* Cards + scroll arrows */}
         <div className="relative">
-          {/* Left arrow */}
-          <button
-            onClick={() => scroll("left")}
-            aria-label="Anterior"
-            className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 hidden md:flex bg-white/80 backdrop-blur-sm rounded-full p-3 shadow-md hover:bg-white transition-colors"
-          >
-            <ChevronLeft size={18} className="text-[#0c1834]" />
-          </button>
+          {/* Left arrow — only when can scroll */}
+          {canScrollLeft && (
+            <button
+              onClick={() => scroll("left")}
+              aria-label="Anterior"
+              className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 flex bg-white/80 backdrop-blur-sm rounded-full p-3 shadow-md hover:bg-white transition-colors"
+            >
+              <ChevronLeft size={18} className="text-[#0c1834]" />
+            </button>
+          )}
 
-          {/* Scrollable row */}
+          {/* Scrollable row — wraps on xl, scrolls on smaller */}
           <div
             ref={scrollRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-1"
+            className="flex gap-2 xl:gap-3 overflow-x-auto scrollbar-hide scroll-smooth pb-1 xl:grid xl:grid-cols-6"
             style={{ scrollbarWidth: "none" }}
           >
             {SHORTCUTS.map((s) => {
@@ -60,7 +83,7 @@ export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record
                 <Link
                   key={s.href}
                   href={s.href}
-                  className="flex flex-col gap-[10px] items-center px-[21px] py-[31px] border border-[#dfe5ef] hover:border-[#0c1834]/30 hover:shadow-md transition-all shrink-0 w-[220px] group"
+                  className="flex flex-col gap-[10px] items-center px-[21px] py-[31px] border border-[#dfe5ef] hover:border-[#0c1834]/30 hover:shadow-md transition-all shrink-0 w-[190px] xl:w-auto group"
                 >
                   {/* Icon circle */}
                   <div className="flex items-center justify-center rounded-full bg-[rgba(12,25,53,0.1)] size-[48px] group-hover:bg-[rgba(12,25,53,0.15)] transition-colors">
@@ -81,14 +104,16 @@ export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record
             })}
           </div>
 
-          {/* Right arrow */}
-          <button
-            onClick={() => scroll("right")}
-            aria-label="Siguiente"
-            className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 hidden md:flex bg-white/80 backdrop-blur-sm rounded-full p-3 shadow-md hover:bg-white transition-colors"
-          >
-            <ChevronRight size={18} className="text-[#0c1834]" />
-          </button>
+          {/* Right arrow — only when can scroll */}
+          {canScrollRight && (
+            <button
+              onClick={() => scroll("right")}
+              aria-label="Siguiente"
+              className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 flex bg-white/80 backdrop-blur-sm rounded-full p-3 shadow-md hover:bg-white transition-colors"
+            >
+              <ChevronRight size={18} className="text-[#0c1834]" />
+            </button>
+          )}
         </div>
       </div>
     </section>

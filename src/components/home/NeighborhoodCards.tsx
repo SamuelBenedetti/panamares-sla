@@ -5,34 +5,43 @@ const NEIGHBORHOODS = [
   {
     name: "Punta Pacífica",
     slug: "punta-pacifica",
+    countKey: "puntaPacifica",
     image: "https://www.figma.com/api/mcp/asset/18facb66-b373-47fd-bfc2-bcd5aa8ac032",
     avgPrice: "$3,200/m²",
-    count: 48,
   },
   {
     name: "Punta Paitilla",
     slug: "punta-paitilla",
+    countKey: "puntaPaitilla",
     image: "https://www.figma.com/api/mcp/asset/9ed6e3b5-28f2-4d61-a2d9-391ae3aceff8",
     avgPrice: "$2,900/m²",
-    count: 63,
   },
   {
     name: "Avenida Balboa",
     slug: "avenida-balboa",
+    countKey: "avenidaBalboa",
     image: "https://www.figma.com/api/mcp/asset/ad0b9b48-dd4e-4216-a408-f41d5efdfe25",
     avgPrice: "$2,600/m²",
-    count: 37,
   },
   {
     name: "Costa del Este",
     slug: "costa-del-este",
+    countKey: "costaDelEste",
     image: "https://www.figma.com/api/mcp/asset/62c063c9-5fb1-4cda-bb0a-74f1968f41ec",
     avgPrice: "$2,400/m²",
-    count: 55,
   },
 ];
 
-export default function NeighborhoodCards() {
+interface Props {
+  counts: Record<string, number>;
+}
+
+export default function NeighborhoodCards({ counts }: Props) {
+  const visible = NEIGHBORHOODS.filter(
+    (n) => n.slug === "costa-del-este" || (counts[n.countKey] ?? 0) > 0
+  );
+  if (visible.length === 0) return null;
+
   return (
     <section className="bg-white py-[130px] px-[30px] xl:px-[260px]">
       <div className="flex flex-col gap-12 max-w-[1400px] mx-auto">
@@ -49,7 +58,7 @@ export default function NeighborhoodCards() {
 
         {/* Cards grid — 1 col on mobile, 4 on lg */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {NEIGHBORHOODS.map((n) => (
+          {visible.map((n) => (
             <Link
               key={n.slug}
               href={`/barrios/${n.slug}/`}
@@ -88,7 +97,7 @@ export default function NeighborhoodCards() {
                       Propiedades
                     </span>
                     <span className="bg-white/20 font-body font-semibold text-white text-[16px] leading-normal px-[5px] py-[3px] w-fit">
-                      {n.count}
+                      {counts[n.countKey] ?? 0}
                     </span>
                   </div>
                 </div>
