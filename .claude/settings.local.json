@@ -23,7 +23,21 @@
       "Bash(ls \"C:/Users/sbene/Desktop/nuevo-proyecto/src/app/\\(site\\)/propiedades-en-venta/\")",
       "Bash(python3 -c \":*)",
       "Bash(py --version)",
-      "Bash(py:*)"
+      "Bash(py:*)",
+      "Bash(gh run:*)",
+      "Bash(npx vercel:*)",
+      "Bash(npm run:*)",
+      "mcp__figma__get_design_context",
+      "mcp__figma__get_screenshot",
+      "Bash(python3:*)",
+      "WebFetch(domain:panamares.com)",
+      "WebFetch(domain:api.wasi.co)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm install:*)",
+      "Bash(xargs grep:*)",
+      "Bash(xargs cat:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)"
     ]
   },
   "enableAllProjectMcpServers": true,
