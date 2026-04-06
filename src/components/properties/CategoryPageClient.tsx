@@ -22,6 +22,10 @@ interface Props {
   contextBlock?: React.ReactNode;
   mapSlot?: React.ReactNode;
   seoBlock?: string;
+  initialSearch?: string;
+  initialBedrooms?: number;
+  initialMinPrice?: string;
+  initialMaxPrice?: string;
 }
 
 interface Filters {
@@ -199,24 +203,47 @@ function SeoBlock({ text }: { text: string }) {
   );
 }
 
+function normalize(s: string) {
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 export default function CategoryPageClient({
-  properties, neighborhoodLinks, contextBlock, seoBlock,
+  properties, neighborhoodLinks, contextBlock, seoBlock, initialSearch = "",
+  initialBedrooms = 0, initialMinPrice = "", initialMaxPrice = "",
 }: Props) {
-  const [filters, setFilters] = useState<Filters>(INIT_FILTERS);
+  const [filters, setFilters] = useState<Filters>({
+    ...INIT_FILTERS,
+    bedrooms: initialBedrooms,
+    minPrice: initialMinPrice,
+    maxPrice: initialMaxPrice,
+  });
+  const [search, setSearch] = useState(initialSearch);
   const [sort, setSort] = useState<SortOption>("relevancia");
   const [visible, setVisible] = useState(PAGE_SIZE);
 
   const hasActive =
+    search !== "" ||
     filters.minPrice !== "" || filters.maxPrice !== "" ||
     filters.minArea !== "" || filters.maxArea !== "" ||
     filters.bedrooms > 0 || filters.bathrooms > 0;
 
-  function reset() { setFilters(INIT_FILTERS); setVisible(PAGE_SIZE); }
+  function reset() { setFilters(INIT_FILTERS); setSearch(""); setVisible(PAGE_SIZE); }
 
-  useEffect(() => { setVisible(PAGE_SIZE); }, [filters, sort]);
+  useEffect(() => { setVisible(PAGE_SIZE); }, [filters, sort, search]);
 
   const filtered = useMemo(() => {
     let result = [...properties];
+
+    if (search.trim()) {
+      const q = normalize(search.trim());
+      result = result.filter((p) =>
+        normalize(p.title ?? "").includes(q) ||
+        normalize(p.propertyType ?? "").includes(q) ||
+        normalize(p.zone ?? "").includes(q) ||
+        normalize(p.buildingName ?? "").includes(q)
+      );
+    }
+
     if (filters.minPrice) result = result.filter((p) => p.price >= Number(filters.minPrice));
     if (filters.maxPrice) result = result.filter((p) => p.price <= Number(filters.maxPrice));
     if (filters.minArea) result = result.filter((p) => (p.area ?? 0) >= Number(filters.minArea));
@@ -236,7 +263,7 @@ export default function CategoryPageClient({
   const remaining = filtered.length - visible;
 
   return (
-    <div className="py-[40px] xl:py-[60px]">
+    <div className="bg-[#f9f9f9] py-[40px] xl:py-[60px]">
       {contextBlock && (
         <div className="px-[30px] xl:px-[260px] max-w-[1920px] mx-auto mb-6">
           <div className="max-w-[1400px] mx-auto">{contextBlock}</div>
@@ -257,6 +284,14 @@ export default function CategoryPageClient({
         <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-[16px]">
           <span className="font-body text-[14px] text-[#737b8c]">
             <span className="font-semibold text-[#0c1834]">{filtered.length}</span> propiedades encontradas
+            {search && (
+              <span className="ml-1">
+                para <span className="font-semibold text-[#0c1834]">&quot;{search}&quot;</span>
+                <button onClick={() => setSearch("")} className="ml-2 text-[#737b8c] hover:text-[#0c1834] transition-colors" aria-label="Borrar búsqueda">
+                  <X size={12} className="inline" />
+                </button>
+              </span>
+            )}
           </span>
           <div className="relative">
             <select
@@ -311,7 +346,11 @@ export default function CategoryPageClient({
           <div>
             {filtered.length === 0 ? (
               <div className="text-center py-24">
-                <p className="font-body text-[18px] text-[#737b8c]">No hay propiedades con estos filtros.</p>
+                <p className="font-body text-[18px] text-[#737b8c]">
+                  {search
+                    ? `No encontramos propiedades para "${search}".`
+                    : "No hay propiedades con estos filtros."}
+                </p>
                 <button onClick={reset} className="mt-4 font-body text-[14px] text-[#0c1834] underline hover:no-underline transition-all">
                   Limpiar filtros
                 </button>

@@ -10,9 +10,18 @@ interface GalleryImage {
 
 export default function PropertyGallery({ images }: { images: GalleryImage[] }) {
   const [active, setActive] = useState(0);
+  const [fading, setFading] = useState(false);
 
-  const prev = useCallback(() => setActive((i) => (i === 0 ? images.length - 1 : i - 1)), [images.length]);
-  const next = useCallback(() => setActive((i) => (i === images.length - 1 ? 0 : i + 1)), [images.length]);
+  const changeTo = useCallback((newIdx: number) => {
+    setFading(true);
+    setTimeout(() => {
+      setActive(newIdx);
+      setFading(false);
+    }, 200);
+  }, []);
+
+  const prev = useCallback(() => changeTo(active === 0 ? images.length - 1 : active - 1), [active, images.length, changeTo]);
+  const next = useCallback(() => changeTo(active === images.length - 1 ? 0 : active + 1), [active, images.length, changeTo]);
 
   if (images.length === 0) return null;
 
@@ -27,7 +36,7 @@ export default function PropertyGallery({ images }: { images: GalleryImage[] }) 
           alt={images[active].alt ?? "Foto de propiedad"}
           fill
           priority
-          className="object-cover transition-opacity duration-300"
+          className={`object-cover transition-opacity duration-200 ${fading ? "opacity-0" : "opacity-100"}`}
           sizes="100vw"
         />
 
@@ -73,7 +82,7 @@ export default function PropertyGallery({ images }: { images: GalleryImage[] }) 
               {images.map((img, i) => (
                 <button
                   key={i}
-                  onClick={() => setActive(i)}
+                  onClick={() => changeTo(i)}
                   className={`relative shrink-0 w-[80px] h-[80px] overflow-hidden transition-opacity ${
                     i === active
                       ? "border-2 border-[#0d1835] p-[2px]"

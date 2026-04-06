@@ -4,6 +4,7 @@ import { Bed, Bath, Maximize } from "lucide-react";
 import type { Property } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import { BASE_URL, whatsappLink } from "@/lib/config";
+import CompareButton from "./CompareButton";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-US", {
@@ -14,28 +15,11 @@ function formatPrice(price: number) {
 }
 
 export default function PropertyCard({ property }: { property: Property }) {
-  const { title, slug, price, bedrooms, bathrooms, area, zone, mainImage } = property;
+  const { title, slug, price, bedrooms, bathrooms, area, zone, mainImage, recommended, fairPrice, rented } = property;
 
-  const PLACEHOLDERS = [
-    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1494526585095-c41746248156?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1582063289852-62e3ba2747f8?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1567496898669-ee935f5f647a?w=600&h=400&fit=crop",
-  ];
-  const placeholderIndex = property._id
-    ? property._id.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % PLACEHOLDERS.length
-    : 0;
   const imageUrl = mainImage
     ? urlFor(mainImage).width(600).height(400).url()
-    : PLACEHOLDERS[placeholderIndex];
+    : "/placeholder-property.jpg";
 
   const pricePerM2 = area && area > 0 ? Math.round(price / area) : null;
   const waMessage = `Hola, me interesa esta propiedad: ${title} — ${BASE_URL}/propiedades/${slug?.current}`;
@@ -54,13 +38,31 @@ export default function PropertyCard({ property }: { property: Property }) {
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 50vw, 33vw"
           />
         </Link>
-        {zone && (
-          <div className="absolute top-[11px] left-[10px] bg-[#0c1935]/90 backdrop-blur-sm px-[8px] py-[2px]">
-            <span className="font-body font-semibold text-white text-[9px] md:text-[11px] uppercase leading-[16px]">
-              {zone}
-            </span>
-          </div>
-        )}
+        <CompareButton id={property._id} />
+        {/* Tags — stack vertically top-left */}
+        <div className="absolute top-[11px] left-[10px] flex flex-col gap-[4px]">
+          {recommended && (
+            <div className="bg-white/90 backdrop-blur-[2px] px-[10px] py-[4px]">
+              <span className="font-body font-semibold text-[#0c1834] text-[12px] uppercase leading-[16px]">
+                Recomendado
+              </span>
+            </div>
+          )}
+          {fairPrice && (
+            <div className="bg-[#00b424] backdrop-blur-[2px] px-[10px] py-[4px]">
+              <span className="font-body font-semibold text-white text-[12px] uppercase leading-[16px]">
+                Precio Justo
+              </span>
+            </div>
+          )}
+          {rented && (
+            <div className="bg-[#e03131] backdrop-blur-[2px] px-[10px] py-[4px]">
+              <span className="font-body font-semibold text-white text-[12px] uppercase leading-[16px]">
+                Alquilado
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Content */}

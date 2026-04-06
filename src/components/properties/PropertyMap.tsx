@@ -8,9 +8,10 @@ interface Props {
   lat: number;
   lng: number;
   title?: string;
+  className?: string;
 }
 
-export default function PropertyMap({ lat, lng, title }: Props) {
+export default function PropertyMap({ lat, lng, title, className = "w-full h-[400px]" }: Props) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
 
@@ -48,7 +49,7 @@ export default function PropertyMap({ lat, lng, title }: Props) {
   return (
     <div
       ref={mapContainer}
-      className="w-full h-[400px] rounded-xl overflow-hidden"
+      className={className}
     />
   );
 }
