@@ -20,7 +20,7 @@ export default async function SobreNosotrosPage() {
     <>
       {/* ── Hero "Quiénes somos" ── */}
       <section className="relative bg-[#f9f9f9] px-[30px] xl:px-[260px] pt-[100px] xl:pt-[160px] pb-[80px] xl:pb-[112px]">
-        <div className="max-w-[1920px] mx-auto">
+        <div className="max-w-[1400px] mx-auto">
           <div className="flex flex-col gap-5 max-w-[768px]">
 
             {/* Eyebrow */}
@@ -61,7 +61,7 @@ export default async function SobreNosotrosPage() {
 
       {/* ── Nuestra oficina ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px]">
-        <div className="max-w-[1920px] mx-auto">
+        <div className="max-w-[1400px] mx-auto">
           <div className="relative aspect-[390/720] xl:aspect-auto xl:h-[720px] overflow-hidden flex flex-col justify-end p-[30px] xl:p-0">
             <Image
               src="/oficina.jpg"
@@ -86,7 +86,7 @@ export default async function SobreNosotrosPage() {
 
       {/* ── Stats bar ── */}
       <section className="bg-[#0d1835] px-[30px] xl:px-[260px] py-[50px] xl:py-[70px]">
-        <div className="max-w-[1920px] mx-auto">
+        <div className="max-w-[1400px] mx-auto">
           <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[50px] xl:gap-0">
             {[
               { value: "15+",    label: "Años en el Mercado" },
@@ -109,7 +109,7 @@ export default async function SobreNosotrosPage() {
 
       {/* ── Nuestra Historia ── */}
       <section className="bg-white px-[30px] xl:px-[260px] py-[70px] xl:py-[112px]">
-        <div className="max-w-[1920px] mx-auto flex flex-col gap-[40px] xl:gap-[48px]">
+        <div className="max-w-[1400px] mx-auto flex flex-col gap-[40px] xl:gap-[48px]">
 
           {/* Eyebrow + Grid grouped close together */}
           <div className="flex flex-col gap-[8px]">
@@ -195,7 +195,7 @@ export default async function SobreNosotrosPage() {
       </section>
       {/* ── El equipo ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] py-[70px] xl:py-[96px]">
-        <div className="max-w-[1920px] mx-auto flex flex-col gap-[56px] items-center">
+        <div className="max-w-[1400px] mx-auto flex flex-col gap-[56px] items-center">
 
           {/* Header */}
           <div className="flex flex-col gap-[12px] items-center">
@@ -247,7 +247,7 @@ export default async function SobreNosotrosPage() {
       </section>
       {/* ── Reconocimientos ── */}
       <section className="bg-white px-[30px] xl:px-[260px] py-[70px] xl:py-[96px]">
-        <div className="max-w-[1920px] mx-auto flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[48px] xl:gap-[40px]">
+        <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[48px] xl:gap-[40px]">
 
           {/* Left — icon + heading */}
           <div className="flex flex-col gap-[15px]">
@@ -295,7 +295,7 @@ export default async function SobreNosotrosPage() {
           <Image src="/palm-right.svg" alt="" fill className="object-cover object-left" sizes="300px" />
         </div>
 
-        <div className="relative z-10 max-w-[1920px] mx-auto flex flex-col gap-[16px] items-center">
+        <div className="relative z-10 max-w-[1400px] mx-auto flex flex-col gap-[16px] items-center">
 
           {/* Eyebrow + Heading */}
           <div className="flex flex-col gap-[12px] items-center">

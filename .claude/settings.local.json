@@ -37,7 +37,11 @@
       "Bash(xargs grep:*)",
       "Bash(xargs cat:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m ':*)"
+      "Bash(git commit -m ':*)",
+      "Bash(git push:*)",
+      "Bash(grep -r \"href=\" /c/Users/sbene/Desktop/panamares/src/app/\\\\\\(site\\\\\\)/page.tsx /c/Users/sbene/Desktop/panamares/src/components/home/*.tsx)",
+      "Bash(xargs sed:*)",
+      "Bash(sed:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -46,7 +46,7 @@ export default function ContactoPage() {
     <>
       {/* ── Hero ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] pt-[160px] pb-[80px]">
-        <div className="max-w-[768px]">
+        <div className="max-w-[1400px] mx-auto">
           <div className="flex flex-col gap-[20px]">
             <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
               Contáctenos

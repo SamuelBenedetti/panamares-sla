@@ -121,7 +121,7 @@ export default async function BarriosPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(29,33,43,0.4)] via-[rgba(29,33,43,0.3)] to-[rgba(29,33,43,0.85)]" />
 
         <div className="relative z-10 w-full px-[30px] xl:px-[260px] pb-[70px] xl:pb-[90px] pt-[140px]">
-          <div className="max-w-[1400px] mx-auto flex flex-col gap-[20px] max-w-[720px]">
+          <div className="flex flex-col gap-[20px] max-w-[720px]">
             <p className="font-body font-medium text-[12px] text-white/60 tracking-[5px] uppercase leading-4">
               Ciudad de Panamá
             </p>
