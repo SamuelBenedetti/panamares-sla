@@ -1,6 +1,23 @@
 import { NextResponse } from "next/server";
 import { createClient } from "next-sanity";
 
+// Simple in-memory rate limiter: max 5 requests per IP per 10 minutes
+const rateMap = new Map<string, { count: number; resetAt: number }>();
+const LIMIT = 5;
+const WINDOW_MS = 10 * 60 * 1000;
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateMap.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    return false;
+  }
+  if (entry.count >= LIMIT) return true;
+  entry.count++;
+  return false;
+}
+
 const writeClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "placeholder",
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
@@ -11,6 +28,18 @@ const writeClient = createClient({
 
 export async function POST(req: Request) {
   try {
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      req.headers.get("x-real-ip") ??
+      "unknown";
+
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Demasiadas solicitudes. Intenta de nuevo en unos minutos." },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const { name, email, phone, message, propertyId } = body;
 
