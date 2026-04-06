@@ -203,7 +203,7 @@ function BuscarContent() {
             onClick={skip}
             className="flex items-center gap-2 px-[20px] py-[12px] font-body font-medium text-[18px] xl:text-[20px] text-white/30 hover:text-white/60 transition-colors"
           >
-            Pular
+            Omitir
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path
                 d="M7 4L13 10L7 16"
