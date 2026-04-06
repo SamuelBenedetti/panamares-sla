@@ -82,10 +82,10 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
 
   // Hero image — use homepage NeighborhoodCards images for the 4 featured zones
   const HOMEPAGE_IMAGES: Record<string, string> = {
-    "punta-pacifica": "https://www.figma.com/api/mcp/asset/18facb66-b373-47fd-bfc2-bcd5aa8ac032",
-    "punta-paitilla": "https://www.figma.com/api/mcp/asset/9ed6e3b5-28f2-4d61-a2d9-391ae3aceff8",
-    "avenida-balboa": "https://www.figma.com/api/mcp/asset/ad0b9b48-dd4e-4216-a408-f41d5efdfe25",
-    "costa-del-este": "https://www.figma.com/api/mcp/asset/62c063c9-5fb1-4cda-bb0a-74f1968f41ec",
+    "punta-pacifica": "/barrio-punta-pacifica.png",
+    "punta-paitilla": "/barrio-punta-paitilla.png",
+    "avenida-balboa": "/barrio-avenida-balboa.png",
+    "costa-del-este": "/barrio-costa-del-este.png",
   };
   const heroImage =
     nbhContent?.photo

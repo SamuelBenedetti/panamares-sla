@@ -73,22 +73,22 @@ const FEATURED_NEIGHBORHOODS = [
   {
     name: "Punta Pacífica",
     slug: "punta-pacifica",
-    image: "https://www.figma.com/api/mcp/asset/18facb66-b373-47fd-bfc2-bcd5aa8ac032",
+    image: "/barrio-punta-pacifica.png",
   },
   {
     name: "Punta Paitilla",
     slug: "punta-paitilla",
-    image: "https://www.figma.com/api/mcp/asset/9ed6e3b5-28f2-4d61-a2d9-391ae3aceff8",
+    image: "/barrio-punta-paitilla.png",
   },
   {
     name: "Avenida Balboa",
     slug: "avenida-balboa",
-    image: "https://www.figma.com/api/mcp/asset/ad0b9b48-dd4e-4216-a408-f41d5efdfe25",
+    image: "/barrio-avenida-balboa.png",
   },
   {
     name: "Costa del Este",
     slug: "costa-del-este",
-    image: "https://www.figma.com/api/mcp/asset/62c063c9-5fb1-4cda-bb0a-74f1968f41ec",
+    image: "/barrio-costa-del-este.png",
   },
 ];
 
