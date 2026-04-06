@@ -15,7 +15,10 @@ const CARD_FIELDS = groq`
   zone,
   buildingName,
   mainImage,
-  featured
+  featured,
+  recommended,
+  fairPrice,
+  rented
 `;
 
 // Properties — all active (used for old /propiedades page)
@@ -26,9 +29,16 @@ export const allPropertiesQuery = groq`
   }
 `;
 
+// Comparison page — fetch properties by list of IDs
+export const propertiesByIdsQuery = groq`
+  *[_type == "property" && _id in $ids] {
+    ${CARD_FIELDS}
+  }
+`;
+
 // Homepage — featured active listings
 export const featuredPropertiesQuery = groq`
-  *[_type == "property" && featured == true && listingStatus == "activa"] | order(_createdAt desc) [0...6] {
+  *[_type == "property" && featured == true && listingStatus == "activa"] | order(_createdAt desc) [0...9] {
     ${CARD_FIELDS}
   }
 `;
@@ -51,6 +61,12 @@ export const propertyBySlugQuery = groq`
     parking,
     province,
     zone,
+    corregimiento,
+    condition,
+    floor,
+    yearBuilt,
+    tower,
+    model,
     buildingName,
     description,
     featuresInterior,
@@ -113,10 +129,41 @@ export const propertiesByNeighborhoodQuery = groq`
   }
 `;
 
+// Nav dropdown counts — by propertyType + businessType
+export const navCountsQuery = groq`{
+  "venta": {
+    "apartamento": count(*[_type == "property" && propertyType == "apartamento" && businessType == "venta" && listingStatus == "activa"]),
+    "casa":        count(*[_type == "property" && propertyType == "casa"        && businessType == "venta" && listingStatus == "activa"]),
+    "penthouse":   count(*[_type == "property" && propertyType == "penthouse"   && businessType == "venta" && listingStatus == "activa"]),
+    "oficina":     count(*[_type == "property" && propertyType == "oficina"     && businessType == "venta" && listingStatus == "activa"]),
+    "local":       count(*[_type == "property" && propertyType == "local"       && businessType == "venta" && listingStatus == "activa"]),
+    "terreno":     count(*[_type == "property" && propertyType == "terreno"     && businessType == "venta" && listingStatus == "activa"])
+  },
+  "alquiler": {
+    "apartamento": count(*[_type == "property" && propertyType == "apartamento" && businessType == "alquiler" && listingStatus == "activa"]),
+    "casa":        count(*[_type == "property" && propertyType == "casa"        && businessType == "alquiler" && listingStatus == "activa"]),
+    "oficina":     count(*[_type == "property" && propertyType == "oficina"     && businessType == "alquiler" && listingStatus == "activa"]),
+    "local":       count(*[_type == "property" && propertyType == "local"       && businessType == "alquiler" && listingStatus == "activa"])
+  }
+}`;
+
+// Zones that have at least 1 active property (used to hide empty neighborhoods)
+export const activeZonesQuery = groq`
+  array::unique(*[_type == "property" && listingStatus == "activa" && defined(zone)].zone)
+`;
+
 // Homepage trust strip stats
 export const siteStatsQuery = groq`{
   "activeListings": count(*[_type == "property" && listingStatus == "activa"]),
   "agents": count(*[_type == "agent"])
+}`;
+
+// Homepage neighborhood counts
+export const neighborhoodCountsQuery = groq`{
+  "puntaPacifica": count(*[_type == "property" && zone == "Punta Pacífica" && listingStatus == "activa"]),
+  "puntaPaitilla": count(*[_type == "property" && zone == "Punta Paitilla" && listingStatus == "activa"]),
+  "avenidaBalboa": count(*[_type == "property" && zone == "Avenida Balboa" && listingStatus == "activa"]),
+  "costaDelEste": count(*[_type == "property" && zone == "Costa del Este" && listingStatus == "activa"])
 }`;
 
 // Homepage property type counts

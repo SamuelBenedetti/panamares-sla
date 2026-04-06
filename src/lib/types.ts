@@ -26,6 +26,12 @@ export interface Property {
   zone?: string;
   province?: string;
   buildingName?: string;
+  tower?: string;
+  model?: string;
+  floor?: number;
+  yearBuilt?: number;
+  condition?: string;
+  corregimiento?: string;
   bedrooms?: number;
   bathrooms?: number;
   halfBathrooms?: number;
@@ -43,6 +49,9 @@ export interface Property {
   location?: { lat: number; lng: number };
   agent?: Agent;
   featured?: boolean;
+  recommended?: boolean;
+  fairPrice?: boolean;
+  rented?: boolean;
 }
 
 export interface Agent {
