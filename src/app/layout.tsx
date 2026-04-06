@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
+import "flag-icons/css/flag-icons.min.css";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -46,6 +48,26 @@ export default function RootLayout({
     <html lang="es" className={`${cormorant.variable} ${dmSans.variable}`}>
       <body className="font-body antialiased bg-white text-brand-navy">
         {children}
+        {/* Google Translate — after page renders */}
+        <div id="google_translate_element" style={{ position: "absolute", top: "-9999px", left: "-9999px" }} suppressHydrationWarning />
+        <Script id="gt-init" strategy="afterInteractive">{`
+          window.googleTranslateElementInit = function() {
+            new google.translate.TranslateElement({
+              pageLanguage: 'es',
+              includedLanguages: 'en,es',
+              autoDisplay: false
+            }, 'google_translate_element');
+          };
+        `}</Script>
+        <Script
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          strategy="afterInteractive"
+        />
+        <style dangerouslySetInnerHTML={{ __html: `
+          body { top: 0 !important; }
+          .goog-te-banner-frame { display: none !important; }
+          iframe.skiptranslate { display: none !important; }
+        `}} />
       </body>
     </html>
   );

@@ -3,25 +3,27 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, X, Phone, MessageCircle } from "lucide-react";
+import { ChevronDown, Menu, X, Phone } from "lucide-react";
 import { whatsappLink } from "@/lib/config";
+import LangToggle from "./LangToggle";
 
-const COMPRAR_ITEMS = [
-  { label: "Ver todas", href: "/propiedades-en-venta/" },
-  { label: "Apartamentos", href: "/apartamentos-en-venta/" },
-  { label: "Casas", href: "/casas-en-venta/" },
-  { label: "Penthouses", href: "/penthouses-en-venta/" },
-  { label: "Oficinas", href: "/oficinas-en-venta/" },
-  { label: "Locales", href: "/locales-comerciales-en-venta/" },
-  { label: "Terrenos", href: "/terrenos-en-venta/" },
+
+const COMPRAR_ITEMS_BASE = [
+  { label: "Ver todas",    href: "/propiedades-en-venta/",          typeKey: null },
+  { label: "Apartamentos", href: "/apartamentos-en-venta/",         typeKey: "apartamento" },
+  { label: "Casas",        href: "/casas-en-venta/",                typeKey: "casa" },
+  { label: "Penthouses",   href: "/penthouses-en-venta/",           typeKey: "penthouse" },
+  { label: "Oficinas",     href: "/oficinas-en-venta/",             typeKey: "oficina" },
+  { label: "Locales",      href: "/locales-comerciales-en-venta/",  typeKey: "local" },
+  { label: "Terrenos",     href: "/terrenos-en-venta/",             typeKey: "terreno" },
 ];
 
-const ALQUILAR_ITEMS = [
-  { label: "Ver todas", href: "/propiedades-en-alquiler/" },
-  { label: "Apartamentos", href: "/apartamentos-en-alquiler/" },
-  { label: "Casas", href: "/casas-en-alquiler/" },
-  { label: "Oficinas", href: "/oficinas-en-alquiler/" },
-  { label: "Locales", href: "/locales-comerciales-en-alquiler/" },
+const ALQUILAR_ITEMS_BASE = [
+  { label: "Ver todas",    href: "/propiedades-en-alquiler/",           typeKey: null },
+  { label: "Apartamentos", href: "/apartamentos-en-alquiler/",          typeKey: "apartamento" },
+  { label: "Casas",        href: "/casas-en-alquiler/",                 typeKey: "casa" },
+  { label: "Oficinas",     href: "/oficinas-en-alquiler/",              typeKey: "oficina" },
+  { label: "Locales",      href: "/locales-comerciales-en-alquiler/",   typeKey: "local" },
 ];
 
 const BARRIOS_ITEMS = [
@@ -33,66 +35,87 @@ const BARRIOS_ITEMS = [
   { label: "Costa del Este", href: "/barrios/costa-del-este/" },
 ];
 
-const NAV_ITEMS = [
-  { href: "/propiedades-en-venta/", label: "Comprar", dropdown: COMPRAR_ITEMS },
-  { href: "/propiedades-en-alquiler/", label: "Alquilar", dropdown: ALQUILAR_ITEMS },
-  { href: "/barrios/", label: "Barrios", dropdown: BARRIOS_ITEMS },
+const NAV_ITEMS_STATIC = [
   { href: "/guias/", label: "Gu\u00edas", dropdown: null },
   { href: "/sobre-nosotros/", label: "Nosotros", dropdown: null },
 ];
 
-function PanamaFlag() {
-  return (
-    <svg width="26" height="18" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="13" height="9" fill="white" />
-      <rect x="13" width="13" height="9" fill="#D21034" />
-      <rect y="9" width="13" height="9" fill="#005293" />
-      <rect x="13" y="9" width="13" height="9" fill="white" />
-      <polygon points="6.5,1.5 7.5,4.5 10.5,4.5 8,6.5 9,9.5 6.5,7.5 4,9.5 5,6.5 2.5,4.5 5.5,4.5" fill="#D21034" />
-      <polygon points="19.5,9.5 20.5,12.5 23.5,12.5 21,14.5 22,17.5 19.5,15.5 17,17.5 18,14.5 15.5,12.5 18.5,12.5" fill="#005293" />
-    </svg>
-  );
-}
 
 function DropdownMenu({
   items,
   isLight,
 }: {
-  items: { label: string; href: string }[];
+  items: { label: string; href: string; count?: number }[];
   isLight: boolean;
 }) {
   return (
-    <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 min-w-[180px] border shadow-lg z-50 ${
-      isLight
-        ? "bg-white border-[#E9E7E2]"
-        : "bg-[#0c1834] border-white/10"
+    <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 min-w-[200px] border shadow-lg z-50 overflow-hidden ${
+      isLight ? "bg-white border-[#E9E7E2]" : "bg-[#0c1834] border-white/10"
     }`}>
       {items.map((item, i) => (
         <Link
           key={item.href}
           href={item.href}
-          className={`block px-5 py-2.5 font-body text-[14px] transition-colors ${
+          className={`group/item relative flex items-center justify-between px-5 py-[11px] font-body text-[14px] transition-all duration-150 overflow-hidden ${
             i === 0 ? "font-semibold" : "font-normal"
           } ${
             isLight
-              ? "text-[#0c1834] hover:bg-[#f9f9f9]"
-              : "text-[#faf8f5] hover:bg-white/10"
+              ? "text-[#0c1834] hover:bg-[#f4f4f4] hover:pl-6"
+              : "text-[#faf8f5] hover:bg-white/8 hover:pl-6"
           } ${i === 0 ? "border-b " + (isLight ? "border-[#E9E7E2]" : "border-white/10") : ""}`}
         >
-          {item.label}
+          {/* Left accent bar */}
+          <span className={`absolute left-0 top-0 bottom-0 w-[3px] scale-y-0 group-hover/item:scale-y-100 transition-transform duration-150 origin-center ${
+            isLight ? "bg-[#0c1834]" : "bg-white/40"
+          }`} />
+          <span>{item.label}</span>
+          {item.count !== undefined && item.count > 0 && (
+            <span className={`text-[12px] tabular-nums ml-3 ${
+              isLight ? "text-[#737b8c]" : "text-white/40"
+            }`}>
+              ({item.count})
+            </span>
+          )}
         </Link>
       ))}
     </div>
   );
 }
 
-export default function Navbar() {
+interface NavCounts {
+  venta: Record<string, number>;
+  alquiler: Record<string, number>;
+}
+
+export default function Navbar({ activeSlugs, navCounts }: { activeSlugs: Set<string>; navCounts: NavCounts }) {
+  const COMPRAR_ITEMS = COMPRAR_ITEMS_BASE.map((item) => ({
+    ...item,
+    count: item.typeKey ? (navCounts?.venta?.[item.typeKey] ?? 0) : undefined,
+  }));
+
+  const ALQUILAR_ITEMS = ALQUILAR_ITEMS_BASE.map((item) => ({
+    ...item,
+    count: item.typeKey ? (navCounts?.alquiler?.[item.typeKey] ?? 0) : undefined,
+  }));
+
+  const activeBarrios = BARRIOS_ITEMS.filter((item) => {
+    const slug = item.href.split("/barrios/")[1]?.replace("/", "");
+    return slug ? activeSlugs.has(slug) : true;
+  });
+
+  const NAV_ITEMS = [
+    { href: "/propiedades-en-venta/",   label: "Comprar",  dropdown: COMPRAR_ITEMS },
+    { href: "/propiedades-en-alquiler/", label: "Alquilar", dropdown: ALQUILAR_ITEMS },
+    { href: "/barrios/", label: "Barrios", dropdown: activeBarrios },
+    ...NAV_ITEMS_STATIC,
+  ];
+
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const isHome = pathname === "/" || pathname === "/buscar";
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -176,27 +199,24 @@ export default function Navbar() {
         </ul>
 
         {/* Desktop right actions */}
-        <div className="flex-1 hidden lg:flex items-center justify-end gap-5">
-          <button className={`flex items-center gap-1.5 border px-1.5 py-1 backdrop-blur-[10px] hover:bg-black/5 transition-colors ${isLight ? "border-[#0c1834]/40" : "border-white/80"}`}>
-            <PanamaFlag />
-            <ChevronDown size={10} className={`opacity-70 ${isLight ? "text-[#0c1834]" : "text-white"}`} />
-          </button>
+        <div className="flex-1 hidden lg:flex items-end justify-end gap-[18px] self-stretch py-[15px]">
           <a
             href={whatsappLink("Hola, me interesa conocer más sobre sus propiedades.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-[#25d366] hover:bg-[#1ebe57] text-white px-4 py-2.5 text-[16px] font-medium font-body tracking-[0.35px] transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#00b424] hover:bg-[#009e1f] text-white px-4 py-[10px] text-[16px] font-medium font-body tracking-[0.35px] transition-colors shadow-sm h-full"
           >
-            <MessageCircle size={18} />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             WhatsApp
           </a>
           <Link
             href="/contacto/"
-            className="flex items-center gap-2 bg-[#0c1834] hover:bg-[#162444] text-white px-4 py-2.5 text-[16px] font-medium font-body tracking-[0.35px] transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#0c1834] hover:bg-[#162444] text-white px-4 py-[10px] text-[16px] font-medium font-body tracking-[0.35px] transition-colors shadow-sm h-full"
           >
             <Phone size={18} />
             Contáctenos
           </Link>
+          <LangToggle isLight={isLight} />
         </div>
 
         {/* Mobile toggle */}
@@ -264,9 +284,9 @@ export default function Navbar() {
               href={whatsappLink("Hola, me interesa conocer más sobre sus propiedades.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 bg-[#25d366] text-white font-body font-medium py-3 text-sm"
+              className="flex items-center justify-center gap-2 bg-[#00b424] hover:bg-[#009e1f] text-white font-body font-medium py-3 text-sm transition-colors"
             >
-              <MessageCircle size={18} />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
               WhatsApp
             </a>
             <Link
