@@ -12,7 +12,7 @@ import PropertyGrid from "@/components/properties/PropertyGrid";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { listingSchema, breadcrumbSchema } from "@/lib/jsonld";
-import { BASE_URL, whatsappLink } from "@/lib/config";
+import { BASE_URL } from "@/lib/config";
 import CTA from "@/components/home/CTA";
 import type { Metadata } from "next";
 

@@ -70,6 +70,7 @@ export default function PropertyMapMulti({ properties, height = "h-[420px]" }: P
     return () => {
       map.current?.remove();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [withCoords.length]);
 
   if (withCoords.length === 0) return null;

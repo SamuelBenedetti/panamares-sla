@@ -1,23 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getCompareIds, toggleCompare, MAX_COMPARE } from "@/lib/compare";
 
 export default function CompareButton({ id }: { id: string }) {
   const [checked, setChecked] = useState(false);
   const [atMax, setAtMax] = useState(false);
 
-  function sync() {
+  const sync = useCallback(() => {
     const ids = getCompareIds();
     setChecked(ids.includes(id));
     setAtMax(ids.length >= MAX_COMPARE && !ids.includes(id));
-  }
+  }, [id]);
 
   useEffect(() => {
     sync();
     window.addEventListener("compare-updated", sync);
     return () => window.removeEventListener("compare-updated", sync);
-  }, [id]);
+  }, [sync]);
 
   return (
     <button

@@ -125,11 +125,13 @@ function BuscarContent() {
         className="absolute inset-x-0 pointer-events-none select-none"
         style={{ top: "301px", height: "699px" }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/palm-left.svg"
           alt=""
           className="absolute left-0 bottom-0 h-full opacity-[0.12] object-contain object-bottom-left"
         />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/palm-right.svg"
           alt=""
