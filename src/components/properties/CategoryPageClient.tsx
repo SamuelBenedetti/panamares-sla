@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
-import { X, ChevronDown } from "lucide-react";
+import { X, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import PropertyGrid from "@/components/properties/PropertyGrid";
 import type { Property } from "@/lib/types";
@@ -35,6 +35,7 @@ interface Filters {
   maxArea: string;
   bedrooms: number;
   bathrooms: number;
+  propertyType: string;
 }
 
 type SortOption = "relevancia" | "precio-asc" | "precio-desc" | "area-desc";
@@ -46,15 +47,23 @@ const INIT_FILTERS: Filters = {
   maxArea: "",
   bedrooms: 0,
   bathrooms: 0,
+  propertyType: "",
 };
 
-const inputBox = "bg-[#f9f9f9] border border-[#e6e6e6] px-[17.5px] py-[9px] w-[126px] font-body text-[16px] text-[#0c1935] tracking-[-0.32px] focus:outline-none focus:border-[#0c1935] placeholder:text-[rgba(12,25,53,0.3)] transition-colors text-center";
-const sectionHeadingBorder = "font-body font-medium text-[16px] text-[#0c1935] pb-[10px] border-b border-[#e9e7e2] w-full";
-const sectionHeading = "font-body font-medium text-[16px] text-[#0c1935] w-full";
+const PRICE_MIN = 0;
+const PRICE_MAX = 2_000_000;
+const AREA_MIN = 0;
+const AREA_MAX = 1000;
 
-function DualRangeSlider({
-  min, max, valueMin, valueMax, onChange, format,
-}: {
+function formatPrice(v: number) {
+  if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
+  if (v >= 1_000) return `$${Math.round(v / 1_000)}K`;
+  return `$${v}`;
+}
+function formatArea(v: number) { return `${Math.round(v)} m²`; }
+
+// ── Dual Range Slider ──────────────────────────────────────────────────────────
+function DualRangeSlider({ min, max, valueMin, valueMax, onChange, format }: {
   min: number; max: number; valueMin: number; valueMax: number;
   onChange: (min: number, max: number) => void;
   format: (v: number) => string;
@@ -94,62 +103,120 @@ function DualRangeSlider({
 
   return (
     <div className="relative w-full h-5 my-2 mt-8">
-      <div className="absolute -top-8 -translate-x-1/2 bg-[#0c1935] text-white font-body text-[12px] px-3 py-1 whitespace-nowrap pointer-events-none" style={{ left: `${rightPct}%` }}>
+      {/* Max value tooltip */}
+      <div
+        className="absolute -top-8 -translate-x-1/2 bg-[#0c1935] text-white font-body text-[12px] px-3 py-1 whitespace-nowrap pointer-events-none"
+        style={{ left: `${rightPct}%` }}
+      >
         {format(valueMax)}
       </div>
+      {/* Track */}
       <div ref={trackRef} className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-[2px] bg-[#e6e6e6]">
-        <div className="absolute top-0 bottom-0 bg-[#0c1935]" style={{ left: `${leftPct}%`, width: `${rightPct - leftPct}%` }} />
+        <div
+          className="absolute top-0 bottom-0 bg-[#0c1935]"
+          style={{ left: `${leftPct}%`, width: `${rightPct - leftPct}%` }}
+        />
       </div>
-      <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-[1.5px] border-[#0c1935] shadow-sm cursor-grab active:cursor-grabbing touch-none" style={{ left: `${leftPct}%` }} onPointerDown={(e) => { e.preventDefault(); startDrag("min"); }} />
-      <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-[1.5px] border-[#0c1935] shadow-sm cursor-grab active:cursor-grabbing touch-none" style={{ left: `${rightPct}%` }} onPointerDown={(e) => { e.preventDefault(); startDrag("max"); }} />
+      {/* Min handle */}
+      <div
+        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-[1.5px] border-[#0c1935] shadow-sm cursor-grab active:cursor-grabbing touch-none"
+        style={{ left: `${leftPct}%` }}
+        onPointerDown={(e) => { e.preventDefault(); startDrag("min"); }}
+      />
+      {/* Max handle */}
+      <div
+        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-[1.5px] border-[#0c1935] shadow-sm cursor-grab active:cursor-grabbing touch-none"
+        style={{ left: `${rightPct}%` }}
+        onPointerDown={(e) => { e.preventDefault(); startDrag("max"); }}
+      />
     </div>
   );
 }
 
-function Stepper({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+// ── Stepper ────────────────────────────────────────────────────────────────────
+function Stepper({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
   return (
-    <div className="bg-[#f9f9f9] border border-[#e6e6e6] flex items-center justify-between px-[17.5px] py-[9px] w-[126px]">
-      <button type="button" onClick={() => onChange(Math.max(0, value - 1))} className="font-body text-[14px] text-[rgba(12,25,53,0.3)] hover:text-[#0c1935] transition-colors leading-none">-</button>
-      <span className="font-body text-[16px] text-[#0c1935] leading-5">{value}</span>
-      <button type="button" onClick={() => onChange(value + 1)} className="font-body text-[14px] text-[rgba(12,25,53,0.3)] hover:text-[#0c1935] transition-colors leading-none">+</button>
+    <div className="flex flex-col gap-[8px]">
+      <p className="font-body text-[13px] text-[#737b8c]">{label}</p>
+      <div className="bg-[#f9f9f9] border border-[#e6e6e6] flex items-center justify-between px-[17.5px] py-[9px] w-[126px]">
+        <button type="button" onClick={() => onChange(Math.max(0, value - 1))} className="font-body text-[14px] text-[rgba(12,25,53,0.3)] hover:text-[#0c1935] transition-colors leading-none">-</button>
+        <span className="font-body text-[16px] text-[#0c1935] leading-5">{value === 0 ? "Cualquiera" : `${value}+`}</span>
+        <button type="button" onClick={() => onChange(value + 1)} className="font-body text-[14px] text-[rgba(12,25,53,0.3)] hover:text-[#0c1935] transition-colors leading-none">+</button>
+      </div>
     </div>
   );
 }
 
-const PRICE_MIN = 0;
-const PRICE_MAX = 2_000_000;
-const AREA_MIN = 0;
-const AREA_MAX = 1000;
-
-function formatPrice(v: number) {
-  if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
-  if (v >= 1_000) return `$${Math.round(v / 1_000)}K`;
-  return `$${v}`;
-}
-function formatArea(v: number) { return `${Math.round(v)} m²`; }
-
+// ── FilterPanel (Figma-matched) ────────────────────────────────────────────────
 function FilterPanel({
-  filters, setFilters, onReset, hasActive,
+  filters, setFilters, onReset, hasActive, businessType, propertyTypes,
 }: {
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
   onReset: () => void;
   hasActive: boolean;
+  businessType: "venta" | "alquiler";
+  propertyTypes: string[];
 }) {
+  const [expanded, setExpanded] = useState(false);
+
   function set<K extends keyof Filters>(key: K, value: Filters[K]) {
     setFilters((f) => ({ ...f, [key]: value }));
   }
+
   const priceMin = filters.minPrice !== "" ? Number(filters.minPrice) : PRICE_MIN;
   const priceMax = filters.maxPrice !== "" ? Number(filters.maxPrice) : PRICE_MAX;
   const areaMin = filters.minArea !== "" ? Number(filters.minArea) : AREA_MIN;
   const areaMax = filters.maxArea !== "" ? Number(filters.maxArea) : AREA_MAX;
 
+  const inputBox = "bg-[#f9f9f9] border border-[#e6e6e6] px-[17.5px] py-[9px] w-[126px] font-body text-[16px] text-[#0c1935] tracking-[-0.32px] focus:outline-none focus:border-[#0c1935] placeholder:text-[rgba(12,25,53,0.3)] transition-colors text-center";
+
   return (
-    <div className="bg-white border border-[#e9e7e2] p-[21px] flex flex-col gap-5 w-full">
+    <div className="bg-white border border-[#dfe5ef] p-[21px] flex flex-col gap-[20px] w-full">
+
+      {/* ── 1. Tipo de investigación ── */}
       <div className="flex flex-col gap-[15px] w-full">
-        <p className={sectionHeadingBorder}>Gama de precios</p>
-        <DualRangeSlider min={PRICE_MIN} max={PRICE_MAX} valueMin={priceMin} valueMax={priceMax} format={formatPrice}
-          onChange={(lo, hi) => setFilters((f) => ({ ...f, minPrice: lo === PRICE_MIN ? "" : String(Math.round(lo)), maxPrice: hi === PRICE_MAX ? "" : String(Math.round(hi)) }))}
+        <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px]">
+          Tipo de investigación
+        </p>
+        <div className="flex gap-[10px] w-full">
+          <Link
+            href="/propiedades-en-venta/"
+            className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
+              businessType === "venta"
+                ? "bg-[#727b8c] text-[#faf8f5]"
+                : "bg-[rgba(12,25,53,0.1)] text-[rgba(12,24,52,0.4)] hover:bg-[rgba(12,25,53,0.15)]"
+            }`}
+          >
+            Comprar
+          </Link>
+          <Link
+            href="/propiedades-en-alquiler/"
+            className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
+              businessType === "alquiler"
+                ? "bg-[#727b8c] text-[#faf8f5]"
+                : "bg-[rgba(12,25,53,0.1)] text-[rgba(12,24,52,0.4)] hover:bg-[rgba(12,25,53,0.15)]"
+            }`}
+          >
+            Alquilar
+          </Link>
+        </div>
+      </div>
+
+      {/* ── 2. Gama de precios ── */}
+      <div className="flex flex-col gap-[15px] w-full">
+        <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px] pb-[10px] border-b border-[#e9e7e2]">
+          Gama de precios
+        </p>
+        <DualRangeSlider
+          min={PRICE_MIN} max={PRICE_MAX}
+          valueMin={priceMin} valueMax={priceMax}
+          format={formatPrice}
+          onChange={(lo, hi) => setFilters((f) => ({
+            ...f,
+            minPrice: lo === PRICE_MIN ? "" : String(Math.round(lo)),
+            maxPrice: hi === PRICE_MAX ? "" : String(Math.round(hi)),
+          }))}
         />
         <div className="flex gap-[15px]">
           <input type="number" placeholder="$0" value={filters.minPrice} onChange={(e) => set("minPrice", e.target.value)} className={inputBox} />
@@ -157,10 +224,20 @@ function FilterPanel({
         </div>
       </div>
 
+      {/* ── 3. Tamaño ── */}
       <div className="flex flex-col gap-[15px] w-full">
-        <p className={sectionHeadingBorder}>Tamaño</p>
-        <DualRangeSlider min={AREA_MIN} max={AREA_MAX} valueMin={areaMin} valueMax={areaMax} format={formatArea}
-          onChange={(lo, hi) => setFilters((f) => ({ ...f, minArea: lo === AREA_MIN ? "" : String(Math.round(lo)), maxArea: hi === AREA_MAX ? "" : String(Math.round(hi)) }))}
+        <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px] pb-[10px] border-b border-[#e9e7e2]">
+          Tamaño
+        </p>
+        <DualRangeSlider
+          min={AREA_MIN} max={AREA_MAX}
+          valueMin={areaMin} valueMax={areaMax}
+          format={formatArea}
+          onChange={(lo, hi) => setFilters((f) => ({
+            ...f,
+            minArea: lo === AREA_MIN ? "" : String(Math.round(lo)),
+            maxArea: hi === AREA_MAX ? "" : String(Math.round(hi)),
+          }))}
         />
         <div className="flex gap-[15px]">
           <input type="number" placeholder="0 m²" value={filters.minArea} onChange={(e) => set("minArea", e.target.value)} className={inputBox} />
@@ -168,30 +245,68 @@ function FilterPanel({
         </div>
       </div>
 
+      {/* ── 4. Tipo de propiedad ── */}
       <div className="flex flex-col gap-[15px] w-full">
-        <p className={sectionHeading}>Habitaciones y Baños</p>
-        <div className="flex gap-[15px]">
-          <Stepper value={filters.bedrooms} onChange={(v) => set("bedrooms", v)} />
-          <Stepper value={filters.bathrooms} onChange={(v) => set("bathrooms", v)} />
+        <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px]">
+          Tipo de propiedad
+        </p>
+        <div className="relative">
+          <select
+            value={filters.propertyType}
+            onChange={(e) => set("propertyType", e.target.value)}
+            className="appearance-none bg-[#f9f9f9] border border-[#e6e6e6] h-[40px] w-full pl-[17.5px] pr-[40px] font-body text-[14px] text-[#0c1935] focus:outline-none focus:border-[#0c1935] transition-colors cursor-pointer"
+            style={{ color: filters.propertyType === "" ? "rgba(12,25,53,0.3)" : "#0c1935" }}
+          >
+            <option value="">Tipo de propiedad</option>
+            {propertyTypes.map((t) => (
+              <option key={t} value={t} style={{ color: "#0c1935" }}>
+                {t.charAt(0).toUpperCase() + t.slice(1)}
+              </option>
+            ))}
+          </select>
+          <ChevronDown size={10} className="absolute right-[14px] top-1/2 -translate-y-1/2 text-[#737b8c] pointer-events-none" />
         </div>
       </div>
 
+      {/* ── 5. Expanded: Habitaciones + Baños ── */}
+      {expanded && (
+        <div className="flex flex-col gap-[15px] w-full">
+          <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px] pb-[10px] border-b border-[#e9e7e2]">
+            Habitaciones y Baños
+          </p>
+          <div className="flex gap-[15px]">
+            <Stepper label="Habitaciones" value={filters.bedrooms} onChange={(v) => set("bedrooms", v)} />
+            <Stepper label="Baños" value={filters.bathrooms} onChange={(v) => set("bathrooms", v)} />
+          </div>
+        </div>
+      )}
+
+      {/* ── 6. Limpiar (solo si hay filtros activos) ── */}
       {hasActive && (
         <button type="button" onClick={onReset} className="flex items-center gap-1.5 font-body text-[14px] text-[rgba(12,25,53,0.4)] hover:text-[#0c1935] transition-colors">
           <X size={13} /> Limpiar filtros
         </button>
       )}
+
+      {/* ── 7. Ver más / Ver menos ── */}
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        className="flex items-center justify-center gap-[10px] h-[36px] w-full border border-[#dfe5ef] hover:border-[#0c1935] px-[17px] py-[9px] font-body font-medium text-[16px] text-[#0c1834] transition-colors"
+      >
+        {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+        {expanded ? "Ver menos" : "Ver más"}
+      </button>
     </div>
   );
 }
 
+// ── SEO Block ──────────────────────────────────────────────────────────────────
 function SeoBlock({ text }: { text: string }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <div className="bg-white border border-[#e9e7e2] p-[20px] xl:p-[24px]">
-      {/* Desktop: always visible */}
       <p className="hidden xl:block font-body font-light text-[15px] text-[#737b8c] leading-relaxed">{text}</p>
-      {/* Mobile: truncated */}
       <div className="xl:hidden">
         <p className={`font-body font-light text-[14px] text-[#737b8c] leading-relaxed ${expanded ? "" : "line-clamp-3"}`}>{text}</p>
         <button onClick={() => setExpanded(!expanded)} className="mt-[8px] flex items-center gap-[4px] font-body font-medium text-[12px] text-[#0c1834] tracking-[1px] uppercase">
@@ -203,14 +318,24 @@ function SeoBlock({ text }: { text: string }) {
   );
 }
 
+// ── Normalize helper ───────────────────────────────────────────────────────────
 function normalize(s: string) {
   return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
+// ── Main export ────────────────────────────────────────────────────────────────
 export default function CategoryPageClient({
-  properties, neighborhoodLinks, contextBlock, seoBlock, initialSearch = "",
-  initialBedrooms = 0, initialMinPrice = "", initialMaxPrice = "",
+  properties, categorySlug, neighborhoodLinks, contextBlock, seoBlock,
+  initialSearch = "", initialBedrooms = 0, initialMinPrice = "", initialMaxPrice = "",
 }: Props) {
+  const businessType: "venta" | "alquiler" = categorySlug.includes("alquiler") ? "alquiler" : "venta";
+
+  const propertyTypes = useMemo(() => {
+    const types = new Set<string>();
+    for (const p of properties) if (p.propertyType) types.add(p.propertyType);
+    return Array.from(types).sort();
+  }, [properties]);
+
   const [filters, setFilters] = useState<Filters>({
     ...INIT_FILTERS,
     bedrooms: initialBedrooms,
@@ -225,7 +350,8 @@ export default function CategoryPageClient({
     search !== "" ||
     filters.minPrice !== "" || filters.maxPrice !== "" ||
     filters.minArea !== "" || filters.maxArea !== "" ||
-    filters.bedrooms > 0 || filters.bathrooms > 0;
+    filters.bedrooms > 0 || filters.bathrooms > 0 ||
+    filters.propertyType !== "";
 
   function reset() { setFilters(INIT_FILTERS); setSearch(""); setVisible(PAGE_SIZE); }
 
@@ -244,6 +370,7 @@ export default function CategoryPageClient({
       );
     }
 
+    if (filters.propertyType) result = result.filter((p) => p.propertyType === filters.propertyType);
     if (filters.minPrice) result = result.filter((p) => p.price >= Number(filters.minPrice));
     if (filters.maxPrice) result = result.filter((p) => p.price <= Number(filters.maxPrice));
     if (filters.minArea) result = result.filter((p) => (p.area ?? 0) >= Number(filters.minArea));
@@ -257,7 +384,7 @@ export default function CategoryPageClient({
     else result.sort((a, b) => { if (a.featured && !b.featured) return -1; if (!a.featured && b.featured) return 1; return 0; });
 
     return result;
-  }, [properties, filters, sort]);
+  }, [properties, filters, sort, search]);
 
   const shown = filtered.slice(0, visible);
   const remaining = filtered.length - visible;
@@ -270,7 +397,6 @@ export default function CategoryPageClient({
         </div>
       )}
 
-      {/* SEO block */}
       {seoBlock && (
         <div className="px-[30px] xl:px-[260px] mb-[28px]">
           <div className="max-w-[1400px] mx-auto">
@@ -320,11 +446,12 @@ export default function CategoryPageClient({
               setFilters={setFilters}
               onReset={reset}
               hasActive={hasActive}
+              businessType={businessType}
+              propertyTypes={propertyTypes}
             />
 
-            {/* Neighborhood nav links — desktop only, Tier 3 internal links */}
             {neighborhoodLinks.length > 0 && (
-              <div className="hidden lg:flex flex-col mt-[2px] bg-white border border-[#e9e7e2] border-t-0">
+              <div className="hidden lg:flex flex-col mt-[2px] bg-white border border-[#dfe5ef] border-t-0">
                 <p className="font-body font-medium text-[11px] text-[#737b8c] tracking-[4px] uppercase px-[21px] pt-[18px] pb-[10px]">
                   Por barrio
                 </p>
