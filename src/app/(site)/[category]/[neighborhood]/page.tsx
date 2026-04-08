@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 
   const typeLabel = category.h1.split(" en Panama")[0];
-  const title = `${typeLabel} en ${neighborhood.name}, Panama | Panamares`;
+  const title = `${typeLabel} en ${neighborhood.name}, Panama`;
   const description = `${typeLabel} en ${neighborhood.name}. ${properties.length} propiedades disponibles. Encuentra las mejores opciones en esta zona exclusiva de Panama City.`;
   const url = `/${params.category}/${params.neighborhood}/`;
 
@@ -50,10 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `${BASE_URL}${url}` },
-    robots:
-      properties.length < 2
-        ? { index: false, follow: true }
-        : { index: true, follow: true },
+    robots: { index: true, follow: true },
   };
 }
 
@@ -126,8 +123,8 @@ export default async function GeoTypePage({ params }: Props) {
         description={`${properties.length} ${properties.length === 1 ? "propiedad disponible" : "propiedades disponibles"} en ${neighborhood.name}, Panama City.`}
       />
       {nbhContent?.seoBlock && (
-        <div className="px-[30px] xl:px-[260px] pt-[24px]">
-          <div className="max-w-[1400px] mx-auto">
+        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[24px]">
+          <div className="max-w-[1600px] mx-auto">
             <SeoBlock text={nbhContent.seoBlock} />
           </div>
         </div>

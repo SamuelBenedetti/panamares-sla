@@ -3,6 +3,7 @@ import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
+import { organizationSchema } from "@/lib/jsonld";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -30,9 +31,18 @@ export const metadata: Metadata = {
     siteName: "Panamares",
     locale: "es_PA",
     type: "website",
+    images: [
+      {
+        url: "/barrio-punta-pacifica.png",
+        width: 1200,
+        height: 630,
+        alt: "Panamares — Inmobiliaria de lujo en Panama City",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    site: "@panamares",
   },
   alternates: {
     canonical: "https://panamares.com",
@@ -47,10 +57,14 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${cormorant.variable} ${dmSans.variable}`}>
       <body className="font-body antialiased bg-white text-brand-navy">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }}
+        />
         {children}
         {/* Google Translate — after page renders */}
         <div id="google_translate_element" style={{ position: "absolute", top: "-9999px", left: "-9999px" }} suppressHydrationWarning />
-        <Script id="gt-init" strategy="afterInteractive">{`
+        <Script id="gt-init" strategy="lazyOnload">{`
           window.googleTranslateElementInit = function() {
             new google.translate.TranslateElement({
               pageLanguage: 'es',
@@ -61,7 +75,7 @@ export default function RootLayout({
         `}</Script>
         <Script
           src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
         <style dangerouslySetInnerHTML={{ __html: `
           body { top: 0 !important; }

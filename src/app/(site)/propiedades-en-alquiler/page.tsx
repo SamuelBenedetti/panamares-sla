@@ -14,7 +14,7 @@ const DESCRIPTION =
   "Descubre todas las propiedades en alquiler en Panama City. Apartamentos, casas, oficinas y locales en los mejores barrios de la capital panameña.";
 
 export const metadata: Metadata = {
-  title: "Propiedades en Alquiler en Panama | Panamares",
+  title: "Propiedades en Alquiler en Panama",
   description: DESCRIPTION,
   alternates: { canonical: "https://panamares.com/propiedades-en-alquiler/" },
 };

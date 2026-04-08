@@ -35,10 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: config.metaTitle,
     description: config.metaDescription,
     alternates: { canonical: `${BASE_URL}${url}` },
-    robots:
-      properties.length < 2
-        ? { index: false, follow: true }
-        : { index: true, follow: true },
+    robots: { index: true, follow: true },
   };
 }
 

@@ -2,18 +2,49 @@ import type { Property, Agent, Neighborhood } from "@/lib/types";
 
 const BASE_URL = "https://panamares.com";
 
+// Root layout — Organization
+export function organizationSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    name: "Panamares",
+    url: BASE_URL,
+    logo: `${BASE_URL}/barrio-punta-pacifica.png`,
+    description:
+      "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en las mejores zonas de la ciudad.",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Panama City",
+      addressCountry: "PA",
+    },
+    areaServed: {
+      "@type": "City",
+      name: "Panama City",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "sales",
+      availableLanguage: ["Spanish", "English"],
+    },
+    sameAs: [
+      "https://www.instagram.com/panamares",
+      "https://www.facebook.com/panamares",
+    ],
+  };
+}
+
 // Maps Sanity propertyType → schema.org @type
 function propertySchemaType(type: string): string {
-  switch (type) {
-    case "Apartamento":
-    case "Apartaestudio":
-    case "Penthouse":
-    case "Edificio":
+  switch (type.toLowerCase()) {
+    case "apartamento":
+    case "apartaestudio":
+    case "penthouse":
+    case "edificio":
       return "Apartment";
-    case "Casa":
-    case "Casa de Playa":
+    case "casa":
+    case "casa de playa":
       return "House";
-    case "Oficina":
+    case "oficina":
       return "OfficeSpace";
     default:
       return "Residence";
@@ -55,9 +86,17 @@ export function listingSchema(property: Property) {
           property.listingStatus === "activa"
             ? "https://schema.org/InStock"
             : "https://schema.org/SoldOut",
+        ...(property.agent && {
+          seller: {
+            "@type": "RealEstateAgent",
+            name: property.agent.name,
+            url: `${BASE_URL}/agentes/${property.agent.slug?.current ?? ""}`,
+          },
+        }),
       },
     }),
     ...(property.bedrooms != null && { numberOfRooms: property.bedrooms }),
+    ...(property.bathrooms != null && { numberOfBathroomsTotal: property.bathrooms }),
     ...(property.area != null && {
       floorSize: {
         "@type": "QuantitativeValue",
@@ -78,6 +117,14 @@ export function listingSchema(property: Property) {
         "@type": "GeoCoordinates",
         latitude: property.location.lat,
         longitude: property.location.lng,
+      },
+    }),
+    ...(property.mainImage && {
+      image: {
+        "@type": "ImageObject",
+        url: `https://cdn.sanity.io/images/2hojajwk/production/${property.mainImage.asset._ref.replace("image-", "").replace(/-([a-z]+)$/, ".$1")}`,
+        width: 1200,
+        height: 800,
       },
     }),
   };

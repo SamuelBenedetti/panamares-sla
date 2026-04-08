@@ -31,8 +31,8 @@ function DescriptionText({ text }: { text: string }) {
 
 export default function ListingPageHeader({ breadcrumbs, title, description, eyebrow }: Props) {
   return (
-    <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] pt-[120px] xl:pt-[160px] pb-[40px] xl:pb-[50px]">
-      <div className="max-w-[1400px] mx-auto flex flex-col gap-[30px]">
+    <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[120px] xl:pt-[160px] pb-[40px] xl:pb-[50px]">
+      <div className="max-w-[1600px] mx-auto flex flex-col gap-[30px]">
 
         {/* Breadcrumb */}
         <nav className="flex items-center gap-[8px] flex-wrap">

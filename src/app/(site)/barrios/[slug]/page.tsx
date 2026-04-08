@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const neighborhood = getNeighborhoodBySlug(params.slug);
   if (!neighborhood) return {};
   return {
-    title: `Propiedades en ${neighborhood.name}, Panama | Panamares`,
+    title: `Propiedades en ${neighborhood.name}, Panama`,
     description: `Guía completa de ${neighborhood.name}: propiedades disponibles, precios, estilo de vida y todo lo que necesitas saber para vivir o invertir en esta zona.`,
     alternates: { canonical: `${BASE_URL}/barrios/${params.slug}/` },
   };
@@ -121,8 +121,8 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0c1834]/95 via-[#0c1834]/40 to-transparent" />
 
-        <div className="relative z-10 w-full px-[30px] xl:px-[260px] pb-[40px] xl:pb-[70px]">
-          <div className="max-w-[1400px] mx-auto flex flex-col gap-[16px]">
+        <div className="relative z-10 w-full px-[30px] xl:px-[20px] 2xl:px-[120px] pb-[40px] xl:pb-[70px]">
+          <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-[8px]">
               <Link href="/" className="font-body text-[13px] text-white/50 hover:text-white/80 transition-colors">Inicio</Link>
@@ -168,8 +168,8 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       </section>
 
       {/* ── Contenido principal ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] py-[60px] xl:py-[100px]">
-        <div className="max-w-[1400px] mx-auto">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[60px] xl:py-[100px]">
+        <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_380px] gap-[48px] xl:gap-[80px]">
 
             {/* ── Left column ── */}
@@ -333,8 +333,8 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       </section>
 
       {/* ── Otros barrios ── */}
-      <section className="bg-white px-[30px] xl:px-[260px] py-[60px] xl:py-[100px] border-t border-[#dfe5ef]">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-[40px]">
+      <section className="bg-white px-[30px] xl:px-[20px] 2xl:px-[120px] py-[60px] xl:py-[100px] border-t border-[#dfe5ef]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px]">
           <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[16px]">
             <div className="flex flex-col gap-[8px]">
               <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">

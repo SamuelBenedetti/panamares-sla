@@ -9,7 +9,7 @@ import AgentGrid from "@/components/agents/AgentGrid";
 const BASE_URL = "https://panamares.com";
 
 export const metadata: Metadata = {
-  title: "Nuestros Asesores Inmobiliarios | Panamares",
+  title: "Nuestros Asesores Inmobiliarios",
   description:
     "Conoce al equipo de asesores de Panamares. Expertos en el mercado inmobiliario de Panamá City con años de experiencia en Punta Pacífica, Punta Paitilla y las mejores zonas de la capital.",
   alternates: { canonical: `${BASE_URL}/agentes/` },
@@ -21,19 +21,19 @@ export default async function AgentesPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="bg-[#0c1834] px-[30px] xl:px-[260px] pt-[120px] xl:pt-[160px] pb-[70px] xl:pb-[90px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-[20px] max-w-[720px]">
+      <section className="bg-[#0c1834] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[120px] xl:pt-[160px] pb-[70px] xl:pb-[90px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[20px] max-w-[720px]">
           <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
             El equipo
           </p>
-          <div className="flex flex-col text-white">
+          <h1 className="flex flex-col text-white">
             <span className="font-heading font-normal text-[clamp(40px,5vw,68px)] leading-none tracking-[-2px]">
               Conoce a nuestros
             </span>
             <span className="font-heading font-medium italic text-[clamp(44px,6vw,76px)] leading-none tracking-[-2.3px]">
               asesores
             </span>
-          </div>
+          </h1>
           <p className="font-body font-light text-[16px] xl:text-[18px] text-white/70 leading-relaxed max-w-[520px] pt-[8px]">
             Un equipo de profesionales con años de experiencia en el mercado inmobiliario panameño, listos para acompañarte en cada paso.
           </p>
@@ -41,8 +41,8 @@ export default async function AgentesPage() {
       </section>
 
       {/* ── Grid ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] py-[80px] xl:py-[100px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-[48px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[80px] xl:py-[100px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[48px]">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-[16px]">
             <div className="flex flex-col gap-[8px]">
               <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
@@ -66,8 +66,8 @@ export default async function AgentesPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-[#121e3e] px-[30px] xl:px-[260px] py-[70px] xl:py-[90px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
+      <section className="bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[90px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
           <div className="flex flex-col gap-[14px]">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
               ¿Quieres formar parte?

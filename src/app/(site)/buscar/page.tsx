@@ -141,7 +141,7 @@ function BuscarContent() {
 
       {/* Content */}
       <div
-        className={`relative z-10 flex flex-col items-center gap-[56px] xl:gap-[70px] px-[30px] xl:px-[260px] text-center w-full max-w-[1920px] mx-auto transition-opacity duration-[180ms] ${
+        className={`relative z-10 flex flex-col items-center gap-[56px] xl:gap-[70px] px-[30px] xl:px-[20px] 2xl:px-[120px] text-center w-full max-w-[1920px] mx-auto transition-opacity duration-[180ms] ${
           fading ? "opacity-0" : "opacity-100"
         }`}
       >

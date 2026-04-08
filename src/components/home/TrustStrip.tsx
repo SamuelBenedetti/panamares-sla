@@ -17,8 +17,8 @@ export default async function TrustStrip() {
   ];
 
   return (
-    <section className="bg-[#f9f9f9] py-[50px] px-[30px] xl:px-[260px]">
-      <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-[50px] lg:gap-0 max-w-[1400px] mx-auto">
+    <section className="bg-[#f9f9f9] py-[50px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
+      <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-[50px] lg:gap-0 max-w-[1600px] mx-auto">
         {items.map((item) => (
           <div key={item.label} className="flex flex-col gap-[10px] items-center">
             <p className="font-heading text-[#0d1835] text-[60px] leading-[50px] tracking-[-1.8px] font-medium">

@@ -12,12 +12,12 @@ export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
       {items.map((item, i) => (
         <span key={i} className="flex items-center gap-[8px]">
           {i > 0 && (
-            <ChevronRight size={14} className="text-[#737b8c] flex-shrink-0" />
+            <ChevronRight size={14} className="text-[#566070] flex-shrink-0" />
           )}
           {item.href && i < items.length - 1 ? (
             <Link
               href={item.href}
-              className="font-body text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
+              className="font-body text-[16px] text-[#566070] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
             >
               {item.label}
             </Link>
@@ -26,7 +26,7 @@ export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
               className={`font-body text-[16px] tracking-[-0.32px] ${
                 i === items.length - 1
                   ? "font-medium text-[#0c1834]"
-                  : "text-[#737b8c]"
+                  : "text-[#566070]"
               }`}
             >
               {item.label}

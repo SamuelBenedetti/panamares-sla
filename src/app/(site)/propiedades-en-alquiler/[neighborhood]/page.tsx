@@ -36,13 +36,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const url = `/${INTENT_SLUG}/${params.neighborhood}/`;
   return {
-    title: `${INTENT_LABEL} en ${nbh.name}, Panam\u00e1 | Panamares`,
+    title: `${INTENT_LABEL} en ${nbh.name}, Panam\u00e1`,
     description: `${properties.length} propiedades en alquiler en ${nbh.name}. Apartamentos, casas, oficinas y locales en una de las mejores zonas de Panama City.`,
     alternates: { canonical: `${BASE_URL}${url}` },
-    robots:
-      properties.length < 2
-        ? { index: false, follow: true }
-        : { index: true, follow: true },
+    robots: { index: true, follow: true },
   };
 }
 
@@ -93,8 +90,8 @@ export default async function AlquilerNeighborhoodPage({ params }: Props) {
       />
 
       {nbhContent?.seoBlock && (
-        <div className="px-[30px] xl:px-[260px] pt-[24px]">
-          <div className="max-w-[1400px] mx-auto">
+        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[24px]">
+          <div className="max-w-[1600px] mx-auto">
             <SeoBlock text={nbhContent.seoBlock} />
           </div>
         </div>

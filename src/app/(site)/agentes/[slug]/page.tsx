@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const agent = await sanityFetch<Agent | null>(agentBySlugQuery, { slug: params.slug });
   if (!agent) return {};
   return {
-    title: `${agent.name} — Asesor Inmobiliario | Panamares`,
+    title: `${agent.name} — Asesor Inmobiliario`,
     description: `${agent.name}${agent.role ? `, ${agent.role}` : ""} en Panamares. Conoce su trayectoria y propiedades disponibles en Panama City.`,
     alternates: { canonical: `${BASE_URL}/agentes/${params.slug}/` },
   };
@@ -51,8 +51,8 @@ export default async function AgentProfilePage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
       {/* ── Hero ── */}
-      <section className="bg-[#0c1834] px-[30px] xl:px-[260px] pt-[110px] xl:pt-[140px] pb-[60px] xl:pb-[80px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-[24px]">
+      <section className="bg-[#0c1834] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[110px] xl:pt-[140px] pb-[60px] xl:pb-[80px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[24px]">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px]">
             <Link href="/" className="font-body text-[13px] text-white/40 hover:text-white/70 transition-colors">Inicio</Link>
@@ -134,8 +134,8 @@ export default async function AgentProfilePage({ params }: Props) {
       </section>
 
       {/* ── Contenido ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] py-[60px] xl:py-[100px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-[64px] xl:gap-[80px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[60px] xl:py-[100px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[64px] xl:gap-[80px]">
 
           {/* Bio */}
           {agent.bio && (
@@ -202,8 +202,8 @@ export default async function AgentProfilePage({ params }: Props) {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-[#121e3e] px-[30px] xl:px-[260px] py-[70px] xl:py-[90px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
+      <section className="bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[90px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
           <div className="flex flex-col gap-[14px]">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
               ¿Hablamos?

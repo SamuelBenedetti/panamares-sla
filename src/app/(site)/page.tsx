@@ -12,7 +12,7 @@ import CTA from "@/components/home/CTA";
 import { realEstateAgentSchema } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
-  title: "Bienes Raíces en Panama City | Panamares",
+  title: "Bienes Raíces en Panama City",
   description:
     "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en Punta Pacífica, Punta Paitilla y las mejores zonas de la ciudad.",
   alternates: { canonical: "https://panamares.com" },

@@ -155,7 +155,7 @@ export default function Navbar({ activeSlugs, navCounts }: { activeSlugs: Set<st
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerClass}`}>
-      <nav className="flex h-[80px] items-center px-6 xl:px-[260px] max-w-[1920px] mx-auto">
+      <nav className="flex h-[80px] items-center px-6 xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto">
 
         {/* Logo */}
         <div className="flex-1">

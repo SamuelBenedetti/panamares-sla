@@ -2,7 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Página no encontrada | Panamares",
+  title: "Página no encontrada",
+  robots: { index: false, follow: false },
 };
 
 export default function NotFound() {

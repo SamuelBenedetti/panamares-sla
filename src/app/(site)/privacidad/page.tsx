@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Política de Privacidad | Panamares",
+  title: "Política de Privacidad",
+  description:
+    "Consulta la política de privacidad de Panamares. Información sobre el tratamiento de datos personales recabados a través de panamares.com.",
   alternates: { canonical: "https://panamares.com/privacidad/" },
 };
 
 export default function PrivacidadPage() {
   return (
-    <section className="bg-white px-[30px] xl:px-[260px] py-[100px]">
+    <section className="bg-white px-[30px] xl:px-[20px] 2xl:px-[120px] py-[100px]">
       <div className="max-w-[800px] mx-auto flex flex-col gap-[40px]">
 
         <div className="flex flex-col gap-[12px]">

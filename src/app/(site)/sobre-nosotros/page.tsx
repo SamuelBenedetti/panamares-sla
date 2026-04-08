@@ -6,22 +6,37 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { allAgentsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import type { Agent } from "@/lib/types";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import { breadcrumbSchema } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
-  title: "Sobre Nosotros | Panamares",
+  title: "Sobre Nosotros",
   description:
     "Panamares es una agencia inmobiliaria de lujo en Panama City. Conoce nuestro equipo y nuestra trayectoria en el mercado panameño.",
+  alternates: {
+    canonical: "https://panamares.com/sobre-nosotros/",
+  },
 };
 
 export default async function SobreNosotrosPage() {
   const agents = await sanityFetch<Agent[]>(allAgentsQuery);
 
+  const jsonLdBreadcrumb = breadcrumbSchema([
+    { name: "Inicio", url: "/" },
+    { name: "Sobre Nosotros", url: "/sobre-nosotros/" },
+  ]);
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
+
       {/* ── Hero "Quiénes somos" ── */}
-      <section className="relative bg-[#f9f9f9] px-[30px] xl:px-[260px] pt-[100px] xl:pt-[160px] pb-[80px] xl:pb-[112px]">
-        <div className="max-w-[1400px] mx-auto">
+      <section className="relative bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[100px] xl:pt-[140px] pb-[80px] xl:pb-[112px]">
+        <div className="max-w-[1600px] mx-auto">
           <div className="flex flex-col gap-5 max-w-[768px]">
+
+            {/* Breadcrumb */}
+            <Breadcrumb items={[{ label: "Inicio", href: "/" }, { label: "Sobre Nosotros" }]} />
 
             {/* Eyebrow */}
             <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
@@ -29,7 +44,7 @@ export default async function SobreNosotrosPage() {
             </p>
 
             {/* Heading */}
-            <div className="flex flex-col gap-[3px] text-[#0c1834]">
+            <h1 className="flex flex-col gap-[3px] text-[#0c1834]">
               <p className="font-heading font-normal text-[clamp(38px,5vw,60px)] leading-none tracking-[-1.8px]">
                 Más de 15 años
               </p>
@@ -39,7 +54,7 @@ export default async function SobreNosotrosPage() {
               <p className="font-heading font-normal text-[clamp(38px,5vw,60px)] leading-none tracking-[-1.8px]">
                 con propiedades
               </p>
-            </div>
+            </h1>
 
             {/* Body */}
             <div className="max-w-[576px] pt-[11px]">
@@ -60,8 +75,8 @@ export default async function SobreNosotrosPage() {
       </section>
 
       {/* ── Nuestra oficina ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px]">
-        <div className="max-w-[1400px] mx-auto">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px]">
+        <div className="max-w-[1600px] mx-auto">
           <div className="relative aspect-[390/720] xl:aspect-auto xl:h-[720px] overflow-hidden flex flex-col justify-end p-[30px] xl:p-0">
             <Image
               src="/oficina.jpg"
@@ -85,8 +100,8 @@ export default async function SobreNosotrosPage() {
       </section>
 
       {/* ── Stats bar ── */}
-      <section className="bg-[#0d1835] px-[30px] xl:px-[260px] py-[50px] xl:py-[70px]">
-        <div className="max-w-[1400px] mx-auto">
+      <section className="bg-[#0d1835] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[50px] xl:py-[70px]">
+        <div className="max-w-[1600px] mx-auto">
           <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[50px] xl:gap-0">
             {[
               { value: "15+",    label: "Años en el Mercado" },
@@ -108,8 +123,8 @@ export default async function SobreNosotrosPage() {
       </section>
 
       {/* ── Nuestra Historia ── */}
-      <section className="bg-white px-[30px] xl:px-[260px] py-[70px] xl:py-[112px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-[40px] xl:gap-[48px]">
+      <section className="bg-white px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[112px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px] xl:gap-[48px]">
 
           {/* Eyebrow + Grid grouped close together */}
           <div className="flex flex-col gap-[8px]">
@@ -194,8 +209,8 @@ export default async function SobreNosotrosPage() {
         </div>
       </section>
       {/* ── El equipo ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] py-[70px] xl:py-[96px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-[56px] items-center">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[96px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[56px] items-center">
 
           {/* Header */}
           <div className="flex flex-col gap-[12px] items-center">
@@ -246,8 +261,8 @@ export default async function SobreNosotrosPage() {
         </div>
       </section>
       {/* ── Reconocimientos ── */}
-      <section className="bg-white px-[30px] xl:px-[260px] py-[70px] xl:py-[96px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[48px] xl:gap-[40px]">
+      <section className="bg-white px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[96px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[48px] xl:gap-[40px]">
 
           {/* Left — icon + heading */}
           <div className="flex flex-col gap-[15px]">
@@ -283,7 +298,7 @@ export default async function SobreNosotrosPage() {
         </div>
       </section>
       {/* ── CTA contacto ── */}
-      <section className="relative bg-[#121e3e] px-[30px] xl:px-[260px] py-[80px] xl:py-[130px] overflow-hidden">
+      <section className="relative bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[80px] xl:py-[130px] overflow-hidden">
 
         {/* Palm tree — left */}
         <div className="absolute left-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block">
@@ -295,7 +310,7 @@ export default async function SobreNosotrosPage() {
           <Image src="/palm-right.svg" alt="" fill className="object-cover object-left" sizes="300px" />
         </div>
 
-        <div className="relative z-10 max-w-[1400px] mx-auto flex flex-col gap-[16px] items-center">
+        <div className="relative z-10 max-w-[1600px] mx-auto flex flex-col gap-[16px] items-center">
 
           {/* Eyebrow + Heading */}
           <div className="flex flex-col gap-[12px] items-center">

@@ -392,22 +392,22 @@ export default function CategoryPageClient({
   return (
     <div className="bg-[#f9f9f9] py-[40px] xl:py-[60px]">
       {contextBlock && (
-        <div className="px-[30px] xl:px-[260px] max-w-[1920px] mx-auto mb-6">
-          <div className="max-w-[1400px] mx-auto">{contextBlock}</div>
+        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto mb-6">
+          <div className="max-w-[1600px] mx-auto">{contextBlock}</div>
         </div>
       )}
 
       {seoBlock && (
-        <div className="px-[30px] xl:px-[260px] mb-[28px]">
-          <div className="max-w-[1400px] mx-auto">
+        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] mb-[28px]">
+          <div className="max-w-[1600px] mx-auto">
             <SeoBlock text={seoBlock} />
           </div>
         </div>
       )}
 
       {/* Count + sort row */}
-      <div className="px-[30px] xl:px-[260px] mb-[20px]">
-        <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-[16px]">
+      <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] mb-[20px]">
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-[16px]">
           <span className="font-body text-[14px] text-[#737b8c]">
             <span className="font-semibold text-[#0c1834]">{filtered.length}</span> propiedades encontradas
             {search && (
@@ -436,8 +436,8 @@ export default function CategoryPageClient({
       </div>
 
       {/* Main layout */}
-      <div className="px-[30px] xl:px-[260px]">
-        <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[309px_1fr] gap-8 items-start">
+      <div className="px-[30px] xl:px-[20px] 2xl:px-[120px]">
+        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[309px_1fr] gap-8 items-start">
 
           {/* Sidebar */}
           <aside className="lg:sticky lg:top-[100px] flex flex-col gap-[0px]">

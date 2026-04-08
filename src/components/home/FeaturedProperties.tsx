@@ -5,8 +5,8 @@ import type { Property } from "@/lib/types";
 
 export default function FeaturedProperties({ properties }: { properties: Property[] }) {
   return (
-    <section className="bg-[#f9f9f9] py-[130px] px-[30px] xl:px-[260px]">
-      <div className="flex flex-col gap-12 max-w-[1400px] mx-auto">
+    <section className="bg-[#f9f9f9] py-[130px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
+      <div className="flex flex-col gap-12 max-w-[1600px] mx-auto">
 
         {/* Header */}
         <div className="flex flex-col gap-3 items-start text-left">

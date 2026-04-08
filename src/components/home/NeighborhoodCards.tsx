@@ -43,8 +43,8 @@ export default function NeighborhoodCards({ counts }: Props) {
   if (visible.length === 0) return null;
 
   return (
-    <section className="bg-white py-[130px] px-[30px] xl:px-[260px]">
-      <div className="flex flex-col gap-12 max-w-[1400px] mx-auto">
+    <section className="bg-white py-[130px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
+      <div className="flex flex-col gap-12 max-w-[1600px] mx-auto">
 
         {/* Header — centered */}
         <div className="flex flex-col gap-3 items-center text-center">

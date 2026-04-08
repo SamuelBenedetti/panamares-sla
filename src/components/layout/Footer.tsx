@@ -20,8 +20,8 @@ export default function Footer({ activeSlugs }: { activeSlugs: Set<string> }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#0c1834] px-[30px] xl:px-[260px]">
-      <div className="flex flex-col gap-12 max-w-[1400px] mx-auto pt-[100px] pb-[30px] md:pt-16 md:pb-16">
+    <footer className="bg-[#0c1834] px-[30px] xl:px-[20px] 2xl:px-[120px]">
+      <div className="flex flex-col gap-12 max-w-[1600px] mx-auto pt-[100px] pb-[30px] md:pt-16 md:pb-16">
 
         {/* Main columns — stacked on mobile, 4-col grid on md+ */}
         <div className="flex flex-col gap-12 md:grid md:grid-cols-4 md:gap-10">

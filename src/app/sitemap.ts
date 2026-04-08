@@ -61,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // ── Part 1: Listings ─────────────────────────────────────────────────────
   const listingsSitemap: MetadataRoute.Sitemap = activeProperties.map((p) => ({
-    url: `${BASE_URL}/propiedades/${p.slug}`,
+    url: `${BASE_URL}/propiedades/${p.slug}/`,
     lastModified: new Date(p.updatedAt),
     changeFrequency: "weekly",
     priority: 0.8,
@@ -156,14 +156,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     // Agent profiles
     ...agents.map((a) => ({
-      url: `${BASE_URL}/agentes/${a.slug}`,
+      url: `${BASE_URL}/agentes/${a.slug}/`,
       lastModified: new Date(a.updatedAt),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     // Guide articles
     ...guides.map((g) => ({
-      url: `${BASE_URL}/guias/${g.slug}`,
+      url: `${BASE_URL}/guias/${g.slug}/`,
       lastModified: new Date(g.updatedAt),
       changeFrequency: "monthly" as const,
       priority: 0.65,

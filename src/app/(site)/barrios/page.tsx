@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight, ChevronRight } from "lucide-react";
 import { NEIGHBORHOODS, getSlugByName } from "@/lib/neighborhoods";
 import { sanityFetch } from "@/sanity/lib/client";
 import { activeZonesQuery } from "@/sanity/lib/queries";
+import { breadcrumbSchema } from "@/lib/jsonld";
 
 const BASE_URL = "https://panamares.com";
 
 export const metadata: Metadata = {
-  title: "Barrios de Panamá | Guía de Zonas | Panamares",
+  title: "Barrios de Panamá | Guía de Zonas",
   description:
     "Explora los mejores barrios de Ciudad de Panamá: Punta Pacífica, Punta Paitilla, Avenida Balboa, Costa del Este y más. Guía completa de propiedades por zona.",
   alternates: { canonical: `${BASE_URL}/barrios/` },
@@ -107,8 +108,15 @@ export default async function BarriosPage() {
   const rest = NEIGHBORHOODS.filter(
     (n) => n.priority !== "HIGH" && activeSlugs.has(n.slug)
   );
+  const jsonLdBreadcrumb = breadcrumbSchema([
+    { name: "Inicio", url: "/" },
+    { name: "Barrios", url: "/barrios/" },
+  ]);
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
+
       {/* ── Hero ── */}
       <section className="relative flex items-end min-h-[70vh] bg-[#0c1834] overflow-hidden -mt-20">
         <div
@@ -120,19 +128,24 @@ export default async function BarriosPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(29,33,43,0.4)] via-[rgba(29,33,43,0.3)] to-[rgba(29,33,43,0.85)]" />
 
-        <div className="relative z-10 w-full px-[30px] xl:px-[260px] pb-[70px] xl:pb-[90px] pt-[140px]">
+        <div className="relative z-10 w-full px-[30px] xl:px-[20px] 2xl:px-[120px] pb-[70px] xl:pb-[90px] pt-[140px]">
           <div className="flex flex-col gap-[20px] max-w-[720px]">
+            <nav className="flex items-center gap-[8px]">
+              <Link href="/" className="font-body text-[13px] text-white/50 hover:text-white/80 transition-colors">Inicio</Link>
+              <ChevronRight size={12} className="text-white/30" />
+              <span className="font-body text-[13px] text-white/80">Barrios</span>
+            </nav>
             <p className="font-body font-medium text-[12px] text-white/60 tracking-[5px] uppercase leading-4">
               Ciudad de Panamá
             </p>
-            <div className="flex flex-col text-white">
+            <h1 className="flex flex-col text-white">
               <span className="font-heading font-normal text-[clamp(40px,5vw,68px)] leading-none tracking-[-2px]">
                 Explora los mejores
               </span>
               <span className="font-heading font-medium italic text-[clamp(44px,6vw,76px)] leading-none tracking-[-2.3px]">
                 barrios de Panamá
               </span>
-            </div>
+            </h1>
             <p className="font-body font-light text-[16px] xl:text-[18px] text-white/70 leading-relaxed max-w-[560px] pt-[8px]">
               Guía completa de las zonas más exclusivas de Ciudad de Panamá —
               propiedades, precios, estilo de vida y todo lo que necesitas para decidir dónde vivir o invertir.
@@ -142,8 +155,8 @@ export default async function BarriosPage() {
       </section>
 
       {/* ── Zonas destacadas ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] pt-[80px] xl:pt-[100px] pb-[60px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-[40px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[80px] xl:pt-[100px] pb-[60px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px]">
           <div className="flex flex-col gap-[10px]">
             <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
               Zonas destacadas
@@ -194,8 +207,8 @@ export default async function BarriosPage() {
       </section>
 
       {/* ── Todas las zonas ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[260px] pt-[20px] pb-[100px] xl:pb-[130px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-[32px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[20px] pb-[100px] xl:pb-[130px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[32px]">
           <div className="flex flex-col gap-[10px]">
             <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
               Todas las zonas
@@ -235,8 +248,8 @@ export default async function BarriosPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-[#121e3e] px-[30px] xl:px-[260px] py-[70px] xl:py-[90px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
+      <section className="bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[90px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
           <div className="flex flex-col gap-[14px]">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
               ¿No sabes por dónde empezar?

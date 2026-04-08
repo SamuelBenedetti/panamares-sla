@@ -7,7 +7,7 @@ import CTA from "@/components/home/CTA";
 import ComparePageClient from "./ComparePageClient";
 
 export const metadata: Metadata = {
-  title: "Comparar Propiedades | Panamares",
+  title: "Comparar Propiedades",
   description: "Compara lado a lado las propiedades que seleccionaste.",
   robots: { index: false, follow: false },
 };

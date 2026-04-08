@@ -4,8 +4,8 @@ export default function ListingPageSkeleton() {
   return (
     <div>
       {/* Header skeleton */}
-      <div className="bg-[#0c1834] px-[30px] xl:px-[260px] pt-[120px] xl:pt-[160px] pb-[60px] xl:pb-[80px]">
-        <div className="max-w-[1400px] mx-auto flex flex-col gap-[20px]">
+      <div className="bg-[#0c1834] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[120px] xl:pt-[160px] pb-[60px] xl:pb-[80px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[20px]">
           <div className="h-[12px] w-[200px] bg-white/10 animate-pulse" />
           <div className="flex flex-col gap-[10px]">
             <div className="h-[52px] w-[420px] max-w-full bg-white/10 animate-pulse" />
@@ -18,16 +18,16 @@ export default function ListingPageSkeleton() {
       {/* Content skeleton */}
       <div className="bg-[#f9f9f9] py-[40px] xl:py-[60px]">
         {/* Count + sort row */}
-        <div className="px-[30px] xl:px-[260px] mb-[20px]">
-          <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] mb-[20px]">
+          <div className="max-w-[1600px] mx-auto flex items-center justify-between">
             <div className="h-[16px] w-[180px] bg-[#e9e7e2] animate-pulse" />
             <div className="h-[36px] w-[160px] bg-[#e9e7e2] animate-pulse" />
           </div>
         </div>
 
         {/* Sidebar + grid */}
-        <div className="px-[30px] xl:px-[260px]">
-          <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[309px_1fr] gap-8 items-start">
+        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px]">
+          <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[309px_1fr] gap-8 items-start">
             {/* Sidebar skeleton */}
             <div className="bg-white border border-[#dfe5ef] p-[21px] flex flex-col gap-[20px]">
               {/* Toggle buttons */}

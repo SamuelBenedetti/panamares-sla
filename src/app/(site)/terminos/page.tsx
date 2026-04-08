@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Términos y Condiciones | Panamares",
+  title: "Términos y Condiciones",
+  description:
+    "Lee los términos y condiciones de uso del sitio web de Panamares. Condiciones de servicio para la intermediación inmobiliaria en Panama City.",
   alternates: { canonical: "https://panamares.com/terminos/" },
 };
 
 export default function TerminosPage() {
   return (
-    <section className="bg-white px-[30px] xl:px-[260px] py-[100px]">
+    <section className="bg-white px-[30px] xl:px-[20px] 2xl:px-[120px] py-[100px]">
       <div className="max-w-[800px] mx-auto flex flex-col gap-[40px]">
 
         <div className="flex flex-col gap-[12px]">

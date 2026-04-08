@@ -73,6 +73,7 @@ export const propertyBySlugQuery = groq`
     featuresBuilding,
     featuresLocation,
     features,
+    rentalEstimate,
     gallery[] { asset->, alt },
     mainImage,
     location,
