@@ -25,11 +25,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const config = getCategoryBySlug(params.category);
   if (!config) return {};
 
-  const properties = await sanityFetch<Property[]>(propertiesByCategoryQuery, {
-    propertyType: config.propertyType,
-    businessType: config.businessType,
-  });
-
   const url = `/${params.category}/`;
   return {
     title: config.metaTitle,
