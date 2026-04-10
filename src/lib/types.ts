@@ -78,6 +78,17 @@ export interface Neighborhood {
   seoBlock?: string;
 }
 
+export interface GuideAuthor {
+  _id?: string;
+  name: string;
+  slug?: { current: string };
+  photo?: SanityImage;
+  role?: string;
+  credentials?: string;
+  bio?: PortableTextBlock[];
+  linkedin?: string;
+}
+
 export interface Guide {
   _id: string;
   title: string;
@@ -87,6 +98,8 @@ export interface Guide {
   readTime: number;
   coverImage?: SanityImage;
   body?: PortableTextBlock[];
+  faqs?: { question: string; answer: string }[];
+  author?: GuideAuthor;
 }
 
 export interface Lead {

@@ -2,21 +2,16 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Clock, ChevronRight } from "lucide-react";
+import { Clock, ChevronRight, BadgeCheck } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
-import { groq } from "next-sanity";
+import { guideBySlugQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import type { Guide } from "@/lib/types";
-import { breadcrumbSchema } from "@/lib/jsonld";
+import { breadcrumbSchema, articleSchema, faqSchema } from "@/lib/jsonld";
+import FAQ from "@/components/ui/FAQ";
 
 const BASE_URL = "https://panamares.com";
-
-const guideBySlugQuery = groq`
-  *[_type == "guide" && slug.current == $slug][0] {
-    _id, title, slug, category, excerpt, readTime, coverImage, body
-  }
-`;
 
 const CATEGORY_LABELS: Record<string, string> = {
   comprar:  "Comprar",
@@ -32,10 +27,27 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const guide = await sanityFetch<Guide | null>(guideBySlugQuery, { slug: params.slug });
   if (!guide) return {};
+
+  const ogImage = guide.coverImage
+    ? urlFor(guide.coverImage).width(1200).height(630).url()
+    : undefined;
+
   return {
-    title: `${guide.title}`,
+    title: guide.title,
     description: guide.excerpt,
+    robots: { index: true, follow: true },
     alternates: { canonical: `${BASE_URL}/guias/${params.slug}/` },
+    openGraph: {
+      title: guide.title,
+      description: guide.excerpt,
+      images: ogImage ? [{ url: ogImage }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: guide.title,
+      description: guide.excerpt,
+      images: ogImage ? [ogImage] : [],
+    },
   };
 }
 
@@ -49,23 +61,38 @@ export default async function GuideDetailPage({ params }: Props) {
 
   const catLabel = CATEGORY_LABELS[guide.category] ?? "";
 
+  // JSON-LD schemas
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: "Inicio",  url: "/" },
     { name: "Guías",   url: "/guias/" },
     { name: guide.title, url: `/guias/${params.slug}/` },
   ]);
 
+  const jsonLdArticle = articleSchema({
+    title: guide.title,
+    description: guide.excerpt,
+    url: `/guias/${params.slug}/`,
+    datePublished: (guide as unknown as { _createdAt?: string })._createdAt,
+    dateModified: (guide as unknown as { _updatedAt?: string })._updatedAt,
+    authorName: guide.author?.name,
+    authorUrl: guide.author?.slug?.current ? `/autores/${guide.author.slug.current}/` : undefined,
+    image: guide.coverImage ? urlFor(guide.coverImage).width(1200).height(630).url() : undefined,
+  });
+
+  const faqs = (guide as unknown as { faqs?: { question: string; answer: string }[] }).faqs ?? [];
+  const jsonLdFaq = faqs.length > 0 ? faqSchema(faqs) : null;
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdArticle) }} />
+      {jsonLdFaq && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }} />
+      )}
 
       {/* ── Hero ── */}
       <section className="bg-[#0c1834] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[120px] xl:pt-[160px] pb-[60px] xl:pb-[80px]">
         <div className="max-w-[1600px] mx-auto flex flex-col gap-[24px]">
-          {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px] flex-wrap">
             <Link href="/" className="font-body text-[13px] text-white/40 hover:text-white/70 transition-colors">Inicio</Link>
             <ChevronRight size={12} className="text-white/25" />
@@ -74,7 +101,6 @@ export default async function GuideDetailPage({ params }: Props) {
             <span className="font-body text-[13px] text-white/70 line-clamp-1">{guide.title}</span>
           </nav>
 
-          {/* Meta */}
           <div className="flex items-center gap-[16px]">
             {catLabel && (
               <span className="font-body font-medium text-[11px] text-[#d4a435] tracking-[3px] uppercase">
@@ -89,7 +115,6 @@ export default async function GuideDetailPage({ params }: Props) {
             )}
           </div>
 
-          {/* Title */}
           <h1 className="font-heading font-normal text-[clamp(32px,4.5vw,60px)] text-white leading-none tracking-[-1.8px] max-w-[800px]">
             {guide.title}
           </h1>
@@ -98,6 +123,39 @@ export default async function GuideDetailPage({ params }: Props) {
             <p className="font-body font-light text-[16px] xl:text-[18px] text-white/70 leading-relaxed max-w-[640px]">
               {guide.excerpt}
             </p>
+          )}
+
+          {/* Author byline in hero */}
+          {guide.author && (
+            <div className="flex items-center gap-[10px] pt-[4px]">
+              {guide.author.photo && (
+                <Image
+                  src={urlFor(guide.author.photo).width(80).height(80).url()}
+                  alt={guide.author.name}
+                  width={36}
+                  height={36}
+                  className="rounded-full object-cover w-[36px] h-[36px] shrink-0"
+                />
+              )}
+              <div>
+                <p className="font-body font-medium text-[13px] text-white leading-4">
+                  {guide.author.name}
+                </p>
+                {guide.author.role && (
+                  <p className="font-body font-normal text-[11px] text-white/40 leading-4">
+                    {guide.author.role}
+                  </p>
+                )}
+              </div>
+              {guide.author.credentials && (
+                <span className="flex items-center gap-[4px] ml-[4px] bg-white/10 px-[8px] py-[3px]">
+                  <BadgeCheck size={11} className="text-[#d4a435] shrink-0" />
+                  <span className="font-body text-[10px] text-white/60 uppercase tracking-[0.8px]">
+                    {guide.author.credentials}
+                  </span>
+                </span>
+              )}
+            </div>
           )}
         </div>
       </section>
@@ -117,7 +175,9 @@ export default async function GuideDetailPage({ params }: Props) {
       {/* ── Article body ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[60px] xl:py-[100px]">
         <div className="max-w-[1600px] mx-auto">
-          <div className="max-w-[740px]">
+          <div className="max-w-[740px] flex flex-col gap-[48px]">
+
+            {/* Body */}
             {guide.body ? (
               <div className="
                 font-body text-[16px] xl:text-[17px] text-[#3a3a3a] leading-[1.8]
@@ -129,12 +189,47 @@ export default async function GuideDetailPage({ params }: Props) {
                 [&_strong]:font-semibold [&_strong]:text-[#0c1834]
                 [&_a]:text-[#0c1834] [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:opacity-60
                 [&_blockquote]:border-l-[3px] [&_blockquote]:border-[#d4a435] [&_blockquote]:pl-[20px] [&_blockquote]:text-[#737b8c] [&_blockquote]:italic [&_blockquote]:my-[32px]
+                [&_table]:w-full [&_table]:border-collapse [&_table]:text-[14px] [&_th]:bg-[#0c1834] [&_th]:text-white [&_th]:px-[12px] [&_th]:py-[8px] [&_th]:text-left [&_td]:px-[12px] [&_td]:py-[8px] [&_td]:border-b [&_td]:border-[#e8ecf2]
               ">
                 <PortableText value={guide.body} />
               </div>
             ) : (
               <p className="font-body text-[16px] text-[#737b8c]">Contenido próximamente.</p>
             )}
+
+            {/* FAQ section — shown if guide has FAQs in Sanity */}
+            {faqs.length > 0 && (
+              <FAQ items={faqs} title="Preguntas frecuentes" />
+            )}
+
+            {/* Author bio card at the end */}
+            {guide.author && (
+              <div className="border border-[#dfe5ef] p-[24px] flex items-start gap-[16px]">
+                {guide.author.photo && (
+                  <Image
+                    src={urlFor(guide.author.photo).width(120).height(120).url()}
+                    alt={guide.author.name}
+                    width={56}
+                    height={56}
+                    className="rounded-full object-cover w-[56px] h-[56px] shrink-0"
+                  />
+                )}
+                <div className="flex flex-col gap-[4px]">
+                  <p className="font-body font-medium text-[10px] text-[#8a95a3] uppercase tracking-[1.5px]">Escrito por</p>
+                  <p className="font-body font-semibold text-[15px] text-[#0c1834]">{guide.author.name}</p>
+                  {guide.author.role && (
+                    <p className="font-body text-[12px] text-[#566070]">{guide.author.role}</p>
+                  )}
+                  {guide.author.credentials && (
+                    <p className="font-body text-[11px] text-[#8a95a3] flex items-center gap-[4px] mt-[2px]">
+                      <BadgeCheck size={11} className="text-[#16a34a]" />
+                      {guide.author.credentials}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
       </section>

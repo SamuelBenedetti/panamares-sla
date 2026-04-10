@@ -6,25 +6,40 @@ const BASE_URL = "https://panamares.com";
 export function organizationSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": "RealEstateAgent",
+    "@type": ["RealEstateAgent", "Organization"],
     name: "Panamares",
     url: BASE_URL,
-    logo: `${BASE_URL}/barrio-punta-pacifica.png`,
+    logo: {
+      "@type": "ImageObject",
+      url: `${BASE_URL}/barrio-punta-pacifica.png`,
+      width: 200,
+      height: 60,
+    },
     description:
       "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en las mejores zonas de la ciudad.",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Panama City",
+      addressRegion: "Panamá",
       addressCountry: "PA",
     },
     areaServed: {
       "@type": "City",
       name: "Panama City",
+      addressCountry: "PA",
     },
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "sales",
       availableLanguage: ["Spanish", "English"],
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${BASE_URL}/buscar?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
     },
     sameAs: [
       "https://www.instagram.com/panamares",
@@ -198,6 +213,66 @@ export function neighborhoodSchema(neighborhood: Neighborhood) {
       name: "Panama City",
       addressCountry: "PA",
     },
+  };
+}
+
+// FAQ pages
+export function faqSchema(faqs: { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+}
+
+// Article (guides/blog posts)
+export function articleSchema({
+  title,
+  description,
+  url,
+  datePublished,
+  dateModified,
+  authorName,
+  authorUrl,
+  image,
+}: {
+  title: string;
+  description?: string;
+  url: string;
+  datePublished?: string;
+  dateModified?: string;
+  authorName?: string;
+  authorUrl?: string;
+  image?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    ...(description && { description }),
+    url: url.startsWith("http") ? url : `${BASE_URL}${url}`,
+    ...(datePublished && { datePublished }),
+    ...(dateModified && { dateModified }),
+    publisher: {
+      "@type": "Organization",
+      name: "Panamares",
+      logo: { "@type": "ImageObject", url: `${BASE_URL}/barrio-punta-pacifica.png` },
+    },
+    ...(authorName && {
+      author: {
+        "@type": "Person",
+        name: authorName,
+        ...(authorUrl && { url: authorUrl.startsWith("http") ? authorUrl : `${BASE_URL}${authorUrl}` }),
+      },
+    }),
+    ...(image && { image: { "@type": "ImageObject", url: image } }),
   };
 }
 

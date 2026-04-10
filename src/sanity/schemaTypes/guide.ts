@@ -54,6 +54,29 @@ export default defineType({
       fields: [{ name: "alt", title: "Alt text", type: "string" }],
     }),
     defineField({
+      name: "author",
+      title: "Autor",
+      type: "reference",
+      to: [{ type: "author" }],
+      description: "Experto que firma este contenido (mejora E-E-A-T)",
+    }),
+    defineField({
+      name: "faqs",
+      title: "Preguntas frecuentes",
+      type: "array",
+      description: "Aparecen como FAQ schema (rich snippet en Google) y como sección al final del artículo",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "question", title: "Pregunta", type: "string" },
+            { name: "answer", title: "Respuesta", type: "text", rows: 3 },
+          ],
+          preview: { select: { title: "question" } },
+        },
+      ],
+    }),
+    defineField({
       name: "body",
       title: "Contenido",
       type: "array",

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Bed, Bath, Maximize, Car, MapPin, Check, Phone, Tag, Star, BadgeCheck, Banknote, KeyRound } from "lucide-react";
+import { Bed, Bath, Maximize, Car, MapPin, Check, Phone, Star, BadgeCheck, Banknote, KeyRound } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertyBySlugQuery, relatedPropertiesQuery } from "@/sanity/lib/queries";
@@ -160,7 +160,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                       <div className="flex items-center gap-[6px]">
                         <MapPin size={13} className="text-[#0d1835] shrink-0" />
                         <span className="font-body font-normal text-[12px] text-[#0d1835] uppercase tracking-[1.2px] leading-4">
-                          {[property.zone, property.corregimiento].filter(Boolean).join(", ")}
+                          {property.zone}
                         </span>
                       </div>
                     )}
@@ -206,23 +206,23 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </h1>
 
                 {/* Price */}
-                <div className="flex flex-col gap-[4px]">
+                <div className="flex flex-col gap-[6px]">
                   <p className="font-body font-medium text-[11px] text-[#566070] tracking-[4px] uppercase leading-4">
                     {property.businessType === "venta" ? "Precio de venta" : "Precio de alquiler"}
                   </p>
                   <div className="flex items-end gap-[8px] flex-wrap">
-                    <span className="font-body font-bold text-[38px] text-[#0c1834] tracking-[-0.5px] leading-none">
+                    <span className="font-body font-bold text-[52px] text-[#0c1834] tracking-[-0.6px] leading-[1.1]">
                       {formatPrice(property.price)}
                     </span>
                     {property.businessType === "alquiler" && (
-                      <span className="font-body font-normal text-[16px] text-[#566070] pb-[6px]">/mes</span>
-                    )}
-                    {property.businessType === "venta" && property.area && property.area > 0 && (
-                      <span className="font-body font-medium text-[13px] text-[#566070] pb-[6px]">
-                        {formatPrice(Math.round(property.price / property.area))}/m²
-                      </span>
+                      <span className="font-body font-normal text-[20px] text-[#566070] pb-[8px]">/mes</span>
                     )}
                   </div>
+                  {property.businessType === "venta" && property.area && property.area > 0 && (
+                    <span className="font-body font-medium text-[18px] text-[#737b8c]">
+                      {formatPrice(Math.round(property.price / property.area))}/m²
+                    </span>
+                  )}
                   {property.adminFee != null && property.adminFee > 0 && (
                     <p className="font-body font-normal text-[12px] text-[#8a95a3] leading-4">
                       + ${property.adminFee}/mes mantenimiento
@@ -230,65 +230,65 @@ export default async function PropertyDetailPage({ params }: Props) {
                   )}
                 </div>
 
-                {/* Stats row — centered, icon above number */}
+                {/* Stats row */}
                 {(property.bedrooms != null || property.bathrooms != null || property.area != null || property.parking != null) && (
-                  <div className="flex items-center border-y border-[#dfe5ef] py-[14px]">
+                  <div className="flex items-center gap-[18px] border-y border-[#dfe5ef] py-[16px] flex-wrap">
                     {property.bedrooms != null && (
-                      <div className="flex-1 flex flex-col items-center gap-[4px]">
-                        <Bed size={18} className="text-[#0c1935]" />
-                        <span className="font-body font-bold text-[15px] text-[#0c1935] leading-none">
-                          {property.bedrooms === 0 ? "—" : property.bedrooms}
-                        </span>
-                        <span className="font-body font-normal text-[11px] text-[#566070] uppercase tracking-[0.5px]">
-                          {property.bedrooms === 0 ? "estudio" : "hab."}
+                      <div className="flex items-center gap-[8px]">
+                        <Bed size={20} className="text-[#0c1935] shrink-0" />
+                        <span className="font-body font-medium text-[18px] text-[#0d1835] leading-none">
+                          {property.bedrooms === 0 ? "Estudio" : `${property.bedrooms} hab.`}
                         </span>
                       </div>
                     )}
                     {property.bathrooms != null && (
-                      <div className="flex-1 flex flex-col items-center gap-[4px]">
-                        <Bath size={18} className="text-[#0c1935]" />
-                        <span className="font-body font-bold text-[15px] text-[#0c1935] leading-none">{property.bathrooms}{property.halfBathrooms ? "+½" : ""}</span>
-                        <span className="font-body font-normal text-[11px] text-[#566070] uppercase tracking-[0.5px]">baños</span>
+                      <div className="flex items-center gap-[8px]">
+                        <Bath size={20} className="text-[#0c1935] shrink-0" />
+                        <span className="font-body font-medium text-[18px] text-[#0d1835] leading-none">
+                          {property.bathrooms}{property.halfBathrooms ? "+½" : ""} {property.bathrooms === 1 ? "baño" : "baños"}
+                        </span>
                       </div>
                     )}
                     {property.area != null && (
-                      <div className="flex-1 flex flex-col items-center gap-[4px]">
-                        <Maximize size={18} className="text-[#0c1935]" />
-                        <span className="font-body font-bold text-[15px] text-[#0c1935] leading-none">{property.area}</span>
-                        <span className="font-body font-normal text-[11px] text-[#566070] uppercase tracking-[0.5px]">m²</span>
+                      <div className="flex items-center gap-[8px]">
+                        <Maximize size={20} className="text-[#0c1935] shrink-0" />
+                        <span className="font-body font-medium text-[18px] text-[#0d1835] leading-none">
+                          {property.area} m²
+                        </span>
                       </div>
                     )}
                     {property.parking != null && (
-                      <div className="flex-1 flex flex-col items-center gap-[4px]">
-                        <Car size={18} className="text-[#0c1935]" />
-                        <span className="font-body font-bold text-[15px] text-[#0c1935] leading-none">{property.parking}</span>
-                        <span className="font-body font-normal text-[11px] text-[#566070] uppercase tracking-[0.5px]">parking</span>
+                      <div className="flex items-center gap-[8px]">
+                        <Car size={20} className="text-[#0c1935] shrink-0" />
+                        <span className="font-body font-medium text-[18px] text-[#0d1835] leading-none">
+                          {property.parking} {property.parking === 1 ? "parking" : "parkings"}
+                        </span>
                       </div>
                     )}
                   </div>
                 )}
 
                 {/* Agent card */}
-                <div className="bg-[#f8f8f9] p-[15px] flex flex-col gap-[12px]">
+                <div className="bg-[#f8f8f9] p-[15px] flex items-center justify-between gap-[12px]">
                   {property.agent ? (
-                    <div className="flex items-center gap-[12px]">
+                    <div className="flex items-center gap-[12px] min-w-0 flex-1">
                       {property.agent.photo ? (
                         <Image
-                          src={urlFor(property.agent.photo).width(120).height(120).url()}
+                          src={urlFor(property.agent.photo).width(80).height(80).url()}
                           alt={property.agent.name}
-                          width={48}
-                          height={48}
-                          className="rounded-full object-cover w-[48px] h-[48px] shrink-0"
+                          width={40}
+                          height={40}
+                          className="rounded-full object-cover w-[40px] h-[40px] shrink-0"
                         />
                       ) : (
-                        <div className="w-[48px] h-[48px] rounded-full bg-[#0c1834] flex items-center justify-center shrink-0">
-                          <span className="font-heading font-medium text-[16px] text-white leading-none">
+                        <div className="w-[40px] h-[40px] rounded-full bg-[#0c1834] flex items-center justify-center shrink-0">
+                          <span className="font-heading font-medium text-[14px] text-white leading-none">
                             {property.agent.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()}
                           </span>
                         </div>
                       )}
-                      <div className="flex-1 min-w-0">
-                        <p className="font-body font-medium text-[10px] text-[#566070] uppercase tracking-[1px] leading-4">Agente responsable</p>
+                      <div className="min-w-0">
+                        <p className="font-body font-medium text-[10px] text-[#566070] uppercase tracking-[1px] leading-4">Agente</p>
                         <a
                           href={"/agentes/" + (property.agent.slug?.current ?? "")}
                           className="font-body font-semibold text-[14px] text-[#0c1935] hover:text-[#0c1834] leading-5 block truncate"
@@ -301,21 +301,21 @@ export default async function PropertyDetailPage({ params }: Props) {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-[12px]">
-                      <div className="w-[48px] h-[48px] rounded-full bg-[#0c1834] flex items-center justify-center shrink-0">
-                        <span className="font-heading font-medium text-[16px] text-white leading-none">PM</span>
+                    <div className="flex items-center gap-[12px] min-w-0 flex-1">
+                      <div className="w-[40px] h-[40px] rounded-full bg-[#0c1834] flex items-center justify-center shrink-0">
+                        <span className="font-heading font-medium text-[14px] text-white leading-none">PM</span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-body font-medium text-[10px] text-[#566070] uppercase tracking-[1px] leading-4">Agente responsable</p>
+                      <div className="min-w-0">
+                        <p className="font-body font-medium text-[10px] text-[#566070] uppercase tracking-[1px] leading-4">Agente</p>
                         <p className="font-body font-semibold text-[14px] text-[#0c1935] leading-5">Equipo Panamares</p>
                         <p className="font-body font-normal text-[12px] text-[#566070] leading-4">Asesor inmobiliario</p>
                       </div>
                     </div>
                   )}
-                  <p className="font-body font-normal text-[12px] text-[#566070] leading-[18px]">
-                    Atención disponible de lunes a sábado{" "}
-                    <span className="font-semibold text-[#0c1834]">8am – 7pm</span>
-                  </p>
+                  <div className="shrink-0 text-right">
+                    <p className="font-body font-medium text-[11px] text-[#0c1834] leading-4">Lun – Sáb</p>
+                    <p className="font-body font-bold text-[13px] text-[#0c1834] leading-5">8am – 7pm</p>
+                  </div>
                 </div>
 
                 {/* CTAs */}
@@ -340,18 +340,16 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* Estimación de alquiler — only for sale properties with rentalEstimate */}
               {property.businessType === "venta" && property.rentalEstimate && (
-                <div className="bg-white border border-[#dfe5ef] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] p-[20px] flex items-start gap-[14px]">
-                  <div className="w-[36px] h-[36px] bg-[#f0f4ff] flex items-center justify-center shrink-0">
-                    <Tag size={16} className="text-[#0d1835]" />
-                  </div>
+                <div className="bg-white border border-[#dfe5ef] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] p-[24px] flex items-center justify-between gap-[16px]">
                   <div className="flex flex-col gap-[2px]">
-                    <p className="font-body font-medium text-[11px] text-[#566070] uppercase tracking-[1px] leading-4">Estimación de alquiler</p>
-                    <p className="font-body font-bold text-[22px] text-[#0c1834] tracking-[-0.3px] leading-none">
-                      {formatPrice(property.rentalEstimate)}<span className="font-normal text-[14px] text-[#566070]">/mes</span>
+                    <p className="font-body font-medium text-[11px] text-[#566070] tracking-[4px] uppercase leading-4">Estimación</p>
+                    <p className="font-body font-medium text-[11px] text-[#566070] tracking-[4px] uppercase leading-4">de alquiler</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-body font-bold text-[36px] text-[#0c1834] tracking-[-0.4px] leading-none">
+                      {formatPrice(property.rentalEstimate)}
                     </p>
-                    <p className="font-body font-normal text-[12px] text-[#566070] leading-[18px] mt-[4px]">
-                      Rendimiento estimado basado en propiedades similares en la zona.
-                    </p>
+                    <p className="font-body font-normal text-[14px] text-[#566070] leading-5">/mes</p>
                   </div>
                 </div>
               )}
@@ -374,7 +372,6 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {[
                     { label: "País", value: "Panamá" },
                     { label: "Provincia", value: property.province ?? "Panamá" },
-                    property.corregimiento ? { label: "Corregimiento", value: property.corregimiento } : null,
                     property.zone ? { label: "Barrio / Zona", value: property.zone } : null,
                     { label: "Tipo de inmueble", value: property.propertyType.charAt(0).toUpperCase() + property.propertyType.slice(1) },
                     { label: "Tipo de negocio", value: property.businessType === "venta" ? "Venta" : "Alquiler" },
@@ -459,7 +456,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </div>
                 <div>
                   <p className="font-body font-normal text-[14px] text-[#566070] leading-5">
-                    {[property.zone, property.corregimiento, "Ciudad de Panamá"].filter(Boolean).join(", ")}
+                    {[property.zone, "Ciudad de Panamá"].filter(Boolean).join(", ")}
                   </p>
                   <p className="font-body font-normal text-[12px] text-[rgba(115,123,140,0.6)] leading-4">
                     Panamá, República de Panamá

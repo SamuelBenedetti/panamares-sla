@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
+
+// Mapbox (~319 KiB) is split into its own chunk and only fetched when the map
+// enters the viewport — keeps it off the critical-path bundle entirely.
+const PropertyMapCore = dynamic(() => import("./PropertyMapCore"), { ssr: false });
 
 interface Props {
   lat: number;
@@ -12,44 +15,29 @@ interface Props {
 }
 
 export default function PropertyMap({ lat, lng, title, className = "w-full h-[400px]" }: Props) {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
-    if (!mapContainer.current) return;
-
-    const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-    if (!token) return;
-
-    mapboxgl.accessToken = token;
-
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
-      center: [lng, lat],
-      zoom: 14,
-    });
-
-    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
-
-    new mapboxgl.Marker({ color: "#C9A84C" })
-      .setLngLat([lng, lat])
-      .setPopup(
-        title
-          ? new mapboxgl.Popup().setHTML(`<strong>${title}</strong>`)
-          : undefined
-      )
-      .addTo(map.current);
-
-    return () => {
-      map.current?.remove();
-    };
-  }, [lat, lng, title]);
+    const el = wrapperRef.current;
+    if (!el) return;
+    // Start fetching 300px before the element reaches the viewport
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "300px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div
-      ref={mapContainer}
-      className={className}
-    />
+    <div ref={wrapperRef} className={className}>
+      {shouldLoad && <PropertyMapCore lat={lat} lng={lng} title={title} className="w-full h-full" />}
+    </div>
   );
 }

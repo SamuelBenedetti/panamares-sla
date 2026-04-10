@@ -199,7 +199,26 @@ export const allGuidesQuery = groq`
     category,
     excerpt,
     readTime,
-    coverImage
+    coverImage,
+    "author": author->{ name, slug, photo, role, credentials }
+  }
+`;
+
+// Single guide by slug
+export const guideBySlugQuery = groq`
+  *[_type == "guide" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    category,
+    excerpt,
+    readTime,
+    _createdAt,
+    _updatedAt,
+    coverImage,
+    body,
+    faqs[] { question, answer },
+    "author": author->{ _id, name, slug, photo, role, credentials, bio, linkedin }
   }
 `;
 

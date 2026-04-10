@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import { organizationSchema } from "@/lib/jsonld";
@@ -62,26 +61,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }}
         />
         {children}
-        {/* Google Translate — after page renders */}
-        <div id="google_translate_element" style={{ position: "absolute", top: "-9999px", left: "-9999px" }} suppressHydrationWarning />
-        <Script id="gt-init" strategy="lazyOnload">{`
-          window.googleTranslateElementInit = function() {
-            new google.translate.TranslateElement({
-              pageLanguage: 'es',
-              includedLanguages: 'en,es',
-              autoDisplay: false
-            }, 'google_translate_element');
-          };
-        `}</Script>
-        <Script
-          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-          strategy="lazyOnload"
-        />
-        <style dangerouslySetInnerHTML={{ __html: `
-          body { top: 0 !important; }
-          .goog-te-banner-frame { display: none !important; }
-          iframe.skiptranslate { display: none !important; }
-        `}} />
+        {/* Google Translate removed — was loading ~150 KiB unnecessarily.
+            NOTE: LangToggle (Navbar) sets googtrans cookies; translation will
+            no longer apply until GT is restored or replaced with a native i18n
+            solution (next-intl / next-i18next). */}
       </body>
     </html>
   );
