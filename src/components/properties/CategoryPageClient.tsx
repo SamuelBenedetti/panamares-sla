@@ -301,23 +301,6 @@ function FilterPanel({
   );
 }
 
-// ── SEO Block ──────────────────────────────────────────────────────────────────
-function SeoBlock({ text }: { text: string }) {
-  const [expanded, setExpanded] = useState(false);
-  return (
-    <div className="bg-white border border-[#e9e7e2] p-[20px] xl:p-[24px]">
-      <p className="hidden xl:block font-body font-light text-[15px] text-[#737b8c] leading-relaxed">{text}</p>
-      <div className="xl:hidden">
-        <p className={`font-body font-light text-[14px] text-[#737b8c] leading-relaxed ${expanded ? "" : "line-clamp-3"}`}>{text}</p>
-        <button onClick={() => setExpanded(!expanded)} className="mt-[8px] flex items-center gap-[4px] font-body font-medium text-[12px] text-[#0c1834] tracking-[1px] uppercase">
-          {expanded ? "Leer menos" : "Leer más"}
-          <ChevronDown size={12} className={`transition-transform ${expanded ? "rotate-180" : ""}`} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
 // ── Normalize helper ───────────────────────────────────────────────────────────
 function normalize(s: string) {
   return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -325,7 +308,7 @@ function normalize(s: string) {
 
 // ── Main export ────────────────────────────────────────────────────────────────
 export default function CategoryPageClient({
-  properties, categorySlug, neighborhoodLinks, contextBlock, seoBlock,
+  properties, categorySlug, neighborhoodLinks, contextBlock, 
   initialSearch = "", initialBedrooms = 0, initialMinPrice = "", initialMaxPrice = "",
 }: Props) {
   const businessType: "venta" | "alquiler" = categorySlug.includes("alquiler") ? "alquiler" : "venta";
