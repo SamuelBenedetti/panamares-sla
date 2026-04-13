@@ -8,11 +8,10 @@ import type { Property, Neighborhood } from "@/lib/types";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
-import SeoBlock from "@/components/home/SeoBlock";
 import CTA from "@/components/home/CTA";
 import { PortableText } from "@portabletext/react";
 
-const BASE_URL = "https://panamares.com";
+const BASE_URL = "https://panamares.vercel.app";
 const BUSINESS_TYPE = "alquiler";
 const INTENT_LABEL = "Propiedades en Alquiler";
 const INTENT_SLUG = "propiedades-en-alquiler";
@@ -88,14 +87,6 @@ export default async function AlquilerNeighborhoodPage({ params }: Props) {
         title={h1}
         description={`${properties.length} ${properties.length === 1 ? "propiedad disponible" : "propiedades disponibles"} en ${nbh.name}, Panama City.`}
       />
-
-      {nbhContent?.seoBlock && (
-        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[24px]">
-          <div className="max-w-[1600px] mx-auto">
-            <SeoBlock text={nbhContent.seoBlock} />
-          </div>
-        </div>
-      )}
 
       <CategoryPageClient
         properties={properties}

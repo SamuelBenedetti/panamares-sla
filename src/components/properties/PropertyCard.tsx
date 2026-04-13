@@ -42,8 +42,8 @@ export default function PropertyCard({ property }: { property: Property }) {
         {/* Tags — stack vertically top-left */}
         <div className="absolute top-[11px] left-[10px] flex flex-col gap-[4px]">
           {recommended && (
-            <div className="bg-white/90 backdrop-blur-[2px] px-[10px] py-[4px]">
-              <span className="font-body font-semibold text-[#0c1834] text-[12px] uppercase leading-[16px]">
+            <div className="bg-blue-500 backdrop-blur-[2px] px-[10px] py-[4px]">
+              <span className="font-body font-semibold text-white text-[12px] uppercase leading-[16px]">
                 Recomendado
               </span>
             </div>

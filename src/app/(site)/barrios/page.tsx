@@ -7,7 +7,7 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { activeZonesQuery } from "@/sanity/lib/queries";
 import { breadcrumbSchema } from "@/lib/jsonld";
 
-const BASE_URL = "https://panamares.com";
+const BASE_URL = "https://panamares.vercel.app";
 
 export const metadata: Metadata = {
   title: "Barrios de Panamá | Guía de Zonas",

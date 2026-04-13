@@ -390,18 +390,10 @@ export default function CategoryPageClient({
   const remaining = filtered.length - visible;
 
   return (
-    <div className="bg-[#f9f9f9] py-[40px] xl:py-[60px]">
+    <div className="bg-[#f9f9f9] pt-[24px] pb-[60px] xl:pt-[28px] xl:pb-[80px]">
       {contextBlock && (
         <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto mb-6">
           <div className="max-w-[1600px] mx-auto">{contextBlock}</div>
-        </div>
-      )}
-
-      {seoBlock && (
-        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] mb-[28px]">
-          <div className="max-w-[1600px] mx-auto">
-            <SeoBlock text={seoBlock} />
-          </div>
         </div>
       )}
 

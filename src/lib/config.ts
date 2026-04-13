@@ -1,5 +1,5 @@
 export const SITE_NAME = "Panamares";
-export const BASE_URL = "https://panamares.com";
+export const BASE_URL = "https://panamares.vercel.app";
 
 // WhatsApp — replace with the real number before launch
 // Format: country code + number, no spaces or dashes

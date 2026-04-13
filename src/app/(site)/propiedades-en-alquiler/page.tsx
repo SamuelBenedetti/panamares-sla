@@ -11,12 +11,12 @@ import CTA from "@/components/home/CTA";
 
 const H1 = "Propiedades en Alquiler en Panamá";
 const DESCRIPTION =
-  "Descubre todas las propiedades en alquiler en Panama City. Apartamentos, casas, oficinas y locales en los mejores barrios de la capital panameña.";
+  "Panamares tiene la selección más completa de propiedades en alquiler en Panama City. Apartamentos amueblados y sin amueblar, casas, oficinas y locales comerciales en Punta Pacífica, Punta Paitilla, Obarrio, Calle 50 y más zonas. Contratos en dólares, atención en español y agentes especializados que te acompañan en todo el proceso. Encuentra tu próxima propiedad en alquiler en la ciudad con el mercado inmobiliario más dinámico de la región.";
 
 export const metadata: Metadata = {
   title: "Propiedades en Alquiler en Panama",
   description: DESCRIPTION,
-  alternates: { canonical: "https://panamares.com/propiedades-en-alquiler/" },
+  alternates: { canonical: "https://panamares.vercel.app/propiedades-en-alquiler/" },
 };
 
 export default async function PropiedadesEnAlquilerPage({

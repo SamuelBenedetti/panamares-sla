@@ -1,6 +1,6 @@
 import type { Property, Agent, Neighborhood } from "@/lib/types";
 
-const BASE_URL = "https://panamares.com";
+const BASE_URL = "https://panamares.vercel.app";
 
 // Root layout — Organization
 export function organizationSchema() {

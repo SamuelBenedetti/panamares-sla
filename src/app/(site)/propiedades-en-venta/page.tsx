@@ -11,12 +11,12 @@ import CTA from "@/components/home/CTA";
 
 const H1 = "Propiedades en Venta en Panamá";
 const DESCRIPTION =
-  "Descubre todas las propiedades en venta en Panama City. Apartamentos, casas, penthouses, oficinas y terrenos en los mejores barrios de la capital panameña.";
+  "Panamares reúne la mayor oferta de propiedades en venta en Panama City. Apartamentos, casas, penthouses, oficinas, locales y terrenos en Punta Pacífica, Punta Paitilla, Costa del Este y más zonas exclusivas. Cada inmueble cuenta con información completa de precio, área, habitaciones y amenidades. Filtra por tipo de propiedad, barrio o presupuesto y encuentra la opción ideal para comprar o invertir en el mercado inmobiliario más sólido de Centroamérica.";
 
 export const metadata: Metadata = {
   title: "Propiedades en Venta en Panama",
   description: DESCRIPTION,
-  alternates: { canonical: "https://panamares.com/propiedades-en-venta/" },
+  alternates: { canonical: "https://panamares.vercel.app/propiedades-en-venta/" },
 };
 
 export default async function PropiedadesEnVentaPage({

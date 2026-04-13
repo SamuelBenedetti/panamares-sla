@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Contáctanos para comprar, vender o alquilar propiedades en Panama City. Nuestros asesores están disponibles de lunes a sábado.",
   alternates: {
-    canonical: "https://panamares.com/contacto/",
+    canonical: "https://panamares.vercel.app/contacto/",
   },
 };
 

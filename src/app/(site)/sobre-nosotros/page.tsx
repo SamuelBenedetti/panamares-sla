@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description:
     "Panamares es una agencia inmobiliaria de lujo en Panama City. Conoce nuestro equipo y nuestra trayectoria en el mercado panameño.",
   alternates: {
-    canonical: "https://panamares.com/sobre-nosotros/",
+    canonical: "https://panamares.vercel.app/sobre-nosotros/",
   },
 };
 
@@ -31,7 +31,7 @@ export default async function SobreNosotrosPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
       {/* ── Hero "Quiénes somos" ── */}
-      <section className="relative bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[100px] xl:pt-[140px] pb-[80px] xl:pb-[112px]">
+      <section className="relative bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[60px] xl:pt-[80px] pb-[80px] xl:pb-[112px]">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex flex-col gap-5 max-w-[768px]">
 

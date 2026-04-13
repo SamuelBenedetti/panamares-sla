@@ -11,7 +11,7 @@ import type { Guide } from "@/lib/types";
 import { breadcrumbSchema, articleSchema, faqSchema } from "@/lib/jsonld";
 import FAQ from "@/components/ui/FAQ";
 
-const BASE_URL = "https://panamares.com";
+const BASE_URL = "https://panamares.vercel.app";
 
 const CATEGORY_LABELS: Record<string, string> = {
   comprar:  "Comprar",

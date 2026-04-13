@@ -7,14 +7,13 @@ import { getNeighborhoodBySlug, VALID_NEIGHBORHOOD_SLUGS } from "@/lib/neighborh
 import { itemListSchema, breadcrumbSchema } from "@/lib/jsonld";
 import type { Property, Neighborhood } from "@/lib/types";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
-import SeoBlock from "@/components/home/SeoBlock";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import CTA from "@/components/home/CTA";
 import PropertyMapMulti from "@/components/properties/PropertyMapMulti";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import { PortableText } from "@portabletext/react";
 
-const BASE_URL = "https://panamares.com";
+const BASE_URL = "https://panamares.vercel.app";
 
 interface Props {
   params: { category: string; neighborhood: string };
@@ -42,6 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 
   const typeLabel = category.h1.split(" en Panama")[0];
+  // SEO doc pattern: "Apartamentos en Venta en Punta Pacífica, Panama | Panamares"
   const title = `${typeLabel} en ${neighborhood.name}, Panama`;
   const description = `${typeLabel} en ${neighborhood.name}. ${properties.length} propiedades disponibles. Encuentra las mejores opciones en esta zona exclusiva de Panama City.`;
   const url = `/${params.category}/${params.neighborhood}/`;
@@ -50,7 +50,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `${BASE_URL}${url}` },
-    robots: { index: true, follow: true },
+    // noindex if fewer than 2 active listings (SEO doc requirement)
+    robots: properties.length >= 2 ? { index: true, follow: true } : { index: false, follow: true },
   };
 }
 
@@ -120,16 +121,7 @@ export default async function GeoTypePage({ params }: Props) {
           { label: neighborhood.name },
         ]}
         title={h1}
-        description={`${properties.length} ${properties.length === 1 ? "propiedad disponible" : "propiedades disponibles"} en ${neighborhood.name}, Panama City.`}
       />
-      {nbhContent?.seoBlock && (
-        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[24px]">
-          <div className="max-w-[1600px] mx-auto">
-            <SeoBlock text={nbhContent.seoBlock} />
-          </div>
-        </div>
-      )}
-
       <CategoryPageClient
         properties={properties}
         categorySlug={params.category}

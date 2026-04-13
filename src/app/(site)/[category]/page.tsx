@@ -11,7 +11,7 @@ import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import CTA from "@/components/home/CTA";
 
-const BASE_URL = "https://panamares.com";
+const BASE_URL = "https://panamares.vercel.app";
 
 interface Props {
   params: { category: string };
@@ -25,12 +25,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const config = getCategoryBySlug(params.category);
   if (!config) return {};
 
+  const properties = await sanityFetch<{ _id: string }[]>(
+    propertiesByCategoryQuery,
+    { propertyType: config.propertyType, businessType: config.businessType }
+  );
+
   const url = `/${params.category}/`;
   return {
     title: config.metaTitle,
     description: config.metaDescription,
     alternates: { canonical: `${BASE_URL}${url}` },
-    robots: { index: true, follow: true },
+    // noindex if fewer than 2 active listings (SEO doc requirement)
+    robots: properties.length >= 2 ? { index: true, follow: true } : { index: false, follow: true },
   };
 }
 
@@ -74,7 +80,7 @@ export default async function CategoryPage({ params }: Props) {
       <ListingPageHeader
         breadcrumbs={[{ label: "Inicio", href: "/" }, { label: config.h1 }]}
         title={config.h1}
-        description={config.metaDescription}
+        description={config.seoBlock}
         count={properties.length}
       />
 
@@ -82,7 +88,6 @@ export default async function CategoryPage({ params }: Props) {
         properties={properties}
         categorySlug={params.category}
         neighborhoodLinks={neighborhoodLinks}
-        seoBlock={config.seoBlock}
       />
       <CTA />
     </>

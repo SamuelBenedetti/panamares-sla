@@ -1,78 +1,131 @@
 /**
- * WASI → Sanity import script
+ * XLSX → Sanity import script
  * Run: node scripts/import-wasi.mjs
+ * Optional: node scripts/import-wasi.mjs --dry-run   (preview without writing)
  */
 
-import { readFileSync } from "fs";
 import { createClient } from "@sanity/client";
+import { readFileSync } from "fs";
+import { createRequire } from "module";
 
-const PROJECT_ID = "2hojajwk";
-const DATASET = "production";
-const TOKEN =
-  "skY1C2gN11YJqcPWii0DlkWhjdHgmNHIvMpeKuf0ui99uSwlztfjYDCapFilYtAfAKfqeE9hGoCQI9Ju9xW1dZ3tclkrpcnEsOkckKxN6LSShpy5cD2xyXPGjBhLUkgiJwWA6DGDJqAXbCAY2BStgevDXDuS3bOlCUeeFB0IuptPGuhPUxdu";
+const require = createRequire(import.meta.url);
+const XLSX = require("xlsx");
+
+const DRY_RUN = process.argv.includes("--dry-run");
+const XLSX_PATH = "C:/Users/sbene/Downloads/PH GT.xlsx";
+const SHEET_NAME = "PANAMARES";
 
 const client = createClient({
-  projectId: PROJECT_ID,
-  dataset: DATASET,
-  token: TOKEN,
+  projectId: "2hojajwk",
+  dataset: "production",
+  token:
+    "skY1C2gN11YJqcPWii0DlkWhjdHgmNHIvMpeKuf0ui99uSwlztfjYDCapFilYtAfAKfqeE9hGoCQI9Ju9xW1dZ3tclkrpcnEsOkckKxN6LSShpy5cD2xyXPGjBhLUkgiJwWA6DGDJqAXbCAY2BStgevDXDuS3bOlCUeeFB0IuptPGuhPUxdu",
   apiVersion: "2023-01-01",
   useCdn: false,
 });
 
-// ─── CSV parser (no external deps) ──────────────────────────────────────────
+// ─── SEO slug maps (from SEO Information Architecture doc) ───────────────────
 
-function parseCSV(content) {
-  const lines = content.split("\n");
-  const headers = parseCSVLine(lines[0]);
-  const records = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    const values = parseCSVLine(line);
-    const record = {};
-    headers.forEach((h, idx) => {
-      record[h.trim()] = (values[idx] ?? "").trim();
-    });
-    records.push(record);
-  }
-  return records;
-}
+// Appendix A — type slug (singular, for URLs)
+const TYPE_SLUG_MAP = {
+  Apartamento: "apartamento",
+  Apartaestudio: "apartaestudio",
+  Casa: "casa",
+  "Casa de Playa": "casa-de-playa",
+  Penthouse: "penthouse",
+  Oficina: "oficina",
+  Local: "local-comercial",
+  Terreno: "terreno",
+  "Lote Comercial": "lote-comercial",
+  "Lote / Terreno": "lote-comercial",
+  Edificio: "edificio",
+  Finca: "finca",
+};
 
-function parseCSVLine(line) {
-  const result = [];
-  let current = "";
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      inQuotes = !inQuotes;
-    } else if (ch === "," && !inQuotes) {
-      result.push(current);
-      current = "";
-    } else {
-      current += ch;
-    }
-  }
-  result.push(current);
-  return result;
-}
+// Appendix B — neighborhood slug
+const NEIGHBORHOOD_SLUG_MAP = {
+  "Punta Pacífica": "punta-pacifica",
+  "Punta Pacifica": "punta-pacifica",
+  "Punta Paitilla": "punta-paitilla",
+  "Avenida Balboa": "avenida-balboa",
+  Obarrio: "obarrio",
+  "Calle 50": "calle-50",
+  "Coco Del Mar": "coco-del-mar",
+  "Coco del Mar": "coco-del-mar",
+  "Costa Del Este": "costa-del-este",
+  "Costa del Este": "costa-del-este",
+  Albrook: "albrook",
+  "Santa María": "santa-maria",
+  Marbella: "marbella",
+  "El Cangrejo": "el-cangrejo",
+  "Altos Del Golf": "altos-del-golf",
+  "Altos del Golf": "altos-del-golf",
+  "San Francisco": "san-francisco",
+  "Via Porras": "via-porras",
+  "Vía Porras": "via-porras",
+  "Bella Vista": "bella-vista",
+  "Condado Del Rey": "condado-del-rey",
+  "Condado del Rey": "condado-del-rey",
+  Amador: "amador",
+  "Los Andes": "los-andes",
+  Carrasquilla: "carrasquilla",
+  "Loma Alegre": "loma-alegre",
+  "Alto del Chase": "alto-del-chase",
+  "Alto Del Chase": "alto-del-chase",
+  Coronado: "coronado",
+  Versalles: "versalles",
+  "Rio Mar": "rio-mar",
+  "Río Mar": "rio-mar",
+  // Outside Panama City — fallback slugify
+};
 
-// ─── Field helpers ───────────────────────────────────────────────────────────
+// ─── Zone normalization ───────────────────────────────────────────────────────
+// Maps Wasi corregimiento/neighborhood values to the Sanity zone options
 
-function parsePrice(str) {
-  if (!str) return null;
-  const n = parseFloat(str.replace(/[$,\s]/g, ""));
-  return isNaN(n) ? null : n;
-}
+const ZONE_MAP = {
+  "San Francisco": "San Francisco",
+  "Punta Pacífica": "Punta Pacífica",
+  "Punta Pacifica": "Punta Pacífica",
+  Marbella: "Marbella",
+  "Avenida Balboa": "Avenida Balboa",
+  Albrook: "Albrook",
+  "Punta Paitilla": "Punta Paitilla",
+  "Altos Del Golf": "Altos del Golf",
+  "Altos del Golf": "Altos del Golf",
+  "El Cangrejo": "El Cangrejo",
+  "Coco Del Mar": "Coco del Mar",
+  "Coco del Mar": "Coco del Mar",
+  "Condado Del Rey": "Condado del Rey",
+  "Condado del Rey": "Condado del Rey",
+  Obarrio: "Obarrio",
+  "Calle 50": "Calle 50",
+  "Los Andes": "Los Andes",
+  Carrasquilla: "Carrasquilla",
+  "Rio Mar": "Río Mar",
+  "Río Mar": "Río Mar",
+  "Via Porras": "Vía Porras",
+  "Vía Porras": "Vía Porras",
+  "Santa María": "Santa María",
+  Amador: "Amador",
+  "Loma Alegre": "Loma Alegre",
+  "Costa Del Este": "Costa del Este",
+  "Costa del Este": "Costa del Este",
+  "Alto del Chase": "Alto del Chase",
+  Coronado: "Coronado",
+  "Bella Vista": "Bella Vista",
+  Versalles: "Versalles",
+};
 
-function parseNum(str) {
-  if (!str) return null;
-  const n = parseFloat(str.trim());
+// ─── Field helpers ────────────────────────────────────────────────────────────
+
+function parseNum(val) {
+  if (val === null || val === undefined || val === "") return null;
+  const n = parseFloat(String(val).replace(/[$,\s]/g, ""));
   return isNaN(n) ? null : n;
 }
 
 function mapBusinessType(type) {
-  return type?.toLowerCase() === "alquiler" ? "alquiler" : "venta";
+  return String(type).toLowerCase() === "alquiler" ? "alquiler" : "venta";
 }
 
 function mapPropertyType(type) {
@@ -85,11 +138,22 @@ function mapPropertyType(type) {
     Oficina: "oficina",
     Local: "local",
     Terreno: "terreno",
+    "Lote / Terreno": "terreno",
     Edificio: "edificio",
     Finca: "finca",
     "Lote Comercial": "lote comercial",
   };
   return map[type] ?? "apartamento";
+}
+
+function mapCondition(val) {
+  if (!val) return undefined;
+  const v = String(val).toLowerCase();
+  if (v === "nuevo") return "nuevo";
+  if (v === "usado") return "usado";
+  if (v.includes("plano")) return "en_planos";
+  if (v.includes("construc")) return "en_construccion";
+  return "usado";
 }
 
 function slugify(str) {
@@ -101,37 +165,33 @@ function slugify(str) {
     .replace(/^-|-$/g, "");
 }
 
-function extractSlugFromUrl(url, id) {
-  try {
-    const path = new URL(url).pathname.replace(/\//g, "");
-    // URL is like /apartamento-alquiler-san-francisco/9836183
-    // Take the first segment
-    const parts = new URL(url).pathname.split("/").filter(Boolean);
-    const base = parts[0] ?? slugify(`wasi-${id}`);
-    return `${base}-${id}`;
-  } catch {
-    return `wasi-${id}`;
-  }
+function buildSlug(row) {
+  // Pattern from SEO doc: {type-slug}-en-{intent}-{neighborhood-slug}-{listing_id}
+  // e.g. apartamento-en-venta-punta-pacifica-9833923
+  const typeSlug = TYPE_SLUG_MAP[row.property_type] || slugify(row.property_type || "propiedad");
+  const intent = String(row.listing_type).toLowerCase() === "alquiler" ? "alquiler" : "venta";
+  const zone = String(row.neighborhood || row.corregimiento || "").trim();
+  const neighborhoodSlug = NEIGHBORHOOD_SLUG_MAP[zone] || slugify(zone) || "panama";
+  const id = row.listing_id;
+  return `${typeSlug}-en-${intent}-${neighborhoodSlug}-${id}`;
 }
 
 function buildTitle(row) {
   const type = row.property_type || "Propiedad";
-  const intent = row.listing_type === "Alquiler" ? "en Alquiler" : "en Venta";
-  const building = row.building_name?.trim();
-  const neighborhood = row.neighborhood?.trim() || row.corregimiento?.trim();
+  const intent = String(row.listing_type).toLowerCase() === "alquiler" ? "en Alquiler" : "en Venta";
+  const building = String(row.building_name || "").trim();
+  const zone = String(row.neighborhood || row.corregimiento || "").trim();
 
   if (building) return `${building} — ${type} ${intent}`;
-  if (neighborhood) return `${type} ${intent} en ${neighborhood}`;
+  if (zone) return `${type} ${intent} en ${zone}`;
   return `${type} ${intent}`;
 }
 
-// feat_* → Sanity feature arrays
 function mapFeatures(row) {
+  const check = (col) => row[col] === "✓";
   const interior = [];
   const building = [];
   const location = [];
-
-  const check = (col) => row[col] === "✓";
 
   // Interior
   if (check("feat_air_conditioning")) interior.push("Aire acondicionado");
@@ -181,16 +241,17 @@ function mapFeatures(row) {
   if (check("feat_commercial_zone")) location.push("Zona comercial");
   if (check("feat_tourist_area")) location.push("Zona turística");
   if (check("feat_near_public_transit")) location.push("Cerca del metro");
+  if (check("feat_residential_zone")) location.push("Zona residencial tranquila");
 
   return { interior, building, location };
 }
 
 // ─── Image upload ─────────────────────────────────────────────────────────────
 
-async function uploadImageFromUrl(imageUrl, filename) {
+async function uploadImage(imageUrl, filename) {
   try {
-    const res = await fetch(imageUrl);
-    if (!res.ok) return null;
+    const res = await fetch(imageUrl, { signal: AbortSignal.timeout(15000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const buffer = await res.arrayBuffer();
     const asset = await client.assets.upload("image", Buffer.from(buffer), {
       filename,
@@ -198,83 +259,100 @@ async function uploadImageFromUrl(imageUrl, filename) {
     });
     return { _type: "image", asset: { _type: "reference", _ref: asset._id } };
   } catch (err) {
-    console.warn(`  ⚠ Could not upload image: ${imageUrl} — ${err.message}`);
+    console.warn(`    ⚠ Image upload failed: ${err.message}`);
     return null;
   }
 }
 
-// ─── Main ────────────────────────────────────────────────────────────────────
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
-  const csvPath = "C:/Users/sbene/Downloads/PH GT - PANAMARES.csv";
-  const content = readFileSync(csvPath, "utf-8");
-  const records = parseCSV(content);
+  console.log(`\n📂 Reading ${XLSX_PATH}...`);
+  const wb = XLSX.readFile(XLSX_PATH);
+  const ws = wb.Sheets[SHEET_NAME];
+  const rows = XLSX.utils.sheet_to_json(ws);
 
-  const LIMIT = 20;
-  const batch = records.slice(0, LIMIT);
-  console.log(`📋 Importing ${batch.length} of ${records.length} properties\n`);
+  // Normalize column names (trim spaces)
+  const records = rows.map((row) => {
+    const clean = {};
+    for (const [k, v] of Object.entries(row)) clean[k.trim()] = v;
+    return clean;
+  });
+
+  console.log(`📋 ${records.length} properties found`);
+  if (DRY_RUN) console.log("🔍 DRY RUN — nothing will be written to Sanity\n");
+  else console.log("🚀 Importing to Sanity...\n");
 
   let success = 0;
+  let skipped = 0;
   let failed = 0;
+  const unmappedZones = new Set();
 
-  for (let i = 0; i < batch.length; i++) {
-    const row = batch[i];
+  for (let i = 0; i < records.length; i++) {
+    const row = records[i];
     const id = row.listing_id;
     const title = buildTitle(row);
 
-    process.stdout.write(`[${i + 1}/${records.length}] ${title}... `);
+    process.stdout.write(`[${String(i + 1).padStart(3)}/${records.length}] ${title.substring(0, 60).padEnd(60)} `);
+
+    const price = parseNum(row.price_usd);
+    if (!price) {
+      console.log("⏭ skip (no price)");
+      skipped++;
+      continue;
+    }
+
+    const rawZone = String(row.neighborhood || row.corregimiento || "").trim();
+    const zone = ZONE_MAP[rawZone] || rawZone;
+    if (!ZONE_MAP[rawZone] && rawZone) unmappedZones.add(rawZone);
+
+    const { interior, building, location } = mapFeatures(row);
+    const slug = buildSlug(row);
+
+    const doc = {
+      _id: `wasi-${id}`,
+      _type: "property",
+      title,
+      slug: { _type: "slug", current: slug },
+      businessType: mapBusinessType(row.listing_type),
+      propertyType: mapPropertyType(row.property_type),
+      listingStatus: "activa",
+      price,
+      zone,
+      province: row.province || "Panamá",
+      ...(row.building_name ? { buildingName: String(row.building_name).trim() } : {}),
+      ...(row.tower ? { tower: String(row.tower).trim() } : {}),
+      ...(row.model ? { model: String(row.model).trim() } : {}),
+      ...(parseNum(row.floor) !== null ? { floor: parseNum(row.floor) } : {}),
+      ...(parseNum(row.year_built) !== null ? { yearBuilt: parseNum(row.year_built) } : {}),
+      ...(mapCondition(row.condition) ? { condition: mapCondition(row.condition) } : {}),
+      ...(row.corregimiento ? { corregimiento: String(row.corregimiento).trim() } : {}),
+      ...(parseNum(row.bedrooms) !== null ? { bedrooms: parseNum(row.bedrooms) } : {}),
+      ...(parseNum(row.bathrooms) !== null ? { bathrooms: parseNum(row.bathrooms) } : {}),
+      ...(row.half_bath === "Si" ? { halfBathrooms: 1 } : {}),
+      ...(parseNum(row.area_built_m2) !== null ? { area: parseNum(row.area_built_m2) } : {}),
+      ...(parseNum(row.parking) !== null ? { parking: parseNum(row.parking) } : {}),
+      ...(parseNum(row.admin_fee) !== null ? { adminFee: parseNum(row.admin_fee) } : {}),
+      ...(interior.length ? { featuresInterior: interior } : {}),
+      ...(building.length ? { featuresBuilding: building } : {}),
+      ...(location.length ? { featuresLocation: location } : {}),
+      featured: false,
+      recommended: false,
+      fairPrice: false,
+    };
+
+    if (DRY_RUN) {
+      console.log("✓ (dry)");
+      success++;
+      continue;
+    }
 
     try {
-      const price = parsePrice(row.price_usd);
-      if (!price) {
-        console.log("⏭ skipped (no price)");
-        continue;
-      }
-
-      const slug = extractSlugFromUrl(row.url, id);
-      const { interior, building, location } = mapFeatures(row);
-
       // Upload main image
-      let mainImage = null;
       if (row.image_url) {
-        mainImage = await uploadImageFromUrl(row.image_url, `wasi-${id}.jpg`);
+        const img = await uploadImage(String(row.image_url), `wasi-${id}.jpg`);
+        if (img) doc.mainImage = img;
       }
-
-      const doc = {
-        _id: `wasi-${id}`,
-        _type: "property",
-        title,
-        slug: { _type: "slug", current: slug },
-        businessType: mapBusinessType(row.listing_type),
-        propertyType: mapPropertyType(row.property_type),
-        listingStatus: "activa",
-        price,
-        zone: row.neighborhood || row.corregimiento || "",
-        province: row.province || "Panamá",
-        buildingName: row.building_name || undefined,
-        tower: row.tower || undefined,
-        model: row.model || undefined,
-        floor: parseNum(row.floor) ?? undefined,
-        yearBuilt: parseNum(row.year_built) ?? undefined,
-        condition: row.condition?.toLowerCase() === "nuevo" ? "nuevo" : row.condition?.trim() ? "usado" : undefined,
-        corregimiento: row.corregimiento || undefined,
-        bedrooms: parseNum(row.bedrooms) ?? undefined,
-        bathrooms: parseNum(row.bathrooms) ?? undefined,
-        halfBathrooms: row.half_bath === "Si" ? 1 : undefined,
-        area: parseNum(row.area_built_m2) ?? undefined,
-        parking: parseNum(row.parking) ?? undefined,
-        adminFee: parsePrice(row.admin_fee) ?? undefined,
-        featuresInterior: interior.length ? interior : undefined,
-        featuresBuilding: building.length ? building : undefined,
-        featuresLocation: location.length ? location : undefined,
-        featured: false,
-        recommended: false,
-        fairPrice: false,
-        ...(mainImage ? { mainImage } : {}),
-      };
-
-      // Remove undefined fields
-      Object.keys(doc).forEach((k) => doc[k] === undefined && delete doc[k]);
 
       await client.createOrReplace(doc);
       console.log("✓");
@@ -285,7 +363,18 @@ async function main() {
     }
   }
 
-  console.log(`\n✅ Done — ${success} imported, ${failed} failed`);
+  console.log(`\n${"─".repeat(60)}`);
+  console.log(`✅ Imported:  ${success}`);
+  console.log(`⏭  Skipped:  ${skipped}`);
+  console.log(`❌ Failed:   ${failed}`);
+
+  if (unmappedZones.size > 0) {
+    console.log(`\n⚠ Zones not in Sanity schema (stored as-is):`);
+    for (const z of unmappedZones) console.log(`   - ${z}`);
+  }
 }
 
-main();
+main().catch((err) => {
+  console.error("\n💥 Fatal error:", err.message);
+  process.exit(1);
+});

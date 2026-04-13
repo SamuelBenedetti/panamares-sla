@@ -14,7 +14,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/studio/", "/api/"],
       },
     ],
-    sitemap: "https://panamares.com/sitemap.xml",
-    host: "https://panamares.com",
+    sitemap: "https://panamares.vercel.app/sitemap.xml",
+    host: "https://panamares.vercel.app",
   };
 }

@@ -7,7 +7,7 @@ import type { Guide } from "@/lib/types";
 import GuiasPageClient from "@/components/home/GuiasPageClient";
 import { breadcrumbSchema } from "@/lib/jsonld";
 
-const BASE_URL = "https://panamares.com";
+const BASE_URL = "https://panamares.vercel.app";
 
 export const metadata: Metadata = {
   title: "Guías de Bienes Raíces en Panama",

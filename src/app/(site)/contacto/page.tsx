@@ -45,9 +45,15 @@ export default function ContactoPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[160px] pb-[80px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[60px] xl:pt-[80px] pb-[80px] xl:pb-[112px]">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex flex-col gap-[20px]">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-[8px]">
+              <a href="/" className="font-body font-normal text-[14px] text-[#737b8c] hover:text-[#0c1834] transition-colors">Inicio</a>
+              <span className="text-[#737b8c] text-[12px]">›</span>
+              <span className="font-body font-medium text-[14px] text-[#0c1834]">Contacto</span>
+            </nav>
             <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
               Contáctenos
             </p>
@@ -68,7 +74,7 @@ export default function ContactoPage() {
       </section>
 
       {/* ── Form + Sidebar ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pb-[128px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pb-[80px] xl:pb-[120px]">
         <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 xl:grid-cols-[3fr_2fr] gap-[40px] xl:gap-[64px]">
 
@@ -329,7 +335,7 @@ export default function ContactoPage() {
       </section>
 
       {/* ── Únete al equipo ── */}
-      <section className="bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[130px] xl:py-[80px]">
+      <section className="bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[80px] xl:py-[100px]">
         <div className="max-w-[1600px] mx-auto flex flex-col items-center xl:items-start xl:flex-row xl:justify-between gap-[32px] xl:gap-[40px]">
           <div className="flex flex-col gap-[15px] items-center xl:items-start text-center xl:text-left">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">

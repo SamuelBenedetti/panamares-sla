@@ -4,7 +4,7 @@ import { groq } from "next-sanity";
 import { CATEGORIES } from "@/lib/categories";
 import { NEIGHBORHOODS } from "@/lib/neighborhoods";
 
-const BASE_URL = "https://panamares.com";
+const BASE_URL = "https://panamares.vercel.app";
 
 interface PropertySlim {
   slug: string;

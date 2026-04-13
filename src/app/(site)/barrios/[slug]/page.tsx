@@ -15,7 +15,7 @@ import PropertyMapMulti from "@/components/properties/PropertyMapMulti";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import { urlFor } from "@/sanity/lib/image";
 
-const BASE_URL = "https://panamares.com";
+const BASE_URL = "https://panamares.vercel.app";
 
 interface Props {
   params: { slug: string };

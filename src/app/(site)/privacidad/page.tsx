@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: "Política de Privacidad",
   description:
     "Consulta la política de privacidad de Panamares. Información sobre el tratamiento de datos personales recabados a través de panamares.com.",
-  alternates: { canonical: "https://panamares.com/privacidad/" },
+  alternates: { canonical: "https://panamares.vercel.app/privacidad/" },
 };
 
 export default function PrivacidadPage() {

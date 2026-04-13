@@ -19,7 +19,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://panamares.com"),
+  metadataBase: new URL("https://panamares.vercel.app"),
   title: {
     default: "Bienes Raíces en Panama City | Panamares",
     template: "%s | Panamares",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     site: "@panamares",
   },
   alternates: {
-    canonical: "https://panamares.com",
+    canonical: "https://panamares.vercel.app",
   },
 };
 

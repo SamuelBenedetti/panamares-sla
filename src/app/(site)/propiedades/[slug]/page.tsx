@@ -32,7 +32,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const zone = property.zone ?? "Panama";
   const intent = property.businessType === "venta" ? "Venta" : "Alquiler";
   const ptLabel = property.propertyType.charAt(0).toUpperCase() + property.propertyType.slice(1);
-  const title = `${property.title} | ${ptLabel} en ${intent} | Panamares`;
+  const statsParts: string[] = [];
+  if (property.bedrooms != null) statsParts.push(`${property.bedrooms} Hab`);
+  if (property.area != null) statsParts.push(`${property.area}m²`);
+  const statsStr = statsParts.length ? ` | ${statsParts.join(", ")}` : "";
+  const buildingPrefix = property.buildingName ? `${property.buildingName} — ` : "";
+  const title = `${buildingPrefix}${ptLabel} en ${intent} en ${zone}${statsStr}`;
+  const ogTitle = title; // ✅ sin | Panamares, el template del root layout lo agrega solo
+
   const intentLabel = property.businessType === "venta" ? "en venta" : "en alquiler";
   const parts: string[] = [
     `${property.propertyType} ${intentLabel} en ${zone}, Panama City.`,
@@ -55,13 +62,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     robots: { index: true, follow: true },
     alternates: { canonical: `${BASE_URL}/propiedades/${property.slug.current}/` },
     openGraph: {
-      title,
+      title: ogTitle,
       description,
       images: ogImage ? [{ url: ogImage }] : [],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: ogTitle,
       description,
       images: ogImage ? [ogImage] : [],
     },
@@ -245,7 +252,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                       <div className="flex items-center gap-[8px]">
                         <Bath size={20} className="text-[#0c1935] shrink-0" />
                         <span className="font-body font-medium text-[18px] text-[#0d1835] leading-none">
-                          {property.bathrooms}{property.halfBathrooms ? "+½" : ""} {property.bathrooms === 1 ? "baño" : "baños"}
+                          {property.bathrooms}{property.halfBathrooms ? ".5" : ""} {property.bathrooms === 1 ? "baño" : "baños"}
                         </span>
                       </div>
                     )}
@@ -340,16 +347,17 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* Estimación de alquiler — only for sale properties with rentalEstimate */}
               {property.businessType === "venta" && property.rentalEstimate && (
-                <div className="bg-white border border-[#dfe5ef] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] p-[24px] flex items-center justify-between gap-[16px]">
-                  <div className="flex flex-col gap-[2px]">
-                    <p className="font-body font-medium text-[11px] text-[#566070] tracking-[4px] uppercase leading-4">Estimación</p>
-                    <p className="font-body font-medium text-[11px] text-[#566070] tracking-[4px] uppercase leading-4">de alquiler</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-body font-bold text-[36px] text-[#0c1834] tracking-[-0.4px] leading-none">
-                      {formatPrice(property.rentalEstimate)}
-                    </p>
-                    <p className="font-body font-normal text-[14px] text-[#566070] leading-5">/mes</p>
+                <div className="bg-white border border-[#dfe5ef] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] p-[24px] flex items-center justify-between gap-[16px] text-[12px]">
+                  <div className="uppercase  text-[#737B8C] tracking-[5px]">Estimación de alquiler</div>
+                  <div className="text-[#0C1834] text-[35px]  font-bold flex items-center gap-[10px]">
+                    <div >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="34" height="27" viewBox="0 0 34 27" fill="none">
+  <path d="M4.94903 25.122L2.31148 26.6681C2.05292 26.8189 1.7255 26.8176 1.56569 26.52L0.054622 23.7071C-0.0818029 23.4537 0.054622 23.1471 0.272902 23.0262L1.14472 22.5442C1.04987 22.0804 0.288493 21.2397 0.853682 20.8681L1.81905 20.2328L1.32272 19.1323C1.21488 18.8932 1.31363 18.6334 1.52151 18.4904L2.49468 17.8213L1.93729 16.522L2.98971 12.4773C1.56829 11.1378 0.935537 9.23953 1.1798 7.31659C1.60207 3.97483 4.65019 1.63352 8.03093 2.15453C9.22757 0.540818 11.1739 -0.299819 13.2034 0.0977624C15.0068 0.451168 16.5854 1.80372 17.1441 3.68639L22.7921 4.21909C23.2144 4.25937 23.6107 4.53222 23.916 4.83755L33.0578 13.9637C33.3098 14.2158 33.289 14.5419 33.0422 14.7888L25.1854 22.6689C24.9697 22.8859 24.6436 22.8599 24.4292 22.6455L15.2731 13.4869C14.9444 13.1582 14.6963 12.7528 14.6534 12.3071L14.4039 9.77094C13.8491 10.0425 13.2787 10.2023 12.6265 10.2569C11.8651 12.1421 10.3034 13.6844 8.25831 14.1365L5.22448 24.727C5.1764 24.8933 5.11274 25.0271 4.95033 25.122H4.94903ZM14.3013 8.58729L14.0817 6.42138C13.9518 5.14289 14.682 3.96963 15.9878 3.6669C15.5018 2.36891 14.3455 1.42043 13.0864 1.15798C11.6261 0.852647 10.2033 1.3035 9.1808 2.44427C11.8781 3.49279 13.4477 6.2005 12.9604 9.07842C13.4801 9.01346 13.866 8.83675 14.3013 8.58599V8.58729ZM2.24652 25.4715L4.22663 24.2995L7.30203 13.5571C7.48913 12.9022 8.23232 13.3752 9.59397 12.4228C10.3839 11.8706 11.0284 11.1352 11.4221 10.2257C10.484 10.0373 9.69662 9.71117 9.02099 9.14338C8.80661 8.96278 8.84299 8.62757 8.97421 8.44827C9.12493 8.24298 9.44845 8.14813 9.67972 8.31184C10.3112 8.7588 11.005 9.09141 11.817 9.14079C12.3666 6.67864 10.9699 4.21779 8.56104 3.44602C8.36875 3.71497 8.32067 4.01511 8.24401 4.34902C9.03008 4.65955 9.52251 5.34687 9.50952 6.12514C9.49523 6.95539 8.98201 7.64921 8.2765 7.90906C7.48003 8.2014 6.65629 7.93505 6.12098 7.3036C5.69092 6.79688 5.59997 6.10825 5.84424 5.46511C6.04303 4.9428 6.51597 4.48675 7.14222 4.32174C7.20329 3.93975 7.32282 3.61493 7.42676 3.23034C4.50857 3.00946 2.12698 5.35337 2.20234 8.23258C2.24002 9.6631 2.86368 10.9572 3.96027 11.868C4.0954 11.9797 4.18245 12.1941 4.13697 12.376L3.09235 16.4441L3.70431 17.8148C3.81735 18.0682 3.70821 18.3488 3.48343 18.4969L2.53496 19.1232L3.01569 20.1288C3.12743 20.3614 3.09235 20.6641 2.87407 20.8097L1.89441 21.4593L2.39204 22.5013C2.51287 22.756 2.43231 23.0353 2.19454 23.1796L1.27595 23.7382L2.24652 25.4767V25.4715ZM24.8502 21.5113L31.9339 14.3964L23.2118 5.67689C23.013 5.4859 22.8428 5.37156 22.5829 5.27281L16.3567 4.72711C15.7305 4.67254 15.1042 5.40274 15.1601 6.01211L15.724 12.2084C15.8162 12.4384 15.9306 12.5878 16.1034 12.7788L24.8515 21.5126L24.8502 21.5113ZM8.42072 6.14333C8.42072 5.70028 8.06211 5.34168 7.61906 5.34168C7.176 5.34168 6.8174 5.70028 6.8174 6.14333C6.8174 6.58639 7.176 6.94499 7.61906 6.94499C8.06211 6.94499 8.42072 6.58639 8.42072 6.14333Z" fill="#0C1834"/>
+  <path d="M24.2242 16.2363C23.9721 16.4884 23.6564 16.4975 23.4381 16.2935C23.2198 16.0895 23.1809 15.7608 23.4134 15.5282L26.0029 12.9348C26.2264 12.7113 26.546 12.7087 26.763 12.9062C26.98 13.1037 27.0072 13.4558 26.7669 13.6949L24.2255 16.2363H24.2242Z" fill="#0C1834"/>
+  <path d="M21.1969 13.2078C20.9461 13.4598 20.6265 13.4767 20.3913 13.2467C20.2042 13.0648 20.1575 12.7231 20.3874 12.4932L22.973 9.90628C23.2017 9.67761 23.52 9.66981 23.7461 9.88939C23.9306 10.0687 23.9865 10.4104 23.7617 10.6365L21.1969 13.2078Z" fill="#0C1834"/>
+</svg>
+                    </div>
+                    <span>${property.rentalEstimate}</span>
                   </div>
                 </div>
               )}

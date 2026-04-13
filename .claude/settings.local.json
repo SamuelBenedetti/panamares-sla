@@ -77,7 +77,8 @@
       "Read(//c/Program Files \\(x86\\)/Microsoft/Edge/Application/**)",
       "Read(//c/Program Files/Microsoft/Edge/Application/**)",
       "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --print-to-pdf=C:/Users/sbene/Desktop/panamares/SEO-Panamares-2026.pdf --print-to-pdf-no-header --no-margins file:///C:/Users/sbene/Desktop/panamares/seo-report.html)",
-      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --print-to-pdf=C:/Users/sbene/Desktop/panamares/SEO-Panamares-2026-EN.pdf --print-to-pdf-no-header --no-margins file:///C:/Users/sbene/Desktop/panamares/seo-report-en.html)"
+      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --print-to-pdf=C:/Users/sbene/Desktop/panamares/SEO-Panamares-2026-EN.pdf --print-to-pdf-no-header --no-margins file:///C:/Users/sbene/Desktop/panamares/seo-report-en.html)",
+      "Bash(SANITY_WRITE_TOKEN=\"skY1C2gN11YJqcPWii0DlkWhjdHgmNHIvMpeKuf0ui99uSwlztfjYDCapFilYtAfAKfqeE9hGoCQI9Ju9xW1dZ3tclkrpcnEsOkckKxN6LSShpy5cD2xyXPGjBhLUkgiJwWA6DGDJqAXbCAY2BStgevDXDuS3bOlCUeeFB0IuptPGuhPUxdu\" node:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
