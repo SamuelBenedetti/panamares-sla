@@ -144,7 +144,7 @@ export const CATEGORIES: CategoryConfig[] = [
   },
   {
     slug: "casas-de-playa-en-venta",
-    propertyType: "casa",
+    propertyType: "casa de playa",
     businessType: "venta",
     h1: "Casas de Playa en Venta en Panama",
     metaTitle: "Casas de Playa en Venta en Panama",
@@ -197,3 +197,28 @@ export function getCategoryBySlug(slug: string): CategoryConfig | undefined {
 }
 
 export const VALID_CATEGORY_SLUGS = new Set(CATEGORIES.map((c) => c.slug));
+
+// Maps a raw Sanity propertyType + businessType to its category slug, used for
+// 301 redirects when a listing is sold/retired.
+const TYPE_TO_CATEGORY_BASE: Record<string, string> = {
+  apartamento: "apartamentos",
+  apartaestudio: "apartaestudios",
+  casa: "casas",
+  "casa de playa": "casas-de-playa",
+  penthouse: "penthouses",
+  oficina: "oficinas",
+  local: "locales-comerciales",
+  terreno: "terrenos",
+  edificio: "edificios",
+  finca: "fincas",
+  "lote comercial": "lotes-comerciales",
+};
+
+export function getCategorySlugFor(propertyType: string, businessType: "venta" | "alquiler"): string {
+  const base = TYPE_TO_CATEGORY_BASE[propertyType];
+  if (!base) return businessType === "venta" ? "propiedades-en-venta" : "propiedades-en-alquiler";
+  const candidate = `${base}-en-${businessType}`;
+  return VALID_CATEGORY_SLUGS.has(candidate)
+    ? candidate
+    : businessType === "venta" ? "propiedades-en-venta" : "propiedades-en-alquiler";
+}

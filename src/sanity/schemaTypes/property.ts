@@ -1,5 +1,72 @@
 import { defineField, defineType } from "sanity";
 
+// SEO doc Appendix A — plural type slug used in Tier 4 URL pattern.
+// Brief example: /propiedades/apartamentos-en-venta-punta-pacifica-9833923/
+const TYPE_SLUG_PLURAL: Record<string, string> = {
+  apartamento: "apartamentos",
+  apartaestudio: "apartaestudios",
+  casa: "casas",
+  "casa de playa": "casas-de-playa",
+  penthouse: "penthouses",
+  oficina: "oficinas",
+  local: "locales-comerciales",
+  terreno: "terrenos",
+  edificio: "edificios",
+  finca: "fincas",
+  "lote comercial": "lotes-comerciales",
+};
+
+// SEO doc Appendix B — neighborhood slug (accent-stripped).
+const ZONE_TO_SLUG: Record<string, string> = {
+  "Punta Pacífica": "punta-pacifica",
+  "Punta Paitilla": "punta-paitilla",
+  "Avenida Balboa": "avenida-balboa",
+  Obarrio: "obarrio",
+  "Calle 50": "calle-50",
+  "Costa del Este": "costa-del-este",
+  Albrook: "albrook",
+  "Coco del Mar": "coco-del-mar",
+  "Santa María": "santa-maria",
+  Marbella: "marbella",
+  "El Cangrejo": "el-cangrejo",
+  "Altos del Golf": "altos-del-golf",
+  "San Francisco": "san-francisco",
+  "Vía Porras": "via-porras",
+  "Bella Vista": "bella-vista",
+  "Condado del Rey": "condado-del-rey",
+  Amador: "amador",
+  "Los Andes": "los-andes",
+  Carrasquilla: "carrasquilla",
+  "Loma Alegre": "loma-alegre",
+  "Alto del Chase": "alto-del-chase",
+  Coronado: "coronado",
+  Versalles: "versalles",
+  "Río Mar": "rio-mar",
+};
+
+function slugifyFallback(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+// Builds the Tier 4 slug per SEO doc: {type-plural}-en-{intent}-{zone-slug}-{listing_id}
+function buildListingSlug(doc: Record<string, unknown>): string {
+  const propertyType = String(doc.propertyType ?? "apartamento");
+  const businessType = doc.businessType === "alquiler" ? "alquiler" : "venta";
+  const zone = String(doc.zone ?? "");
+  const wasiId = doc.wasiId;
+
+  const typeSlug = TYPE_SLUG_PLURAL[propertyType] ?? slugifyFallback(propertyType);
+  const zoneSlug = ZONE_TO_SLUG[zone] ?? slugifyFallback(zone) ?? "panama";
+  // Fallback id for manually-created docs: 7 random digits, stable per click.
+  const id = wasiId ?? Math.floor(1_000_000 + Math.random() * 9_000_000);
+  return `${typeSlug}-en-${businessType}-${zoneSlug}-${id}`;
+}
+
 const NEIGHBORHOODS = [
   "Punta Pacífica",
   "Punta Paitilla",
@@ -48,12 +115,39 @@ export default defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: "wasiId",
+      title: "ID de Wasi",
+      type: "number",
+      group: "basic",
+      description:
+        "ID numérico de la propiedad en Wasi. Se usa para generar la URL (Tier 4 SEO). Si se crea manualmente sin ID, se genera uno automático al generar el slug.",
+      validation: (r) => r.positive().integer(),
+    }),
+    defineField({
       name: "slug",
       title: "Slug (URL)",
       type: "slug",
       group: "basic",
-      options: { source: "title", maxLength: 96 },
-      validation: (r) => r.required(),
+      description:
+        "Formato obligatorio (SEO doc §3.2 Tier 4): {tipo-plural}-en-{venta|alquiler}-{barrio}-{wasiId}. Ej: apartamentos-en-venta-punta-pacifica-9833923. Usa el botón Generar.",
+      options: {
+        source: (doc) => buildListingSlug(doc as Record<string, unknown>),
+        maxLength: 120,
+        slugify: (input) => input.toLowerCase().trim(),
+      },
+      validation: (r) =>
+        r.required().custom((slug) => {
+          const current = typeof slug === "object" && slug && "current" in slug
+            ? (slug as { current?: string }).current
+            : undefined;
+          if (!current) return "Slug requerido";
+          // Must match Tier 4 pattern: {type}-en-{venta|alquiler}-{zone}-{digits}
+          const PATTERN = /^[a-z0-9-]+-en-(venta|alquiler)-[a-z0-9-]+-\d+$/;
+          if (!PATTERN.test(current)) {
+            return "El slug debe seguir el patrón SEO: {tipo}-en-{venta|alquiler}-{barrio}-{id}. Haz click en Generar.";
+          }
+          return true;
+        }),
     }),
     defineField({
       name: "businessType",
@@ -79,7 +173,7 @@ export default defineType({
           { title: "Apartamento", value: "apartamento" },
           { title: "Apartaestudio", value: "apartaestudio" },
           { title: "Casa", value: "casa" },
-          { title: "Casa de Playa", value: "casa" },
+          { title: "Casa de Playa", value: "casa de playa" },
           { title: "Penthouse", value: "penthouse" },
           { title: "Oficina", value: "oficina" },
           { title: "Local Comercial", value: "local" },

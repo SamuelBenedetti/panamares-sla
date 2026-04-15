@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -9,6 +9,7 @@ import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertyBySlugQuery, relatedPropertiesQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
+import { getCategorySlugFor } from "@/lib/categories";
 import type { Property } from "@/lib/types";
 import PropertyGallery from "@/components/properties/PropertyGallery";
 import PropertyMap from "@/components/properties/PropertyMap";
@@ -79,6 +80,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (params.slug === "demo") return { title: "Demo — Panamares", robots: { index: false, follow: false } };
   const property = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
   if (!property) return {};
+  // Sold/retired listings 301-redirect at the page handler below; keep their
+  // metadata minimal so the pre-redirect response is not indexable.
+  if (property.listingStatus !== "activa") {
+    return { robots: { index: false, follow: false } };
+  }
 
   const zone = property.zone ?? "Panama";
   const intent = property.businessType === "venta" ? "Venta" : "Alquiler";
@@ -127,6 +133,11 @@ export default async function PropertyDetailPage({ params }: Props) {
     const fetched = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
     if (!fetched) notFound();
     property = fetched;
+
+    // Sold/retired listings → 301 to best-fit category page (SEO doc §4.4).
+    if (property.listingStatus !== "activa") {
+      redirect(`/${getCategorySlugFor(property.propertyType, property.businessType)}/`);
+    }
 
     related = await sanityFetch<Property[]>(relatedPropertiesQuery, {
       zone: property.zone ?? "",

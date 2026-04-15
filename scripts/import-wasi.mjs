@@ -26,20 +26,21 @@ const client = createClient({
 
 // ─── SEO slug maps (from SEO Information Architecture doc) ───────────────────
 
-// Appendix A — type slug (singular, for URLs)
+// Appendix A — type slug PLURAL for Tier 4 URL
+// Brief example: /propiedades/apartamentos-en-venta-punta-pacifica-9833923/
 const TYPE_SLUG_MAP = {
-  Apartamento: "apartamento",
-  Apartaestudio: "apartaestudio",
-  Casa: "casa",
-  "Casa de Playa": "casa-de-playa",
-  Penthouse: "penthouse",
-  Oficina: "oficina",
-  Local: "local-comercial",
-  Terreno: "terreno",
-  "Lote Comercial": "lote-comercial",
-  "Lote / Terreno": "lote-comercial",
-  Edificio: "edificio",
-  Finca: "finca",
+  Apartamento: "apartamentos",
+  Apartaestudio: "apartaestudios",
+  Casa: "casas",
+  "Casa de Playa": "casas-de-playa",
+  Penthouse: "penthouses",
+  Oficina: "oficinas",
+  Local: "locales-comerciales",
+  Terreno: "terrenos",
+  "Lote Comercial": "lotes-comerciales",
+  "Lote / Terreno": "lotes-comerciales",
+  Edificio: "edificios",
+  Finca: "fincas",
 };
 
 // Appendix B — neighborhood slug
@@ -133,7 +134,7 @@ function mapPropertyType(type) {
     Apartamento: "apartamento",
     Apartaestudio: "apartaestudio",
     Casa: "casa",
-    "Casa de Playa": "casa",
+    "Casa de Playa": "casa de playa",
     Penthouse: "penthouse",
     Oficina: "oficina",
     Local: "local",
@@ -314,6 +315,7 @@ async function main() {
       _type: "property",
       title,
       slug: { _type: "slug", current: slug },
+      wasiId: typeof id === "number" ? id : parseInt(String(id), 10) || undefined,
       businessType: mapBusinessType(row.listing_type),
       propertyType: mapPropertyType(row.property_type),
       listingStatus: "activa",

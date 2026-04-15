@@ -31,13 +31,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     { propertyType: config.propertyType, businessType: config.businessType }
   );
 
-  const shouldIndex = properties.length >= 2;
   const firstImage = properties.find((p) => p.mainImage)?.mainImage;
   const ogImage = firstImage
     ? urlFor(firstImage).width(1200).height(630).url()
     : undefined;
 
   const url = `/${params.category}/`;
+  // SEO doc: /casas-en-alquiler/ and /oficinas-en-alquiler/ stay noindex until 5+
+  // active listings; all other categories use the 2-listing threshold.
+  const HIGH_THRESHOLD_SLUGS = new Set(["casas-en-alquiler", "oficinas-en-alquiler"]);
+  const threshold = HIGH_THRESHOLD_SLUGS.has(params.category) ? 5 : 2;
+  const shouldIndex = properties.length >= threshold;
   return {
     title: config.metaTitle,
     description: config.metaDescription,
