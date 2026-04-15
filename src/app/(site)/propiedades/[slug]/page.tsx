@@ -326,9 +326,9 @@ export default async function PropertyDetailPage({ params }: Props) {
                 )}
 
                 {/* Agent strip */}
-                <div className="bg-[#f8f8f9] p-[15px] flex items-center justify-between gap-[12px]">
+                <div className="bg-[#f8f8f9] p-[15px] flex items-center gap-[12px]">
                   {property.agent ? (
-                    <div className="flex items-center gap-[10px] min-w-0">
+                    <div className="flex-1 flex items-center gap-[10px] min-w-0">
                       {property.agent.photo ? (
                         <Image
                           src={urlFor(property.agent.photo).width(80).height(80).url()}
@@ -357,7 +357,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-[10px]">
+                    <div className="flex-1 flex items-center gap-[10px] min-w-0">
                       <div className="w-[40px] h-[40px] rounded-full bg-[#0c1834] flex items-center justify-center shrink-0">
                         <span className="font-heading font-medium text-[16px] text-white leading-[20px]">PM</span>
                       </div>
@@ -367,7 +367,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                       </div>
                     </div>
                   )}
-                  <div className="shrink-0 flex flex-col items-center">
+                  <div className="shrink-0 flex flex-col items-start">
                     <p className="font-body text-[12px] text-[#737b8c] leading-normal">Atención disponible de lunes</p>
                     <p className="font-body text-[12px] text-[#737b8c] leading-normal">
                       a sábado <span className="font-semibold">8am – 7pm</span>
