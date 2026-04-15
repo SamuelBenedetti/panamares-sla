@@ -226,8 +226,9 @@ export default async function PropertyDetailPage({ params }: Props) {
       <PropertyGallery images={galleryImages} propertyTitle={property.title} />
 
       {/* ── MAIN: Content + Sidebar ── */}
-      <section className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto py-[40px]">
-        <div className="max-w-[1600px] mx-auto">
+      <section className="bg-[#f9f9f9]">
+        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto py-[40px]">
+          <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-[32px] items-start">
 
             {/* Right: Sticky sidebar — order-2 on desktop so content column is left */}
@@ -601,6 +602,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
             </div>
           </div>
+        </div>
         </div>
       </section>
 
