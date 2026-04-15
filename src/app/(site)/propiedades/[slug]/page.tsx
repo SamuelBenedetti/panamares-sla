@@ -232,7 +232,7 @@ export default async function PropertyDetailPage({ params }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-[32px] items-start">
 
             {/* Right: Sticky sidebar — order-2 on desktop so content column is left */}
-            <div className="lg:sticky lg:top-[24px] flex flex-col gap-[16px] lg:order-2">
+            <div className="lg:sticky lg:top-[100px] flex flex-col gap-[16px] lg:order-2">
 
               {/* Main card — price, stats, CTAs */}
               <div className="bg-white border border-[#dfe5ef] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] p-[26px] flex flex-col gap-[25px]">
