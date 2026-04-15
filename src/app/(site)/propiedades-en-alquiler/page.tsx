@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertiesByIntentQuery } from "@/sanity/lib/queries";
 import type { Property } from "@/lib/types";
+import { urlFor } from "@/sanity/lib/image";
 import { getSlugByName } from "@/lib/neighborhoods";
 import { itemListSchema, breadcrumbSchema } from "@/lib/jsonld";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
@@ -9,15 +10,25 @@ import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import CTA from "@/components/home/CTA";
 
+const BASE_URL = "https://panamares.vercel.app";
 const H1 = "Propiedades en Alquiler en Panamá";
 const DESCRIPTION =
   "Panamares tiene la selección más completa de propiedades en alquiler en Panama City. Apartamentos amueblados y sin amueblar, casas, oficinas y locales comerciales en Punta Pacífica, Punta Paitilla, Obarrio, Calle 50 y más zonas. Contratos en dólares, atención en español y agentes especializados que te acompañan en todo el proceso. Encuentra tu próxima propiedad en alquiler en la ciudad con el mercado inmobiliario más dinámico de la región.";
 
-export const metadata: Metadata = {
-  title: "Propiedades en Alquiler en Panama",
-  description: DESCRIPTION,
-  alternates: { canonical: "https://panamares.vercel.app/propiedades-en-alquiler/" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const properties = await sanityFetch<Property[]>(propertiesByIntentQuery, { businessType: "alquiler" });
+  const firstImage = properties.find((p) => p.mainImage)?.mainImage;
+  const ogImage = firstImage ? urlFor(firstImage).width(1200).height(630).url() : undefined;
+  return {
+    title: "Propiedades en Alquiler en Panama",
+    description: DESCRIPTION,
+    alternates: { canonical: `${BASE_URL}/propiedades-en-alquiler/` },
+    ...(ogImage && {
+      openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+      twitter: { card: "summary_large_image", images: [ogImage] },
+    }),
+  };
+}
 
 export default async function PropiedadesEnAlquilerPage({
   searchParams = {},

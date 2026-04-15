@@ -1,17 +1,16 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/client";
-import { propertiesByGeoTypeQuery, neighborhoodContentQuery } from "@/sanity/lib/queries";
+import { propertiesByGeoTypeQuery, propertiesByCategoryQuery, neighborhoodContentQuery } from "@/sanity/lib/queries";
 import { getCategoryBySlug, VALID_CATEGORY_SLUGS } from "@/lib/categories";
-import { getNeighborhoodBySlug, VALID_NEIGHBORHOOD_SLUGS } from "@/lib/neighborhoods";
+import { getNeighborhoodBySlug, getSlugByName, VALID_NEIGHBORHOOD_SLUGS } from "@/lib/neighborhoods";
 import { itemListSchema, breadcrumbSchema } from "@/lib/jsonld";
 import type { Property, Neighborhood } from "@/lib/types";
+import { urlFor } from "@/sanity/lib/image";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import CTA from "@/components/home/CTA";
-import PropertyMapMulti from "@/components/properties/PropertyMapMulti";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
-import { PortableText } from "@portabletext/react";
 
 const BASE_URL = "https://panamares.vercel.app";
 
@@ -41,17 +40,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 
   const typeLabel = category.h1.split(" en Panama")[0];
-  // SEO doc pattern: "Apartamentos en Venta en Punta Pacífica, Panama | Panamares"
   const title = `${typeLabel} en ${neighborhood.name}, Panama`;
   const description = `${typeLabel} en ${neighborhood.name}. ${properties.length} propiedades disponibles. Encuentra las mejores opciones en esta zona exclusiva de Panama City.`;
   const url = `/${params.category}/${params.neighborhood}/`;
+
+  const shouldIndex = properties.length >= 2;
+  const firstImage = properties.find((p) => p.mainImage)?.mainImage;
+  const ogImage = firstImage
+    ? urlFor(firstImage).width(1200).height(630).url()
+    : undefined;
 
   return {
     title,
     description,
     alternates: { canonical: `${BASE_URL}${url}` },
-    // noindex if fewer than 2 active listings (SEO doc requirement)
-    robots: properties.length >= 2 ? { index: true, follow: true } : { index: false, follow: true },
+    robots: { index: shouldIndex, follow: true },
+    ...(ogImage && {
+      openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+      twitter: { card: "summary_large_image", images: [ogImage] },
+    }),
   };
 }
 
@@ -60,11 +67,15 @@ export default async function GeoTypePage({ params }: Props) {
   const neighborhood = getNeighborhoodBySlug(params.neighborhood);
   if (!category || !neighborhood) notFound();
 
-  const [properties, nbhContent] = await Promise.all([
+  const [properties, allCategoryProperties, nbhContent] = await Promise.all([
     sanityFetch<Property[]>(propertiesByGeoTypeQuery, {
       propertyType: category.propertyType,
       businessType: category.businessType,
       neighborhood: neighborhood.name,
+    }),
+    sanityFetch<{ zone?: string }[]>(propertiesByCategoryQuery, {
+      propertyType: category.propertyType,
+      businessType: category.businessType,
     }),
     sanityFetch<Neighborhood | null>(neighborhoodContentQuery, {
       slug: params.neighborhood,
@@ -75,11 +86,22 @@ export default async function GeoTypePage({ params }: Props) {
   const h1 = `${typeLabel} en ${neighborhood.name}, Panama`;
   const pageUrl = `/${params.category}/${params.neighborhood}/`;
 
-  // Neighborhood sidebar links for this category (same type/intent, other zones)
-  // (empty here since this is already filtered by zone — sidebar not needed)
-  const neighborhoodLinks: { name: string; slug: string; count: number; categorySlug: string }[] = [];
+  // Build neighborhood sidebar links from all properties in this category
+  const zoneCounts = new Map<string, number>();
+  for (const p of allCategoryProperties) {
+    if (p.zone) zoneCounts.set(p.zone, (zoneCounts.get(p.zone) ?? 0) + 1);
+  }
+  const neighborhoodLinks = Array.from(zoneCounts.entries())
+    .filter(([, count]) => count >= 1)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, count]) => ({
+      name,
+      slug: getSlugByName(name) ?? name.toLowerCase().replace(/\s+/g, "-"),
+      count,
+      categorySlug: params.category,
+    }));
 
-  // Map pins from properties with GPS
+  // Map pins — properties with GPS coordinates
   const mapProps = properties
     .filter((p) => p.location)
     .map((p) => ({
@@ -88,6 +110,11 @@ export default async function GeoTypePage({ params }: Props) {
       title: p.title,
       slug: p.slug.current,
       price: p.price,
+      bedrooms: p.bedrooms,
+      bathrooms: p.bathrooms,
+      imageUrl: p.mainImage
+        ? urlFor(p.mainImage).width(300).height(200).fit("crop").url()
+        : undefined,
     }));
 
   const jsonLdList = itemListSchema(pageUrl, h1, properties);
@@ -96,17 +123,6 @@ export default async function GeoTypePage({ params }: Props) {
     { name: category.h1, url: `/${params.category}/` },
     { name: neighborhood.name, url: pageUrl },
   ]);
-
-  const contextBlock = nbhContent?.about ? (
-    <div className="font-body text-[15px] text-[#737b8c] leading-relaxed [&_p]:mb-3 [&_p:last-child]:mb-0">
-      <PortableText value={nbhContent.about} />
-    </div>
-  ) : null;
-
-  const mapSlot =
-    mapProps.length > 0 ? (
-      <PropertyMapMulti properties={mapProps} height="h-[320px]" />
-    ) : null;
 
   return (
     <>
@@ -121,21 +137,15 @@ export default async function GeoTypePage({ params }: Props) {
           { label: neighborhood.name },
         ]}
         title={h1}
+        count={properties.length}
+        description={nbhContent?.seoBlock}
       />
       <CategoryPageClient
         properties={properties}
         categorySlug={params.category}
         neighborhoodLinks={neighborhoodLinks}
-        contextBlock={contextBlock}
-        mapSlot={mapSlot}
+        mapProps={mapProps}
       />
-
-      {/* Mobile map — below grid */}
-      {mapProps.length > 0 && (
-        <div className="lg:hidden px-[30px] pb-[40px]">
-          <PropertyMapMulti properties={mapProps} height="h-[300px]" />
-        </div>
-      )}
       <CTA />
     </>
   );

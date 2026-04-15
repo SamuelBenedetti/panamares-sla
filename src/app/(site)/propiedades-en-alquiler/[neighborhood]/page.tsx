@@ -5,11 +5,11 @@ import { propertiesByIntentGeoQuery, neighborhoodContentQuery } from "@/sanity/l
 import { getNeighborhoodBySlug, VALID_NEIGHBORHOOD_SLUGS } from "@/lib/neighborhoods";
 import { itemListSchema, breadcrumbSchema } from "@/lib/jsonld";
 import type { Property, Neighborhood } from "@/lib/types";
+import { urlFor } from "@/sanity/lib/image";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import CTA from "@/components/home/CTA";
-import { PortableText } from "@portabletext/react";
 
 const BASE_URL = "https://panamares.vercel.app";
 const BUSINESS_TYPE = "alquiler";
@@ -33,12 +33,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     neighborhood: nbh.name,
   });
 
+  const shouldIndex = properties.length >= 2;
+  const firstImage = properties.find((p) => p.mainImage)?.mainImage;
+  const ogImage = firstImage ? urlFor(firstImage).width(1200).height(630).url() : undefined;
+
   const url = `/${INTENT_SLUG}/${params.neighborhood}/`;
   return {
     title: `${INTENT_LABEL} en ${nbh.name}, Panam\u00e1`,
     description: `${properties.length} propiedades en alquiler en ${nbh.name}. Apartamentos, casas, oficinas y locales en una de las mejores zonas de Panama City.`,
     alternates: { canonical: `${BASE_URL}${url}` },
-    robots: { index: true, follow: true },
+    robots: { index: shouldIndex, follow: true },
+    ...(ogImage && {
+      openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+      twitter: { card: "summary_large_image", images: [ogImage] },
+    }),
   };
 }
 
@@ -66,11 +74,20 @@ export default async function AlquilerNeighborhoodPage({ params }: Props) {
     { name: nbh.name, url: pageUrl },
   ]);
 
-  const contextBlock = nbhContent?.about ? (
-    <div className="font-body text-[15px] text-[#737b8c] leading-relaxed [&_p]:mb-3 [&_p:last-child]:mb-0">
-      <PortableText value={nbhContent.about} />
-    </div>
-  ) : null;
+  const mapProps = properties
+    .filter((p) => p.location)
+    .map((p) => ({
+      lat: p.location!.lat,
+      lng: p.location!.lng,
+      title: p.title,
+      slug: p.slug.current,
+      price: p.price,
+      bedrooms: p.bedrooms,
+      bathrooms: p.bathrooms,
+      imageUrl: p.mainImage
+        ? urlFor(p.mainImage).width(300).height(200).fit("crop").url()
+        : undefined,
+    }));
 
   return (
     <>
@@ -85,14 +102,15 @@ export default async function AlquilerNeighborhoodPage({ params }: Props) {
           { label: nbh.name },
         ]}
         title={h1}
-        description={`${properties.length} ${properties.length === 1 ? "propiedad disponible" : "propiedades disponibles"} en ${nbh.name}, Panama City.`}
+        count={properties.length}
+        description={nbhContent?.seoBlock}
       />
 
       <CategoryPageClient
         properties={properties}
         categorySlug={INTENT_SLUG}
         neighborhoodLinks={[]}
-        contextBlock={contextBlock}
+        mapProps={mapProps}
       />
       <CTA />
     </>

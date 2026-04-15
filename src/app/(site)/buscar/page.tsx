@@ -13,9 +13,9 @@ const STEPS = [
   },
   {
     paso: "02",
-    heading: ["¿Buscas", "comprar o alquilar?"],
+    heading: ["¿Qué estás", "buscando?"],
     italic: [false, true],
-    options: ["Comprar", "Alquilar"],
+    options: ["Comprar – Uso personal", "Comprar – Inversión", "Comprar – Ambos", "Alquilar"],
     key: "intencion",
   },
   {
@@ -107,7 +107,11 @@ function BuscarContent() {
   }
 
   function goBack() {
-    if (step > 0) transition(() => setStep((s) => s - 1));
+    if (step === 0) {
+      router.push("/");
+    } else {
+      transition(() => setStep((s) => s - 1));
+    }
   }
 
   function skip() {
@@ -119,103 +123,109 @@ function BuscarContent() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#0d1835] flex items-center justify-center -mt-20 overflow-hidden">
-      {/* Palm tree decorative */}
+    <div className="relative min-h-screen bg-[#0d1835] -mt-20 overflow-hidden">
+
+      {/* Palm decorative — right always visible, left desktop only */}
       <div
-        className="absolute inset-x-0 pointer-events-none select-none"
-        style={{ top: "301px", height: "699px" }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/palm-left.svg"
-          alt=""
-          className="absolute left-0 bottom-0 h-full opacity-[0.12] object-contain object-bottom-left"
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/palm-right.svg"
-          alt=""
-          className="absolute right-0 bottom-0 h-full opacity-[0.12] object-contain object-bottom-right"
-        />
-      </div>
-
-      {/* Content */}
+        className="hidden xl:block absolute -bottom-[100px] -left-[30px] pointer-events-none select-none w-[420px] h-[75vh]"
+        style={{
+          backgroundImage: "url('/palm-left.svg')",
+          backgroundSize: "contain",
+          backgroundPosition: "bottom left",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
       <div
-        className={`relative z-10 flex flex-col items-center gap-[56px] xl:gap-[70px] px-[30px] xl:px-[20px] 2xl:px-[120px] text-center w-full max-w-[1920px] mx-auto transition-opacity duration-[180ms] ${
-          fading ? "opacity-0" : "opacity-100"
-        }`}
+        className="absolute -bottom-[100px] -right-[120px] pointer-events-none select-none w-[280px] xl:w-[480px] h-[65vh] xl:h-[75vh] scale-x-[-1]"
+        style={{
+          backgroundImage: "url('/palm-left.svg')",
+          backgroundSize: "contain",
+          backgroundPosition: "bottom right",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
+
+      {/*
+        Section (304:761)
+        Mobile:  pt-[200px] pb-[120px]
+        Desktop: pt-[300px] pb-[120px]
+      */}
+      <div
+        className={`relative z-10 w-full flex flex-row items-start justify-center
+          pt-[200px] pb-[120px] xl:pt-[300px]
+          px-[30px] xl:px-[20px] 2xl:px-[120px]
+          transition-opacity duration-[180ms]
+          ${fading ? "opacity-0" : "opacity-100"}`}
       >
-        {/* Step indicator */}
-        <div className="flex items-center gap-[10px]">
-          <span className="font-body font-medium text-[12px] text-white tracking-[5px] uppercase">
-            paso {current.paso}
-          </span>
-          <span className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
-            /04
-          </span>
-        </div>
+        <div className="w-full max-w-[1400px] flex flex-col items-center gap-[130px] xl:gap-[70px]">
 
-        {/* Heading */}
-        <h1 className="flex flex-col items-center leading-none">
-          {current.heading.map((line, i) => (
-            <span
-              key={i}
-              className={`font-heading font-light text-white tracking-[-0.03em] ${
-                current.italic[i] ? "italic" : "not-italic"
-              }`}
-              style={{ fontSize: "clamp(48px, 7.5vw, 130px)", lineHeight: "0.95" }}
-            >
-              {line}
-            </span>
-          ))}
-        </h1>
+          <div className="w-full flex flex-col items-center gap-[70px]">
 
-        {/* Options */}
-        <div className="flex flex-wrap items-center justify-center gap-[16px] xl:gap-[20px]">
-          {current.options.map((option) => (
+            <div className="w-full flex flex-col items-center gap-[30px] text-center">
+
+              {/* Step indicator */}
+              <div className="flex items-center justify-center gap-[10px]">
+                <span className="font-body font-medium text-[12px] leading-[16px] text-white tracking-[5px] uppercase">
+                  paso {current.paso}
+                </span>
+                <span className="font-body font-medium text-[12px] leading-[16px] text-[#737b8c] tracking-[5px] uppercase">
+                  /04
+                </span>
+              </div>
+
+              {/* H1 */}
+              <h1 className="w-full flex flex-col items-center gap-[10px]">
+                <span
+                  className="font-heading font-light not-italic text-white text-[60px] xl:text-[130px] leading-[60px] xl:leading-[120px]"
+                  style={{ letterSpacing: "-0.03em" }}
+                >
+                  {current.heading[0]}
+                </span>
+                <span
+                  className="font-heading font-light italic text-white text-[63px] xl:text-[130px] leading-[60px] xl:leading-[120px]"
+                  style={{ letterSpacing: "-0.03em" }}
+                >
+                  {current.heading[1]}
+                </span>
+              </h1>
+            </div>
+
+            {/* Options */}
+            <div className="flex flex-wrap items-center justify-center gap-[10px] xl:gap-[20px]">
+              {current.options.map((option) => (
+                <button
+                  key={option}
+                  onClick={() => select(option)}
+                  className="border border-[rgba(250,248,245,0.5)] px-[21px] py-[15px] font-body font-medium text-[16px] xl:text-[20px] leading-[20px] text-white hover:bg-[rgba(250,248,245,0.08)] hover:border-[rgba(250,248,245,0.9)] transition-all duration-150 whitespace-nowrap cursor-pointer"
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Nav */}
+          <div className="flex items-center justify-center gap-[10px]">
             <button
-              key={option}
-              onClick={() => select(option)}
-              className="border border-[rgba(250,248,245,0.5)] px-[21px] py-[15px] font-body font-medium text-[18px] xl:text-[20px] text-white hover:bg-[rgba(250,248,245,0.08)] hover:border-[rgba(250,248,245,0.9)] transition-all duration-150 whitespace-nowrap"
+              onClick={goBack}
+              className="flex items-center gap-[10px] px-[20px] py-[12px] font-body font-medium text-[20px] leading-[30px] text-[#1d305a] hover:text-[#2d4a82] transition-colors cursor-pointer"
             >
-              {option}
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                <path d="M13 4L7 10L13 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Retornar
             </button>
-          ))}
-        </div>
+            <button
+              onClick={skip}
+              className="flex items-center gap-[10px] px-[20px] py-[12px] font-body font-medium text-[20px] leading-[30px] text-[#1d305a] hover:text-[#2d4a82] transition-colors cursor-pointer"
+            >
+              Omitir
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
 
-        {/* Navigation */}
-        <div className="flex items-center gap-[10px]">
-          <button
-            onClick={goBack}
-            disabled={step === 0}
-            className="flex items-center gap-2 px-[20px] py-[12px] font-body font-medium text-[18px] xl:text-[20px] text-white/30 hover:text-white/60 transition-colors disabled:pointer-events-none disabled:opacity-0"
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M13 4L7 10L13 16"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Retornar
-          </button>
-          <button
-            onClick={skip}
-            className="flex items-center gap-2 px-[20px] py-[12px] font-body font-medium text-[18px] xl:text-[20px] text-white/30 hover:text-white/60 transition-colors"
-          >
-            Omitir
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M7 4L13 10L7 16"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
         </div>
       </div>
     </div>

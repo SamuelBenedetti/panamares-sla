@@ -117,45 +117,36 @@ export default async function BarriosPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
-      {/* ── Hero ── */}
-      <section className="relative flex items-end min-h-[70vh] bg-[#0c1834] overflow-hidden -mt-20">
-        <div
-          className="absolute inset-0 bg-cover bg-center scale-105"
-          style={{
-            backgroundImage:
-              "url('https://www.figma.com/api/mcp/asset/46c62f80-93f2-48ab-a542-c8b9722522e1')",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(29,33,43,0.4)] via-[rgba(29,33,43,0.3)] to-[rgba(29,33,43,0.85)]" />
+      {/* ── Header — mismo patrón que el resto del sitio ── */}
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
 
-        <div className="relative z-10 w-full px-[30px] xl:px-[20px] 2xl:px-[120px] pb-[70px] xl:pb-[90px] pt-[140px]">
-          <div className="flex flex-col gap-[20px] max-w-[720px]">
-            <nav className="flex items-center gap-[8px]">
-              <Link href="/" className="font-body text-[13px] text-white/50 hover:text-white/80 transition-colors">Inicio</Link>
-              <ChevronRight size={12} className="text-white/30" />
-              <span className="font-body text-[13px] text-white/80">Barrios</span>
-            </nav>
-            <p className="font-body font-medium text-[12px] text-white/60 tracking-[5px] uppercase leading-4">
-              Ciudad de Panamá
-            </p>
-            <h1 className="flex flex-col text-white">
-              <span className="font-heading font-normal text-[clamp(40px,5vw,68px)] leading-none tracking-[-2px]">
-                Explora los mejores
-              </span>
-              <span className="font-heading font-medium italic text-[clamp(44px,6vw,76px)] leading-none tracking-[-2.3px]">
-                barrios de Panamá
-              </span>
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-[8px] flex-wrap">
+            <Link href="/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+              Inicio
+            </Link>
+            <ChevronRight size={13} className="text-[#737b8c]" />
+            <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
+              Barrios
+            </span>
+          </nav>
+
+          {/* H1 + contador */}
+          <div className="flex flex-col gap-[8px]">
+            <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] leading-none tracking-[-1.8px]">
+              Barrios de Panama City
             </h1>
-            <p className="font-body font-light text-[16px] xl:text-[18px] text-white/70 leading-relaxed max-w-[560px] pt-[8px]">
-              Guía completa de las zonas más exclusivas de Ciudad de Panamá —
-              propiedades, precios, estilo de vida y todo lo que necesitas para decidir dónde vivir o invertir.
+            <p className="font-body text-[14px] text-[#737b8c] leading-none">
+              <span className="font-semibold text-[#0c1834]">{featured.length + rest.length}</span> zonas con propiedades disponibles
             </p>
           </div>
+
         </div>
       </section>
 
       {/* ── Zonas destacadas ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[80px] xl:pt-[100px] pb-[60px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[28px] pb-[60px]">
         <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px]">
           <div className="flex flex-col gap-[10px]">
             <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">

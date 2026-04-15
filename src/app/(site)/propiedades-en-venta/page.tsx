@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertiesByIntentQuery } from "@/sanity/lib/queries";
 import type { Property } from "@/lib/types";
+import { urlFor } from "@/sanity/lib/image";
 import { getSlugByName } from "@/lib/neighborhoods";
 import { itemListSchema, breadcrumbSchema } from "@/lib/jsonld";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
@@ -9,15 +10,25 @@ import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import CTA from "@/components/home/CTA";
 
+const BASE_URL = "https://panamares.vercel.app";
 const H1 = "Propiedades en Venta en Panamá";
 const DESCRIPTION =
   "Panamares reúne la mayor oferta de propiedades en venta en Panama City. Apartamentos, casas, penthouses, oficinas, locales y terrenos en Punta Pacífica, Punta Paitilla, Costa del Este y más zonas exclusivas. Cada inmueble cuenta con información completa de precio, área, habitaciones y amenidades. Filtra por tipo de propiedad, barrio o presupuesto y encuentra la opción ideal para comprar o invertir en el mercado inmobiliario más sólido de Centroamérica.";
 
-export const metadata: Metadata = {
-  title: "Propiedades en Venta en Panama",
-  description: DESCRIPTION,
-  alternates: { canonical: "https://panamares.vercel.app/propiedades-en-venta/" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const properties = await sanityFetch<Property[]>(propertiesByIntentQuery, { businessType: "venta" });
+  const firstImage = properties.find((p) => p.mainImage)?.mainImage;
+  const ogImage = firstImage ? urlFor(firstImage).width(1200).height(630).url() : undefined;
+  return {
+    title: "Propiedades en Venta en Panama",
+    description: DESCRIPTION,
+    alternates: { canonical: `${BASE_URL}/propiedades-en-venta/` },
+    ...(ogImage && {
+      openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+      twitter: { card: "summary_large_image", images: [ogImage] },
+    }),
+  };
+}
 
 export default async function PropiedadesEnVentaPage({
   searchParams,

@@ -11,7 +11,8 @@ export function organizationSchema() {
     url: BASE_URL,
     logo: {
       "@type": "ImageObject",
-      url: `${BASE_URL}/barrio-punta-pacifica.png`,
+      // Note: using absolute URL for logo to ensure it works in contexts like Google Search where relative URLs may not resolve correctly
+      url: `${BASE_URL}/logo.png`,
       width: 200,
       height: 60,
     },
@@ -202,12 +203,22 @@ export function agentSchema(agent: Agent) {
 }
 
 // Neighborhood guide page — Place
-export function neighborhoodSchema(neighborhood: Neighborhood) {
+export function neighborhoodSchema(neighborhood: Neighborhood, imageUrl?: string) {
   return {
     "@context": "https://schema.org",
     "@type": "Place",
     name: neighborhood.name,
     url: `${BASE_URL}/barrios/${neighborhood.slug?.current ?? ""}`,
+    ...(neighborhood.seoBlock && { description: neighborhood.seoBlock }),
+    ...(imageUrl && {
+      image: { "@type": "ImageObject", url: imageUrl, width: 1200, height: 630 },
+    }),
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: neighborhood.name,
+      addressRegion: "Panamá",
+      addressCountry: "PA",
+    },
     containedInPlace: {
       "@type": "City",
       name: "Panama City",

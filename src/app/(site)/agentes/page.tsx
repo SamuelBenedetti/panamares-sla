@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { allAgentsQuery } from "@/sanity/lib/queries";
 import type { Agent } from "@/lib/types";
 import AgentGrid from "@/components/agents/AgentGrid";
+import { breadcrumbSchema } from "@/lib/jsonld";
 
 const BASE_URL = "https://panamares.vercel.app";
 
@@ -18,40 +19,55 @@ export const metadata: Metadata = {
 export default async function AgentesPage() {
   const agents = await sanityFetch<Agent[]>(allAgentsQuery);
 
+  const jsonLdBreadcrumb = breadcrumbSchema([
+    { name: "Inicio", url: "/" },
+    { name: "Asesores", url: "/agentes/" },
+  ]);
+
   return (
     <>
-      {/* ── Hero ── */}
-      <section className="bg-[#0c1834] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[120px] xl:pt-[160px] pb-[70px] xl:pb-[90px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[20px] max-w-[720px]">
-          <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
-            El equipo
-          </p>
-          <h1 className="flex flex-col text-white">
-            <span className="font-heading font-normal text-[clamp(40px,5vw,68px)] leading-none tracking-[-2px]">
-              Conoce a nuestros
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
+      />
+
+      {/* ── Header — mismo patrón que ListingPageHeader ── */}
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
+
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-[8px] flex-wrap">
+            <Link href="/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+              Inicio
+            </Link>
+            <ChevronRight size={13} className="text-[#737b8c]" />
+            <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
+              Asesores
             </span>
-            <span className="font-heading font-medium italic text-[clamp(44px,6vw,76px)] leading-none tracking-[-2.3px]">
-              asesores
-            </span>
-          </h1>
-          <p className="font-body font-light text-[16px] xl:text-[18px] text-white/70 leading-relaxed max-w-[520px] pt-[8px]">
-            Un equipo de profesionales con años de experiencia en el mercado inmobiliario panameño, listos para acompañarte en cada paso.
-          </p>
+          </nav>
+
+          {/* H1 + contador */}
+          <div className="flex flex-col gap-[8px]">
+            <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] leading-none tracking-[-1.8px]">
+              Asesores Inmobiliarios en Panama
+            </h1>
+            {agents.length > 0 && (
+              <p className="font-body text-[14px] text-[#737b8c] leading-none">
+                <span className="font-semibold text-[#0c1834]">{agents.length}</span> asesores disponibles
+              </p>
+            )}
+          </div>
+
         </div>
       </section>
 
       {/* ── Grid ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[80px] xl:py-[100px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[48px]">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-[16px]">
-            <div className="flex flex-col gap-[8px]">
-              <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
-                Equipo Panamares
-              </p>
-              <h2 className="font-heading font-normal text-[clamp(28px,3vw,42px)] text-[#0c1834] tracking-[-1.2px] leading-none">
-                {agents.length > 0 ? `${agents.length} asesores disponibles` : "Nuestros asesores"}
-              </h2>
-            </div>
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[28px] pb-[80px] xl:pb-[100px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px]">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[12px]">
+            <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+              Equipo Panamares
+            </p>
             <Link
               href="/contacto/"
               className="inline-flex items-center gap-[8px] font-body font-medium text-[12px] text-[#737b8c] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors whitespace-nowrap"
@@ -70,7 +86,7 @@ export default async function AgentesPage() {
         <div className="max-w-[1600px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
           <div className="flex flex-col gap-[14px]">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
-              ¿Quieres formar parte?
+              ¿Eres agente independiente?
             </p>
             <h2 className="font-heading font-normal text-[clamp(32px,4vw,54px)] text-white tracking-[-1.6px] leading-none">
               Únete al equipo Panamares

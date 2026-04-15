@@ -2,18 +2,13 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
+import type { MapProperty } from "./PropertyMapMultiCore";
+
+export type { MapProperty };
 
 // Mapbox (~319 KiB) is split into its own chunk and only fetched when the map
 // enters the viewport — keeps it off the critical-path bundle entirely.
 const PropertyMapMultiCore = dynamic(() => import("./PropertyMapMultiCore"), { ssr: false });
-
-interface MapProperty {
-  lat: number;
-  lng: number;
-  title: string;
-  slug: string;
-  price: number;
-}
 
 interface Props {
   properties: MapProperty[];
@@ -44,7 +39,7 @@ export default function PropertyMapMulti({ properties, height = "h-[420px]" }: P
   if (withCoords.length === 0) return null;
 
   return (
-    <div ref={wrapperRef} className={`w-full ${height} rounded-xl overflow-hidden`}>
+    <div ref={wrapperRef} className={`w-full ${height} overflow-hidden`}>
       {shouldLoad && <PropertyMapMultiCore properties={properties} height="h-full" />}
     </div>
   );

@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
-import { X, ChevronDown, ChevronUp } from "lucide-react";
+import { X, ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import PropertyGrid from "@/components/properties/PropertyGrid";
+import PropertyMapMulti, { type MapProperty } from "@/components/properties/PropertyMapMulti";
 import type { Property } from "@/lib/types";
 
 const PAGE_SIZE = 12;
@@ -20,7 +21,7 @@ interface Props {
   categorySlug: string;
   neighborhoodLinks: NeighborhoodLink[];
   contextBlock?: React.ReactNode;
-  mapSlot?: React.ReactNode;
+  mapProps?: MapProperty[];
   seoBlock?: string;
   initialSearch?: string;
   initialBedrooms?: number;
@@ -308,7 +309,7 @@ function normalize(s: string) {
 
 // ── Main export ────────────────────────────────────────────────────────────────
 export default function CategoryPageClient({
-  properties, categorySlug, neighborhoodLinks, contextBlock, 
+  properties, categorySlug, neighborhoodLinks, contextBlock, mapProps,
   initialSearch = "", initialBedrooms = 0, initialMinPrice = "", initialMaxPrice = "",
 }: Props) {
   const businessType: "venta" | "alquiler" = categorySlug.includes("alquiler") ? "alquiler" : "venta";
@@ -328,6 +329,7 @@ export default function CategoryPageClient({
   const [search, setSearch] = useState(initialSearch);
   const [sort, setSort] = useState<SortOption>("relevancia");
   const [visible, setVisible] = useState(PAGE_SIZE);
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
 
   const hasActive =
     search !== "" ||
@@ -380,21 +382,39 @@ export default function CategoryPageClient({
         </div>
       )}
 
-      {/* Count + sort row */}
+      {/* Sort row */}
       <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] mb-[20px]">
-        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-[16px]">
-          <span className="font-body text-[14px] text-[#737b8c]">
-            <span className="font-semibold text-[#0c1834]">{filtered.length}</span> propiedades encontradas
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-[12px]">
+
+          {/* Left: mobile filter trigger + search context */}
+          <div className="flex items-center gap-[10px]">
+            {/* Mobile filter button — hidden on desktop */}
+            <button
+              onClick={() => setFilterDrawerOpen(true)}
+              className="lg:hidden flex items-center gap-[8px] bg-white border border-[#dfe5ef] px-[14px] py-[8px] font-body text-[13px] text-[#0c1834] hover:border-[#0c1834] transition-colors"
+            >
+              <SlidersHorizontal size={14} />
+              Filtros
+              {hasActive && <span className="w-[6px] h-[6px] rounded-full bg-[#d4a435]" />}
+            </button>
+
+            {/* Search context — solo visible si hay búsqueda activa */}
             {search && (
-              <span className="ml-1">
-                para <span className="font-semibold text-[#0c1834]">&quot;{search}&quot;</span>
-                <button onClick={() => setSearch("")} className="ml-2 text-[#737b8c] hover:text-[#0c1834] transition-colors" aria-label="Borrar búsqueda">
-                  <X size={12} className="inline" />
+              <span className="flex items-center gap-[6px] font-body text-[13px] text-[#737b8c]">
+                Resultados para <span className="font-semibold text-[#0c1834]">&quot;{search}&quot;</span>
+                <button
+                  onClick={() => setSearch("")}
+                  className="text-[#737b8c] hover:text-[#0c1834] transition-colors"
+                  aria-label="Borrar búsqueda"
+                >
+                  <X size={11} />
                 </button>
               </span>
             )}
-          </span>
-          <div className="relative">
+          </div>
+
+          {/* Sort */}
+          <div className="relative w-auto">
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
@@ -407,15 +427,20 @@ export default function CategoryPageClient({
             </select>
             <ChevronDown size={12} className="absolute right-[12px] top-1/2 -translate-y-1/2 text-[#737b8c] pointer-events-none" />
           </div>
+
         </div>
       </div>
 
       {/* Main layout */}
       <div className="px-[30px] xl:px-[20px] 2xl:px-[120px]">
-        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[309px_1fr] gap-8 items-start">
+        <div className={`max-w-[1600px] mx-auto grid grid-cols-1 items-start gap-8 ${
+          mapProps && mapProps.length > 0
+            ? "lg:grid-cols-[309px_1fr_360px]"
+            : "lg:grid-cols-[309px_1fr]"
+        }`}>
 
-          {/* Sidebar */}
-          <aside className="lg:sticky lg:top-[100px] flex flex-col gap-[0px]">
+          {/* Sidebar — desktop only */}
+          <aside className="hidden lg:flex lg:sticky lg:top-[100px] flex-col gap-[0px]">
             <FilterPanel
               filters={filters}
               setFilters={setFilters}
@@ -444,7 +469,7 @@ export default function CategoryPageClient({
             )}
           </aside>
 
-          {/* Grid + load more */}
+          {/* Grid + load more + mobile map */}
           <div>
             {filtered.length === 0 ? (
               <div className="text-center py-24">
@@ -461,10 +486,10 @@ export default function CategoryPageClient({
               <>
                 <PropertyGrid properties={shown} />
                 {remaining > 0 && (
-                  <div className="flex justify-center pt-[48px]">
+                  <div className="pt-[48px] sm:flex sm:justify-center">
                     <button
                       onClick={() => setVisible((v) => v + PAGE_SIZE)}
-                      className="inline-flex items-center gap-[8px] border border-[#dfe5ef] hover:border-[#0c1834] px-[32px] py-[14px] font-body font-medium text-[13px] text-[#0c1834] tracking-[1.2px] uppercase transition-colors"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-[8px] border border-[#dfe5ef] hover:border-[#0c1834] px-[32px] py-[14px] font-body font-medium text-[13px] text-[#0c1834] tracking-[1.2px] uppercase transition-colors"
                     >
                       Ver más propiedades
                       <span className="font-normal text-[#737b8c]">({remaining} restantes)</span>
@@ -473,9 +498,68 @@ export default function CategoryPageClient({
                 )}
               </>
             )}
+
+            {/* Mobile map — below grid, hidden on desktop */}
+            {mapProps && mapProps.length > 0 && (
+              <div className="lg:hidden mt-[32px]">
+                <PropertyMapMulti properties={mapProps} height="h-[300px]" />
+              </div>
+            )}
           </div>
+
+          {/* Map — desktop right sidebar, hidden on mobile */}
+          {mapProps && mapProps.length > 0 && (
+            <div className="hidden lg:block lg:sticky lg:top-[100px]">
+              <PropertyMapMulti properties={mapProps} height="h-[520px]" />
+            </div>
+          )}
         </div>
       </div>
+
+      {/* ── Mobile filter drawer ─────────────────────────────────────────────── */}
+      {filterDrawerOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="lg:hidden fixed inset-0 z-40 bg-black/40"
+            onClick={() => setFilterDrawerOpen(false)}
+          />
+          {/* Drawer */}
+          <div className="lg:hidden fixed inset-x-0 bottom-0 z-50 bg-white max-h-[88vh] flex flex-col rounded-t-[12px] shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between px-[21px] py-[16px] border-b border-[#e9e7e2] shrink-0">
+              <span className="font-body font-semibold text-[16px] text-[#0c1834]">Filtros</span>
+              <button
+                onClick={() => setFilterDrawerOpen(false)}
+                className="text-[#737b8c] hover:text-[#0c1834] transition-colors"
+                aria-label="Cerrar filtros"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            {/* Scrollable panel */}
+            <div className="overflow-y-auto p-[21px]">
+              <FilterPanel
+                filters={filters}
+                setFilters={setFilters}
+                onReset={reset}
+                hasActive={hasActive}
+                businessType={businessType}
+                propertyTypes={propertyTypes}
+              />
+            </div>
+            {/* Apply button */}
+            <div className="shrink-0 px-[21px] py-[16px] border-t border-[#e9e7e2]">
+              <button
+                onClick={() => setFilterDrawerOpen(false)}
+                className="w-full bg-[#0c1834] text-white font-body font-medium text-[14px] tracking-[1.2px] uppercase py-[14px] hover:bg-[#1a2d56] transition-colors"
+              >
+                Aplicar filtros
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, Star, TrendingUp, MapPin, Award } from "lucide-react";
+import { ArrowRight, ChevronRight, ShieldCheck, Star, TrendingUp, MapPin, Award } from "lucide-react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { allAgentsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import type { Agent } from "@/lib/types";
-import Breadcrumb from "@/components/ui/Breadcrumb";
 import { breadcrumbSchema } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
@@ -30,48 +29,48 @@ export default async function SobreNosotrosPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
-      {/* ── Hero "Quiénes somos" ── */}
-      <section className="relative bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[60px] xl:pt-[80px] pb-[80px] xl:pb-[112px]">
+      {/* ── Header ── */}
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[80px] xl:pb-[112px]">
         <div className="max-w-[1600px] mx-auto">
-          <div className="flex flex-col gap-5 max-w-[768px]">
+        <div className="flex flex-col gap-[20px] max-w-[768px]">
 
-            {/* Breadcrumb */}
-            <Breadcrumb items={[{ label: "Inicio", href: "/" }, { label: "Sobre Nosotros" }]} />
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-[8px] flex-wrap">
+            <Link href="/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+              Inicio
+            </Link>
+            <ChevronRight size={13} className="text-[#737b8c]" />
+            <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
+              Sobre Nosotros
+            </span>
+          </nav>
 
-            {/* Eyebrow */}
-            <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
-              Quiénes somos
-            </p>
+          {/* Eyebrow */}
+          <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+            Quiénes somos
+          </p>
 
-            {/* Heading */}
-            <h1 className="flex flex-col gap-[3px] text-[#0c1834]">
-              <p className="font-heading font-normal text-[clamp(38px,5vw,60px)] leading-none tracking-[-1.8px]">
-                Más de 15 años
-              </p>
-              <p className="font-heading font-medium italic text-[clamp(44px,6vw,70px)] leading-none tracking-[-2.1px]">
-                conectando sueños
-              </p>
-              <p className="font-heading font-normal text-[clamp(38px,5vw,60px)] leading-none tracking-[-1.8px]">
-                con propiedades
-              </p>
-            </h1>
+          {/* H1 */}
+          <h1 className="flex flex-col gap-[3px] text-[#0c1834]">
+            <span className="font-heading font-normal text-[clamp(38px,5vw,60px)] leading-none tracking-[-1.8px]">
+              Más de 15 años
+            </span>
+            <span className="font-heading font-medium italic text-[clamp(44px,6vw,70px)] leading-none tracking-[-2.1px]">
+              conectando sueños
+            </span>
+            <span className="font-heading font-normal text-[clamp(38px,5vw,60px)] leading-none tracking-[-1.8px]">
+              con propiedades
+            </span>
+          </h1>
 
-            {/* Body */}
-            <div className="max-w-[576px] pt-[11px]">
-              <p className="font-body text-[#737b8c] text-[18px] xl:text-[20px] leading-relaxed">
-                <span className="font-semibold">
-                  Panamares nació con una convicción: que el mercado inmobiliario de lujo en Panamá{" "}
-                </span>
-                <span className="font-light">
-                  merecía una representación diferente, más honesta, más elegante, más humana.
-                </span>
-              </p>
-            </div>
-          </div>
+          {/* Body */}
+          <p className="font-body text-[#737b8c] text-[18px] xl:text-[20px] leading-relaxed max-w-[576px] pt-[11px]">
+            <span className="font-semibold">Panamares nació con una convicción: que el mercado inmobiliario de lujo en Panamá </span>
+            <span className="font-light">merecía una representación diferente, más honesta, más elegante, más humana.</span>
+          </p>
+
         </div>
-
-        {/* Right vertical divider — desktop only */}
-        <div className="hidden xl:block absolute right-0 top-0 bottom-0 w-px bg-[#e9e7e2]" />
+        </div>
       </section>
 
       {/* ── Nuestra oficina ── */}

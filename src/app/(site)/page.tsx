@@ -9,6 +9,7 @@ import FeaturedProperties from "@/components/home/FeaturedProperties";
 import NeighborhoodCards from "@/components/home/NeighborhoodCards";
 import TrustStrip from "@/components/home/TrustStrip";
 import CTA from "@/components/home/CTA";
+import SeoBlock from "@/components/home/SeoBlock";
 import { realEstateAgentSchema } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
@@ -41,6 +42,14 @@ export default async function HomePage() {
       <NeighborhoodCards counts={neighborhoodCounts} />
       <TrustStrip />
       <CTA />
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[48px] xl:py-[64px] border-t border-[#dfe5ef]">
+        <div className="max-w-[1600px] mx-auto">
+          <SeoBlock
+            text="Panamares es la plataforma líder de bienes raíces de lujo en Ciudad de Panamá. Ofrecemos una selección exclusiva de apartamentos, casas, penthouses, oficinas y más en los barrios más cotizados: Punta Pacífica, Punta Paitilla, Costa del Este, Avenida Balboa y San Francisco. Nuestro equipo de asesores especializados te guía en cada paso, ya sea para comprar, alquilar o invertir en el mercado inmobiliario panameño."
+            collapsibleOnMobile
+          />
+        </div>
+      </section>
     </>
   );
 }

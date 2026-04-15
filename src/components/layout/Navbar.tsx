@@ -16,6 +16,7 @@ const COMPRAR_ITEMS_BASE = [
   { label: "Oficinas",     href: "/oficinas-en-venta/",             typeKey: "oficina" },
   { label: "Locales",      href: "/locales-comerciales-en-venta/",  typeKey: "local" },
   { label: "Terrenos",     href: "/terrenos-en-venta/",             typeKey: "terreno" },
+  { label: "Casas de playa",     href: "/casas-de-playa-en-venta/", typeKey: "casa" },
 ];
 
 const ALQUILAR_ITEMS_BASE = [
@@ -27,6 +28,7 @@ const ALQUILAR_ITEMS_BASE = [
 ];
 
 const BARRIOS_ITEMS = [
+  { label: "Ver todos",    href: "/barrios/"},
   { label: "Punta Pacífica", href: "/barrios/punta-pacifica/" },
   { label: "Punta Paitilla", href: "/barrios/punta-paitilla/" },
   { label: "Avenida Balboa", href: "/barrios/avenida-balboa/" },

@@ -6,6 +6,7 @@ import { getCategoryBySlug, VALID_CATEGORY_SLUGS } from "@/lib/categories";
 import { getSlugByName } from "@/lib/neighborhoods";
 import { itemListSchema, breadcrumbSchema } from "@/lib/jsonld";
 import type { Property } from "@/lib/types";
+import { urlFor } from "@/sanity/lib/image";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
@@ -25,18 +26,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const config = getCategoryBySlug(params.category);
   if (!config) return {};
 
-  const properties = await sanityFetch<{ _id: string }[]>(
+  const properties = await sanityFetch<Property[]>(
     propertiesByCategoryQuery,
     { propertyType: config.propertyType, businessType: config.businessType }
   );
+
+  const shouldIndex = properties.length >= 2;
+  const firstImage = properties.find((p) => p.mainImage)?.mainImage;
+  const ogImage = firstImage
+    ? urlFor(firstImage).width(1200).height(630).url()
+    : undefined;
 
   const url = `/${params.category}/`;
   return {
     title: config.metaTitle,
     description: config.metaDescription,
     alternates: { canonical: `${BASE_URL}${url}` },
-    // noindex if fewer than 2 active listings (SEO doc requirement)
-    robots: properties.length >= 2 ? { index: true, follow: true } : { index: false, follow: true },
+    robots: { index: shouldIndex, follow: true },
+    ...(ogImage && {
+      openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+      twitter: { card: "summary_large_image", images: [ogImage] },
+    }),
   };
 }
 

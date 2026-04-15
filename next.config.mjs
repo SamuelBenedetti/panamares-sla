@@ -22,6 +22,29 @@ const nextConfig = {
       },
     ],
   },
+  // ✅ agregar esto
+  async headers() {
+    return [
+      {
+        source: "/(apartamentos|casas|penthouses|oficinas|locales|terrenos|propiedades-en-venta|propiedades-en-alquiler)/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, s-maxage=3600, stale-while-revalidate=60",
+          },
+        ],
+      },
+      {
+        source: "/propiedades/:slug*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, s-maxage=1800, stale-while-revalidate=60",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default withBundleAnalyzer(nextConfig);

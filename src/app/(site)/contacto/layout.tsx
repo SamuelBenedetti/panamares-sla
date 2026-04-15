@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { breadcrumbSchema } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Contacto",
@@ -9,6 +10,19 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = breadcrumbSchema([
+  { name: "Inicio", url: "/" },
+  { name: "Contacto", url: "/contacto/" },
+]);
+
 export default function ContactoLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

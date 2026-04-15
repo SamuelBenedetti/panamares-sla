@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
 import { MapPin, ArrowRight, TrendingUp, Building2, ChevronRight } from "lucide-react";
+import SeoBlockCollapsible from "@/components/properties/SeoBlockCollapsible";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertiesByNeighborhoodQuery, neighborhoodContentQuery } from "@/sanity/lib/queries";
 import { getNeighborhoodBySlug, VALID_NEIGHBORHOOD_SLUGS, NEIGHBORHOODS } from "@/lib/neighborhoods";
@@ -28,10 +29,23 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const neighborhood = getNeighborhoodBySlug(params.slug);
   if (!neighborhood) return {};
+
+  const nbhContent = await sanityFetch<Neighborhood | null>(neighborhoodContentQuery, { slug: params.slug });
+  const ogImage = nbhContent?.photo
+    ? urlFor(nbhContent.photo).width(1200).height(630).url()
+    : undefined;
+
   return {
     title: `Propiedades en ${neighborhood.name}, Panama`,
-    description: `Guía completa de ${neighborhood.name}: propiedades disponibles, precios, estilo de vida y todo lo que necesitas saber para vivir o invertir en esta zona.`,
+    description:
+      nbhContent?.seoBlock ??
+      `Guía de ${neighborhood.name}: propiedades disponibles, precios, estilo de vida y todo lo que necesitas saber para vivir o invertir en esta zona.`,
     alternates: { canonical: `${BASE_URL}/barrios/${params.slug}/` },
+    robots: { index: true, follow: true },
+    ...(ogImage && {
+      openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+      twitter: { card: "summary_large_image", images: [ogImage] },
+    }),
   };
 }
 
@@ -78,6 +92,11 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       title: p.title,
       slug: p.slug.current,
       price: p.price,
+      bedrooms: p.bedrooms,
+      bathrooms: p.bathrooms,
+      imageUrl: p.mainImage
+        ? urlFor(p.mainImage).width(300).height(200).fit("crop").url()
+        : undefined,
     }));
 
   // Hero image — use homepage NeighborhoodCards images for the 4 featured zones
@@ -92,7 +111,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       ? urlFor(nbhContent.photo).width(1600).height(700).url()
       : HOMEPAGE_IMAGES[params.slug] ?? "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1600&h=700&fit=crop";
 
-  const jsonLdPlace = nbhContent?._id ? neighborhoodSchema(nbhContent) : null;
+  const jsonLdPlace = nbhContent?._id ? neighborhoodSchema(nbhContent, heroImage) : null;
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: "Inicio", url: "/" },
     { name: "Barrios", url: "/barrios/" },
@@ -123,15 +142,6 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
 
         <div className="relative z-10 w-full px-[30px] xl:px-[20px] 2xl:px-[120px] pb-[40px] xl:pb-[70px]">
           <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
-            {/* Breadcrumb */}
-            <nav className="flex items-center gap-[8px]">
-              <Link href="/" className="font-body text-[13px] text-white/50 hover:text-white/80 transition-colors">Inicio</Link>
-              <ChevronRight size={12} className="text-white/30" />
-              <Link href="/barrios/" className="font-body text-[13px] text-white/50 hover:text-white/80 transition-colors">Barrios</Link>
-              <ChevronRight size={12} className="text-white/30" />
-              <span className="font-body text-[13px] text-white/80">{neighborhood.name}</span>
-            </nav>
-
             {/* Eyebrow */}
             <div className="flex items-center gap-[6px]">
               <MapPin size={12} className="text-[#d4a435]" />
@@ -142,18 +152,21 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
 
             {/* Heading */}
             <h1 className="font-heading font-normal text-[clamp(42px,5vw,72px)] text-white leading-none tracking-[-2px]">
-              {neighborhood.name}
+              Vivir en {neighborhood.name}, Panama
             </h1>
 
             {/* Stats strip */}
             <div className="flex flex-wrap gap-[10px] pt-[4px]">
-              <div className="bg-white/10 backdrop-blur-sm border border-white/15 px-[14px] py-[7px] flex items-center gap-[8px]">
+              <Link
+                href={`/propiedades-en-venta/${params.slug}/`}
+                className="bg-white/10 backdrop-blur-sm border border-white/15 px-[14px] py-[7px] flex items-center gap-[8px] hover:bg-white/20 transition-colors"
+              >
                 <Building2 size={13} className="text-white/60" />
                 <span className="font-body text-[13px] text-white">
                   <span className="font-semibold">{properties.length}</span>{" "}
                   {properties.length === 1 ? "propiedad activa" : "propiedades activas"}
                 </span>
-              </div>
+              </Link>
               {avgPricePerM2 && (
                 <div className="bg-white/10 backdrop-blur-sm border border-white/15 px-[14px] py-[7px] flex items-center gap-[8px]">
                   <TrendingUp size={13} className="text-white/60" />
@@ -164,6 +177,35 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
               )}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Header gris — breadcrumb + SEO block (mismo patrón que ListingPageHeader) ── */}
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-[8px] flex-wrap">
+            <span className="flex items-center gap-[8px]">
+              <Link href="/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+                Inicio
+              </Link>
+            </span>
+            <span className="flex items-center gap-[8px]">
+              <ChevronRight size={13} className="text-[#737b8c]" />
+              <Link href="/barrios/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+                Barrios
+              </Link>
+            </span>
+            <span className="flex items-center gap-[8px]">
+              <ChevronRight size={13} className="text-[#737b8c]" />
+              <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
+                {neighborhood.name}
+              </span>
+            </span>
+          </nav>
+
+          {/* SEO block */}
+          {nbhContent?.seoBlock && <SeoBlockCollapsible text={nbhContent.seoBlock} />}
         </div>
       </section>
 
@@ -271,42 +313,6 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
                   </div>
                 )}
 
-                {/* Stats card */}
-                {(properties.length > 0 || avgPricePerM2) && (
-                  <div className="bg-white border border-[#dfe5ef] p-[24px] flex flex-col gap-[16px]">
-                    <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
-                      Datos del mercado
-                    </p>
-                    <div className="h-px bg-[#dfe5ef]" />
-                    <div className="flex flex-col gap-[14px]">
-                      {properties.length > 0 && (
-                        <div className="flex items-center justify-between">
-                          <span className="font-body text-[13px] text-[#737b8c]">Propiedades activas</span>
-                          <span className="font-body font-semibold text-[15px] text-[#0c1834]">{properties.length}</span>
-                        </div>
-                      )}
-                      {avgPricePerM2 && (
-                        <div className="flex items-center justify-between">
-                          <span className="font-body text-[13px] text-[#737b8c]">Precio/m² prom.</span>
-                          <span className="font-body font-semibold text-[15px] text-[#0c1834]">{formatPrice(avgPricePerM2)}</span>
-                        </div>
-                      )}
-                      {properties.length > 0 && (() => {
-                        const minPrice = Math.min(...properties.map((p) => p.price));
-                        const maxPrice = Math.max(...properties.map((p) => p.price));
-                        return (
-                          <div className="flex items-center justify-between">
-                            <span className="font-body text-[13px] text-[#737b8c]">Rango de precios</span>
-                            <span className="font-body font-semibold text-[12px] text-[#0c1834] text-right">
-                              {formatPrice(minPrice)}<br />– {formatPrice(maxPrice)}
-                            </span>
-                          </div>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                )}
-
                 {/* CTA asesor */}
                 <div className="bg-[#0c1834] p-[24px] flex flex-col gap-[14px]">
                   <p className="font-body font-medium text-[11px] text-white/50 tracking-[4px] uppercase leading-4">
@@ -358,7 +364,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
               <Link
                 key={n.slug}
                 href={`/barrios/${n.slug}/`}
-                className="group bg-white hover:bg-[#0c1834] flex items-center justify-between gap-[8px] px-[20px] py-[18px] transition-colors duration-200"
+                className="group bg-white hover:bg-[#0c1834] border border-[#dfe5ef] hover:border-[#0c1834] flex items-center justify-between gap-[8px] px-[20px] py-[18px] transition-colors duration-200"
               >
                 <span className="font-body font-medium text-[14px] text-[#0c1834] group-hover:text-white transition-colors leading-tight">
                   {n.name}

@@ -15,6 +15,7 @@ const CARD_FIELDS = groq`
   zone,
   buildingName,
   mainImage,
+  location,
   featured,
   recommended,
   fairPrice,
