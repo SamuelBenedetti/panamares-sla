@@ -1,10 +1,11 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import { Bed, Bath, Maximize, Car, MapPin, Check, Phone, Star, BadgeCheck, Banknote, KeyRound } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertyBySlugQuery, relatedPropertiesQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
+import { getCategorySlugFor } from "@/lib/categories";
 import type { Property } from "@/lib/types";
 import PropertyGallery from "@/components/properties/PropertyGallery";
 import PropertyMap from "@/components/properties/PropertyMap";
@@ -28,6 +29,11 @@ function formatPrice(price: number) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const property = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
   if (!property) return {};
+  // Sold/retired listings 301-redirect at the page handler below; keep their
+  // metadata minimal so the pre-redirect response is not indexable.
+  if (property.listingStatus !== "activa") {
+    return { robots: { index: false, follow: false } };
+  }
 
   const zone = property.zone ?? "Panama";
   const intent = property.businessType === "venta" ? "Venta" : "Alquiler";
@@ -78,6 +84,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PropertyDetailPage({ params }: Props) {
   const property = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
   if (!property) notFound();
+
+  // Sold/retired listings → 301 to best-fit category page (SEO doc §4.4).
+  if (property.listingStatus !== "activa") {
+    redirect(`/${getCategorySlugFor(property.propertyType, property.businessType)}/`);
+  }
 
   const related = await sanityFetch<Property[]>(relatedPropertiesQuery, {
     zone: property.zone ?? "",
