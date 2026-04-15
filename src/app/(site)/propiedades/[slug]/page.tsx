@@ -339,7 +339,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                         />
                       ) : (
                         <div className="w-[40px] h-[40px] rounded-full bg-[#0c1834] flex items-center justify-center shrink-0">
-                          <span className="font-heading font-medium text-[14px] text-white leading-none">
+                          <span className="font-heading font-medium text-[16px] text-white leading-[20px]">
                             {property.agent.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()}
                           </span>
                         </div>
@@ -359,7 +359,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   ) : (
                     <div className="flex items-center gap-[10px]">
                       <div className="w-[40px] h-[40px] rounded-full bg-[#0c1834] flex items-center justify-center shrink-0">
-                        <span className="font-heading font-medium text-[14px] text-white leading-none">PM</span>
+                        <span className="font-heading font-medium text-[16px] text-white leading-[20px]">PM</span>
                       </div>
                       <div>
                         <p className="font-body font-medium text-[16px] text-[#0c1935] tracking-[-0.16px] leading-5">Equipo Panamares</p>
@@ -367,9 +367,9 @@ export default async function PropertyDetailPage({ params }: Props) {
                       </div>
                     </div>
                   )}
-                  <div className="shrink-0 text-right">
-                    <p className="font-body text-[12px] text-[#737b8c] leading-[16px]">Atención disponible de lunes</p>
-                    <p className="font-body text-[12px] text-[#737b8c] leading-[16px]">
+                  <div className="shrink-0 flex flex-col items-center">
+                    <p className="font-body text-[12px] text-[#737b8c] leading-normal">Atención disponible de lunes</p>
+                    <p className="font-body text-[12px] text-[#737b8c] leading-normal">
                       a sábado <span className="font-semibold">8am – 7pm</span>
                     </p>
                   </div>
