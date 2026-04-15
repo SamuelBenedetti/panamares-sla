@@ -228,7 +228,7 @@ export default async function PropertyDetailPage({ params }: Props) {
       {/* ── MAIN: Content + Sidebar ── */}
       <section className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto py-[40px]">
         <div className="max-w-[1600px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-[32px] items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-[32px] items-start">
 
             {/* Right: Sticky sidebar — order-2 on desktop so content column is left */}
             <div className="lg:sticky lg:top-[24px] lg:max-h-[calc(100vh-48px)] lg:overflow-y-auto flex flex-col gap-[16px] lg:order-2">
