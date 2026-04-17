@@ -18,7 +18,8 @@ import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ShareButton from "@/components/ui/ShareButton";
 import { listingSchema, breadcrumbSchema } from "@/lib/jsonld";
-import { BASE_URL } from "@/lib/config";
+import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
+import { formatPrice } from "@/lib/utils";
 import { CATEGORIES } from "@/lib/categories";
 import { getSlugByName } from "@/lib/neighborhoods";
 import CTA from "@/components/home/CTA";
@@ -72,11 +73,8 @@ function BulletCheck() {
   );
 }
 
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(price);
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // Demo is only for local development — hide from search engines everywhere
   if (params.slug === "demo") return { title: "Demo — Panamares", robots: { index: false, follow: false } };
   const property = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
   if (!property) return {};
@@ -119,7 +117,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PropertyDetailPage({ params }: Props) {
+  // Demo route is only allowed in development; in production it returns 404.
   const isDemo = params.slug === "demo";
+  if (isDemo && process.env.NODE_ENV === "production") notFound();
 
   let property: Property;
   let related: Property[];
@@ -157,20 +157,17 @@ export default async function PropertyDetailPage({ params }: Props) {
     }
   }
 
-  // Derive category slug (e.g. "apartamentos-en-venta")
-  const categorySlug = (() => {
-    const typeMap: Record<string, string> = {
-      apartamento: "apartamentos", apartaestudio: "apartaestudios", casa: "casas",
-      "casa de playa": "casas-de-playa", penthouse: "penthouses", oficina: "oficinas",
-      local: "locales-comerciales", terreno: "terrenos", edificio: "edificios",
-      finca: "fincas", "lote comercial": "lotes-comerciales",
-    };
-    const t = typeMap[property.propertyType] ?? "propiedades";
-    const i = property.businessType === "venta" ? "venta" : "alquiler";
-    return `${t}-en-${i}`;
-  })();
-
+  // Derive category slug (e.g. "apartamentos-en-venta") — single source of truth.
+  const categorySlug = getCategorySlugFor(property.propertyType, property.businessType);
   const categoryConfig = CATEGORIES.find((c) => c.slug === categorySlug);
+
+  if (!categoryConfig) {
+    // Only hit if Sanity contains a propertyType outside our taxonomy — indicates a data issue.
+    console.error(
+      `[propiedades/${params.slug}] No CategoryConfig matched propertyType="${property.propertyType}" businessType="${property.businessType}" (resolved slug="${categorySlug}").`
+    );
+  }
+
   // Short label without " en Panama" — e.g. "Apartamentos en Venta"
   const categoryLabel = categoryConfig
     ? categoryConfig.h1.replace(/ en Panama$/, "")
@@ -380,7 +377,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <div className="flex flex-col gap-[10px]">
                   <WhatsAppButton message={waMessage} />
                   <a
-                    href={"tel:" + (property.agent?.phone ?? "+50769998888")}
+                    href={"tel:" + (property.agent?.phone ?? PANAMARES_TEL)}
                     className="flex items-center justify-center gap-[8px] border border-[#dfe5ef] px-[21px] py-[13px] hover:bg-[#f9f9f9] transition-colors"
                   >
                     <Phone size={18} className="text-[#0d1835] shrink-0" />

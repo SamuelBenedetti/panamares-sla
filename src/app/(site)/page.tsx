@@ -10,13 +10,13 @@ import NeighborhoodCards from "@/components/home/NeighborhoodCards";
 import TrustStrip from "@/components/home/TrustStrip";
 import CTA from "@/components/home/CTA";
 import SeoBlock from "@/components/home/SeoBlock";
-import { realEstateAgentSchema } from "@/lib/jsonld";
+import { BASE_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Bienes Raíces en Panama City",
   description:
     "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en Punta Pacífica, Punta Paitilla y las mejores zonas de la ciudad.",
-  alternates: { canonical: "https://panamares.vercel.app" },
+  alternates: { canonical: BASE_URL },
 };
 
 
@@ -26,15 +26,9 @@ export default async function HomePage() {
     sanityFetch<Record<string, number>>(propertyTypeCountsQuery),
     sanityFetch<Record<string, number>>(neighborhoodCountsQuery),
   ]);
-  const jsonLd = realEstateAgentSchema();
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-
       <Hero />
       <PropertyTypeShortcuts counts={typeCounts} />
       <FeaturedProperties properties={featured} />

@@ -1,5 +1,6 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
+import { getCategorySlugFor } from "@/lib/categories";
 
 export async function POST(req: NextRequest) {
   const secret = req.nextUrl.searchParams.get("secret");
@@ -30,20 +31,18 @@ export async function POST(req: NextRequest) {
 
       // Revalida categoría específica si tenemos los datos
       if (body.businessType && body.propertyType) {
-        const typeToSlug: Record<string, string> = {
-          apartamento: "apartamentos", apartaestudio: "apartaestudios",
-          casa: "casas", penthouse: "penthouses", oficina: "oficinas",
-          local: "locales-comerciales", terreno: "terrenos",
-        };
-        const typeSlug = typeToSlug[body.propertyType];
-        if (typeSlug) {
-          revalidatePath(`/${typeSlug}-en-${body.businessType}/`);
-          if (body.zone) {
-            const zoneSlug = body.zone.toLowerCase()
-              .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-              .replace(/\s+/g, "-");
-            revalidatePath(`/${typeSlug}-en-${body.businessType}/${zoneSlug}/`);
-          }
+        const categorySlug = getCategorySlugFor(
+          body.propertyType,
+          body.businessType as "venta" | "alquiler"
+        );
+        revalidatePath(`/${categorySlug}/`);
+        if (body.zone) {
+          const zoneSlug = body.zone
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, "-");
+          revalidatePath(`/${categorySlug}/${zoneSlug}/`);
         }
       }
 

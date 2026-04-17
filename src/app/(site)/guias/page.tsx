@@ -6,8 +6,7 @@ import { allGuidesQuery } from "@/sanity/lib/queries";
 import type { Guide } from "@/lib/types";
 import GuiasPageClient from "@/components/home/GuiasPageClient";
 import { breadcrumbSchema } from "@/lib/jsonld";
-
-const BASE_URL = "https://panamares.vercel.app";
+import { BASE_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Guías de Bienes Raíces en Panama",

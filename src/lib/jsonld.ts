@@ -1,8 +1,14 @@
 import type { Property, Agent, Neighborhood } from "@/lib/types";
+import { BASE_URL } from "@/lib/config";
 
-const BASE_URL = "https://panamares.vercel.app";
+// Panamares business constants — keep in sync with /contacto
+const PANAMARES_PHONE = "+507 6000-0000";
+const PANAMARES_STREET = "Torre Oceánica, Piso 18";
+const PANAMARES_LAT = 8.9936;
+const PANAMARES_LNG = -79.5197;
+const PANAMARES_OPENING_HOURS = ["Mo-Fr 08:00-18:00", "Sa 09:00-13:00"];
 
-// Root layout — Organization
+// Homepage + Root layout — RealEstateAgent + Organization (unified)
 export function organizationSchema() {
   return {
     "@context": "https://schema.org",
@@ -18,12 +24,20 @@ export function organizationSchema() {
     },
     description:
       "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en las mejores zonas de la ciudad.",
+    telephone: PANAMARES_PHONE,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Panama City",
+      streetAddress: PANAMARES_STREET,
+      addressLocality: "Punta Pacífica",
       addressRegion: "Panamá",
       addressCountry: "PA",
     },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: PANAMARES_LAT,
+      longitude: PANAMARES_LNG,
+    },
+    openingHours: PANAMARES_OPENING_HOURS,
     areaServed: {
       "@type": "City",
       name: "Panama City",
@@ -32,6 +46,7 @@ export function organizationSchema() {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "sales",
+      telephone: PANAMARES_PHONE,
       availableLanguage: ["Spanish", "English"],
     },
     potentialAction: {
@@ -65,25 +80,6 @@ function propertySchemaType(type: string): string {
     default:
       return "Residence";
   }
-}
-
-// Homepage — RealEstateAgent
-export function realEstateAgentSchema() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "RealEstateAgent",
-    name: "Panamares",
-    url: BASE_URL,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Panama City",
-      addressCountry: "PA",
-    },
-    areaServed: {
-      "@type": "City",
-      name: "Panama City",
-    },
-  };
 }
 
 // Listing detail page — Apartment / House / OfficeSpace
@@ -287,22 +283,44 @@ export function articleSchema({
   };
 }
 
-// Contact page — ContactPoint
+// Contact page — RealEstateAgent with ContactPoint (brief §4 — schema.org/ContactPoint)
 export function contactPointSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": "RealEstateAgent",
     name: "Panamares",
-    url: BASE_URL,
+    url: `${BASE_URL}/contacto/`,
+    telephone: PANAMARES_PHONE,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Panama City",
+      streetAddress: PANAMARES_STREET,
+      addressLocality: "Punta Pacífica",
+      addressRegion: "Panamá",
       addressCountry: "PA",
     },
-    contactPoint: {
-      "@type": "ContactPoint",
-      contactType: "sales",
-      availableLanguage: ["Spanish", "English"],
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: PANAMARES_LAT,
+      longitude: PANAMARES_LNG,
     },
+    openingHours: PANAMARES_OPENING_HOURS,
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        contactType: "sales",
+        telephone: PANAMARES_PHONE,
+        email: "ventas@panamares.com",
+        availableLanguage: ["Spanish", "English"],
+        areaServed: "PA",
+      },
+      {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        telephone: PANAMARES_PHONE,
+        email: "info@panamares.com",
+        availableLanguage: ["Spanish", "English"],
+        areaServed: "PA",
+      },
+    ],
   };
 }

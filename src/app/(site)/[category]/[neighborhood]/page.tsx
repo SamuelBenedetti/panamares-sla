@@ -1,18 +1,45 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertiesByGeoTypeQuery, propertiesByCategoryQuery, neighborhoodContentQuery } from "@/sanity/lib/queries";
 import { getCategoryBySlug, VALID_CATEGORY_SLUGS } from "@/lib/categories";
 import { getNeighborhoodBySlug, getSlugByName, VALID_NEIGHBORHOOD_SLUGS } from "@/lib/neighborhoods";
-import { itemListSchema, breadcrumbSchema } from "@/lib/jsonld";
+import { itemListSchema, breadcrumbSchema, faqSchema } from "@/lib/jsonld";
 import type { Property, Neighborhood } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
+import FaqSection from "@/components/ui/FaqSection";
 import CTA from "@/components/home/CTA";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
+import { getGeoTypeFaqs } from "@/lib/faqs";
+import { BASE_URL } from "@/lib/config";
 
-const BASE_URL = "https://panamares.vercel.app";
+// ── Helpers ──────────────────────────────────────────────────────────────────
+// Generates the Tier 3 header SEO block (80-120 words) specific to
+// the type × intent × neighborhood combo (SEO brief §5, Page 3).
+function buildGeoSeoBlock(
+  typeLabel: string,
+  intentVerb: string,
+  neighborhoodName: string,
+  priority: "HIGH" | "MEDIUM" | "LOW",
+  count: number
+): string {
+  const zoneTone =
+    priority === "HIGH"
+      ? "una de las zonas más exclusivas y cotizadas"
+      : priority === "MEDIUM"
+      ? "una zona consolidada y estratégica"
+      : "una zona residencial";
+  const countPhrase =
+    count === 0
+      ? "actualmente sin unidades listadas"
+      : count === 1
+      ? "1 propiedad verificada y disponible"
+      : `${count} propiedades verificadas y disponibles`;
+  return `Panamares reúne la mayor selección de ${typeLabel.toLowerCase()} ${intentVerb} en ${neighborhoodName}, ${zoneTone} de Ciudad de Panamá. Contamos con ${countPhrase}, cada una con información completa de precio, área en m², habitaciones, baños, estacionamientos, amenidades del edificio y ubicación georreferenciada. Nuestros asesores especializados en ${neighborhoodName} te acompañan en la búsqueda, la visita y la negociación, con atención personalizada en español, contratos en dólares y orientación clara sobre precios de mercado. Explora los listados, filtra por presupuesto o habitaciones y contáctanos por WhatsApp para agendar una visita el mismo día.`;
+}
 
 interface Props {
   params: { category: string; neighborhood: string };
@@ -44,7 +71,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `${typeLabel} en ${neighborhood.name}. ${properties.length} propiedades disponibles. Encuentra las mejores opciones en esta zona exclusiva de Panama City.`;
   const url = `/${params.category}/${params.neighborhood}/`;
 
-  const shouldIndex = properties.length >= 2;
+  // Match Tier 2 rule: casas-en-alquiler and oficinas-en-alquiler need 5+ listings to index
+  const HIGH_THRESHOLD_SLUGS = new Set(["casas-en-alquiler", "oficinas-en-alquiler"]);
+  const threshold = HIGH_THRESHOLD_SLUGS.has(params.category) ? 5 : 2;
+  const shouldIndex = properties.length >= threshold;
   const firstImage = properties.find((p) => p.mainImage)?.mainImage;
   const ogImage = firstImage
     ? urlFor(firstImage).width(1200).height(630).url()
@@ -123,11 +153,14 @@ export default async function GeoTypePage({ params }: Props) {
     { name: category.h1, url: `/${params.category}/` },
     { name: neighborhood.name, url: pageUrl },
   ]);
+  const faqs = getGeoTypeFaqs(category, neighborhood.name);
+  const jsonLdFaq = faqSchema(faqs);
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdList) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }} />
       <WhatsAppButton message={`Hola, busco ${typeLabel} en ${neighborhood.name}`} variant="floating" />
 
       <ListingPageHeader
@@ -138,14 +171,42 @@ export default async function GeoTypePage({ params }: Props) {
         ]}
         title={h1}
         count={properties.length}
-        description={nbhContent?.seoBlock}
+        description={buildGeoSeoBlock(
+          typeLabel,
+          category.businessType === "venta" ? "en venta" : "en alquiler",
+          neighborhood.name,
+          neighborhood.priority,
+          properties.length
+        )}
       />
       <CategoryPageClient
         properties={properties}
         categorySlug={params.category}
         neighborhoodLinks={neighborhoodLinks}
         mapProps={mapProps}
+        contextBlock={
+          nbhContent?.about ? (
+            <div className="bg-white border border-[#dfe5ef] p-[24px] xl:p-[32px] flex flex-col gap-[12px]">
+              <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+                Sobre {neighborhood.name}
+              </p>
+              <div className="font-body text-[16px] text-[#3d4452] leading-[1.7] [&_p]:mb-3 [&_p:last-child]:mb-0">
+                <PortableText value={nbhContent.about} />
+              </div>
+            </div>
+          ) : nbhContent?.seoBlock ? (
+            <div className="bg-white border border-[#dfe5ef] p-[24px] xl:p-[32px] flex flex-col gap-[12px]">
+              <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+                Sobre {neighborhood.name}
+              </p>
+              <p className="font-body text-[16px] text-[#3d4452] leading-[1.7]">
+                {nbhContent.seoBlock}
+              </p>
+            </div>
+          ) : null
+        }
       />
+      <FaqSection faqs={faqs} />
       <CTA />
     </>
   );

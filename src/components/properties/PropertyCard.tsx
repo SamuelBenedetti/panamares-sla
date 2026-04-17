@@ -4,15 +4,8 @@ import { Bed, Bath, Maximize } from "lucide-react";
 import type { Property } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import { BASE_URL, whatsappLink } from "@/lib/config";
+import { formatPrice } from "@/lib/utils";
 import CompareButton from "./CompareButton";
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(price);
-}
 
 export default function PropertyCard({ property }: { property: Property }) {
   const { title, slug, price, bedrooms, bathrooms, area, zone, mainImage, recommended, fairPrice, rented } = property;

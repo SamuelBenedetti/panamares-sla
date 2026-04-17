@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { Property } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import { BASE_URL, whatsappLink } from "@/lib/config";
+import { formatPrice } from "@/lib/utils";
 
 type Tag = "oferta" | "economico" | "ubicacion" | "espacio";
 
@@ -51,10 +52,6 @@ function rankProperties(properties: Property[], tag: Tag) {
     .map((p) => ({ p, score: getScore(p, tag) }))
     .sort((a, b) => a.score - b.score)
     .map((item, i) => ({ ...item, rank: i + 1 }));
-}
-
-function formatPrice(n: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
 }
 
 const BADGE_STYLES: Record<number, { bg: string; label: string }> = {
