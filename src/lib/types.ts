@@ -91,6 +91,10 @@ export interface GuideAuthor {
 
 export interface Guide {
   _id: string;
+  /** ISO 8601 date — set by Sanity automatically on document creation. */
+  _createdAt?: string;
+  /** ISO 8601 date — set by Sanity automatically on every save. */
+  _updatedAt?: string;
   title: string;
   slug: { current: string };
   category: "comprar" | "alquilar" | "invertir" | "vivir";

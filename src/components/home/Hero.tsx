@@ -26,14 +26,10 @@ export default function Hero() {
         </p>
 
         {/* Heading */}
-        <div className="flex flex-col items-center gap-1">
-          <h1 className="font-heading font-light text-white text-[clamp(72px,8vw,96px)] leading-[1] tracking-[-0.03em] not-italic">
-            Bienes Raíces
-          </h1>
-          <span className="font-heading font-light italic text-white text-[clamp(72px,8vw,96px)] leading-[1] tracking-[-0.03em]">
-            en Panama
-          </span>
-        </div>
+        <h1 className="flex flex-col items-center gap-1 font-heading font-light text-white text-[clamp(72px,8vw,96px)] leading-[1] tracking-[-0.03em]">
+          <span className="not-italic">Bienes Raíces</span>
+          <span className="italic">en Panama</span>
+        </h1>
 
         {/* Subtitle */}
         <p className="font-body text-white text-lg md:text-xl pb-[30px]">

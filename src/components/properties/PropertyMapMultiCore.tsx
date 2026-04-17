@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { formatPrice } from "@/lib/utils";
 
 export interface MapProperty {
   lat: number;
@@ -18,14 +19,6 @@ export interface MapProperty {
 interface Props {
   properties: MapProperty[];
   height?: string;
-}
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(price);
 }
 
 function buildPopupHtml(p: MapProperty): string {

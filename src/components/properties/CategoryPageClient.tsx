@@ -6,6 +6,7 @@ import Link from "next/link";
 import PropertyGrid from "@/components/properties/PropertyGrid";
 import PropertyMapMulti, { type MapProperty } from "@/components/properties/PropertyMapMulti";
 import type { Property } from "@/lib/types";
+import { formatPriceCompact } from "@/lib/utils";
 
 const PAGE_SIZE = 12;
 
@@ -56,11 +57,6 @@ const PRICE_MAX = 2_000_000;
 const AREA_MIN = 0;
 const AREA_MAX = 1000;
 
-function formatPrice(v: number) {
-  if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
-  if (v >= 1_000) return `$${Math.round(v / 1_000)}K`;
-  return `$${v}`;
-}
 function formatArea(v: number) { return `${Math.round(v)} m²`; }
 
 // ── Dual Range Slider ──────────────────────────────────────────────────────────
@@ -212,7 +208,7 @@ function FilterPanel({
         <DualRangeSlider
           min={PRICE_MIN} max={PRICE_MAX}
           valueMin={priceMin} valueMax={priceMax}
-          format={formatPrice}
+          format={formatPriceCompact}
           onChange={(lo, hi) => setFilters((f) => ({
             ...f,
             minPrice: lo === PRICE_MIN ? "" : String(Math.round(lo)),

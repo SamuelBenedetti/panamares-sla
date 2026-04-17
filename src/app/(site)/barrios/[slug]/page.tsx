@@ -15,8 +15,8 @@ import PropertyGrid from "@/components/properties/PropertyGrid";
 import PropertyMapMulti from "@/components/properties/PropertyMapMulti";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import { urlFor } from "@/sanity/lib/image";
-
-const BASE_URL = "https://panamares.vercel.app";
+import { BASE_URL } from "@/lib/config";
+import { formatPrice } from "@/lib/utils";
 
 interface Props {
   params: { slug: string };
@@ -49,13 +49,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(price);
-}
 
 export default async function NeighborhoodGuidePage({ params }: Props) {
   const neighborhood = getNeighborhoodBySlug(params.slug);

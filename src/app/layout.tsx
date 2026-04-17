@@ -3,6 +3,7 @@ import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import { organizationSchema } from "@/lib/jsonld";
+import { BASE_URL } from "@/lib/config";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -19,7 +20,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://panamares.vercel.app"),
+  metadataBase: new URL(BASE_URL),
   title: {
     default: "Bienes Raíces en Panama City | Panamares",
     template: "%s | Panamares",
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
     site: "@panamares",
   },
   alternates: {
-    canonical: "https://panamares.vercel.app",
+    canonical: BASE_URL,
   },
 };
 

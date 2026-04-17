@@ -10,8 +10,7 @@ import { urlFor } from "@/sanity/lib/image";
 import type { Guide } from "@/lib/types";
 import { breadcrumbSchema, articleSchema, faqSchema } from "@/lib/jsonld";
 import FAQ from "@/components/ui/FAQ";
-
-const BASE_URL = "https://panamares.vercel.app";
+import { BASE_URL } from "@/lib/config";
 
 const CATEGORY_LABELS: Record<string, string> = {
   comprar:  "Comprar",
@@ -72,14 +71,14 @@ export default async function GuideDetailPage({ params }: Props) {
     title: guide.title,
     description: guide.excerpt,
     url: `/guias/${params.slug}/`,
-    datePublished: (guide as unknown as { _createdAt?: string })._createdAt,
-    dateModified: (guide as unknown as { _updatedAt?: string })._updatedAt,
+    datePublished: guide._createdAt,
+    dateModified: guide._updatedAt,
     authorName: guide.author?.name,
     authorUrl: guide.author?.slug?.current ? `/autores/${guide.author.slug.current}/` : undefined,
     image: guide.coverImage ? urlFor(guide.coverImage).width(1200).height(630).url() : undefined,
   });
 
-  const faqs = (guide as unknown as { faqs?: { question: string; answer: string }[] }).faqs ?? [];
+  const faqs = guide.faqs ?? [];
   const jsonLdFaq = faqs.length > 0 ? faqSchema(faqs) : null;
 
   return (

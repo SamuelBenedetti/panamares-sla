@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 import PropertyMap from "@/components/properties/PropertyMap";
+import { contactPointSchema } from "@/lib/jsonld";
 
 export default function ContactoPage() {
   const [form, setForm] = useState({
@@ -44,6 +45,10 @@ export default function ContactoPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactPointSchema()) }}
+      />
       {/* ── Hero ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[60px] xl:pt-[80px] pb-[80px] xl:pb-[112px]">
         <div className="max-w-[1600px] mx-auto">
@@ -59,10 +64,10 @@ export default function ContactoPage() {
             </p>
             <h1 className="flex flex-col gap-[3px] text-[#0c1834]">
               <span className="font-heading font-normal text-[50px] xl:text-[60px] leading-none tracking-[-1.5px] xl:tracking-[-1.8px]">
-                Hablemos sobre
+                Contacta con
               </span>
               <span className="font-heading font-medium italic text-[60px] xl:text-[70px] leading-none tracking-[-1.8px] xl:tracking-[-2.1px]">
-                tu propiedad
+                Panamares
               </span>
             </h1>
             <p className="font-body text-[18px] xl:text-[20px] text-[#737b8c] leading-relaxed max-w-[576px] pt-[11px]">

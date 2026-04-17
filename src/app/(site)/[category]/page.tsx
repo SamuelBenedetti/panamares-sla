@@ -4,15 +4,16 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { propertiesByCategoryQuery } from "@/sanity/lib/queries";
 import { getCategoryBySlug, VALID_CATEGORY_SLUGS } from "@/lib/categories";
 import { getSlugByName } from "@/lib/neighborhoods";
-import { itemListSchema, breadcrumbSchema } from "@/lib/jsonld";
+import { itemListSchema, breadcrumbSchema, faqSchema } from "@/lib/jsonld";
 import type { Property } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
+import FaqSection from "@/components/ui/FaqSection";
 import CTA from "@/components/home/CTA";
-
-const BASE_URL = "https://panamares.vercel.app";
+import { getCategoryFaqs } from "@/lib/faqs";
+import { BASE_URL } from "@/lib/config";
 
 interface Props {
   params: { category: string };
@@ -84,11 +85,14 @@ export default async function CategoryPage({ params }: Props) {
     { name: "Inicio", url: "/" },
     { name: config.h1, url: pageUrl },
   ]);
+  const faqs = getCategoryFaqs(config);
+  const jsonLdFaq = faqSchema(faqs);
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdList) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }} />
       <WhatsAppButton message={`Hola, busco propiedades en ${config.h1}`} variant="floating" />
 
       <ListingPageHeader
@@ -103,6 +107,7 @@ export default async function CategoryPage({ params }: Props) {
         categorySlug={params.category}
         neighborhoodLinks={neighborhoodLinks}
       />
+      <FaqSection faqs={faqs} />
       <CTA />
     </>
   );

@@ -10,8 +10,8 @@ import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import CTA from "@/components/home/CTA";
+import { BASE_URL } from "@/lib/config";
 
-const BASE_URL = "https://panamares.vercel.app";
 const BUSINESS_TYPE = "alquiler";
 const INTENT_LABEL = "Propiedades en Alquiler";
 const INTENT_SLUG = "propiedades-en-alquiler";

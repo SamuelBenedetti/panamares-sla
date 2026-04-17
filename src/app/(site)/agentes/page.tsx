@@ -6,8 +6,7 @@ import { allAgentsQuery } from "@/sanity/lib/queries";
 import type { Agent } from "@/lib/types";
 import AgentGrid from "@/components/agents/AgentGrid";
 import { breadcrumbSchema } from "@/lib/jsonld";
-
-const BASE_URL = "https://panamares.vercel.app";
+import { BASE_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Nuestros Asesores Inmobiliarios",

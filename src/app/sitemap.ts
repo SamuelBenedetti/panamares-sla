@@ -3,8 +3,7 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import { CATEGORIES } from "@/lib/categories";
 import { NEIGHBORHOODS } from "@/lib/neighborhoods";
-
-const BASE_URL = "https://panamares.vercel.app";
+import { BASE_URL } from "@/lib/config";
 
 interface PropertySlim {
   slug: string;
