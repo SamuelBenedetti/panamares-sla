@@ -177,12 +177,6 @@ export default async function PropertyDetailPage({ params }: Props) {
 
   const waMessage = `Hola, me interesa la propiedad ID ${property._id}${property.zone ? ` en ${property.zone}` : ""}: ${property.title} — ${BASE_URL}/propiedades/${property.slug.current}`;
 
-  const conditionLabel =
-    property.condition === "nuevo" ? "Nuevo" :
-    property.condition === "en_planos" ? "En planos" :
-    property.condition === "en_construccion" ? "En construcción" :
-    property.condition === "usado" ? "Usado" : null;
-
   // Build breadcrumb items — Inicio → Categoría → Geo-tipo → Título
   const breadcrumbItems = [
     { label: "Inicio", href: "/" },
