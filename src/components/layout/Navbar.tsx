@@ -16,7 +16,7 @@ const COMPRAR_ITEMS_BASE = [
   { label: "Oficinas",     href: "/oficinas-en-venta/",             typeKey: "oficina" },
   { label: "Locales",      href: "/locales-comerciales-en-venta/",  typeKey: "local" },
   { label: "Terrenos",     href: "/terrenos-en-venta/",             typeKey: "terreno" },
-  { label: "Casas de playa",     href: "/casas-de-playa-en-venta/", typeKey: "casa" },
+  { label: "Casas de playa",     href: "/casas-de-playa-en-venta/", typeKey: "casa de playa" },
 ];
 
 const ALQUILAR_ITEMS_BASE = [

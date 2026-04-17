@@ -134,12 +134,13 @@ export const propertiesByNeighborhoodQuery = groq`
 // Nav dropdown counts — by propertyType + businessType
 export const navCountsQuery = groq`{
   "venta": {
-    "apartamento": count(*[_type == "property" && propertyType == "apartamento" && businessType == "venta" && listingStatus == "activa"]),
-    "casa":        count(*[_type == "property" && propertyType == "casa"        && businessType == "venta" && listingStatus == "activa"]),
-    "penthouse":   count(*[_type == "property" && propertyType == "penthouse"   && businessType == "venta" && listingStatus == "activa"]),
-    "oficina":     count(*[_type == "property" && propertyType == "oficina"     && businessType == "venta" && listingStatus == "activa"]),
-    "local":       count(*[_type == "property" && propertyType == "local"       && businessType == "venta" && listingStatus == "activa"]),
-    "terreno":     count(*[_type == "property" && propertyType == "terreno"     && businessType == "venta" && listingStatus == "activa"])
+    "apartamento":    count(*[_type == "property" && propertyType == "apartamento"  && businessType == "venta" && listingStatus == "activa"]),
+    "casa":           count(*[_type == "property" && propertyType == "casa"         && businessType == "venta" && listingStatus == "activa"]),
+    "penthouse":      count(*[_type == "property" && propertyType == "penthouse"    && businessType == "venta" && listingStatus == "activa"]),
+    "oficina":        count(*[_type == "property" && propertyType == "oficina"      && businessType == "venta" && listingStatus == "activa"]),
+    "local":          count(*[_type == "property" && propertyType == "local"        && businessType == "venta" && listingStatus == "activa"]),
+    "terreno":        count(*[_type == "property" && propertyType == "terreno"      && businessType == "venta" && listingStatus == "activa"]),
+    "casa de playa":  count(*[_type == "property" && propertyType == "casa de playa" && businessType == "venta" && listingStatus == "activa"])
   },
   "alquiler": {
     "apartamento": count(*[_type == "property" && propertyType == "apartamento" && businessType == "alquiler" && listingStatus == "activa"]),
