@@ -61,8 +61,6 @@ function buildUrl(answers: Answers, originalQuery?: string): string {
 
   if (originalQuery) {
     params.set("buscar", originalQuery);
-  } else if (answers.tipo === "Comercial") {
-    params.set("buscar", "comercial");
   }
 
   const beds = answers.habitaciones ? BEDS_MAP[answers.habitaciones] : undefined;
@@ -208,7 +206,7 @@ function BuscarContent() {
           <div className="flex items-center justify-center gap-[10px]">
             <button
               onClick={goBack}
-              className="flex items-center gap-[10px] px-[20px] py-[12px] font-body font-medium text-[20px] leading-[30px] text-[#1d305a] hover:text-[#2d4a82] transition-colors cursor-pointer"
+              className="flex items-center gap-[10px] px-[20px] py-[12px] font-body font-medium text-[20px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
             >
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
                 <path d="M13 4L7 10L13 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -217,7 +215,7 @@ function BuscarContent() {
             </button>
             <button
               onClick={skip}
-              className="flex items-center gap-[10px] px-[20px] py-[12px] font-body font-medium text-[20px] leading-[30px] text-[#1d305a] hover:text-[#2d4a82] transition-colors cursor-pointer"
+              className="flex items-center gap-[10px] px-[20px] py-[12px] font-body font-medium text-[20px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
             >
               Omitir
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
