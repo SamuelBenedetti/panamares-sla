@@ -24,8 +24,8 @@ export default function LayoutShell({ activeSlugs, navCounts, footer, compareBar
 
   return (
     <>
-      <Navbar activeSlugs={activeSlugs} navCounts={navCounts} />
-      <main className="min-h-screen pt-20">{children}</main>
+      {!isFullscreen && <Navbar activeSlugs={activeSlugs} navCounts={navCounts} />}
+      <main className={`min-h-screen ${isFullscreen ? "" : "pt-20"}`}>{children}</main>
       {!isFullscreen && footer}
       {!isFullscreen && compareBar}
     </>
