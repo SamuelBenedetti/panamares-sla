@@ -54,7 +54,7 @@ export default async function AlquilerNeighborhoodPage({ params }: Props) {
   const nbh = getNeighborhoodBySlug(params.neighborhood);
   if (!nbh) notFound();
 
-  const [properties, nbhContent] = await Promise.all([
+  const [properties, _nbhContent] = await Promise.all([
     sanityFetch<Property[]>(propertiesByIntentGeoQuery, {
       businessType: BUSINESS_TYPE,
       neighborhood: nbh.name,

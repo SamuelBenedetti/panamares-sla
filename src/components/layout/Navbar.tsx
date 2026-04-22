@@ -97,7 +97,7 @@ interface NavCounts {
   alquiler: Record<string, number>;
 }
 
-export default function Navbar({ activeSlugs, navCounts }: { activeSlugs: Set<string>; navCounts: NavCounts }) {
+export default function Navbar({ activeSlugs: _activeSlugs, navCounts }: { activeSlugs: Set<string>; navCounts: NavCounts }) {
   const COMPRAR_ITEMS = COMPRAR_ITEMS_BASE.map((item) => ({
     ...item,
     count: item.typeKey ? (navCounts?.venta?.[item.typeKey] ?? 0) : undefined,
