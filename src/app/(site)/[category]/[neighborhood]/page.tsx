@@ -4,20 +4,16 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { propertiesByGeoTypeQuery, propertiesByCategoryQuery, neighborhoodContentQuery } from "@/sanity/lib/queries";
 import { getCategoryBySlug, VALID_CATEGORY_SLUGS } from "@/lib/categories";
 import { getNeighborhoodBySlug, getSlugByName, VALID_NEIGHBORHOOD_SLUGS } from "@/lib/neighborhoods";
-import { itemListSchema, breadcrumbSchema, faqSchema } from "@/lib/jsonld";
+import { itemListSchema, breadcrumbSchema } from "@/lib/jsonld";
 import type { Property, Neighborhood } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
-import FaqSection from "@/components/ui/FaqSection";
 import CTA from "@/components/home/CTA";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
-import { getGeoTypeFaqs } from "@/lib/faqs";
 import { BASE_URL } from "@/lib/config";
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
-// Generates the Tier 3 header SEO block (80-120 words) specific to
-// the type × intent × neighborhood combo (SEO brief §5, Page 3).
+// Generates the Tier 3 header SEO block specific to type × intent × neighborhood combo.
 function buildGeoSeoBlock(
   typeLabel: string,
   intentVerb: string,
@@ -70,7 +66,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `${typeLabel} en ${neighborhood.name}. ${properties.length} propiedades disponibles. Encuentra las mejores opciones en esta zona exclusiva de Panama City.`;
   const url = `/${params.category}/${params.neighborhood}/`;
 
-  // Match Tier 2 rule: casas-en-alquiler and oficinas-en-alquiler need 5+ listings to index
   const HIGH_THRESHOLD_SLUGS = new Set(["casas-en-alquiler", "oficinas-en-alquiler"]);
   const threshold = HIGH_THRESHOLD_SLUGS.has(params.category) ? 5 : 2;
   const shouldIndex = properties.length >= threshold;
@@ -115,7 +110,6 @@ export default async function GeoTypePage({ params }: Props) {
   const h1 = `${typeLabel} en ${neighborhood.name}, Panama`;
   const pageUrl = `/${params.category}/${params.neighborhood}/`;
 
-  // Build neighborhood sidebar links from all properties in this category
   const zoneCounts = new Map<string, number>();
   for (const p of allCategoryProperties) {
     if (p.zone) zoneCounts.set(p.zone, (zoneCounts.get(p.zone) ?? 0) + 1);
@@ -130,7 +124,6 @@ export default async function GeoTypePage({ params }: Props) {
       categorySlug: params.category,
     }));
 
-  // Map pins — properties with GPS coordinates
   const mapProps = properties
     .filter((p) => p.location)
     .map((p) => ({
@@ -152,14 +145,11 @@ export default async function GeoTypePage({ params }: Props) {
     { name: category.h1, url: `/${params.category}/` },
     { name: neighborhood.name, url: pageUrl },
   ]);
-  const faqs = getGeoTypeFaqs(category, neighborhood.name);
-  const jsonLdFaq = faqSchema(faqs);
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdList) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }} />
       <WhatsAppButton message={`Hola, busco ${typeLabel} en ${neighborhood.name}`} variant="floating" />
 
       <ListingPageHeader
@@ -185,7 +175,6 @@ export default async function GeoTypePage({ params }: Props) {
         neighborhoodSlug={params.neighborhood}
         mapProps={mapProps}
       />
-      <FaqSection faqs={faqs} />
       <CTA />
     </>
   );

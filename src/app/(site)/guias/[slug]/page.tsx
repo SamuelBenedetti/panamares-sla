@@ -8,8 +8,7 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { guideBySlugQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import type { Guide } from "@/lib/types";
-import { breadcrumbSchema, articleSchema, faqSchema } from "@/lib/jsonld";
-import FAQ from "@/components/ui/FAQ";
+import { breadcrumbSchema, articleSchema } from "@/lib/jsonld";
 import { BASE_URL } from "@/lib/config";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -78,16 +77,10 @@ export default async function GuideDetailPage({ params }: Props) {
     image: guide.coverImage ? urlFor(guide.coverImage).width(1200).height(630).url() : undefined,
   });
 
-  const faqs = guide.faqs ?? [];
-  const jsonLdFaq = faqs.length > 0 ? faqSchema(faqs) : null;
-
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdArticle) }} />
-      {jsonLdFaq && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }} />
-      )}
 
       {/* ── Hero ── */}
       <section className="bg-[#0c1834] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[120px] xl:pt-[160px] pb-[60px] xl:pb-[80px]">
@@ -194,11 +187,6 @@ export default async function GuideDetailPage({ params }: Props) {
               </div>
             ) : (
               <p className="font-body text-[16px] text-[#737b8c]">Contenido próximamente.</p>
-            )}
-
-            {/* FAQ section — shown if guide has FAQs in Sanity */}
-            {faqs.length > 0 && (
-              <FAQ items={faqs} title="Preguntas frecuentes" />
             )}
 
             {/* Author bio card at the end */}
