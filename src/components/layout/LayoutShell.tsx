@@ -9,7 +9,6 @@ interface NavCounts {
 }
 
 interface Props {
-  activeSlugs: Set<string>;
   navCounts: NavCounts;
   footer: React.ReactNode;
   compareBar: React.ReactNode;
@@ -18,13 +17,13 @@ interface Props {
 
 const FULLSCREEN_ROUTES = ["/buscar"];
 
-export default function LayoutShell({ activeSlugs, navCounts, footer, compareBar, children }: Props) {
+export default function LayoutShell({ navCounts, footer, compareBar, children }: Props) {
   const pathname = usePathname();
   const isFullscreen = FULLSCREEN_ROUTES.some((r) => pathname.startsWith(r));
 
   return (
     <>
-      {!isFullscreen && <Navbar activeSlugs={activeSlugs} navCounts={navCounts} />}
+      {!isFullscreen && <Navbar navCounts={navCounts} />}
       <main className={`min-h-screen ${isFullscreen ? "" : "pt-20"}`}>{children}</main>
       {!isFullscreen && footer}
       {!isFullscreen && compareBar}
