@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertiesByGeoTypeQuery, propertiesByCategoryQuery, neighborhoodContentQuery } from "@/sanity/lib/queries";
 import { getCategoryBySlug, VALID_CATEGORY_SLUGS } from "@/lib/categories";
@@ -97,7 +96,7 @@ export default async function GeoTypePage({ params }: Props) {
   const neighborhood = getNeighborhoodBySlug(params.neighborhood);
   if (!category || !neighborhood) notFound();
 
-  const [properties, allCategoryProperties, nbhContent] = await Promise.all([
+  const [properties, allCategoryProperties] = await Promise.all([
     sanityFetch<Property[]>(propertiesByGeoTypeQuery, {
       propertyType: category.propertyType,
       businessType: category.businessType,
@@ -185,18 +184,6 @@ export default async function GeoTypePage({ params }: Props) {
         neighborhoodLinks={neighborhoodLinks}
         neighborhoodSlug={params.neighborhood}
         mapProps={mapProps}
-        contextBlock={
-          nbhContent?.about ? (
-            <div className="bg-white border border-[#dfe5ef] p-[24px] xl:p-[32px] flex flex-col gap-[12px]">
-              <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
-                Sobre {neighborhood.name}
-              </p>
-              <div className="font-body text-[16px] text-[#3d4452] leading-[1.7] [&_p]:mb-3 [&_p:last-child]:mb-0">
-                <PortableText value={nbhContent.about} />
-              </div>
-            </div>
-          ) : null
-        }
       />
       <FaqSection faqs={faqs} />
       <CTA />
