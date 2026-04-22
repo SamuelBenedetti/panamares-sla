@@ -21,7 +21,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
     <LayoutShell
       activeSlugs={activeSlugs}
       navCounts={navCounts}
-      footer={<Footer activeSlugs={activeSlugs} />}
+      footer={<Footer />}
       compareBar={<CompareBar />}
     >
       {children}
