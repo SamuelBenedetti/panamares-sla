@@ -36,17 +36,17 @@ export default async function SobreNosotrosPage() {
 
           {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+            <Link href="/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
               Inicio
             </Link>
-            <ChevronRight size={13} className="text-[#737b8c]" />
+            <ChevronRight size={13} className="text-[#5a6478]" />
             <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
               Sobre Nosotros
             </span>
           </nav>
 
           {/* Eyebrow */}
-          <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+          <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
             Quiénes somos
           </p>
 
@@ -64,7 +64,7 @@ export default async function SobreNosotrosPage() {
           </h1>
 
           {/* Body */}
-          <p className="font-body text-[#737b8c] text-[18px] xl:text-[20px] leading-relaxed max-w-[576px] pt-[11px]">
+          <p className="font-body text-[#5a6478] text-[18px] xl:text-[20px] leading-relaxed max-w-[576px] pt-[11px]">
             <span className="font-semibold">Panamares nació con una convicción: que el mercado inmobiliario de lujo en Panamá </span>
             <span className="font-light">merecía una representación diferente, más honesta, más elegante, más humana.</span>
           </p>
@@ -129,7 +129,7 @@ export default async function SobreNosotrosPage() {
           <div className="flex flex-col gap-[8px]">
 
             {/* Eyebrow — above the grid */}
-            <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+            <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
               Nuestra historia
             </p>
 
@@ -143,13 +143,13 @@ export default async function SobreNosotrosPage() {
                   <p className="font-heading font-medium italic text-[clamp(36px,4vw,60px)] leading-none tracking-[-1.8px]">la confianza</p>
                 </div>
                 <div className="flex flex-col gap-[20px] pt-[8px]">
-                  <p className="font-body font-medium text-[15px] xl:text-[17px] text-[#737b8c] leading-relaxed">
+                  <p className="font-body font-medium text-[15px] xl:text-[17px] text-[#5a6478] leading-relaxed">
                     Panamares fue fundada en 2009 por Valeria Moreno, con la visión de crear una firma que pusiera al cliente, no la comisión, en el centro de cada decisión.
                   </p>
-                  <p className="font-body font-light text-[15px] xl:text-[17px] text-[#737b8c] leading-relaxed">
+                  <p className="font-body font-light text-[15px] xl:text-[17px] text-[#5a6478] leading-relaxed">
                     A lo largo de más de una década, hemos construido una reputación basada en la transparencia, el asesoramiento patrimonial honesto y un conocimiento profundo del mercado panameño.
                   </p>
-                  <p className="font-body font-light text-[15px] xl:text-[17px] text-[#737b8c] leading-relaxed">
+                  <p className="font-body font-light text-[15px] xl:text-[17px] text-[#5a6478] leading-relaxed">
                     Hoy somos un equipo de 18 asesores especializados, con presencia en los principales corredores residenciales y comerciales de{" "}
                     <span className="font-medium text-[#0c1834]">Ciudad de Panamá: Punta Pacífica, Punta Paitilla, Avenida Balboa y Costa del Este.</span>
                   </p>
@@ -185,7 +185,7 @@ export default async function SobreNosotrosPage() {
                       {icon}
                     </div>
                     <p className="absolute top-[80px] left-[24px] right-[24px] font-body font-bold text-[20px] text-[#0c1834] tracking-[-0.6px] leading-7">{title}</p>
-                    <p className="absolute top-[115px] left-[24px] right-[24px] font-body font-light text-[14px] text-[#737b8c] leading-5">{body}</p>
+                    <p className="absolute top-[115px] left-[24px] right-[24px] font-body font-light text-[14px] text-[#5a6478] leading-5">{body}</p>
                   </div>
                 ))}
               </div>
@@ -213,7 +213,7 @@ export default async function SobreNosotrosPage() {
 
           {/* Header */}
           <div className="flex flex-col gap-[12px] items-center">
-            <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4 text-center">
+            <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4 text-center">
               El equipo
             </p>
             <p className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] tracking-[-1.8px] leading-none text-center">
@@ -247,7 +247,7 @@ export default async function SobreNosotrosPage() {
                       {agent.name}
                     </p>
                     {agent.role && (
-                      <p className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4 text-center w-full">
+                      <p className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4 text-center w-full">
                         {agent.role}
                       </p>
                     )}

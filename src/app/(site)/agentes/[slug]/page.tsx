@@ -141,7 +141,7 @@ export default async function AgentProfilePage({ params }: Props) {
           {agent.bio && (
             <div className="flex flex-col gap-[20px] max-w-[720px]">
               <div className="flex flex-col gap-[8px]">
-                <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+                <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
                   Sobre el asesor
                 </p>
                 <h2 className="font-heading font-normal text-[clamp(26px,3vw,38px)] text-[#0c1834] tracking-[-1px] leading-none">
@@ -149,7 +149,7 @@ export default async function AgentProfilePage({ params }: Props) {
                 </h2>
               </div>
               <div className="h-px bg-[#dfe5ef]" />
-              <div className="font-body text-[16px] text-[#737b8c] leading-[1.75] [&_p]:mb-4 [&_p:last-child]:mb-0">
+              <div className="font-body text-[16px] text-[#5a6478] leading-[1.75] [&_p]:mb-4 [&_p:last-child]:mb-0">
                 <PortableText value={agent.bio} />
               </div>
             </div>
@@ -159,7 +159,7 @@ export default async function AgentProfilePage({ params }: Props) {
           <div className="flex flex-col gap-[28px]">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-[16px]">
               <div className="flex flex-col gap-[8px]">
-                <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+                <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
                   Portafolio
                 </p>
                 <h2 className="font-heading font-normal text-[clamp(26px,3vw,38px)] text-[#0c1834] tracking-[-1px] leading-none">
@@ -172,7 +172,7 @@ export default async function AgentProfilePage({ params }: Props) {
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-[8px] font-body font-medium text-[12px] text-[#737b8c] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors whitespace-nowrap"
+                className="inline-flex items-center gap-[8px] font-body font-medium text-[12px] text-[#5a6478] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors whitespace-nowrap"
               >
                 Consultar disponibilidad
                 <ArrowRight size={13} />
@@ -183,7 +183,7 @@ export default async function AgentProfilePage({ params }: Props) {
               <PropertyGrid properties={agent.properties!} />
             ) : (
               <div className="border border-[#dfe5ef] bg-white py-[60px] flex flex-col items-center gap-[12px]">
-                <p className="font-body text-[15px] text-[#737b8c]">
+                <p className="font-body text-[15px] text-[#5a6478]">
                   Este asesor no tiene propiedades activas en este momento.
                 </p>
                 <a

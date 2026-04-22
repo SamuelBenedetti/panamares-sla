@@ -81,7 +81,7 @@ function DropdownMenu({
           <span>{item.label}</span>
           {item.count !== undefined && item.count > 0 && (
             <span className={`text-[12px] tabular-nums ml-3 ${
-              isLight ? "text-[#737b8c]" : "text-white/40"
+              isLight ? "text-[#5a6478]" : "text-white/40"
             }`}>
               ({item.count})
             </span>
@@ -157,7 +157,7 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
   const linkColor = isLight ? "text-[#0c1834] hover:text-[#0c1834]/60" : "text-[#faf8f5] hover:text-white/70";
   const mobileMenuBg = isLight ? "bg-white" : "bg-[#0c1834]";
   const mobileLinkColor = isLight ? "text-[#0c1834]" : "text-[#faf8f5]";
-  const mobileSubLinkColor = isLight ? "text-[#737b8c]" : "text-[#faf8f5]/60";
+  const mobileSubLinkColor = isLight ? "text-[#5a6478]" : "text-[#faf8f5]/60";
   const toggleColor = isLight ? "text-[#0c1834]" : "text-white";
 
   return (

@@ -135,7 +135,7 @@ function DualRangeSlider({ min, max, valueMin, valueMax, onChange, format }: {
 function Stepper({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
   return (
     <div className="flex flex-col gap-[8px]">
-      <p className="font-body text-[13px] text-[#737b8c]">{label}</p>
+      <p className="font-body text-[13px] text-[#5a6478]">{label}</p>
       <div className="bg-[#f9f9f9] border border-[#e6e6e6] flex items-center justify-between px-[17.5px] py-[9px] w-[126px]">
         <button type="button" onClick={() => onChange(Math.max(0, value - 1))} className="font-body text-[14px] text-[rgba(12,25,53,0.3)] hover:text-[#0c1935] transition-colors leading-none">-</button>
         <span className="font-body text-[16px] text-[#0c1935] leading-5">{value === 0 ? "Cualquiera" : `${value}+`}</span>
@@ -263,7 +263,7 @@ function FilterPanel({
               </option>
             ))}
           </select>
-          <ChevronDown size={10} className="absolute right-[14px] top-1/2 -translate-y-1/2 text-[#737b8c] pointer-events-none" />
+          <ChevronDown size={10} className="absolute right-[14px] top-1/2 -translate-y-1/2 text-[#5a6478] pointer-events-none" />
         </div>
       </div>
 
@@ -398,11 +398,11 @@ export default function CategoryPageClient({
 
             {/* Search context — solo visible si hay búsqueda activa */}
             {search && (
-              <span className="flex items-center gap-[6px] font-body text-[13px] text-[#737b8c]">
+              <span className="flex items-center gap-[6px] font-body text-[13px] text-[#5a6478]">
                 Resultados para <span className="font-semibold text-[#0c1834]">&quot;{search}&quot;</span>
                 <button
                   onClick={() => setSearch("")}
-                  className="text-[#737b8c] hover:text-[#0c1834] transition-colors"
+                  className="text-[#5a6478] hover:text-[#0c1834] transition-colors"
                   aria-label="Borrar búsqueda"
                 >
                   <X size={11} />
@@ -413,7 +413,9 @@ export default function CategoryPageClient({
 
           {/* Sort */}
           <div className="relative w-auto">
+            <label htmlFor="sort-select" className="sr-only">Ordenar por</label>
             <select
+              id="sort-select"
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
               className="appearance-none bg-white border border-[#dfe5ef] pl-[14px] pr-[36px] py-[8px] font-body text-[13px] text-[#0c1834] focus:outline-none focus:border-[#0c1834] transition-colors cursor-pointer"
@@ -423,7 +425,7 @@ export default function CategoryPageClient({
               <option value="precio-desc">Precio: mayor a menor</option>
               <option value="area-desc">Mayor área</option>
             </select>
-            <ChevronDown size={12} className="absolute right-[12px] top-1/2 -translate-y-1/2 text-[#737b8c] pointer-events-none" />
+            <ChevronDown size={12} className="absolute right-[12px] top-1/2 -translate-y-1/2 text-[#5a6478] pointer-events-none" />
           </div>
 
         </div>
@@ -451,7 +453,7 @@ export default function CategoryPageClient({
 
             {neighborhoodLinks.length > 0 && (
               <div className="hidden lg:flex flex-col mt-[2px] bg-white border border-[#dfe5ef] border-t-0">
-                <p className="font-body font-medium text-[11px] text-[#737b8c] tracking-[4px] uppercase px-[21px] pt-[18px] pb-[10px]">
+                <p className="font-body font-medium text-[11px] text-[#5a6478] tracking-[4px] uppercase px-[21px] pt-[18px] pb-[10px]">
                   Por barrio
                 </p>
                 {neighborhoodLinks.map((n) => (
@@ -461,7 +463,7 @@ export default function CategoryPageClient({
                     className="flex items-center justify-between px-[21px] py-[10px] font-body text-[14px] text-[#0c1834] hover:bg-[#f9f9f9] transition-colors border-t border-[#e9e7e2]"
                   >
                     <span>{n.name}</span>
-                    <span className="font-body text-[12px] text-[#737b8c]">{n.count}</span>
+                    <span className="font-body text-[12px] text-[#5a6478]">{n.count}</span>
                   </Link>
                 ))}
               </div>
@@ -472,7 +474,7 @@ export default function CategoryPageClient({
           <div>
             {filtered.length === 0 ? (
               <div className="text-center py-24">
-                <p className="font-body text-[18px] text-[#737b8c]">
+                <p className="font-body text-[18px] text-[#5a6478]">
                   {search
                     ? `No encontramos propiedades para "${search}".`
                     : "No hay propiedades con estos filtros."}
@@ -491,7 +493,7 @@ export default function CategoryPageClient({
                       className="w-full sm:w-auto inline-flex items-center justify-center gap-[8px] border border-[#dfe5ef] hover:border-[#0c1834] px-[32px] py-[14px] font-body font-medium text-[13px] text-[#0c1834] tracking-[1.2px] uppercase transition-colors"
                     >
                       Ver más propiedades
-                      <span className="font-normal text-[#737b8c]">({remaining} restantes)</span>
+                      <span className="font-normal text-[#5a6478]">({remaining} restantes)</span>
                     </button>
                   </div>
                 )}
@@ -530,7 +532,7 @@ export default function CategoryPageClient({
               <span className="font-body font-semibold text-[16px] text-[#0c1834]">Filtros</span>
               <button
                 onClick={() => setFilterDrawerOpen(false)}
-                className="text-[#737b8c] hover:text-[#0c1834] transition-colors"
+                className="text-[#5a6478] hover:text-[#0c1834] transition-colors"
                 aria-label="Cerrar filtros"
               >
                 <X size={20} />

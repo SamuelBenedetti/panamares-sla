@@ -8,7 +8,7 @@ import { formatPrice } from "@/lib/utils";
 import { getSlugByName } from "@/lib/neighborhoods";
 import CompareButton from "./CompareButton";
 
-export default function PropertyCard({ property }: { property: Property }) {
+export default function PropertyCard({ property, priority = false }: { property: Property; priority?: boolean }) {
   const { title, slug, price, bedrooms, bathrooms, area, zone, mainImage, recommended, fairPrice, rented } = property;
 
   const imageUrl = mainImage
@@ -29,6 +29,7 @@ export default function PropertyCard({ property }: { property: Property }) {
             src={imageUrl}
             alt={title}
             fill
+            priority={priority}
             className="object-cover hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 50vw, 33vw"
           />
@@ -73,12 +74,12 @@ export default function PropertyCard({ property }: { property: Property }) {
             zoneSlug ? (
               <Link
                 href={`/barrios/${zoneSlug}/`}
-                className="font-body font-normal text-[#737b8c] text-[12px] md:text-[14px] leading-normal line-clamp-1 hover:text-[#0c1834] transition-colors"
+                className="font-body font-normal text-[#5a6478] text-[12px] md:text-[14px] leading-normal line-clamp-1 hover:text-[#0c1834] transition-colors"
               >
                 {zone}
               </Link>
             ) : (
-              <p className="font-body font-normal text-[#737b8c] text-[12px] md:text-[14px] leading-normal line-clamp-1">
+              <p className="font-body font-normal text-[#5a6478] text-[12px] md:text-[14px] leading-normal line-clamp-1">
                 {zone}
               </p>
             )
@@ -88,19 +89,19 @@ export default function PropertyCard({ property }: { property: Property }) {
         {/* Stats — stacked on mobile, horizontal on desktop */}
         <div className="flex flex-col gap-[10px] md:flex-row md:items-center md:gap-4 pt-1">
           {bedrooms != null && (
-            <span className="flex items-center gap-[6px] font-body text-[#737b8c] text-[12px] leading-[16px]">
+            <span className="flex items-center gap-[6px] font-body text-[#5a6478] text-[12px] leading-[16px]">
               <Bed size={13} strokeWidth={1.5} />
               {bedrooms} hab.
             </span>
           )}
           {bathrooms != null && (
-            <span className="flex items-center gap-[6px] font-body text-[#737b8c] text-[12px] leading-[16px]">
+            <span className="flex items-center gap-[6px] font-body text-[#5a6478] text-[12px] leading-[16px]">
               <Bath size={13} strokeWidth={1.5} />
               {bathrooms} baños
             </span>
           )}
           {area != null && (
-            <span className="flex items-center gap-[6px] font-body text-[#737b8c] text-[12px] leading-[16px]">
+            <span className="flex items-center gap-[6px] font-body text-[#5a6478] text-[12px] leading-[16px]">
               <Maximize size={13} strokeWidth={1.5} />
               {area} m²
             </span>
@@ -115,7 +116,7 @@ export default function PropertyCard({ property }: { property: Property }) {
             </span>
           </Link>
           {pricePerM2 && (
-            <span className="font-body text-[#737b8c] text-[12px] leading-[16px]">
+            <span className="font-body text-[#5a6478] text-[12px] leading-[16px]">
               {formatPrice(pricePerM2)}/m²
             </span>
           )}

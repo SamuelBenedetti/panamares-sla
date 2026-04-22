@@ -17,7 +17,7 @@ export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record
       <div className="flex flex-col gap-12 max-w-[1600px] mx-auto">
 
         <div className="flex flex-col gap-3 items-center text-center">
-          <p className="font-body font-medium text-[#737b8c] text-[12px] uppercase tracking-[5px]">
+          <p className="font-body font-medium text-[#5a6478] text-[12px] uppercase tracking-[5px]">
             Explorar por tipo
           </p>
           <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(50px,4vw,60px)] tracking-[-0.03em] leading-[1.1]">

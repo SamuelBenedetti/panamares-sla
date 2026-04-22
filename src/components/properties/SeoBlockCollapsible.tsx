@@ -23,7 +23,7 @@ export default function SeoBlockCollapsible({ text, className = "" }: Props) {
         </p>
         <button
           onClick={() => setExpanded(!expanded)}
-          className="mt-[6px] font-body font-semibold text-[13px] text-[#d4a435] hover:underline"
+          className="mt-[6px] font-body font-semibold text-[13px] text-[#b8891e] hover:underline"
         >
           {expanded ? "Leer menos" : "Leer más"}
         </button>

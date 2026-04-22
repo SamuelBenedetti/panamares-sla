@@ -5,7 +5,7 @@ export default function AgentGrid({ agents }: { agents: Agent[] }) {
   if (agents.length === 0) {
     return (
       <div className="text-center py-20">
-        <p className="font-body text-[16px] text-[#737b8c]">No hay agentes registrados todavía.</p>
+        <p className="font-body text-[16px] text-[#5a6478]">No hay agentes registrados todavía.</p>
       </div>
     );
   }

@@ -36,7 +36,7 @@ export default function AgentCard({ agent }: { agent: Agent }) {
       <div className="flex flex-col gap-[12px] p-[16px] sm:p-[20px] flex-1">
         <div className="flex flex-col gap-[4px]">
           {agent.role && (
-            <p className="font-body font-medium text-[10px] text-[#d4a435] tracking-[3px] uppercase leading-4">
+            <p className="font-body font-medium text-[10px] text-[#b8891e] tracking-[3px] uppercase leading-4">
               {agent.role}
             </p>
           )}
@@ -53,7 +53,7 @@ export default function AgentCard({ agent }: { agent: Agent }) {
           {agent.phone && (
             <a
               href={`tel:${agent.phone}`}
-              className="flex items-center gap-[8px] font-body text-[12px] text-[#737b8c] hover:text-[#0c1834] transition-colors"
+              className="flex items-center gap-[8px] font-body text-[12px] text-[#5a6478] hover:text-[#0c1834] transition-colors"
             >
               <Phone size={12} strokeWidth={1.5} className="shrink-0" />
               {agent.phone}
@@ -62,7 +62,7 @@ export default function AgentCard({ agent }: { agent: Agent }) {
           {agent.email && (
             <a
               href={`mailto:${agent.email}`}
-              className="flex items-center gap-[8px] font-body text-[12px] text-[#737b8c] hover:text-[#0c1834] transition-colors truncate"
+              className="flex items-center gap-[8px] font-body text-[12px] text-[#5a6478] hover:text-[#0c1834] transition-colors truncate"
             >
               <Mail size={12} strokeWidth={1.5} className="shrink-0" />
               <span className="truncate">{agent.email}</span>

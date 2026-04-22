@@ -10,7 +10,7 @@ export default function FeaturedProperties({ properties }: { properties: Propert
 
         {/* Header */}
         <div className="flex flex-col gap-3 items-start text-left">
-          <p className="font-body font-medium text-[#737b8c] text-[12px] uppercase tracking-[5px]">
+          <p className="font-body font-medium text-[#5a6478] text-[12px] uppercase tracking-[5px]">
             Selección destacada
           </p>
           <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(50px,4vw,60px)] tracking-[-0.03em] leading-[1.1]">
@@ -22,7 +22,7 @@ export default function FeaturedProperties({ properties }: { properties: Propert
         {properties.length > 0 ? (
           <PropertyGrid properties={properties} />
         ) : (
-          <p className="font-body text-[#737b8c] text-center py-12">
+          <p className="font-body text-[#5a6478] text-center py-12">
             Pronto agregaremos propiedades destacadas.
           </p>
         )}
@@ -31,7 +31,7 @@ export default function FeaturedProperties({ properties }: { properties: Propert
         <div className="flex justify-center pt-2">
           <Link
             href="/propiedades-en-venta/"
-            className="inline-flex items-center gap-2 font-body font-medium text-[#737b8c] text-[16px] uppercase tracking-[0.35px] hover:text-[#0c1834] transition-colors"
+            className="inline-flex items-center gap-2 font-body font-medium text-[#5a6478] text-[16px] uppercase tracking-[0.35px] hover:text-[#0c1834] transition-colors"
           >
             Ver más propiedades
             <ArrowRight size={18} />

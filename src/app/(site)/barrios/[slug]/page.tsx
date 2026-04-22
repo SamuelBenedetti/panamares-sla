@@ -231,13 +231,13 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       <section className="bg-white border-b border-[#dfe5ef] px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] py-[20px] xl:py-[24px]">
         <div className="max-w-[1600px] mx-auto flex flex-col gap-[12px]">
           <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+            <Link href="/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
               Inicio
             </Link>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
               <path d="M6 12l4-4-4-4" stroke="#737b8c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <Link href="/barrios/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+            <Link href="/barrios/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
               Barrios
             </Link>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
@@ -261,7 +261,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
             {/* Text */}
             <div className="flex flex-col gap-[28px]">
               <div className="flex flex-col gap-[10px]">
-                <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
+                <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase">
                   Guía del barrio
                 </p>
                 <h2 className="font-heading font-normal text-[clamp(32px,4vw,52px)] text-[#0c1834] tracking-[-1.5px] leading-none">
@@ -276,7 +276,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
               </p>
 
               {properties.length > 0 && (
-                <p className="font-body text-[15px] text-[#737b8c]">
+                <p className="font-body text-[15px] text-[#5a6478]">
                   Actualmente hay{" "}
                   <span className="font-semibold text-[#0c1834]">{properties.length} {properties.length === 1 ? "propiedad disponible" : "propiedades disponibles"}</span>{" "}
                   en {neighborhood.name} a través de Panamares.
@@ -310,35 +310,35 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
             <aside className="flex flex-col gap-[16px]">
               {avgPricePerM2 && (
                 <div className="bg-white border border-[#dfe5ef] p-[24px] xl:p-[28px] flex flex-col gap-[8px]">
-                  <p className="font-body font-medium text-[11px] text-[#737b8c] tracking-[3px] uppercase">
+                  <p className="font-body font-medium text-[11px] text-[#5a6478] tracking-[3px] uppercase">
                     Precio promedio
                   </p>
                   <p className="font-heading font-normal text-[clamp(28px,3vw,38px)] text-[#0c1834] tracking-[-1px] leading-none">
                     {formatPrice(avgPricePerM2)}
                   </p>
-                  <p className="font-body text-[13px] text-[#737b8c]">por metro cuadrado</p>
+                  <p className="font-body text-[13px] text-[#5a6478]">por metro cuadrado</p>
                 </div>
               )}
 
               <div className="bg-white border border-[#dfe5ef] p-[24px] xl:p-[28px] flex flex-col gap-[8px]">
-                <p className="font-body font-medium text-[11px] text-[#737b8c] tracking-[3px] uppercase">
+                <p className="font-body font-medium text-[11px] text-[#5a6478] tracking-[3px] uppercase">
                   Propiedades activas
                 </p>
                 <p className="font-heading font-normal text-[clamp(28px,3vw,38px)] text-[#0c1834] tracking-[-1px] leading-none">
                   {properties.length}
                 </p>
-                <p className="font-body text-[13px] text-[#737b8c]">listings en esta zona</p>
+                <p className="font-body text-[13px] text-[#5a6478]">listings en esta zona</p>
               </div>
 
               {categoryCards.length > 0 && (
                 <div className="bg-white border border-[#dfe5ef] p-[24px] xl:p-[28px] flex flex-col gap-[8px]">
-                  <p className="font-body font-medium text-[11px] text-[#737b8c] tracking-[3px] uppercase">
+                  <p className="font-body font-medium text-[11px] text-[#5a6478] tracking-[3px] uppercase">
                     Tipo más disponible
                   </p>
                   <p className="font-heading font-normal text-[clamp(22px,2.5vw,30px)] text-[#0c1834] tracking-[-0.8px] leading-tight">
                     {categoryCards[0].cat.h1.replace(" en Panama", "").replace(" en Panamá", "")}
                   </p>
-                  <p className="font-body text-[13px] text-[#737b8c]">
+                  <p className="font-body text-[13px] text-[#5a6478]">
                     {categoryCards[0].count} {categoryCards[0].count === 1 ? "propiedad" : "propiedades"}
                   </p>
                 </div>
@@ -358,14 +358,14 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
 
             <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[16px]">
               <div className="flex flex-col gap-[10px]">
-                <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
+                <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase">
                   Oferta disponible
                 </p>
                 <h2 className="font-heading font-normal text-[clamp(30px,4vw,52px)] text-[#0c1834] tracking-[-1.5px] leading-none">
                   Propiedades en {neighborhood.name}
                 </h2>
               </div>
-              <p className="font-body font-light text-[15px] text-[#737b8c] max-w-[420px] xl:text-right leading-relaxed">
+              <p className="font-body font-light text-[15px] text-[#5a6478] max-w-[420px] xl:text-right leading-relaxed">
                 Explora cada tipo de propiedad disponible y encuentra la que se ajusta a tu búsqueda.
               </p>
             </div>
@@ -379,7 +379,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
                 >
                   <div className="flex flex-col gap-[10px]">
                     {/* Icon */}
-                    <span className="text-[#737b8c] group-hover:text-white/60 transition-colors">
+                    <span className="text-[#5a6478] group-hover:text-white/60 transition-colors">
                       {CATEGORY_ICONS[cat.propertyType] ?? <Building2 size={22} strokeWidth={1.5} />}
                     </span>
                     {/* Label */}
@@ -387,14 +387,14 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
                       <span className="font-body font-semibold text-[17px] text-[#0c1834] group-hover:text-white transition-colors leading-tight">
                         {cat.h1.split(" en Panama")[0]}
                       </span>
-                      <span className="font-body text-[13px] text-[#737b8c] group-hover:text-white/60 transition-colors">
+                      <span className="font-body text-[13px] text-[#5a6478] group-hover:text-white/60 transition-colors">
                         {count} {count === 1 ? "propiedad" : "propiedades"}
                       </span>
                     </div>
                   </div>
                   {/* Arrow */}
                   <div className="shrink-0 size-[40px] border border-[#dfe5ef] group-hover:border-white/20 flex items-center justify-center transition-colors">
-                    <ArrowRight size={16} className="text-[#737b8c] group-hover:text-white transition-colors" />
+                    <ArrowRight size={16} className="text-[#5a6478] group-hover:text-white transition-colors" />
                   </div>
                 </Link>
               ))}
@@ -412,14 +412,14 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
 
             <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[16px]">
               <div className="flex flex-col gap-[10px]">
-                <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
+                <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase">
                   Ubicación
                 </p>
                 <h2 className="font-heading font-normal text-[clamp(30px,4vw,52px)] text-[#0c1834] tracking-[-1.5px] leading-none">
                   Mapa de propiedades
                 </h2>
               </div>
-              <p className="font-body text-[14px] text-[#737b8c]">
+              <p className="font-body text-[14px] text-[#5a6478]">
                 {mapProps.length} {mapProps.length === 1 ? "propiedad ubicada" : "propiedades ubicadas"} en {neighborhood.name}
               </p>
             </div>
@@ -438,7 +438,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
 
             <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[16px]">
               <div className="flex flex-col gap-[10px]">
-                <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
+                <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase">
                   Selección actual
                 </p>
                 <h2 className="font-heading font-normal text-[clamp(30px,4vw,52px)] text-[#0c1834] tracking-[-1.5px] leading-none">
@@ -448,7 +448,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
               {properties.length > 6 && (
                 <Link
                   href={`/propiedades-en-venta/${params.slug}/`}
-                  className="inline-flex items-center gap-[8px] font-body font-medium text-[13px] text-[#737b8c] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors whitespace-nowrap"
+                  className="inline-flex items-center gap-[8px] font-body font-medium text-[13px] text-[#5a6478] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors whitespace-nowrap"
                 >
                   Ver todas ({properties.length})
                   <ArrowRight size={13} />
@@ -457,8 +457,8 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-[16px] xl:gap-[24px]">
-              {featured.map((p) => (
-                <PropertyCard key={p._id} property={p} />
+              {featured.map((p, index) => (
+                <PropertyCard key={p._id} property={p} priority={index === 0} />
               ))}
             </div>
 
@@ -524,7 +524,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
 
           <div className="flex items-end justify-between">
             <div className="flex flex-col gap-[10px]">
-              <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
+              <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase">
                 Sigue explorando
               </p>
               <h2 className="font-heading font-normal text-[clamp(26px,3vw,40px)] text-[#0c1834] tracking-[-1.2px] leading-none">
@@ -533,7 +533,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
             </div>
             <Link
               href="/barrios/"
-              className="hidden sm:inline-flex items-center gap-[6px] font-body font-medium text-[13px] text-[#737b8c] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors"
+              className="hidden sm:inline-flex items-center gap-[6px] font-body font-medium text-[13px] text-[#5a6478] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors"
             >
               Ver todos
               <ArrowRight size={13} />
@@ -548,19 +548,19 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
                 className="group bg-white hover:bg-[#0c1834] flex items-center justify-between gap-[12px] px-[24px] py-[22px] transition-all duration-200"
               >
                 <div className="flex items-center gap-[10px]">
-                  <MapPin size={14} className="text-[#d4a435] shrink-0" />
+                  <MapPin size={14} className="text-[#b8891e] shrink-0" />
                   <span className="font-body font-medium text-[15px] text-[#0c1834] group-hover:text-white transition-colors leading-tight">
                     {n.name}
                   </span>
                 </div>
-                <ArrowRight size={13} className="text-[#737b8c] group-hover:text-white/60 shrink-0 transition-colors" />
+                <ArrowRight size={13} className="text-[#5a6478] group-hover:text-white/60 shrink-0 transition-colors" />
               </Link>
             ))}
           </div>
 
           <Link
             href="/barrios/"
-            className="sm:hidden inline-flex items-center gap-[6px] font-body font-medium text-[13px] text-[#737b8c] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors self-start"
+            className="sm:hidden inline-flex items-center gap-[6px] font-body font-medium text-[13px] text-[#5a6478] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors self-start"
           >
             Ver todos los barrios
             <ArrowRight size={13} />

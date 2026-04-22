@@ -91,14 +91,14 @@ export default function ComparePageClient({ properties }: Props) {
         <nav className="flex items-center gap-[8px] flex-wrap">
           <Link
             href="/"
-            className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
+            className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
           >
             Inicio
           </Link>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
             <path d="M6 12l4-4-4-4" stroke="#737b8c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span className="font-body font-medium text-[16px] text-[#737b8c] tracking-[-0.32px]">
+          <span className="font-body font-medium text-[16px] text-[#5a6478] tracking-[-0.32px]">
             Propiedades
           </span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
@@ -132,7 +132,7 @@ export default function ComparePageClient({ properties }: Props) {
 
             {/* Tags */}
             <div className="flex flex-col gap-[12px]">
-              <p className="font-body font-medium text-[#737b8c] text-[16px] leading-[20px] tracking-[3.2px] uppercase">
+              <p className="font-body font-medium text-[#5a6478] text-[16px] leading-[20px] tracking-[3.2px] uppercase">
                 Tags
               </p>
               {TAGS.map((t) => (
@@ -152,7 +152,7 @@ export default function ComparePageClient({ properties }: Props) {
 
             {/* Características labels — aligned with card data rows via IMG_H */}
             <div className="flex flex-col gap-[16px]">
-              <p className="font-body font-medium text-[#737b8c] text-[16px] leading-[20px] tracking-[3.2px] uppercase">
+              <p className="font-body font-medium text-[#5a6478] text-[16px] leading-[20px] tracking-[3.2px] uppercase">
                 Características
               </p>
               {rows.map((r) => (
@@ -202,7 +202,7 @@ export default function ComparePageClient({ properties }: Props) {
                     {rows.map((r) => (
                       <div key={r.label} className="flex flex-col gap-0.5">
                         {/* Show label inline on mobile */}
-                        <span className="font-body text-[11px] text-[#737b8c] uppercase tracking-[2px] lg:hidden">
+                        <span className="font-body text-[11px] text-[#5a6478] uppercase tracking-[2px] lg:hidden">
                           {r.label}
                         </span>
                         <span className="font-body font-semibold text-[#0c1834] text-[20px] text-center leading-[30px] tracking-[-0.2px]">

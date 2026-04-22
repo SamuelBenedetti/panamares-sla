@@ -31,7 +31,7 @@ export default function GuiasPageClient({ guides }: { guides: Guide[] }) {
             className={`font-body font-medium text-[12px] tracking-[2px] uppercase px-[16px] py-[8px] border transition-colors ${
               active === cat.value
                 ? "bg-[#0c1834] text-white border-[#0c1834]"
-                : "bg-white text-[#737b8c] border-[#dfe5ef] hover:border-[#0c1834] hover:text-[#0c1834]"
+                : "bg-white text-[#5a6478] border-[#dfe5ef] hover:border-[#0c1834] hover:text-[#0c1834]"
             }`}
           >
             {cat.label}
@@ -42,7 +42,7 @@ export default function GuiasPageClient({ guides }: { guides: Guide[] }) {
       {/* Grid */}
       {filtered.length === 0 ? (
         <div className="py-[80px] text-center">
-          <p className="font-body text-[16px] text-[#737b8c]">No hay guías en esta categoría todavía.</p>
+          <p className="font-body text-[16px] text-[#5a6478]">No hay guías en esta categoría todavía.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-[20px]">
@@ -74,12 +74,12 @@ export default function GuiasPageClient({ guides }: { guides: Guide[] }) {
                 <div className="flex flex-col gap-[10px] p-[16px] xl:p-[20px] flex-1">
                   <div className="flex items-center gap-[12px]">
                     {catLabel && (
-                      <span className="font-body font-medium text-[10px] text-[#d4a435] tracking-[3px] uppercase">
+                      <span className="font-body font-medium text-[10px] text-[#b8891e] tracking-[3px] uppercase">
                         {catLabel}
                       </span>
                     )}
                     {guide.readTime && (
-                      <span className="flex items-center gap-[4px] font-body text-[11px] text-[#737b8c]">
+                      <span className="flex items-center gap-[4px] font-body text-[11px] text-[#5a6478]">
                         <Clock size={11} />
                         {guide.readTime} min
                       </span>
@@ -91,7 +91,7 @@ export default function GuiasPageClient({ guides }: { guides: Guide[] }) {
                   </h3>
 
                   {guide.excerpt && (
-                    <p className="font-body font-light text-[13px] xl:text-[14px] text-[#737b8c] leading-relaxed line-clamp-2 flex-1">
+                    <p className="font-body font-light text-[13px] xl:text-[14px] text-[#5a6478] leading-relaxed line-clamp-2 flex-1">
                       {guide.excerpt}
                     </p>
                   )}

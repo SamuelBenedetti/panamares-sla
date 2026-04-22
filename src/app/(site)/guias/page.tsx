@@ -36,10 +36,10 @@ export default async function GuiasPage() {
 
           {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+            <Link href="/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
               Inicio
             </Link>
-            <ChevronRight size={13} className="text-[#737b8c]" />
+            <ChevronRight size={13} className="text-[#5a6478]" />
             <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
               Guías
             </span>
@@ -51,7 +51,7 @@ export default async function GuiasPage() {
               Guías de Bienes Raíces en Panama
             </h1>
             {guides.length > 0 && (
-              <p className="font-body text-[14px] text-[#737b8c] leading-none">
+              <p className="font-body text-[14px] text-[#5a6478] leading-none">
                 <span className="font-semibold text-[#0c1834]">{guides.length}</span> guías disponibles
               </p>
             )}

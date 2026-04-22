@@ -24,7 +24,7 @@ export default async function TrustStrip() {
             <p className="font-heading text-[#0d1835] text-[60px] leading-[50px] tracking-[-1.8px] font-medium">
               {item.value}
             </p>
-            <p className="font-body font-medium text-[#737b8c] text-[14px] uppercase tracking-wide text-center">
+            <p className="font-body font-medium text-[#5a6478] text-[14px] uppercase tracking-wide text-center">
               {item.label}
             </p>
           </div>

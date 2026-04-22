@@ -13,11 +13,11 @@ export default function PrivacidadPage() {
       <div className="max-w-[800px] mx-auto flex flex-col gap-[40px]">
 
         <div className="flex flex-col gap-[12px]">
-          <p className="font-body font-medium text-[#737b8c] text-[12px] uppercase tracking-[5px]">Legal</p>
+          <p className="font-body font-medium text-[#5a6478] text-[12px] uppercase tracking-[5px]">Legal</p>
           <h1 className="font-heading font-normal text-[#0c1834] text-[clamp(36px,4vw,52px)] tracking-[-0.03em] leading-[1.1]">
             Política de Privacidad
           </h1>
-          <p className="font-body text-[#737b8c] text-[14px]">Última actualización: abril 2025</p>
+          <p className="font-body text-[#5a6478] text-[14px]">Última actualización: abril 2025</p>
         </div>
 
         <div className="flex flex-col gap-[32px] font-body text-[#0c1834] text-[16px] leading-[1.7]">

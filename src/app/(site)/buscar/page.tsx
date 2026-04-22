@@ -166,7 +166,7 @@ function BuscarContent() {
                 <span className="font-body font-medium text-[12px] leading-[16px] text-white tracking-[5px] uppercase">
                   paso {current.paso}
                 </span>
-                <span className="font-body font-medium text-[12px] leading-[16px] text-[#737b8c] tracking-[5px] uppercase">
+                <span className="font-body font-medium text-[12px] leading-[16px] text-[#5a6478] tracking-[5px] uppercase">
                   /04
                 </span>
               </div>

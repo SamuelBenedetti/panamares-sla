@@ -55,11 +55,11 @@ export default function ContactoPage() {
           <div className="flex flex-col gap-[20px]">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-[8px]">
-              <a href="/" className="font-body font-normal text-[14px] text-[#737b8c] hover:text-[#0c1834] transition-colors">Inicio</a>
-              <span className="text-[#737b8c] text-[12px]">›</span>
+              <a href="/" className="font-body font-normal text-[14px] text-[#5a6478] hover:text-[#0c1834] transition-colors">Inicio</a>
+              <span className="text-[#5a6478] text-[12px]">›</span>
               <span className="font-body font-medium text-[14px] text-[#0c1834]">Contacto</span>
             </nav>
-            <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+            <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
               Contáctenos
             </p>
             <h1 className="flex flex-col gap-[3px] text-[#0c1834]">
@@ -70,7 +70,7 @@ export default function ContactoPage() {
                 Panamares
               </span>
             </h1>
-            <p className="font-body text-[18px] xl:text-[20px] text-[#737b8c] leading-relaxed max-w-[576px] pt-[11px]">
+            <p className="font-body text-[18px] xl:text-[20px] text-[#5a6478] leading-relaxed max-w-[576px] pt-[11px]">
               <span className="font-semibold">Nuestro equipo de asesores está disponible para responder tus preguntas,</span>{" "}
               <span className="font-normal">agendar visitas y orientarte en cada paso del proceso.</span>
             </p>
@@ -90,7 +90,7 @@ export default function ContactoPage() {
                   <p className="font-heading font-normal text-[32px] text-[#0c1834] tracking-[-0.9px] leading-none">
                     ¡Mensaje enviado!
                   </p>
-                  <p className="font-body font-light text-[16px] text-[#737b8c] leading-relaxed">
+                  <p className="font-body font-light text-[16px] text-[#5a6478] leading-relaxed">
                     Nos pondremos en contacto contigo a la brevedad.
                   </p>
                   <a
@@ -106,7 +106,7 @@ export default function ContactoPage() {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-[24px]">
                   <div className="grid grid-cols-2 gap-[20px]">
                     <div className="flex flex-col gap-[8px]">
-                      <label className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4">
+                      <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
                         Nombre completo *
                       </label>
                       <input
@@ -119,7 +119,7 @@ export default function ContactoPage() {
                       />
                     </div>
                     <div className="flex flex-col gap-[8px]">
-                      <label className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4">
+                      <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
                         Correo electrónico *
                       </label>
                       <input
@@ -135,7 +135,7 @@ export default function ContactoPage() {
 
                   <div className="grid grid-cols-2 gap-[20px]">
                     <div className="flex flex-col gap-[8px]">
-                      <label className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4">
+                      <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
                         Teléfono / WhatsApp
                       </label>
                       <input
@@ -147,7 +147,7 @@ export default function ContactoPage() {
                       />
                     </div>
                     <div className="flex flex-col gap-[8px]">
-                      <label className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4">
+                      <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
                         Motivo de contacto
                       </label>
                       <div className="relative">
@@ -174,7 +174,7 @@ export default function ContactoPage() {
                   </div>
 
                   <div className="flex flex-col gap-[8px]">
-                    <label className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4">
+                    <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
                       Mensaje
                     </label>
                     <textarea
@@ -210,7 +210,7 @@ export default function ContactoPage() {
                   <p className="font-body font-semibold text-[14px] text-[#0c1935] leading-5">
                     ¿Prefieres respuesta inmediata?
                   </p>
-                  <p className="font-body font-normal text-[12px] text-[#737b8c] leading-4">
+                  <p className="font-body font-normal text-[12px] text-[#5a6478] leading-4">
                     Escríbenos por WhatsApp y te atendemos en minutos.
                   </p>
                 </div>
@@ -289,7 +289,7 @@ export default function ContactoPage() {
                         {icon}
                       </div>
                       <div className="flex flex-col gap-[2px]">
-                        <p className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[1.2px] uppercase leading-4">
+                        <p className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
                           {label}
                         </p>
                         {content}
@@ -303,7 +303,7 @@ export default function ContactoPage() {
 
               {/* Map */}
               <div className="flex flex-col gap-[12px]">
-                <p className="font-body font-semibold text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+                <p className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
                   Nuestra ubicación
                 </p>
                 <div className="border border-[#dfe5ef] overflow-hidden h-[260px]">
@@ -320,7 +320,7 @@ export default function ContactoPage() {
 
               {/* Conócenos mejor */}
               <div className="bg-white px-[20px] pt-[20px] pb-[23px] flex flex-col gap-[7px]">
-                <p className="font-body font-normal text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+                <p className="font-body font-normal text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
                   Conócenos mejor
                 </p>
                 <p className="font-body font-light text-[14px] text-[#0c1935] leading-[22.75px]">
@@ -328,7 +328,7 @@ export default function ContactoPage() {
                 </p>
                 <Link
                   href="/sobre-nosotros/"
-                  className="inline-flex items-center gap-[6px] pt-[14px] font-body font-semibold text-[12px] text-[#d4a435] tracking-[1.2px] uppercase leading-4 hover:opacity-70 transition-opacity"
+                  className="inline-flex items-center gap-[6px] pt-[14px] font-body font-semibold text-[12px] text-[#b8891e] tracking-[1.2px] uppercase leading-4 hover:opacity-70 transition-opacity"
                 >
                   Sobre Panamares →
                 </Link>

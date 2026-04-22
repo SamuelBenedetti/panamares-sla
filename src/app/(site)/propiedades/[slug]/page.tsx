@@ -268,7 +268,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     )}
                   </div>
                   {property.businessType === "venta" && property.area && property.area > 0 && (
-                    <span className="font-body font-medium text-[13px] text-[#737b8c]">
+                    <span className="font-body font-medium text-[13px] text-[#5a6478]">
                       {formatPrice(Math.round(property.price / property.area))}/m²
                     </span>
                   )}
@@ -344,7 +344,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                           {property.agent.name}
                         </a>
                         {property.agent.role && (
-                          <p className="font-body text-[12px] text-[#737b8c] leading-4">{property.agent.role}</p>
+                          <p className="font-body text-[12px] text-[#5a6478] leading-4">{property.agent.role}</p>
                         )}
                       </div>
                     </div>
@@ -355,13 +355,13 @@ export default async function PropertyDetailPage({ params }: Props) {
                       </div>
                       <div>
                         <p className="font-body font-medium text-[16px] text-[#0c1935] tracking-[-0.16px] leading-5">Equipo Panamares</p>
-                        <p className="font-body text-[12px] text-[#737b8c] leading-4">Asesor inmobiliario</p>
+                        <p className="font-body text-[12px] text-[#5a6478] leading-4">Asesor inmobiliario</p>
                       </div>
                     </div>
                   )}
                   <div className="shrink-0 flex flex-col items-start">
-                    <p className="font-body text-[12px] text-[#737b8c] leading-normal">Atención disponible de lunes</p>
-                    <p className="font-body text-[12px] text-[#737b8c] leading-normal">
+                    <p className="font-body text-[12px] text-[#5a6478] leading-normal">Atención disponible de lunes</p>
+                    <p className="font-body text-[12px] text-[#5a6478] leading-normal">
                       a sábado <span className="font-semibold">8am – 7pm</span>
                     </p>
                   </div>
@@ -432,7 +432,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                       <div className="flex items-center gap-[8px]">
                         <Bed size={16} className="text-[#0c1935] shrink-0" />
                         <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">{property.bedrooms}</span>
-                        <span className="font-body font-normal text-[14px] text-[#737b8c] leading-5">Habitaciones</span>
+                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">Habitaciones</span>
                       </div>
                     )}
                     {property.bathrooms != null && (
@@ -441,21 +441,21 @@ export default async function PropertyDetailPage({ params }: Props) {
                         <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">
                           {property.bathrooms}{property.halfBathrooms ? ".5" : ""}
                         </span>
-                        <span className="font-body font-normal text-[14px] text-[#737b8c] leading-5">Baños</span>
+                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">Baños</span>
                       </div>
                     )}
                     {property.area != null && (
                       <div className="flex items-center gap-[8px]">
                         <Maximize size={16} className="text-[#0c1935] shrink-0" />
                         <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">{property.area}</span>
-                        <span className="font-body font-normal text-[14px] text-[#737b8c] leading-5">m²</span>
+                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">m²</span>
                       </div>
                     )}
                     {property.parking != null && (
                       <div className="flex items-center gap-[8px]">
                         <Car size={16} className="text-[#0c1935] shrink-0" />
                         <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">{property.parking}</span>
-                        <span className="font-body font-normal text-[14px] text-[#737b8c] leading-5">Plazas de aparcamiento</span>
+                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">Plazas de aparcamiento</span>
                       </div>
                     )}
                     {property.propertyType && (
@@ -478,7 +478,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               {property.description && (
                 <div className="flex flex-col gap-[16px]">
                   <h2 className="font-body font-bold text-[20px] text-[#0c1834] tracking-[-0.6px] leading-7">Descripción</h2>
-                  <div className="font-body font-normal text-[16px] text-[#737b8c] leading-[22.75px] [&_p]:mb-3 [&_p:last-child]:mb-0">
+                  <div className="font-body font-normal text-[16px] text-[#5a6478] leading-[22.75px] [&_p]:mb-3 [&_p:last-child]:mb-0">
                     <PortableText value={property.description} />
                   </div>
                 </div>
@@ -492,7 +492,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     {(property.featuresInterior ?? []).map((f, i) => (
                       <li key={i} className="flex items-start gap-[8px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[14px] text-[#737b8c] leading-5">{f}</span>
+                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -506,7 +506,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     {(property.featuresBuilding ?? []).map((f, i) => (
                       <li key={i} className="flex items-start gap-[8px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[14px] text-[#737b8c] leading-5">{f}</span>
+                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -520,7 +520,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     {(property.featuresLocation ?? []).map((f, i) => (
                       <li key={i} className="flex items-start gap-[8px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[14px] text-[#737b8c] leading-5">{f}</span>
+                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -538,7 +538,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     {(property.features ?? []).map((f, i) => (
                       <li key={i} className="flex items-start gap-[8px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[14px] text-[#737b8c] leading-5">{f}</span>
+                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -566,12 +566,12 @@ export default async function PropertyDetailPage({ params }: Props) {
                               href={`/barrios/${neighborhoodSlug}/`}
                               className="pointer-events-auto inline-flex items-center gap-[6px] bg-white/90 backdrop-blur-sm border border-[#dfe5ef] px-[12px] py-[7px] hover:bg-white transition-colors"
                             >
-                              <MapPin size={12} className="text-[#d4a435] shrink-0" />
+                              <MapPin size={12} className="text-[#b8891e] shrink-0" />
                               <span className="font-body font-medium text-[12px] text-[#0c1834] tracking-[-0.2px]">{property.zone}</span>
                             </Link>
                           ) : (
                             <div className="inline-flex items-center gap-[6px] bg-white/90 backdrop-blur-sm border border-[#dfe5ef] px-[12px] py-[7px]">
-                              <MapPin size={12} className="text-[#d4a435] shrink-0" />
+                              <MapPin size={12} className="text-[#b8891e] shrink-0" />
                               <span className="font-body font-medium text-[12px] text-[#0c1834] tracking-[-0.2px]">{property.zone}</span>
                             </div>
                           )}
@@ -580,8 +580,8 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </>
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center gap-[8px]">
-                      <MapPin size={32} className="text-[#d4a435]" />
-                      <p className="font-body font-normal text-[14px] text-[#737b8c] leading-5 text-center">
+                      <MapPin size={32} className="text-[#b8891e]" />
+                      <p className="font-body font-normal text-[14px] text-[#5a6478] leading-5 text-center">
                         {[property.zone, "Ciudad de Panamá"].filter(Boolean).join(", ")}
                       </p>
                       <p className="font-body font-normal text-[12px] text-[rgba(115,123,140,0.6)] leading-4">

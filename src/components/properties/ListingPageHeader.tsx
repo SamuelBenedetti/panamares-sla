@@ -22,11 +22,11 @@ export default function ListingPageHeader({ breadcrumbs, title, description, eye
         <nav className="flex items-center gap-[8px] flex-wrap">
           {breadcrumbs.map((item, i) => (
             <span key={i} className="flex items-center gap-[8px]">
-              {i > 0 && <ChevronRight size={13} className="text-[#737b8c]" />}
+              {i > 0 && <ChevronRight size={13} className="text-[#5a6478]" />}
               {item.href ? (
                 <Link
                   href={item.href}
-                  className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
+                  className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
                 >
                   {item.label}
                 </Link>
@@ -42,7 +42,7 @@ export default function ListingPageHeader({ breadcrumbs, title, description, eye
         {/* H1 + contador */}
         <div className="flex flex-col gap-[8px]">
           {eyebrow && (
-            <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+            <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
               {eyebrow}
             </p>
           )}
@@ -50,7 +50,7 @@ export default function ListingPageHeader({ breadcrumbs, title, description, eye
             {title}
           </h1>
           {count != null && (
-            <p className="font-body text-[14px] text-[#737b8c] leading-none">
+            <p className="font-body text-[14px] text-[#5a6478] leading-none">
               <span className="font-semibold text-[#0c1834]">{count}</span>{" "}
               {title.toLowerCase()} disponibles
             </p>

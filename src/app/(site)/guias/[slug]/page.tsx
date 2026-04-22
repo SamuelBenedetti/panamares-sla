@@ -141,7 +141,7 @@ export default async function GuideDetailPage({ params }: Props) {
               </div>
               {guide.author.credentials && (
                 <span className="flex items-center gap-[4px] ml-[4px] bg-white/10 px-[8px] py-[3px]">
-                  <BadgeCheck size={11} className="text-[#d4a435] shrink-0" />
+                  <BadgeCheck size={11} className="text-[#b8891e] shrink-0" />
                   <span className="font-body text-[10px] text-white/60 uppercase tracking-[0.8px]">
                     {guide.author.credentials}
                   </span>
@@ -180,13 +180,13 @@ export default async function GuideDetailPage({ params }: Props) {
                 [&_ol]:list-decimal [&_ol]:pl-[24px] [&_ol]:mb-[20px] [&_ol_li]:mb-[8px]
                 [&_strong]:font-semibold [&_strong]:text-[#0c1834]
                 [&_a]:text-[#0c1834] [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:opacity-60
-                [&_blockquote]:border-l-[3px] [&_blockquote]:border-[#d4a435] [&_blockquote]:pl-[20px] [&_blockquote]:text-[#737b8c] [&_blockquote]:italic [&_blockquote]:my-[32px]
+                [&_blockquote]:border-l-[3px] [&_blockquote]:border-[#d4a435] [&_blockquote]:pl-[20px] [&_blockquote]:text-[#5a6478] [&_blockquote]:italic [&_blockquote]:my-[32px]
                 [&_table]:w-full [&_table]:border-collapse [&_table]:text-[14px] [&_th]:bg-[#0c1834] [&_th]:text-white [&_th]:px-[12px] [&_th]:py-[8px] [&_th]:text-left [&_td]:px-[12px] [&_td]:py-[8px] [&_td]:border-b [&_td]:border-[#e8ecf2]
               ">
                 <PortableText value={guide.body} />
               </div>
             ) : (
-              <p className="font-body text-[16px] text-[#737b8c]">Contenido próximamente.</p>
+              <p className="font-body text-[16px] text-[#5a6478]">Contenido próximamente.</p>
             )}
 
             {/* Author bio card at the end */}

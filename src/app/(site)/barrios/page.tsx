@@ -118,10 +118,10 @@ export default async function BarriosPage() {
 
           {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+            <Link href="/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
               Inicio
             </Link>
-            <ChevronRight size={13} className="text-[#737b8c]" />
+            <ChevronRight size={13} className="text-[#5a6478]" />
             <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
               Barrios
             </span>
@@ -132,7 +132,7 @@ export default async function BarriosPage() {
             <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] leading-none tracking-[-1.8px]">
               Barrios de Panama City
             </h1>
-            <p className="font-body text-[14px] text-[#737b8c] leading-none">
+            <p className="font-body text-[14px] text-[#5a6478] leading-none">
               <span className="font-semibold text-[#0c1834]">{featured.length + rest.length}</span> zonas con propiedades disponibles
             </p>
           </div>
@@ -144,7 +144,7 @@ export default async function BarriosPage() {
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[28px] pb-[60px]">
         <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px]">
           <div className="flex flex-col gap-[10px]">
-            <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+            <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
               Zonas destacadas
             </p>
             <h2 className="font-heading font-normal text-[clamp(32px,4vw,48px)] text-[#0c1834] tracking-[-1.4px] leading-none">
@@ -197,7 +197,7 @@ export default async function BarriosPage() {
         <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[0] pb-[60px]">
           <div className="max-w-[1600px] mx-auto flex flex-col gap-[24px]">
             <div className="flex flex-col gap-[8px]">
-              <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+              <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
                 Más zonas
               </p>
               <h2 className="font-heading font-normal text-[clamp(28px,3vw,40px)] text-[#0c1834] tracking-[-1.2px] leading-none">

@@ -36,10 +36,10 @@ export default async function AgentesPage() {
 
           {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+            <Link href="/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
               Inicio
             </Link>
-            <ChevronRight size={13} className="text-[#737b8c]" />
+            <ChevronRight size={13} className="text-[#5a6478]" />
             <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
               Asesores
             </span>
@@ -51,7 +51,7 @@ export default async function AgentesPage() {
               Asesores Inmobiliarios en Panama
             </h1>
             {agents.length > 0 && (
-              <p className="font-body text-[14px] text-[#737b8c] leading-none">
+              <p className="font-body text-[14px] text-[#5a6478] leading-none">
                 <span className="font-semibold text-[#0c1834]">{agents.length}</span> asesores disponibles
               </p>
             )}
@@ -64,12 +64,12 @@ export default async function AgentesPage() {
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[28px] pb-[80px] xl:pb-[100px]">
         <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px]">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[12px]">
-            <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+            <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
               Equipo Panamares
             </p>
             <Link
               href="/contacto/"
-              className="inline-flex items-center gap-[8px] font-body font-medium text-[12px] text-[#737b8c] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-[8px] font-body font-medium text-[12px] text-[#5a6478] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors whitespace-nowrap"
             >
               Hablar con el equipo
               <ArrowRight size={13} />
