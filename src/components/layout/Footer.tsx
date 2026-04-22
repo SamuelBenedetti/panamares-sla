@@ -22,7 +22,7 @@ const BARRIOS = [
   { label: "El Cangrejo",    href: "/barrios/el-cangrejo/" },
 ];
 
-export default function Footer({ activeSlugs: _activeSlugs }: { activeSlugs: Set<string> }) {
+export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
