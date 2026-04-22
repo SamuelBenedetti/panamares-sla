@@ -545,7 +545,8 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </div>
               )}
 
-              {/* Ubicación */}
+              {/* Ubicación — solo si hay coordenadas */}
+              {property.location && (
               <div className="flex flex-col gap-[16px]">
                 <h2 className="font-body font-bold text-[20px] text-[#0c1834] tracking-[-0.6px] leading-7">Ubicación</h2>
                 <div className="relative bg-white border border-[#dfe5ef] overflow-hidden h-[256px]">
@@ -590,6 +591,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   )}
                 </div>
               </div>
+              )}
 
             </div>
           </div>

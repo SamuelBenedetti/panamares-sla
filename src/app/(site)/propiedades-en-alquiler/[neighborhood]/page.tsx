@@ -103,13 +103,14 @@ export default async function AlquilerNeighborhoodPage({ params }: Props) {
         ]}
         title={h1}
         count={properties.length}
-        description={nbhContent?.seoBlock}
+        description={undefined}
       />
 
       <CategoryPageClient
         properties={properties}
         categorySlug={INTENT_SLUG}
         neighborhoodLinks={[]}
+        neighborhoodSlug={params.neighborhood}
         mapProps={mapProps}
       />
       <CTA />

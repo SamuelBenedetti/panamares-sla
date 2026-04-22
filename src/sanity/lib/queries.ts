@@ -3,6 +3,7 @@ import { groq } from "next-sanity";
 // Shared field set for listing cards
 const CARD_FIELDS = groq`
   _id,
+  wasiId,
   title,
   slug,
   businessType,
@@ -30,9 +31,9 @@ export const allPropertiesQuery = groq`
   }
 `;
 
-// Comparison page — fetch properties by list of IDs
+// Comparison page — fetch properties by list of wasiIds (numbers)
 export const propertiesByIdsQuery = groq`
-  *[_type == "property" && _id in $ids] {
+  *[_type == "property" && wasiId in $ids] {
     ${CARD_FIELDS}
   }
 `;
@@ -186,7 +187,6 @@ export const neighborhoodContentQuery = groq`
     name,
     slug,
     photo,
-    about,
     avgPricePerM2,
     seoBlock
   }

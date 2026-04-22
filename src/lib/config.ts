@@ -7,13 +7,14 @@ export const SITE_NAME = "Panamares";
 export const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL ?? "https://panamares.vercel.app";
 
-// WhatsApp — replace with the real number before launch
-// Format: country code + number, no spaces or dashes
-export const WHATSAPP_NUMBER = "50766000000";
+// WhatsApp principal — propiedades e inquiries generales
+export const WHATSAPP_NUMBER = "50765871849";
 
-// Phone — used as fallback when a listing has no assigned agent.
-// E.164 format for tel: links (no spaces/dashes).
-export const PANAMARES_TEL = "+50766000000";
+// WhatsApp equipo — "únete al equipo" / agentes independientes
+export const WHATSAPP_EQUIPO_NUMBER = "50764206919";
+
+// Teléfono — E.164 para tel: links
+export const PANAMARES_TEL = "+50765871849";
 
 export function whatsappLink(message: string) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;

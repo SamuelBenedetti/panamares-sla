@@ -11,39 +11,25 @@ import { formatPrice } from "@/lib/utils";
 type Tag = "oferta" | "economico" | "ubicacion" | "espacio";
 
 const TAGS: { key: Tag; label: string }[] = [
-  { key: "oferta", label: "Mejor oferta" },
+  { key: "oferta",    label: "Mejor oferta" },
   { key: "economico", label: "Más económico" },
   { key: "ubicacion", label: "Mejor ubicación" },
-  { key: "espacio", label: "Más espacio" },
+  { key: "espacio",   label: "Más espacio" },
 ];
 
 const ZONE_PRESTIGE: Record<string, number> = {
-  "Punta Pacífica": 1,
-  "Punta Paitilla": 2,
-  "Avenida Balboa": 3,
-  "Costa del Este": 4,
-  "Coco del Mar": 5,
-  "Obarrio": 6,
-  "Calle 50": 7,
-  "Marbella": 8,
-  "San Francisco": 9,
-  "El Cangrejo": 10,
-  "Bella Vista": 11,
-  "Santa María": 12,
+  "Punta Pacífica": 1, "Punta Paitilla": 2, "Avenida Balboa": 3,
+  "Costa del Este": 4, "Coco del Mar": 5,   "Obarrio": 6,
+  "Calle 50": 7,       "Marbella": 8,        "San Francisco": 9,
+  "El Cangrejo": 10,   "Bella Vista": 11,    "Santa María": 12,
 };
 
 function getScore(p: Property, tag: Tag): number {
   switch (tag) {
-    case "oferta": {
-      const ppm = p.area && p.area > 0 ? p.price / p.area : Infinity;
-      return ppm; // lower = better
-    }
-    case "economico":
-      return p.price; // lower = better
-    case "ubicacion":
-      return ZONE_PRESTIGE[p.zone ?? ""] ?? 99; // lower = better
-    case "espacio":
-      return -(p.area ?? 0); // higher area = better → negate for consistent "lower = better"
+    case "oferta":    return p.area && p.area > 0 ? p.price / p.area : Infinity;
+    case "economico": return p.price;
+    case "ubicacion": return ZONE_PRESTIGE[p.zone ?? ""] ?? 99;
+    case "espacio":   return -(p.area ?? 0);
   }
 }
 
@@ -66,60 +52,94 @@ const PLACEHOLDERS = [
   "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop",
 ];
 
+// Card image height in px.
+// This value is tuned so the "Características" labels in the sidebar
+// naturally align with the data rows inside the cards.
+//
+// Sidebar Tags section height:
+//   heading 20px + gap×4 (4×12=48px) + buttons×4 (4×40=160px) = 228px
+// Sidebar gap between sections: 40px
+// Sidebar Características heading: 20px  → starts at 268px
+// Sidebar gap after heading: 16px
+// "Precio" label starts at: 268 + 20 + 16 = 304px
+//
+// Card "Precio" value starts at: IMG_H + card padding-top (20px)
+// So: IMG_H = 304 - 20 = 284px
+const IMG_H = 284;
+
 interface Props { properties: Property[] }
 
 export default function ComparePageClient({ properties }: Props) {
   const [activeTag, setActiveTag] = useState<Tag>("oferta");
-
   const ranked = useMemo(() => rankProperties(properties, activeTag), [properties, activeTag]);
 
   const rows: { label: string; value: (p: Property) => string }[] = [
-    { label: "Precio", value: (p) => formatPrice(p.price) },
-    { label: "Precio / m²", value: (p) => p.area && p.area > 0 ? `${formatPrice(Math.round(p.price / p.area))}/m²` : "—" },
-    { label: "Área", value: (p) => p.area != null ? `${p.area} m²` : "—" },
-    { label: "Dormitorios", value: (p) => p.bedrooms != null ? `${p.bedrooms} hab.` : "—" },
-    { label: "Baños", value: (p) => p.bathrooms != null ? `${p.bathrooms} baños` : "—" },
-    { label: "Barrio", value: (p) => p.zone ?? "—" },
+    { label: "Precio",                 value: (p) => formatPrice(p.price) },
+    { label: "Precio / m²",            value: (p) => p.area && p.area > 0 ? `${formatPrice(Math.round(p.price / p.area))}/m²` : "—" },
+    { label: "Área",                   value: (p) => p.area != null ? `${p.area} m²` : "—" },
+    { label: "Dormitorios",            value: (p) => p.bedrooms != null ? `${p.bedrooms} hab.` : "—" },
+    { label: "Baños",                  value: (p) => p.bathrooms != null ? `${p.bathrooms} baños` : "—" },
+    { label: "Barrio",                 value: (p) => p.zone ?? "—" },
     { label: "Plazas de aparcamiento", value: (p) => p.parking != null ? String(p.parking) : "—" },
   ];
 
   return (
-    <section className="bg-[#f9f9f9] py-[110px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
+    <section className="bg-[#f9f9f9] px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] py-[60px] xl:py-[110px]">
       <div className="max-w-[1600px] mx-auto flex flex-col gap-[30px]">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 font-body text-[14px] text-[#737b8c]">
-          <Link href="/" className="hover:text-[#0c1834] transition-colors">Inicio</Link>
-          <span>›</span>
-          <Link href="/propiedades-en-venta/" className="hover:text-[#0c1834] transition-colors">Propiedades en Venta</Link>
-          <span>›</span>
-          <span className="text-[#0c1834] font-medium">Lista comparada de propiedades</span>
+        <nav className="flex items-center gap-[8px] flex-wrap">
+          <Link
+            href="/"
+            className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
+          >
+            Inicio
+          </Link>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
+            <path d="M6 12l4-4-4-4" stroke="#737b8c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span className="font-body font-medium text-[16px] text-[#737b8c] tracking-[-0.32px]">
+            Propiedades
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
+            <path d="M6 12l4-4-4-4" stroke="#737b8c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
+            Lista comparada de propiedades
+          </span>
         </nav>
 
-        {/* Header */}
-        <div className="flex flex-col gap-5 max-w-[600px] pb-10">
-          <h1 className="font-heading font-normal text-[#0c1834] text-[clamp(40px,4vw,60px)] tracking-[-0.03em] leading-tight">
+        {/* H1 + descripción */}
+        <div className="flex flex-col gap-[20px] pr-0 xl:pr-[300px] 2xl:pr-[550px]">
+          <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] leading-none tracking-[-1.8px]">
             Lista comparada de propiedades
           </h1>
-          <p className="font-body text-[15px] text-[#0c1834] leading-[22px]">
-            <strong>Compara lado a lado las propiedades que seleccionaste</strong> y visualiza rápidamente las diferencias en precio, tamaño, ubicación y potencial de valorización.{" "}
-            <span className="font-normal text-[#737b8c]">Usa esta vista clara para identificar la mejor oportunidad y tomar una decisión con mayor confianza.</span>
+          <p className="font-body text-[16px] text-[#0c1834] leading-[22px]">
+            <span className="font-semibold">
+              Compara lado a lado las propiedades que seleccionaste y visualiza rápidamente las diferencias en precio, tamaño, ubicación y potencial de valorización.
+            </span>{" "}
+            <span className="font-normal">
+              Usa esta vista clara para identificar la mejor oportunidad y tomar una decisión con mayor confianza.
+            </span>
           </p>
         </div>
 
-        {/* Main layout */}
-        <div className="flex gap-8 items-start">
+        {/* Main layout: sidebar + cards */}
+        <div className="flex gap-[24px] items-start">
 
-          {/* Sidebar */}
-          <aside className="hidden lg:flex flex-col gap-10 w-[220px] shrink-0 pt-[220px]">
+          {/* Left sidebar */}
+          <aside className="hidden lg:flex flex-col gap-[40px] w-[267px] shrink-0 self-stretch pb-[83px]">
+
             {/* Tags */}
-            <div className="flex flex-col gap-3">
-              <p className="font-body font-medium text-[#737b8c] text-[12px] uppercase tracking-[3.2px]">Tags</p>
+            <div className="flex flex-col gap-[12px]">
+              <p className="font-body font-medium text-[#737b8c] text-[16px] leading-[20px] tracking-[3.2px] uppercase">
+                Tags
+              </p>
               {TAGS.map((t) => (
                 <button
                   key={t.key}
                   onClick={() => setActiveTag(t.key)}
-                  className={`text-left px-5 py-[9px] font-body text-[16px] transition-colors border ${
+                  className={`text-left px-[20px] h-[40px] font-body text-[16px] transition-colors border ${
                     activeTag === t.key
                       ? "bg-[#727b8c] text-white border-[#727b8c] font-semibold"
                       : "border-[#e6e6e6] text-[rgba(12,25,53,0.3)] hover:border-[#0c1834] hover:text-[#0c1834]"
@@ -130,9 +150,11 @@ export default function ComparePageClient({ properties }: Props) {
               ))}
             </div>
 
-            {/* Characteristics labels */}
-            <div className="flex flex-col gap-4">
-              <p className="font-body font-medium text-[#737b8c] text-[12px] uppercase tracking-[3.2px]">Características</p>
+            {/* Características labels — aligned with card data rows via IMG_H */}
+            <div className="flex flex-col gap-[16px]">
+              <p className="font-body font-medium text-[#737b8c] text-[16px] leading-[20px] tracking-[3.2px] uppercase">
+                Características
+              </p>
               {rows.map((r) => (
                 <p key={r.label} className="font-body font-medium text-[#0c1935] text-[20px] leading-[30px]">
                   {r.label}
@@ -141,24 +163,34 @@ export default function ComparePageClient({ properties }: Props) {
             </div>
           </aside>
 
-          {/* Cards */}
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" style={{ gridAutoFlow: "row" }}>
+          {/* Property cards */}
+          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[24px]">
             {ranked.map(({ p, rank }) => {
               const badge = BADGE_STYLES[rank];
               const placeholderIdx = p._id.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % PLACEHOLDERS.length;
               const imgSrc = p.mainImage
-                ? urlFor(p.mainImage).width(600).height(300).url()
+                ? urlFor(p.mainImage).width(700).height(IMG_H).url()
                 : PLACEHOLDERS[placeholderIdx];
               const waMsg = `Hola, me interesa esta propiedad: ${p.title} — ${BASE_URL}/propiedades/${p.slug?.current}`;
 
               return (
-                <article key={p._id} style={{ order: rank }} className="bg-white border border-[#dfe5ef] shadow-sm flex flex-col overflow-hidden">
+                <article
+                  key={p._id}
+                  style={{ order: rank }}
+                  className="bg-white border border-[#dfe5ef] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] flex flex-col overflow-hidden"
+                >
                   {/* Image */}
-                  <div className="relative h-[200px] shrink-0">
-                    <Image src={imgSrc} alt={p.title} fill className="object-cover" sizes="400px" />
+                  <div className="relative shrink-0" style={{ height: IMG_H }}>
+                    <Image
+                      src={imgSrc}
+                      alt={p.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                    />
                     {badge && (
                       <div className={`absolute top-[13px] left-[12px] ${badge.bg} px-[10px] py-[4px] backdrop-blur-[2px]`}>
-                        <span className="font-body font-semibold text-white text-[20px] leading-[30px]">
+                        <span className="font-body font-semibold text-white text-[20px] leading-[30px] uppercase">
                           {badge.label}
                         </span>
                       </div>
@@ -166,32 +198,32 @@ export default function ComparePageClient({ properties }: Props) {
                   </div>
 
                   {/* Data rows */}
-                  <div className="flex flex-col gap-5 p-5">
-                    {/* Mobile: show labels inline */}
+                  <div className="flex flex-col gap-[20px] p-[20px]">
                     {rows.map((r) => (
                       <div key={r.label} className="flex flex-col gap-0.5">
+                        {/* Show label inline on mobile */}
                         <span className="font-body text-[11px] text-[#737b8c] uppercase tracking-[2px] lg:hidden">
                           {r.label}
                         </span>
-                        <span className="font-body font-semibold text-[#0c1834] text-[20px] text-center leading-[30px]">
+                        <span className="font-body font-semibold text-[#0c1834] text-[20px] text-center leading-[30px] tracking-[-0.2px]">
                           {r.value(p)}
                         </span>
                       </div>
                     ))}
 
-                    {/* Actions */}
-                    <div className="flex gap-2 pt-2">
+                    {/* Action buttons */}
+                    <div className="flex gap-[8px] pt-[8px]">
                       <a
                         href={whatsappLink(waMsg)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 h-[44px] flex items-center justify-center bg-[#0d1835] text-white font-body font-medium text-[16px] hover:bg-[#162444] transition-colors"
+                        className="flex-1 flex items-center justify-center bg-[#0d1835] text-white font-body font-medium text-[16px] leading-[16px] px-[20px] py-[10px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] hover:bg-[#162444] transition-colors"
                       >
                         Contáctenos
                       </a>
                       <Link
                         href={`/propiedades/${p.slug?.current}`}
-                        className="flex-1 h-[44px] flex items-center justify-center border border-[#dfe5ef] text-[#0c1834] font-body font-medium text-[16px] hover:bg-gray-50 transition-colors"
+                        className="flex-1 flex items-center justify-center border border-[#dfe5ef] text-[#0c1834] font-body font-medium text-[16px] leading-[16px] px-[17px] py-[9px] hover:bg-gray-50 transition-colors"
                       >
                         Ver propiedad
                       </Link>
@@ -202,6 +234,7 @@ export default function ComparePageClient({ properties }: Props) {
             })}
           </div>
         </div>
+
       </div>
     </section>
   );

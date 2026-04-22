@@ -2,7 +2,7 @@ import type { Property, Agent, Neighborhood } from "@/lib/types";
 import { BASE_URL } from "@/lib/config";
 
 // Panamares business constants — keep in sync with /contacto
-const PANAMARES_PHONE = "+507 6000-0000";
+const PANAMARES_PHONE = "+507 6587-1849";
 const PANAMARES_STREET = "Torre Oceánica, Piso 18";
 const PANAMARES_LAT = 8.9936;
 const PANAMARES_LNG = -79.5197;

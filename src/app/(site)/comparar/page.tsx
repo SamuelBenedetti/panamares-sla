@@ -18,7 +18,7 @@ interface Props {
 
 export default async function CompararPage({ searchParams }: Props) {
   const rawIds = searchParams.ids ?? "";
-  const ids = rawIds.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 3);
+  const ids = rawIds.split(",").map((s) => parseInt(s.trim(), 10)).filter((n) => !isNaN(n)).slice(0, 3);
 
   if (ids.length < 2) notFound();
 

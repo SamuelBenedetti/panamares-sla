@@ -39,9 +39,9 @@ export default function ContactoPage() {
   }
 
   const WHATSAPP_URL =
-    "https://wa.me/50760000000?text=Hola%2C%20me%20interesa%20una%20propiedad%20en%20Panamares";
+    "https://wa.me/50765871849?text=Hola%2C%20me%20interesa%20una%20propiedad%20en%20Panamares";
   const WHATSAPP_EQUIPO_URL =
-    "https://wa.me/50760000000?text=Hola%2C%20soy%20agente%20inmobiliario%20y%20me%20gustar%C3%ADa%20unirme%20al%20equipo%20de%20Panamares.";
+    "https://wa.me/50764206919?text=Hola%2C%20soy%20agente%20inmobiliario%20y%20me%20gustar%C3%ADa%20unirme%20al%20equipo%20de%20Panamares.";
 
   return (
     <>
@@ -142,7 +142,7 @@ export default function ContactoPage() {
                         type="tel"
                         value={form.telefono}
                         onChange={(e) => setForm({ ...form, telefono: e.target.value })}
-                        placeholder="+507 6000-0000"
+                        placeholder="+507 6587-1849"
                         className="bg-white border border-[#dfe5ef] px-[17px] py-[14px] font-body text-[14px] text-[#0c1935] placeholder:text-[rgba(115,123,140,0.5)] outline-none focus:border-[#0c1834] transition-colors w-full"
                       />
                     </div>
@@ -251,8 +251,8 @@ export default function ContactoPage() {
                       label: "Teléfono",
                       content: (
                         <>
-                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">+507 6000-0000</p>
-                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">+507 300-0000</p>
+                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">+507 6587-1849</p>
+                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">+507 6420-6919</p>
                         </>
                       ),
                     },

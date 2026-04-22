@@ -21,6 +21,7 @@ interface Props {
   properties: Property[];
   categorySlug: string;
   neighborhoodLinks: NeighborhoodLink[];
+  neighborhoodSlug?: string;
   contextBlock?: React.ReactNode;
   mapProps?: MapProperty[];
   seoBlock?: string;
@@ -146,7 +147,7 @@ function Stepper({ label, value, onChange }: { label: string; value: number; onC
 
 // ── FilterPanel (Figma-matched) ────────────────────────────────────────────────
 function FilterPanel({
-  filters, setFilters, onReset, hasActive, businessType, propertyTypes,
+  filters, setFilters, onReset, hasActive, businessType, propertyTypes, neighborhoodSlug,
 }: {
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
@@ -154,6 +155,7 @@ function FilterPanel({
   hasActive: boolean;
   businessType: "venta" | "alquiler";
   propertyTypes: string[];
+  neighborhoodSlug?: string;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -178,7 +180,7 @@ function FilterPanel({
         </p>
         <div className="flex gap-[10px] w-full">
           <Link
-            href="/propiedades-en-venta/"
+            href={neighborhoodSlug ? `/propiedades-en-venta/${neighborhoodSlug}/` : "/propiedades-en-venta/"}
             className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
               businessType === "venta"
                 ? "bg-[#727b8c] text-[#faf8f5]"
@@ -188,7 +190,7 @@ function FilterPanel({
             Comprar
           </Link>
           <Link
-            href="/propiedades-en-alquiler/"
+            href={neighborhoodSlug ? `/propiedades-en-alquiler/${neighborhoodSlug}/` : "/propiedades-en-alquiler/"}
             className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
               businessType === "alquiler"
                 ? "bg-[#727b8c] text-[#faf8f5]"
@@ -305,7 +307,7 @@ function normalize(s: string) {
 
 // ── Main export ────────────────────────────────────────────────────────────────
 export default function CategoryPageClient({
-  properties, categorySlug, neighborhoodLinks, contextBlock, mapProps,
+  properties, categorySlug, neighborhoodLinks, neighborhoodSlug, contextBlock, mapProps,
   initialSearch = "", initialBedrooms = 0, initialMinPrice = "", initialMaxPrice = "",
 }: Props) {
   const businessType: "venta" | "alquiler" = categorySlug.includes("alquiler") ? "alquiler" : "venta";
@@ -431,7 +433,7 @@ export default function CategoryPageClient({
       <div className="px-[30px] xl:px-[20px] 2xl:px-[120px]">
         <div className={`max-w-[1600px] mx-auto grid grid-cols-1 items-start gap-8 ${
           mapProps && mapProps.length > 0
-            ? "lg:grid-cols-[309px_1fr_360px]"
+            ? "lg:grid-cols-[309px_1fr_280px]"
             : "lg:grid-cols-[309px_1fr]"
         }`}>
 
@@ -444,6 +446,7 @@ export default function CategoryPageClient({
               hasActive={hasActive}
               businessType={businessType}
               propertyTypes={propertyTypes}
+              neighborhoodSlug={neighborhoodSlug}
             />
 
             {neighborhoodLinks.length > 0 && (
@@ -506,7 +509,7 @@ export default function CategoryPageClient({
           {/* Map — desktop right sidebar, hidden on mobile */}
           {mapProps && mapProps.length > 0 && (
             <div className="hidden lg:block lg:sticky lg:top-[100px]">
-              <PropertyMapMulti properties={mapProps} height="h-[520px]" />
+              <PropertyMapMulti properties={mapProps} height="h-[380px]" />
             </div>
           )}
         </div>

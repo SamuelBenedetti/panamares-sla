@@ -5,6 +5,7 @@ import type { Property } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import { BASE_URL, whatsappLink } from "@/lib/config";
 import { formatPrice } from "@/lib/utils";
+import { getSlugByName } from "@/lib/neighborhoods";
 import CompareButton from "./CompareButton";
 
 export default function PropertyCard({ property }: { property: Property }) {
@@ -15,6 +16,7 @@ export default function PropertyCard({ property }: { property: Property }) {
     : "/placeholder-property.jpg";
 
   const pricePerM2 = area && area > 0 ? Math.round(price / area) : null;
+  const zoneSlug = zone ? getSlugByName(zone) : undefined;
   const waMessage = `Hola, me interesa esta propiedad: ${title} — ${BASE_URL}/propiedades/${slug?.current}`;
   const waHref = whatsappLink(waMessage);
 
@@ -31,7 +33,7 @@ export default function PropertyCard({ property }: { property: Property }) {
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 50vw, 33vw"
           />
         </Link>
-        <CompareButton id={property._id} />
+        {property.wasiId != null && <CompareButton id={String(property.wasiId)} />}
         {/* Tags — stack vertically top-left */}
         <div className="absolute top-[11px] left-[10px] flex flex-col gap-[4px]">
           {recommended && (
@@ -68,9 +70,18 @@ export default function PropertyCard({ property }: { property: Property }) {
             </h3>
           </Link>
           {zone && (
-            <p className="font-body font-normal text-[#737b8c] text-[12px] md:text-[14px] leading-normal line-clamp-1">
-              {zone}
-            </p>
+            zoneSlug ? (
+              <Link
+                href={`/barrios/${zoneSlug}/`}
+                className="font-body font-normal text-[#737b8c] text-[12px] md:text-[14px] leading-normal line-clamp-1 hover:text-[#0c1834] transition-colors"
+              >
+                {zone}
+              </Link>
+            ) : (
+              <p className="font-body font-normal text-[#737b8c] text-[12px] md:text-[14px] leading-normal line-clamp-1">
+                {zone}
+              </p>
+            )
           )}
         </div>
 

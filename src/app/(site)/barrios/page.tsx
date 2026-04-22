@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, ArrowRight, ChevronRight } from "lucide-react";
-import { NEIGHBORHOODS, getSlugByName } from "@/lib/neighborhoods";
+import { getSlugByName, NEIGHBORHOODS } from "@/lib/neighborhoods";
 import { sanityFetch } from "@/sanity/lib/client";
 import { activeZonesQuery } from "@/sanity/lib/queries";
 import { breadcrumbSchema } from "@/lib/jsonld";
@@ -101,12 +101,8 @@ export default async function BarriosPage() {
   );
   activeSlugs.add("costa-del-este");
 
-  const featured = FEATURED_NEIGHBORHOODS.filter(
-    (n) => n.slug === "costa-del-este" || activeSlugs.has(n.slug)
-  );
-  const rest = NEIGHBORHOODS.filter(
-    (n) => n.priority !== "HIGH" && activeSlugs.has(n.slug)
-  );
+  const featured = FEATURED_NEIGHBORHOODS;
+  const rest = NEIGHBORHOODS.filter((n) => n.priority !== "HIGH" && !["avenida-balboa", "costa-del-este"].includes(n.slug));
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: "Inicio", url: "/" },
     { name: "Barrios", url: "/barrios/" },
@@ -196,46 +192,46 @@ export default async function BarriosPage() {
         </div>
       </section>
 
-      {/* ── Todas las zonas ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[20px] pb-[100px] xl:pb-[130px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[32px]">
-          <div className="flex flex-col gap-[10px]">
-            <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
-              Todas las zonas
-            </p>
-            <h2 className="font-heading font-normal text-[clamp(28px,3vw,40px)] text-[#0c1834] tracking-[-1.2px] leading-none">
-              Más barrios de Panamá
-            </h2>
+      {/* ── Más barrios ── */}
+      {rest.length > 0 && (
+        <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[0] pb-[60px]">
+          <div className="max-w-[1600px] mx-auto flex flex-col gap-[24px]">
+            <div className="flex flex-col gap-[8px]">
+              <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
+                Más zonas
+              </p>
+              <h2 className="font-heading font-normal text-[clamp(28px,3vw,40px)] text-[#0c1834] tracking-[-1.2px] leading-none">
+                Otros barrios
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[12px]">
+              {rest.map((n) => {
+                const img = NEIGHBORHOOD_IMAGES[n.slug] ?? NEIGHBORHOOD_IMAGES["punta-pacifica"];
+                return (
+                  <Link
+                    key={n.slug}
+                    href={`/barrios/${n.slug}/`}
+                    className="group relative h-[160px] md:h-[200px] overflow-hidden bg-[#0c1834] flex flex-col justify-end"
+                  >
+                    <Image
+                      src={img}
+                      alt={n.name}
+                      fill
+                      className="object-cover opacity-70 group-hover:opacity-50 group-hover:scale-105 transition-all duration-700"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0c1834]/80 via-transparent to-transparent" />
+                    <div className="relative z-10 p-[14px] xl:p-[18px] flex items-center justify-between">
+                      <h3 className="font-body font-semibold text-[15px] text-white leading-tight">{n.name}</h3>
+                      <ArrowRight size={13} className="text-white/60 shrink-0" />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[16px]">
-            {rest.map((n) => {
-              const img = NEIGHBORHOOD_IMAGES[n.slug] ?? "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&h=600&fit=crop";
-              return (
-                <Link
-                  key={n.slug}
-                  href={`/barrios/${n.slug}/`}
-                  className="group relative h-[200px] md:h-[240px] overflow-hidden bg-[#0c1834] flex flex-col justify-end"
-                >
-                  <Image
-                    src={img}
-                    alt={n.name}
-                    fill
-                    className="object-cover opacity-70 group-hover:opacity-50 group-hover:scale-105 transition-all duration-700"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0c1834]/80 via-transparent to-transparent" />
-                  <div className="relative z-10 p-[16px] xl:p-[20px]">
-                    <h3 className="font-body font-semibold text-[15px] xl:text-[17px] text-white leading-tight">
-                      {n.name}
-                    </h3>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── CTA ── */}
       <section className="bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[90px]">

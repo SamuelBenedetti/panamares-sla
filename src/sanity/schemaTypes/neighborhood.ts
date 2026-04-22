@@ -26,14 +26,6 @@ export default defineType({
       fields: [{ name: "alt", title: "Alt text", type: "string" }],
     }),
     defineField({
-      name: "about",
-      title: "Descripción editorial (aprox. 200 palabras)",
-      type: "array",
-      of: [{ type: "block" }],
-      description:
-        "Texto sobre el barrio: estilo de vida, proximidad a puntos de interés, contexto de precios. Este texto es el contenido principal para posicionamiento SEO.",
-    }),
-    defineField({
       name: "avgPricePerM2",
       title: "Precio promedio por m² (USD)",
       type: "number",
@@ -41,11 +33,11 @@ export default defineType({
     }),
     defineField({
       name: "seoBlock",
-      title: "Bloque SEO (80–120 palabras)",
+      title: "Descripción del barrio (80–120 palabras)",
       type: "text",
-      rows: 4,
+      rows: 5,
       description:
-        "Texto visible en la página de barrio entre el encabezado y el listado. Optimizado para búsquedas de 'propiedades en [barrio]'.",
+        "Texto visible en la página y usado como meta description. Describe el estilo de vida, ubicación y mercado inmobiliario del barrio.",
     }),
   ],
   preview: {

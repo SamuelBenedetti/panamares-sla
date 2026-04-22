@@ -13,7 +13,13 @@ const BARRIOS = [
   { label: "Punta Paitilla", href: "/barrios/punta-paitilla/" },
   { label: "Avenida Balboa", href: "/barrios/avenida-balboa/" },
   { label: "Costa del Este", href: "/barrios/costa-del-este/" },
-  { label: "San Francisco", href: "/barrios/san-francisco/" },
+  { label: "Obarrio",        href: "/barrios/obarrio/" },
+  { label: "Calle 50",       href: "/barrios/calle-50/" },
+  { label: "Albrook",        href: "/barrios/albrook/" },
+  { label: "Coco del Mar",   href: "/barrios/coco-del-mar/" },
+  { label: "Santa María",    href: "/barrios/santa-maria/" },
+  { label: "Marbella",       href: "/barrios/marbella/" },
+  { label: "El Cangrejo",    href: "/barrios/el-cangrejo/" },
 ];
 
 export default function Footer({ activeSlugs }: { activeSlugs: Set<string> }) {
@@ -64,10 +70,7 @@ export default function Footer({ activeSlugs }: { activeSlugs: Set<string> }) {
               Barrios
             </h4>
             <ul className="flex flex-col gap-[5px]">
-              {BARRIOS.filter((item) => {
-                const slug = item.href.split("/barrios/")[1]?.replace("/", "");
-                return slug ? activeSlugs.has(slug) : true;
-              }).map((item) => (
+              {BARRIOS.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
@@ -88,10 +91,10 @@ export default function Footer({ activeSlugs }: { activeSlugs: Set<string> }) {
             <ul className="flex flex-col gap-[5px]">
               <li>
                 <a
-                  href="tel:+50766000000"
+                  href="tel:+50765871849"
                   className="font-body font-normal text-white/50 text-[16px] md:text-[14px] leading-[20px] hover:text-white/80 transition-colors py-[2px] block"
                 >
-                  +507 6000-0000
+                  +507 6587-1849
                 </a>
               </li>
               <li>

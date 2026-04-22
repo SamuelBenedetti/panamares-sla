@@ -226,16 +226,16 @@ export default async function SobreNosotrosPage() {
             {agents.map((agent) => {
               const photoUrl = agent.photo
                 ? urlFor(agent.photo).width(560).height(740).fit("crop").url()
-                : "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=560&h=740&fit=crop";
+                : null;
               return (
                 <Link
                   key={agent._id}
                   href={`/agentes/${agent.slug.current}`}
                   className="flex flex-col gap-[20px] items-start w-[277px] group"
                 >
-                  <div className="relative w-full overflow-hidden" style={{ aspectRatio: "277/370" }}>
+                  <div className="relative w-full overflow-hidden bg-[#0c1834]" style={{ aspectRatio: "277/370" }}>
                     <Image
-                      src={photoUrl}
+                      src={photoUrl ?? "https://wasi.co/system/vista/admin/img/nouser.jpg"}
                       alt={agent.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"

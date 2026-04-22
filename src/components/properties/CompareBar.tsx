@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { getCompareIds, clearCompare } from "@/lib/compare";
 import { X, GitCompareArrows } from "lucide-react";
 
 export default function CompareBar() {
   const [ids, setIds] = useState<string[]>([]);
   const router = useRouter();
+  const pathname = usePathname();
 
   function sync() { setIds(getCompareIds()); }
 
@@ -17,7 +18,7 @@ export default function CompareBar() {
     return () => window.removeEventListener("compare-updated", sync);
   }, []);
 
-  if (ids.length === 0) return null;
+  if (ids.length === 0 || pathname.startsWith("/comparar")) return null;
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 bg-[#0c1834] text-white px-5 py-3 shadow-xl">

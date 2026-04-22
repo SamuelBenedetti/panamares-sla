@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 
 interface GalleryImage {
@@ -45,6 +45,22 @@ export default function PropertyGallery({ images, contained = false, propertyTit
   const lbNext = useCallback(() =>
     setLightboxIdx(i => (i === images.length - 1 ? 0 : i + 1)),
     [images.length]);
+
+  // Swipe support — shared ref for touch start X position
+  const touchStartX = useRef<number | null>(null);
+
+  function onTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function onTouchEnd(e: React.TouchEvent, onLeft: () => void, onRight: () => void) {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 50) return; // ignore taps
+    if (delta < 0) onLeft();   // swipe left → next
+    else onRight();             // swipe right → prev
+  }
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -98,6 +114,8 @@ export default function PropertyGallery({ images, contained = false, propertyTit
           <div
             className="relative w-full h-full max-w-[1400px] max-h-[85vh] mx-[12px] mt-[54px] mb-[88px] md:mx-[80px] md:my-[70px]"
             onClick={e => e.stopPropagation()}
+            onTouchStart={onTouchStart}
+            onTouchEnd={e => onTouchEnd(e, lbNext, lbPrev)}
           >
             <Image
               key={images[lightboxIdx].url}
@@ -174,6 +192,8 @@ export default function PropertyGallery({ images, contained = false, propertyTit
           <div
             className="relative h-[240px] md:h-[340px] lg:h-[420px] w-full overflow-hidden bg-[#0c1935] cursor-zoom-in"
             onClick={() => openLightbox(active)}
+            onTouchStart={onTouchStart}
+            onTouchEnd={e => onTouchEnd(e, next, prev)}
           >
             <Image
               key={images[active].url}
@@ -247,6 +267,8 @@ export default function PropertyGallery({ images, contained = false, propertyTit
           <div
             className="relative w-full aspect-video max-h-[440px] min-h-[220px] overflow-hidden bg-[#0c1935] cursor-zoom-in"
             onClick={() => openLightbox(active)}
+            onTouchStart={onTouchStart}
+            onTouchEnd={e => onTouchEnd(e, next, prev)}
           >
             <Image
               key={images[active].url}

@@ -1,15 +1,17 @@
+import Image from "next/image";
 import SearchBar from "./SearchBar";
 
 export default function Hero() {
   return (
     <section className="relative flex items-center justify-center min-h-screen bg-brand-navy overflow-hidden -mt-20 px-[30px] xl:px-[20px] 2xl:px-[120px]">
-      {/* Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center scale-105"
-        style={{
-          backgroundImage:
-            "url('https://www.figma.com/api/mcp/asset/765084a7-743c-4556-b349-af695d213301')",
-        }}
+      {/* Background image — next/image with priority for LCP */}
+      <Image
+        src="/hero-bg.jpg"
+        alt="Ciudad de Panamá — Panamares inmobiliaria de lujo"
+        fill
+        priority
+        className="object-cover object-center scale-105"
+        sizes="100vw"
       />
 
       {/* Gradient overlay */}

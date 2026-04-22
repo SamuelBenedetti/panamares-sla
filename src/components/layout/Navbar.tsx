@@ -20,21 +20,29 @@ const COMPRAR_ITEMS_BASE = [
 ];
 
 const ALQUILAR_ITEMS_BASE = [
-  { label: "Ver todas",    href: "/propiedades-en-alquiler/",           typeKey: null },
-  { label: "Apartamentos", href: "/apartamentos-en-alquiler/",          typeKey: "apartamento" },
-  { label: "Casas",        href: "/casas-en-alquiler/",                 typeKey: "casa" },
-  { label: "Oficinas",     href: "/oficinas-en-alquiler/",              typeKey: "oficina" },
-  { label: "Locales",      href: "/locales-comerciales-en-alquiler/",   typeKey: "local" },
+  { label: "Ver todas",      href: "/propiedades-en-alquiler/",                typeKey: null },
+  { label: "Apartamentos",   href: "/apartamentos-en-alquiler/",               typeKey: "apartamento" },
+  { label: "Casas",          href: "/casas-en-alquiler/",                      typeKey: "casa" },
+  { label: "Penthouses",     href: "/penthouses-en-alquiler/",                 typeKey: "penthouse" },
+  { label: "Oficinas",       href: "/oficinas-en-alquiler/",                   typeKey: "oficina" },
+  { label: "Locales",        href: "/locales-comerciales-en-alquiler/",        typeKey: "local" },
+  { label: "Terrenos",       href: "/terrenos-en-alquiler/",                   typeKey: "terreno" },
+  { label: "Casas de playa", href: "/casas-de-playa-en-alquiler/",             typeKey: "casa de playa" },
 ];
 
 const BARRIOS_ITEMS = [
-  { label: "Ver todos",    href: "/barrios/"},
+  { label: "Ver todos",      href: "/barrios/" },
   { label: "Punta Pacífica", href: "/barrios/punta-pacifica/" },
   { label: "Punta Paitilla", href: "/barrios/punta-paitilla/" },
   { label: "Avenida Balboa", href: "/barrios/avenida-balboa/" },
-  { label: "Obarrio", href: "/barrios/obarrio/" },
-  { label: "Calle 50", href: "/barrios/calle-50/" },
   { label: "Costa del Este", href: "/barrios/costa-del-este/" },
+  { label: "Obarrio",        href: "/barrios/obarrio/" },
+  { label: "Calle 50",       href: "/barrios/calle-50/" },
+  { label: "Albrook",        href: "/barrios/albrook/" },
+  { label: "Coco del Mar",   href: "/barrios/coco-del-mar/" },
+  { label: "Santa María",    href: "/barrios/santa-maria/" },
+  { label: "Marbella",       href: "/barrios/marbella/" },
+  { label: "El Cangrejo",    href: "/barrios/el-cangrejo/" },
 ];
 
 const NAV_ITEMS_STATIC = [
@@ -100,10 +108,7 @@ export default function Navbar({ activeSlugs, navCounts }: { activeSlugs: Set<st
     count: item.typeKey ? (navCounts?.alquiler?.[item.typeKey] ?? 0) : undefined,
   }));
 
-  const activeBarrios = BARRIOS_ITEMS.filter((item) => {
-    const slug = item.href.split("/barrios/")[1]?.replace("/", "");
-    return slug ? activeSlugs.has(slug) : true;
-  });
+  const activeBarrios = BARRIOS_ITEMS;
 
   const NAV_ITEMS = [
     { href: "/propiedades-en-venta/",   label: "Comprar",  dropdown: COMPRAR_ITEMS },

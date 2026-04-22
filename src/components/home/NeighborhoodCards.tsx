@@ -37,11 +37,6 @@ interface Props {
 }
 
 export default function NeighborhoodCards({ counts }: Props) {
-  const visible = NEIGHBORHOODS.filter(
-    (n) => n.slug === "costa-del-este" || (counts[n.countKey] ?? 0) > 0
-  );
-  if (visible.length === 0) return null;
-
   return (
     <section className="bg-white py-[130px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
       <div className="flex flex-col gap-12 max-w-[1600px] mx-auto">
@@ -58,7 +53,7 @@ export default function NeighborhoodCards({ counts }: Props) {
 
         {/* Cards grid — 1 col on mobile, 4 on lg */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {visible.map((n) => (
+          {NEIGHBORHOODS.map((n) => (
             <Link
               key={n.slug}
               href={`/barrios/${n.slug}/`}

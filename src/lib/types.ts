@@ -17,6 +17,7 @@ export interface SanityImage {
 
 export interface Property {
   _id: string;
+  wasiId?: number;
   title: string;
   slug: { current: string };
   businessType: "venta" | "alquiler";
@@ -73,7 +74,6 @@ export interface Neighborhood {
   name: string;
   slug: { current: string };
   photo?: SanityImage;
-  about?: PortableTextBlock[];
   avgPricePerM2?: number;
   seoBlock?: string;
 }

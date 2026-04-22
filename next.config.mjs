@@ -20,6 +20,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "www.figma.com",
       },
+      {
+        protocol: "https",
+        hostname: "wasi.co",
+      },
     ],
   },
   // ✅ agregar esto

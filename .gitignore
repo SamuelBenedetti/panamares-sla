@@ -40,3 +40,6 @@ next-env.d.ts
 .vercel
 .env*.local
 .claude/worktrees/
+
+# API sample responses — may contain real company IDs
+docs/wasi-sample-*.md

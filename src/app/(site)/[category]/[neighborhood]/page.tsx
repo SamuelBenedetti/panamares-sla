@@ -183,6 +183,7 @@ export default async function GeoTypePage({ params }: Props) {
         properties={properties}
         categorySlug={params.category}
         neighborhoodLinks={neighborhoodLinks}
+        neighborhoodSlug={params.neighborhood}
         mapProps={mapProps}
         contextBlock={
           nbhContent?.about ? (
@@ -193,15 +194,6 @@ export default async function GeoTypePage({ params }: Props) {
               <div className="font-body text-[16px] text-[#3d4452] leading-[1.7] [&_p]:mb-3 [&_p:last-child]:mb-0">
                 <PortableText value={nbhContent.about} />
               </div>
-            </div>
-          ) : nbhContent?.seoBlock ? (
-            <div className="bg-white border border-[#dfe5ef] p-[24px] xl:p-[32px] flex flex-col gap-[12px]">
-              <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase leading-4">
-                Sobre {neighborhood.name}
-              </p>
-              <p className="font-body text-[16px] text-[#3d4452] leading-[1.7]">
-                {nbhContent.seoBlock}
-              </p>
             </div>
           ) : null
         }
