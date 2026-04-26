@@ -22,8 +22,8 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Bienes Raíces en Panama City | Panamares",
-    template: "%s | Panamares",
+    default: "Bienes Raíces en Panama City │ Panamares",
+    template: "%s │ Panamares",
   },
   description:
     "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en las mejores zonas de la ciudad.",

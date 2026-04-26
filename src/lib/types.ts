@@ -39,7 +39,10 @@ export interface Property {
   area?: number;
   parking?: number;
   adminFee?: number;
+  floorSize?: number;
   rentalEstimate?: number;
+  publishedAt?: string;
+  noindex?: boolean;
   description?: PortableTextBlock[];
   featuresInterior?: string[];
   featuresBuilding?: string[];

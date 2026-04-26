@@ -26,7 +26,7 @@ interface GuideSlim {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fetch all active listings
   const activeProperties: PropertySlim[] = await sanityFetch<PropertySlim[]>(groq`
-    *[_type == "property" && listingStatus == "activa"] {
+    *[_type == "property" && listingStatus == "activa" && noindex != true] {
       "slug": slug.current,
       propertyType,
       businessType,
