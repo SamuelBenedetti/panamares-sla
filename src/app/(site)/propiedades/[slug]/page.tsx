@@ -613,9 +613,9 @@ export default async function PropertyDetailPage({ params }: Props) {
             </h2>
 
             {/* Mobile: horizontal scroll */}
-            <div className="flex lg:hidden overflow-x-auto gap-[16px] pb-[8px] snap-x snap-mandatory -mx-[30px] px-[30px]">
+            <div className="flex lg:hidden overflow-x-auto gap-[16px] pb-[8px] snap-x snap-mandatory">
               {related.slice(0, 6).map((p) => (
-                <div key={p._id} className="min-w-[260px] snap-start shrink-0">
+                <div key={p._id} className="w-full shrink-0 snap-start">
                   <PropertyCard property={p} />
                 </div>
               ))}
