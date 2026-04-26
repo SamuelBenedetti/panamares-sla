@@ -43,12 +43,17 @@ const config: Config = {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         brand: {
-          navy: "#0B1D3A",
-          gold: "#C9A84C",
-          "gold-light": "#E2C97E",
-          slate: "#3B4F6B",
-          sand: "#F5F0E8",
-          white: "#FFFFFF",
+          // Core palette — use these instead of hardcoded hex values
+          navy:       "#0c1834", // headings, dark backgrounds
+          "navy-dark": "#121e3e", // footer / dark sections
+          gold:       "#b8891e", // accent links, highlights
+          "gold-light": "#d4a435", // eyebrow accents
+          slate:      "#5a6478", // body text, labels
+          border:     "#dfe5ef", // all borders
+          bg:         "#f9f9f9", // light section backgrounds
+          green:      "#00b424", // WhatsApp / CTA green
+          sand:       "#F5F0E8",
+          white:      "#FFFFFF",
         },
       },
       fontFamily: {

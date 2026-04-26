@@ -2,12 +2,19 @@ import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 import PropertyMap from "@/components/properties/PropertyMap";
 import { contactPointSchema } from "@/lib/jsonld";
+import {
+  WHATSAPP_URL,
+  WHATSAPP_EQUIPO_URL,
+  PANAMARES_PHONE,
+  PANAMARES_PHONE_2,
+  PANAMARES_EMAIL_INFO,
+  PANAMARES_EMAIL_VENTAS,
+  PANAMARES_STREET,
+  PANAMARES_LOCALITY,
+  PANAMARES_LAT,
+  PANAMARES_LNG,
+} from "@/lib/config";
 import ContactForm from "./ContactForm";
-
-const WHATSAPP_URL =
-  "https://wa.me/50765871849?text=Hola%2C%20me%20interesa%20una%20propiedad%20en%20Panamares";
-const WHATSAPP_EQUIPO_URL =
-  "https://wa.me/50764206919?text=Hola%2C%20soy%20agente%20inmobiliario%20y%20me%20gustar%C3%ADa%20unirme%20al%20equipo%20de%20Panamares.";
 
 export default function ContactoPage() {
   return (
@@ -91,8 +98,8 @@ export default function ContactoPage() {
                       label: "Dirección",
                       content: (
                         <>
-                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">Torre Oceánica, Piso 18</p>
-                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">Punta Pacífica, Ciudad de Panamá</p>
+                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">{PANAMARES_STREET}</p>
+                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">{PANAMARES_LOCALITY}, Ciudad de Panamá</p>
                         </>
                       ),
                     },
@@ -101,8 +108,8 @@ export default function ContactoPage() {
                       label: "Teléfono",
                       content: (
                         <>
-                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">+507 6587-1849</p>
-                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">+507 6420-6919</p>
+                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">{PANAMARES_PHONE}</p>
+                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">{PANAMARES_PHONE_2}</p>
                         </>
                       ),
                     },
@@ -111,8 +118,8 @@ export default function ContactoPage() {
                       label: "Correo",
                       content: (
                         <>
-                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">info@panamares.com</p>
-                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">ventas@panamares.com</p>
+                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">{PANAMARES_EMAIL_INFO}</p>
+                          <p className="font-body font-normal text-[16px] text-[#0c1935] leading-normal">{PANAMARES_EMAIL_VENTAS}</p>
                         </>
                       ),
                     },
@@ -158,9 +165,9 @@ export default function ContactoPage() {
                 </p>
                 <div className="border border-[#dfe5ef] overflow-hidden h-[260px]">
                   <PropertyMap
-                    lat={8.9936}
-                    lng={-79.5197}
-                    title="Panamares — Torre Oceánica, Punta Pacífica"
+                    lat={PANAMARES_LAT}
+                    lng={PANAMARES_LNG}
+                    title={`Panamares — ${PANAMARES_STREET}, ${PANAMARES_LOCALITY}`}
                     className="w-full h-[260px]"
                   />
                 </div>

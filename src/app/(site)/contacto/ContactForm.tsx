@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { Send } from "lucide-react";
-
-const WHATSAPP_URL =
-  "https://wa.me/50765871849?text=Hola%2C%20me%20interesa%20una%20propiedad%20en%20Panamares";
+import { WHATSAPP_URL } from "@/lib/config";
 
 export default function ContactForm() {
   const [form, setForm] = useState({

@@ -1,12 +1,15 @@
 import type { Property, Agent, Neighborhood } from "@/lib/types";
-import { BASE_URL } from "@/lib/config";
-
-// Panamares business constants — keep in sync with /contacto
-const PANAMARES_PHONE = "+507 6587-1849";
-const PANAMARES_STREET = "Torre Oceánica, Piso 18";
-const PANAMARES_LAT = 8.9936;
-const PANAMARES_LNG = -79.5197;
-const PANAMARES_OPENING_HOURS = ["Mo-Fr 08:00-18:00", "Sa 09:00-13:00"];
+import {
+  BASE_URL,
+  PANAMARES_PHONE,
+  PANAMARES_STREET,
+  PANAMARES_LOCALITY,
+  PANAMARES_LAT,
+  PANAMARES_LNG,
+  PANAMARES_OPENING_HOURS,
+  PANAMARES_EMAIL_INFO,
+  PANAMARES_EMAIL_VENTAS,
+} from "@/lib/config";
 
 // Homepage + Root layout — RealEstateAgent + Organization (unified)
 export function organizationSchema() {
@@ -28,7 +31,7 @@ export function organizationSchema() {
     address: {
       "@type": "PostalAddress",
       streetAddress: PANAMARES_STREET,
-      addressLocality: "Punta Pacífica",
+      addressLocality: PANAMARES_LOCALITY,
       addressRegion: "Panamá",
       addressCountry: "PA",
     },
@@ -294,7 +297,7 @@ export function contactPointSchema() {
     address: {
       "@type": "PostalAddress",
       streetAddress: PANAMARES_STREET,
-      addressLocality: "Punta Pacífica",
+      addressLocality: PANAMARES_LOCALITY,
       addressRegion: "Panamá",
       addressCountry: "PA",
     },
@@ -309,7 +312,7 @@ export function contactPointSchema() {
         "@type": "ContactPoint",
         contactType: "sales",
         telephone: PANAMARES_PHONE,
-        email: "ventas@panamares.com",
+        email: PANAMARES_EMAIL_VENTAS,
         availableLanguage: ["Spanish", "English"],
         areaServed: "PA",
       },
@@ -317,7 +320,7 @@ export function contactPointSchema() {
         "@type": "ContactPoint",
         contactType: "customer service",
         telephone: PANAMARES_PHONE,
-        email: "info@panamares.com",
+        email: PANAMARES_EMAIL_INFO,
         availableLanguage: ["Spanish", "English"],
         areaServed: "PA",
       },

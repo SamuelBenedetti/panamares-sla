@@ -22,7 +22,6 @@ const nextConfig = {
       },
     ],
   },
-  // ✅ agregar esto
   async headers() {
     return [
       {

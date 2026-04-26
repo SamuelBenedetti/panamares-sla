@@ -330,7 +330,6 @@ export default function CategoryPageClient({
     maxPrice: initialMaxPrice,
   });
 
-    console.log(isPending)
   const [search, setSearch] = useState(initialSearch);
   const [sort, setSort] = useState<SortOption>("relevancia");
   const [visible, setVisible] = useState(PAGE_SIZE);
