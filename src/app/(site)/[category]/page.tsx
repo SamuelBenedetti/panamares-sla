@@ -36,9 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : undefined;
 
   const url = `/${params.category}/`;
-  const HIGH_THRESHOLD_SLUGS = new Set(["casas-en-alquiler", "oficinas-en-alquiler"]);
-  const threshold = HIGH_THRESHOLD_SLUGS.has(params.category) ? 5 : 2;
-  const shouldIndex = properties.length >= threshold;
+  const shouldIndex = properties.length >= 2;
   return {
     title: config.metaTitle,
     description: config.metaDescription,

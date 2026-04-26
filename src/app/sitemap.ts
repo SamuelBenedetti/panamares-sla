@@ -146,8 +146,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.5,
     },
-    // Neighborhood guides
-    ...NEIGHBORHOODS.map((nbh) => ({
+    // Neighborhood guides — only if they have 2+ active listings
+    ...NEIGHBORHOODS.filter((nbh) => {
+      const count = activeProperties.filter((p) => p.zone === nbh.name).length;
+      return count >= 2;
+    }).map((nbh) => ({
       url: `${BASE_URL}/barrios/${nbh.slug}/`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,

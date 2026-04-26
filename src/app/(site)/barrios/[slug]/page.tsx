@@ -33,13 +33,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? urlFor(nbhContent.photo).width(1200).height(630).url()
     : undefined;
 
+  const properties = await sanityFetch<{ _id: string }[]>(
+    propertiesByNeighborhoodQuery,
+    { neighborhood: neighborhood.name }
+  );
+  const shouldIndex = properties.length >= 2;
+
   return {
     title: `Propiedades en ${neighborhood.name}, Panama`,
     description:
       nbhContent?.seoBlock ??
       `Guía completa de ${neighborhood.name}: propiedades disponibles, precios por m², estilo de vida y todo lo que necesitas para vivir o invertir en esta zona de Panama City.`,
     alternates: { canonical: `${BASE_URL}/barrios/${params.slug}/` },
-    robots: { index: true, follow: true },
+    robots: { index: shouldIndex, follow: true },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
       twitter: { card: "summary_large_image", images: [ogImage] },
