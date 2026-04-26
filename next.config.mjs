@@ -20,17 +20,13 @@ const nextConfig = {
         protocol: "https",
         hostname: "www.figma.com",
       },
-      {
-        protocol: "https",
-        hostname: "wasi.co",
-      },
     ],
   },
   // ✅ agregar esto
   async headers() {
     return [
       {
-        source: "/(apartamentos|casas|penthouses|oficinas|locales|terrenos|propiedades-en-venta|propiedades-en-alquiler)/:path*",
+        source: "/(apartamentos|apartaestudios|casas|casas-de-playa|penthouses|oficinas|locales|locales-comerciales|terrenos|lotes-comerciales|edificios|fincas|propiedades-en-venta|propiedades-en-alquiler|barrios)/:path*",
         headers: [
           {
             key: "Cache-Control",

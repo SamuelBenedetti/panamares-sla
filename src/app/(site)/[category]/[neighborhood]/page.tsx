@@ -66,9 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `${typeLabel} en ${neighborhood.name}. ${properties.length} propiedades disponibles. Encuentra las mejores opciones en esta zona exclusiva de Panama City.`;
   const url = `/${params.category}/${params.neighborhood}/`;
 
-  const HIGH_THRESHOLD_SLUGS = new Set(["casas-en-alquiler", "oficinas-en-alquiler"]);
-  const threshold = HIGH_THRESHOLD_SLUGS.has(params.category) ? 5 : 2;
-  const shouldIndex = properties.length >= threshold;
+  const shouldIndex = properties.length >= 2;
   const firstImage = properties.find((p) => p.mainImage)?.mainImage;
   const ogImage = firstImage
     ? urlFor(firstImage).width(1200).height(630).url()
