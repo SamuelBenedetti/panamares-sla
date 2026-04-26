@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : undefined;
 
   return {
-    title: `Vivir en ${neighborhood.name}, Panama | Guía de Barrio`,
+    title: `Propiedades en ${neighborhood.name}, Panama`,
     description:
       nbhContent?.seoBlock ??
       `Guía completa de ${neighborhood.name}: propiedades disponibles, precios por m², estilo de vida y todo lo que necesitas para vivir o invertir en esta zona de Panama City.`,
@@ -123,7 +123,12 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
     : HOMEPAGE_IMAGES[params.slug] ?? FALLBACK_IMAGE;
 
   // ── JSON-LD ────────────────────────────────────────────────────────────────
-  const jsonLdPlace      = nbhContent?._id ? neighborhoodSchema(nbhContent, heroImage) : null;
+  const neighborhoodForSchema = nbhContent ?? {
+    _id: params.slug,
+    name: neighborhood.name,
+    slug: { current: params.slug },
+  };
+  const jsonLdPlace      = neighborhoodSchema(neighborhoodForSchema, heroImage);
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: "Inicio",     url: "/" },
     { name: "Barrios",    url: "/barrios/" },
@@ -142,9 +147,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
 
   return (
     <>
-      {jsonLdPlace && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdPlace) }} />
-      )}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdPlace) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
       <WhatsAppButton message={waMsg} variant="floating" />
 

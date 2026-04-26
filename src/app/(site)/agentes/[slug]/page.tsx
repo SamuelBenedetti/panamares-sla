@@ -19,10 +19,17 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const agent = await sanityFetch<Agent | null>(agentBySlugQuery, { slug: params.slug });
   if (!agent) return {};
+  const ogImage = agent.photo
+    ? urlFor(agent.photo).width(1200).height(630).url()
+    : undefined;
   return {
     title: `${agent.name} — Asesor Inmobiliario`,
     description: `${agent.name}${agent.role ? `, ${agent.role}` : ""} en Panamares. Conoce su trayectoria y propiedades disponibles en Panama City.`,
     alternates: { canonical: `${BASE_URL}/agentes/${params.slug}/` },
+    ...(ogImage && {
+      openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+      twitter: { card: "summary_large_image", images: [ogImage] },
+    }),
   };
 }
 

@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect, useTransition } from "react";
+import dynamic from "next/dynamic";
 import { X, ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import PropertyGrid from "@/components/properties/PropertyGrid";
-import PropertyMapMulti, { type MapProperty } from "@/components/properties/PropertyMapMulti";
+import type { MapProperty } from "@/components/properties/PropertyMapMulti";
 import type { Property } from "@/lib/types";
 import { formatPriceCompact } from "@/lib/utils";
+
+const PropertyMapMulti = dynamic(() => import("@/components/properties/PropertyMapMulti"), { ssr: false });
 
 const PAGE_SIZE = 12;
 
@@ -318,6 +321,7 @@ export default function CategoryPageClient({
     return Array.from(types).sort();
   }, [properties]);
 
+  const [isPending, startTransition] = useTransition();
   const [filters, setFilters] = useState<Filters>({
     ...INIT_FILTERS,
     bedrooms: initialBedrooms,
@@ -336,9 +340,11 @@ export default function CategoryPageClient({
     filters.bedrooms > 0 || filters.bathrooms > 0 ||
     filters.propertyType !== "";
 
-  function reset() { setFilters(INIT_FILTERS); setSearch(""); setVisible(PAGE_SIZE); }
+  function reset() {
+    startTransition(() => { setFilters(INIT_FILTERS); setSearch(""); setVisible(PAGE_SIZE); });
+  }
 
-  useEffect(() => { setVisible(PAGE_SIZE); }, [filters, sort, search]);
+  useEffect(() => { startTransition(() => setVisible(PAGE_SIZE)); }, [filters, sort, search]);
 
   const filtered = useMemo(() => {
     let result = [...properties];
@@ -417,7 +423,7 @@ export default function CategoryPageClient({
             <select
               id="sort-select"
               value={sort}
-              onChange={(e) => setSort(e.target.value as SortOption)}
+              onChange={(e) => startTransition(() => setSort(e.target.value as SortOption))}
               className="appearance-none bg-white border border-[#dfe5ef] pl-[14px] pr-[36px] py-[8px] font-body text-[13px] text-[#0c1834] focus:outline-none focus:border-[#0c1834] transition-colors cursor-pointer"
             >
               <option value="relevancia">Relevancia</option>
@@ -435,8 +441,8 @@ export default function CategoryPageClient({
       <div className="px-[30px] xl:px-[20px] 2xl:px-[120px]">
         <div className={`max-w-[1600px] mx-auto grid grid-cols-1 items-start gap-8 ${
           mapProps && mapProps.length > 0
-            ? "lg:grid-cols-[309px_1fr_280px]"
-            : "lg:grid-cols-[309px_1fr]"
+            ? "lg:grid-cols-[260px_1fr_380px]"
+            : "lg:grid-cols-[260px_1fr]"
         }`}>
 
           {/* Sidebar — desktop only */}
@@ -485,7 +491,7 @@ export default function CategoryPageClient({
               </div>
             ) : (
               <>
-                <PropertyGrid properties={shown} />
+                <PropertyGrid properties={shown} cols={2} />
                 {remaining > 0 && (
                   <div className="pt-[48px] sm:flex sm:justify-center">
                     <button

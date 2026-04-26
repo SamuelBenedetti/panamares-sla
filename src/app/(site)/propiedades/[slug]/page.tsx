@@ -83,6 +83,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (property.listingStatus !== "activa") {
     return { robots: { index: false, follow: false } };
   }
+  // CMS-level noindex toggle (demo, duplicates, unpublished).
+  if (property.noindex) {
+    return { title: property.title, robots: { index: false, follow: false } };
+  }
 
   const zone = property.zone ?? "Panama";
   const intent = property.businessType === "venta" ? "Venta" : "Alquiler";
@@ -90,7 +94,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const statsParts: string[] = [];
   if (property.bedrooms != null) statsParts.push(`${property.bedrooms} Hab`);
   if (property.area != null) statsParts.push(`${property.area}m²`);
-  const statsStr = statsParts.length ? ` | ${statsParts.join(", ")}` : "";
+  const statsStr = statsParts.length ? ` │ ${statsParts.join(", ")}` : "";
   const buildingPrefix = property.buildingName ? `${property.buildingName} — ` : "";
   const title = `${buildingPrefix}${ptLabel} en ${intent} en ${zone}${statsStr}`;
 
@@ -609,9 +613,9 @@ export default async function PropertyDetailPage({ params }: Props) {
             </h2>
 
             {/* Mobile: horizontal scroll */}
-            <div className="flex lg:hidden overflow-x-auto gap-[16px] pb-[8px] snap-x snap-mandatory -mx-[30px] px-[30px]">
+            <div className="flex lg:hidden overflow-x-auto gap-[16px] pb-[8px] snap-x snap-mandatory">
               {related.slice(0, 6).map((p) => (
-                <div key={p._id} className="min-w-[260px] snap-start shrink-0">
+                <div key={p._id} className="w-full shrink-0 snap-start">
                   <PropertyCard property={p} />
                 </div>
               ))}
