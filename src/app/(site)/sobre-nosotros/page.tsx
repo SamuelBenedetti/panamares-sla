@@ -7,13 +7,15 @@ import { allAgentsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import type { Agent } from "@/lib/types";
 import { breadcrumbSchema } from "@/lib/jsonld";
+import { BASE_URL } from "@/lib/config";
+import PropertyMap from "@/components/properties/PropertyMap";
 
 export const metadata: Metadata = {
   title: "Sobre Nosotros",
   description:
     "Panamares es una agencia inmobiliaria de lujo en Panama City. Conoce nuestro equipo y nuestra trayectoria en el mercado panameño.",
   alternates: {
-    canonical: "https://panamares.vercel.app/sobre-nosotros/",
+    canonical: `${BASE_URL}/sobre-nosotros/`,
   },
 };
 
@@ -117,6 +119,28 @@ export default async function SobreNosotrosPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Nuestra ubicación ── */}
+      <section className="bg-white px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[96px] border-t border-[#dfe5ef]">
+        <div className="max-w-[1600px] mx-auto flex flex-col gap-[24px]">
+          <div className="flex flex-col gap-[8px]">
+            <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
+              Encuéntranos
+            </p>
+            <h2 className="font-heading font-normal text-[clamp(28px,3vw,44px)] text-[#0c1834] tracking-[-1.2px] leading-none">
+              Torre Oceánica, Piso 18 — Punta Pacífica
+            </h2>
+          </div>
+          <div className="border border-[#dfe5ef] overflow-hidden h-[320px]">
+            <PropertyMap
+              lat={8.9936}
+              lng={-79.5197}
+              title="Panamares — Torre Oceánica, Punta Pacífica"
+              className="w-full h-[320px]"
+            />
           </div>
         </div>
       </section>
@@ -234,13 +258,21 @@ export default async function SobreNosotrosPage() {
                   className="flex flex-col gap-[20px] items-start w-[277px] group"
                 >
                   <div className="relative w-full overflow-hidden bg-[#0c1834]" style={{ aspectRatio: "277/370" }}>
+                    {photoUrl ? (
                     <Image
-                      src={photoUrl ?? "https://wasi.co/system/vista/admin/img/nouser.jpg"}
+                      src={photoUrl}
                       alt={agent.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                       sizes="277px"
                     />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="font-heading text-[64px] text-white/20 leading-none select-none">
+                        {agent.name[0]}
+                      </span>
+                    </div>
+                  )}
                   </div>
                   <div className="flex flex-col gap-[10px] items-center w-full">
                     <p className="font-heading font-normal text-[30px] text-[#0d1835] tracking-[-0.9px] leading-7 text-center w-full">

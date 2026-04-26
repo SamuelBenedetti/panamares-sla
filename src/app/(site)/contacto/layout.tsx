@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { breadcrumbSchema } from "@/lib/jsonld";
+import { BASE_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Contacto",
   description:
     "Contáctanos para comprar, vender o alquilar propiedades en Panama City. Nuestros asesores están disponibles de lunes a sábado.",
   alternates: {
-    canonical: "https://panamares.vercel.app/contacto/",
+    canonical: `${BASE_URL}/contacto/`,
   },
 };
 

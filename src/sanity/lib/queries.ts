@@ -15,6 +15,7 @@ const CARD_FIELDS = groq`
   area,
   zone,
   buildingName,
+  publishedAt,
   mainImage,
   location,
   featured,
@@ -40,7 +41,7 @@ export const propertiesByIdsQuery = groq`
 
 // Homepage — featured active listings
 export const featuredPropertiesQuery = groq`
-  *[_type == "property" && featured == true && listingStatus == "activa"] | order(_createdAt desc) [0...9] {
+  *[_type == "property" && featured == true && listingStatus == "activa"] | order(_createdAt desc) [0...6] {
     ${CARD_FIELDS}
   }
 `;
@@ -75,7 +76,10 @@ export const propertyBySlugQuery = groq`
     featuresBuilding,
     featuresLocation,
     features,
+    floorSize,
     rentalEstimate,
+    publishedAt,
+    noindex,
     gallery[] { asset->, alt },
     mainImage,
     location,

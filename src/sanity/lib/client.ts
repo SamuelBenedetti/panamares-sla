@@ -26,5 +26,5 @@ export async function sanityFetch<T>(query: string, params?: Record<string, unkn
     // builds where NEXT_PUBLIC_SANITY_PROJECT_ID is not set.
     return [] as unknown as T;
   }
-  return client.fetch<T>(query, params ?? {}, { next: { revalidate: 60 } });
+  return client.fetch<T>(query, params ?? {}, { next: { revalidate: 3600 } });
 }

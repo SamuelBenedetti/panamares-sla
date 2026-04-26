@@ -22,13 +22,11 @@ export default function AgentCard({ agent }: { agent: Agent }) {
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         ) : (
-          <Image
-            src="https://wasi.co/system/vista/admin/img/nouser.jpg"
-            alt={agent.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          />
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="font-heading text-[48px] text-white/30 leading-none select-none">
+              {agent.name[0]}
+            </span>
+          </div>
         )}
       </Link>
 
