@@ -173,6 +173,7 @@ function FilterPanel({
 
   const inputBox = "bg-[#f9f9f9] border border-[#e6e6e6] px-[17.5px] py-[9px] w-[126px] font-body text-[16px] text-[#0c1935] tracking-[-0.32px] focus:outline-none focus:border-[#0c1935] placeholder:text-[rgba(12,25,53,0.3)] transition-colors text-center";
 
+
   return (
     <div className="bg-white border border-[#dfe5ef] p-[21px] flex flex-col gap-[20px] w-full">
 
@@ -328,6 +329,8 @@ export default function CategoryPageClient({
     minPrice: initialMinPrice,
     maxPrice: initialMaxPrice,
   });
+
+    console.log(isPending)
   const [search, setSearch] = useState(initialSearch);
   const [sort, setSort] = useState<SortOption>("relevancia");
   const [visible, setVisible] = useState(PAGE_SIZE);
