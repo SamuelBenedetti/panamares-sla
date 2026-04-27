@@ -159,7 +159,7 @@ export default async function BarriosPage() {
       />
 
       {/* ── Header ── */}
-      <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
+      <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-0 xl:pb-[28px]">
         <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
 
           {/* Breadcrumb */}
@@ -176,23 +176,17 @@ export default async function BarriosPage() {
             </span>
           </nav>
 
-          {/* Title + count — same row */}
-          <div className="flex items-baseline justify-between gap-[16px]">
-            <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] leading-none tracking-[-1.8px]">
+          {/* Title + count */}
+          <div className="flex flex-col gap-[40px] pb-[30px] xl:flex-row xl:items-baseline xl:justify-between xl:gap-[16px] xl:pb-0">
+            <h1 className="font-heading font-normal text-[60px] text-[#0c1834] leading-normal tracking-[-1.8px]">
               Barrios de{" "}
               <em className="italic">Panama City</em>
             </h1>
-            <p className="font-body text-[14px] text-[#5a6478] leading-none shrink-0 hidden sm:block">
+            <p className="font-body text-[13px] xl:text-[14px] text-[#5a6478] leading-none shrink-0">
               <span className="font-semibold text-[#0c1834]">{totalZones}</span>{" "}
               Zonas con propiedades disponibles
             </p>
           </div>
-
-          {/* Mobile-only count */}
-          <p className="font-body text-[13px] text-[#5a6478] leading-none sm:hidden">
-            <span className="font-semibold text-[#0c1834]">{totalZones}</span>{" "}
-            zonas con propiedades disponibles
-          </p>
         </div>
       </section>
 
