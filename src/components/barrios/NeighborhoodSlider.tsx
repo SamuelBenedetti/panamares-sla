@@ -28,7 +28,7 @@ export default function NeighborhoodSlider({
 
   return (
     <div
-      className="relative w-full overflow-hidden bg-[#0c1935] h-[720px] sm:h-auto sm:aspect-[16/8] xl:aspect-[1037/412]"
+      className="relative w-full overflow-hidden bg-[#0c1935] h-[65vh] sm:h-auto sm:aspect-[16/8] xl:aspect-[1037/412]"
     >
       {/* Background image */}
       <Image
