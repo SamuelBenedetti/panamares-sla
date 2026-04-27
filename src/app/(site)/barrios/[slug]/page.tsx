@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, ArrowRight, TrendingUp, Building2, Home, Layers } from "lucide-react";
+import { MapPin, ArrowRight, TrendingUp, Building2, Home, Layers, ChevronRight } from "lucide-react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertiesByNeighborhoodQuery, neighborhoodContentQuery } from "@/sanity/lib/queries";
 import { getNeighborhoodBySlug, VALID_NEIGHBORHOOD_SLUGS, NEIGHBORHOODS } from "@/lib/neighborhoods";
@@ -169,19 +169,25 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
           priority
           sizes="100vw"
         />
-        {/* Two-layer gradient: subtle at top for contrast, strong at bottom for text legibility */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0c1834] via-[#0c1834]/30 to-[#0c1834]/10" />
 
         <div className="relative z-10 w-full px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] pb-[48px] xl:pb-[80px]">
           <div className="max-w-[1600px] mx-auto flex flex-col gap-[20px]">
 
-            {/* Eyebrow */}
-            <div className="flex items-center gap-[8px]">
-              <MapPin size={13} className="text-[#d4a435]" />
-              <span className="font-body font-medium text-[11px] text-[#d4a435] tracking-[4px] uppercase">
-                Ciudad de Panamá
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-[8px] flex-wrap">
+              <Link href="/" className="font-body font-normal text-[14px] text-white/70 hover:text-white transition-colors">
+                Inicio
+              </Link>
+              <ChevronRight size={12} className="text-white/40" />
+              <Link href="/barrios/" className="font-body font-normal text-[14px] text-white/70 hover:text-white transition-colors">
+                Barrios
+              </Link>
+              <ChevronRight size={12} className="text-white/40" />
+              <span className="font-body font-medium text-[14px] text-white">
+                {neighborhood.name}
               </span>
-            </div>
+            </nav>
 
             {/* H1 */}
             <h1 className="font-heading font-normal text-[clamp(44px,6vw,80px)] text-white leading-none tracking-[-2.5px] max-w-[900px]">
@@ -189,73 +195,39 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
               <span className="italic"> Panama</span>
             </h1>
 
-            {/* Stats strip */}
+            {/* Description */}
+            {nbhContent?.seoBlock && (
+              <p className="font-body font-light text-[15px] text-white/80 leading-relaxed max-w-[580px] line-clamp-2">
+                {nbhContent.seoBlock}
+              </p>
+            )}
+
+            {/* Stats strip — unified pills with | separators */}
             <div className="flex flex-wrap gap-[10px] pt-[4px]">
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-[16px] py-[10px] flex items-center gap-[10px]">
-                <Building2 size={14} className="text-white/60 shrink-0" />
+              <div className="bg-black/40 backdrop-blur-sm px-[14px] py-[10px] flex items-center gap-[8px]">
+                <Home size={14} className="text-white/60 shrink-0" />
                 <span className="font-body text-[13px] text-white">
-                  <span className="font-semibold text-[15px]">{properties.length}</span>{" "}
+                  <span className="font-semibold">{properties.length}</span>{" "}
                   {properties.length === 1 ? "propiedad activa" : "propiedades activas"}
+                  {ventaCount > 0 && (
+                    <> <span className="text-white/40 mx-[3px]">|</span> <span className="font-semibold">{ventaCount}</span> venta</>
+                  )}
+                  {alquilerCount > 0 && (
+                    <> <span className="text-white/40 mx-[3px]">|</span> <span className="font-semibold">{alquilerCount}</span> alquiler</>
+                  )}
                 </span>
               </div>
 
               {avgPricePerM2 && (
-                <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-[16px] py-[10px] flex items-center gap-[10px]">
-                  <TrendingUp size={14} className="text-white/60 shrink-0" />
+                <div className="bg-black/40 backdrop-blur-sm px-[14px] py-[10px] flex items-center gap-[8px]">
+                  <Home size={14} className="text-white/60 shrink-0" />
                   <span className="font-body text-[13px] text-white">
-                    <span className="font-semibold text-[15px]">{formatPrice(avgPricePerM2)}</span>/m² promedio
+                    <span className="font-semibold">{formatPrice(avgPricePerM2)}/m²</span> promedio
                   </span>
                 </div>
               )}
-
-              {ventaCount > 0 && (
-                <Link
-                  href={`/propiedades-en-venta/${params.slug}/`}
-                  className="bg-white/10 backdrop-blur-sm border border-white/20 px-[16px] py-[10px] flex items-center gap-[10px] hover:bg-white/20 transition-colors"
-                >
-                  <span className="font-body text-[13px] text-white">
-                    <span className="font-semibold text-[15px]">{ventaCount}</span> en venta
-                  </span>
-                </Link>
-              )}
-
-              {alquilerCount > 0 && (
-                <Link
-                  href={`/propiedades-en-alquiler/${params.slug}/`}
-                  className="bg-white/10 backdrop-blur-sm border border-white/20 px-[16px] py-[10px] flex items-center gap-[10px] hover:bg-white/20 transition-colors"
-                >
-                  <span className="font-body text-[13px] text-white">
-                    <span className="font-semibold text-[15px]">{alquilerCount}</span> en alquiler
-                  </span>
-                </Link>
-              )}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════════════
-          2. BREADCRUMB + SEO BLOCK
-      ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="bg-white border-b border-[#dfe5ef] px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] py-[20px] xl:py-[24px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[12px]">
-          <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
-              Inicio
-            </Link>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
-              <path d="M6 12l4-4-4-4" stroke="#737b8c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <Link href="/barrios/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
-              Barrios
-            </Link>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
-              <path d="M6 12l4-4-4-4" stroke="#737b8c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
-              {neighborhood.name}
-            </span>
-          </nav>
         </div>
       </section>
 
