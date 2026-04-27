@@ -37,8 +37,9 @@ export default function NeighborhoodSlider({
         alt={n.name}
         fill
         priority
+        quality={90}
         className="object-cover"
-        sizes="(max-width: 640px) 100vw, 1400px"
+        sizes="100vw"
       />
 
       {/* Gradient: 80% dark at bottom → 20% at 50% → transparent at top */}
