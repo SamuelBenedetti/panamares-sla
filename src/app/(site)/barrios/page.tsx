@@ -178,7 +178,7 @@ export default async function BarriosPage() {
 
           {/* Title + count */}
           <div className="flex flex-col gap-[40px] pb-[30px] xl:flex-row xl:items-baseline xl:justify-between xl:gap-[16px] xl:pb-0">
-            <h1 className="font-heading font-normal text-[60px] text-[#0c1834] leading-normal tracking-[-1.8px]">
+            <h1 className="font-heading font-normal text-[60px] text-[#0c1834] leading-[normal] tracking-[-1.8px]">
               Barrios de{" "}
               <em className="italic">Panama City</em>
             </h1>
