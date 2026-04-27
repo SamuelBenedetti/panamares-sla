@@ -4,9 +4,10 @@ import Image from "next/image";
 import { MapPin, ArrowRight, ChevronRight } from "lucide-react";
 import { getSlugByName, NEIGHBORHOODS } from "@/lib/neighborhoods";
 import { sanityFetch } from "@/sanity/lib/client";
-import { activeZonesQuery } from "@/sanity/lib/queries";
+import { activeZonesQuery, neighborhoodCountsQuery } from "@/sanity/lib/queries";
 import { breadcrumbSchema } from "@/lib/jsonld";
 import { BASE_URL } from "@/lib/config";
+import NeighborhoodSlider from "@/components/barrios/NeighborhoodSlider";
 
 export const metadata: Metadata = {
   title: "Barrios de Panamá | Guía de Zonas",
@@ -17,13 +18,13 @@ export const metadata: Metadata = {
 
 const NEIGHBORHOOD_IMAGES: Record<string, string> = {
   "punta-pacifica":
-    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1400&h=600&fit=crop",
   "punta-paitilla":
-    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&h=600&fit=crop",
   "avenida-balboa":
-    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1400&h=600&fit=crop",
   "costa-del-este":
-    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&h=600&fit=crop",
   "obarrio":
     "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
   "calle-50":
@@ -64,36 +65,42 @@ const NEIGHBORHOOD_IMAGES: Record<string, string> = {
     "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&h=600&fit=crop",
   "rio-mar":
     "https://images.unsplash.com/photo-1473186578172-c141e6798cf4?w=800&h=600&fit=crop",
-  "panama":
-    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&h=600&fit=crop&q=80&sat=-20",
 };
 
-// Same 4 neighborhoods + images as the homepage "Explorar por Ubicación" section
-const FEATURED_NEIGHBORHOODS = [
-  {
-    name: "Punta Pacífica",
-    slug: "punta-pacifica",
-    image: "/barrio-punta-pacifica.png",
-  },
-  {
-    name: "Punta Paitilla",
-    slug: "punta-paitilla",
-    image: "/barrio-punta-paitilla.png",
-  },
-  {
-    name: "Avenida Balboa",
-    slug: "avenida-balboa",
-    image: "/barrio-avenida-balboa.png",
-  },
-  {
-    name: "Costa del Este",
-    slug: "costa-del-este",
-    image: "/barrio-costa-del-este.png",
-  },
+// Static avg price/m² per featured neighborhood
+const AVG_PRICE: Record<string, string> = {
+  "punta-pacifica": "$3,200/m²",
+  "punta-paitilla": "$3,000/m²",
+  "avenida-balboa": "$2,800/m²",
+  "costa-del-este": "$2,500/m²",
+};
+
+// Local hi-res images for featured slider
+const FEATURED_LOCAL_IMAGES: Record<string, string> = {
+  "punta-pacifica": "/barrio-punta-pacifica.png",
+  "punta-paitilla": "/barrio-punta-paitilla.png",
+  "avenida-balboa": "/barrio-avenida-balboa.png",
+  "costa-del-este": "/barrio-costa-del-este.png",
+};
+
+const FEATURED_SLUGS = [
+  "punta-pacifica",
+  "punta-paitilla",
+  "avenida-balboa",
+  "costa-del-este",
 ];
 
 export default async function BarriosPage() {
-  const activeZoneNames = await sanityFetch<string[]>(activeZonesQuery);
+  const [activeZoneNames, counts] = await Promise.all([
+    sanityFetch<string[]>(activeZonesQuery),
+    sanityFetch<{
+      puntaPacifica: number;
+      puntaPaitilla: number;
+      avenidaBalboa: number;
+      costaDelEste: number;
+    }>(neighborhoodCountsQuery),
+  ]);
+
   const activeSlugs = new Set(
     activeZoneNames
       .map((name) => getSlugByName(name))
@@ -101,8 +108,27 @@ export default async function BarriosPage() {
   );
   activeSlugs.add("costa-del-este");
 
-  const featured = FEATURED_NEIGHBORHOODS;
-  const rest = NEIGHBORHOODS.filter((n) => n.priority !== "HIGH" && !["avenida-balboa", "costa-del-este"].includes(n.slug));
+  const countBySlugs: Record<string, number> = {
+    "punta-pacifica": counts.puntaPacifica,
+    "punta-paitilla": counts.puntaPaitilla,
+    "avenida-balboa": counts.avenidaBalboa,
+    "costa-del-este": counts.costaDelEste,
+  };
+
+  const sliderNeighborhoods = FEATURED_SLUGS.map((slug) => ({
+    slug,
+    name: NEIGHBORHOODS.find((n) => n.slug === slug)?.name ?? slug,
+    image: FEATURED_LOCAL_IMAGES[slug] ?? NEIGHBORHOOD_IMAGES[slug],
+    avgPrice: AVG_PRICE[slug],
+    propertyCount: countBySlugs[slug] ?? undefined,
+  }));
+
+  const rest = NEIGHBORHOODS.filter(
+    (n) => !FEATURED_SLUGS.includes(n.slug)
+  );
+
+  const totalZones = FEATURED_SLUGS.length + rest.length;
+
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: "Inicio", url: "/" },
     { name: "Barrios", url: "/barrios/" },
@@ -110,15 +136,21 @@ export default async function BarriosPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
+      />
 
-      {/* ── Header — mismo patrón que el resto del sitio ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
+      {/* ── Header ── */}
+      <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
         <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
 
           {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
+            <Link
+              href="/"
+              className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
+            >
               Inicio
             </Link>
             <ChevronRight size={13} className="text-[#5a6478]" />
@@ -127,76 +159,38 @@ export default async function BarriosPage() {
             </span>
           </nav>
 
-          {/* H1 + contador */}
-          <div className="flex flex-col gap-[8px]">
+          {/* Title + count — same row */}
+          <div className="flex items-baseline justify-between gap-[16px]">
             <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] leading-none tracking-[-1.8px]">
-              Barrios de Panama City
+              Barrios de{" "}
+              <em className="italic">Panama City</em>
             </h1>
-            <p className="font-body text-[14px] text-[#5a6478] leading-none">
-              <span className="font-semibold text-[#0c1834]">{featured.length + rest.length}</span> zonas con propiedades disponibles
+            <p className="font-body text-[14px] text-[#5a6478] leading-none shrink-0 hidden sm:block">
+              <span className="font-semibold text-[#0c1834]">{totalZones}</span>{" "}
+              Zonas con propiedades disponibles
             </p>
           </div>
 
+          {/* Mobile-only count */}
+          <p className="font-body text-[13px] text-[#5a6478] leading-none sm:hidden">
+            <span className="font-semibold text-[#0c1834]">{totalZones}</span>{" "}
+            zonas con propiedades disponibles
+          </p>
         </div>
       </section>
 
-      {/* ── Zonas destacadas ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[28px] pb-[60px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px]">
-          <div className="flex flex-col gap-[10px]">
-            <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
-              Zonas destacadas
-            </p>
-            <h2 className="font-heading font-normal text-[clamp(32px,4vw,48px)] text-[#0c1834] tracking-[-1.4px] leading-none">
-              Las zonas más exclusivas
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-[20px]">
-            {featured.map((n) => {
-              return (
-                <Link
-                  key={n.slug}
-                  href={`/barrios/${n.slug}/`}
-                  className="group relative h-[300px] sm:h-[380px] xl:aspect-[326/435] xl:h-auto overflow-hidden bg-[#0c1834] flex flex-col justify-end"
-                >
-                  <Image
-                    src={n.image}
-                    alt={n.name}
-                    fill
-                    className="object-cover opacity-80 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0c1834]/90 via-[#0c1834]/20 to-transparent" />
-                  <div className="relative z-10 p-[20px] xl:p-[28px] flex flex-col gap-[8px]">
-                    <div className="flex items-center gap-[6px]">
-                      <MapPin size={12} className="text-[#d4a435]" />
-                      <span className="font-body font-medium text-[11px] text-[#d4a435] tracking-[3px] uppercase">
-                        Ciudad de Panamá
-                      </span>
-                    </div>
-                    <h3 className="font-heading font-normal text-[28px] xl:text-[38px] text-white leading-none tracking-[-1px]">
-                      {n.name}
-                    </h3>
-                    <div className="flex items-center gap-[6px] mt-[4px] xl:opacity-0 xl:group-hover:opacity-100 xl:translate-y-[6px] xl:group-hover:translate-y-0 transition-all duration-300">
-                      <span className="font-body font-medium text-[13px] text-white/80">
-                        Ver propiedades
-                      </span>
-                      <ArrowRight size={14} className="text-white/80" />
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+      {/* ── Hero Slider ── */}
+      <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] pb-[48px] xl:pb-[64px]">
+        <div className="max-w-[1600px] mx-auto">
+          <NeighborhoodSlider neighborhoods={sliderNeighborhoods} />
         </div>
       </section>
 
       {/* ── Más barrios ── */}
       {rest.length > 0 && (
-        <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[0] pb-[60px]">
+        <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] pb-[60px]">
           <div className="max-w-[1600px] mx-auto flex flex-col gap-[24px]">
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col gap-[6px]">
               <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
                 Más zonas
               </p>
@@ -206,12 +200,14 @@ export default async function BarriosPage() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[12px]">
               {rest.map((n) => {
-                const img = NEIGHBORHOOD_IMAGES[n.slug] ?? NEIGHBORHOOD_IMAGES["punta-pacifica"];
+                const img =
+                  NEIGHBORHOOD_IMAGES[n.slug] ??
+                  NEIGHBORHOOD_IMAGES["punta-pacifica"];
                 return (
                   <Link
                     key={n.slug}
                     href={`/barrios/${n.slug}/`}
-                    className="group relative h-[160px] md:h-[200px] overflow-hidden bg-[#0c1834] flex flex-col justify-end"
+                    className="group relative h-[160px] md:h-[200px] overflow-hidden bg-[#0c1834] flex flex-col justify-end rounded-[4px]"
                   >
                     <Image
                       src={img}
@@ -222,7 +218,9 @@ export default async function BarriosPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0c1834]/80 via-transparent to-transparent" />
                     <div className="relative z-10 p-[14px] xl:p-[18px] flex items-center justify-between">
-                      <h3 className="font-body font-semibold text-[15px] text-white leading-tight">{n.name}</h3>
+                      <h3 className="font-body font-semibold text-[15px] text-white leading-tight">
+                        {n.name}
+                      </h3>
                       <ArrowRight size={13} className="text-white/60 shrink-0" />
                     </div>
                   </Link>
@@ -234,7 +232,7 @@ export default async function BarriosPage() {
       )}
 
       {/* ── CTA ── */}
-      <section className="bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[90px]">
+      <section className="bg-[#121e3e] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[90px]">
         <div className="max-w-[1600px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
           <div className="flex flex-col gap-[14px]">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
@@ -244,7 +242,8 @@ export default async function BarriosPage() {
               Te ayudamos a elegir
             </h2>
             <p className="font-body font-light text-[15px] text-white/60 leading-relaxed max-w-[480px]">
-              Nuestros asesores conocen cada zona a fondo. Cuéntanos qué buscas y te guiamos hacia el barrio perfecto para ti.
+              Nuestros asesores conocen cada zona a fondo. Cuéntanos qué buscas
+              y te guiamos hacia el barrio perfecto para ti.
             </p>
           </div>
           <Link
