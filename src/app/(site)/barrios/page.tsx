@@ -238,7 +238,7 @@ export default async function BarriosPage() {
                   <Link
                     key={n.slug}
                     href={`/barrios/${n.slug}/`}
-                    className="relative overflow-hidden bg-[#0c1935] flex flex-col items-start justify-center"
+                    className="group relative overflow-hidden bg-[#0c1935] flex flex-col items-start justify-center"
                     style={{ aspectRatio: "338 / 250" }}
                   >
                     {/* Photo — fill the 338×250 card */}
@@ -246,7 +246,7 @@ export default async function BarriosPage() {
                       src={img}
                       alt={n.name}
                       fill
-                      className="object-cover"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
                       sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
                     />
 
