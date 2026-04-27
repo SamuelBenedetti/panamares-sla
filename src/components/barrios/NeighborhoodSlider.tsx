@@ -52,7 +52,7 @@ export default function NeighborhoodSlider({
       />
 
       {/* Main layout: arrows centered vertically */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-[30px]">
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-[20px] sm:px-[30px]">
         <div className="flex items-center justify-between w-full">
           <button
             onClick={prev}
@@ -72,7 +72,7 @@ export default function NeighborhoodSlider({
       </div>
 
       {/* Bottom overlay */}
-      <div className="absolute bottom-0 left-0 right-0 p-[30px] flex flex-col gap-[8px]">
+      <div className="absolute bottom-0 left-0 right-0 p-[20px] sm:p-[30px] flex flex-col gap-[8px]">
 
         {/* "favorites" label */}
         <div className="flex gap-[10px] items-start">
@@ -93,7 +93,7 @@ export default function NeighborhoodSlider({
         <div className="flex items-center w-full">
           <Link
             href={`/barrios/${n.slug}/`}
-            className="font-heading font-normal text-[60px] text-white tracking-[-1.8px] leading-normal whitespace-nowrap hover:text-white/90 transition-colors"
+            className="font-heading font-normal text-[38px] sm:text-[60px] text-white tracking-[-1.2px] sm:tracking-[-1.8px] leading-none sm:leading-normal hover:text-white/90 transition-colors"
           >
             {n.name}
           </Link>
