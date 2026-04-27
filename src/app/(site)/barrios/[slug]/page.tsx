@@ -190,7 +190,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
             </nav>
 
             {/* H1 */}
-            <h1 className="font-heading font-normal text-[clamp(44px,6vw,80px)] text-white leading-none tracking-[-2.5px] max-w-[900px]">
+            <h1 className="font-heading font-normal text-[clamp(44px,6vw,80px)] text-white leading-none tracking-[-2.5px] whitespace-nowrap">
               Vivir en {neighborhood.name},
               <span className="italic"> Panama</span>
             </h1>
