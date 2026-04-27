@@ -28,7 +28,7 @@ export default function NeighborhoodSlider({
 
   return (
     <div
-      className="relative w-full overflow-hidden bg-[#0c1935] aspect-[4/3] sm:aspect-[16/8] xl:aspect-[1037/412]"
+      className="relative w-full overflow-hidden bg-[#0c1935] h-[720px] sm:h-auto sm:aspect-[16/8] xl:aspect-[1037/412]"
     >
       {/* Background image */}
       <Image
@@ -52,7 +52,7 @@ export default function NeighborhoodSlider({
       />
 
       {/* Main layout: arrows centered vertically */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-[20px] sm:px-[30px]">
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-[30px]">
         <div className="flex items-center justify-between w-full">
           <button
             onClick={prev}
