@@ -204,26 +204,30 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
 
             {/* Stats — unified pills with | separators */}
             <div className="flex flex-wrap gap-[10px] pt-[4px]">
-              <div className="bg-black/40 backdrop-blur-sm px-[14px] py-[10px] flex items-center gap-[8px]">
-                <Home size={14} className="text-white/60 shrink-0" />
-                <span className="font-body text-[13px] text-white">
-                  <span className="font-semibold">{properties.length}</span>{" "}
-                  {properties.length === 1 ? "propiedad activa" : "propiedades activas"}
-                  {ventaCount > 0 && (
-                    <> <span className="text-white/40 mx-[3px]">|</span> <span className="font-semibold">{ventaCount}</span> venta</>
-                  )}
-                  {alquilerCount > 0 && (
-                    <> <span className="text-white/40 mx-[3px]">|</span> <span className="font-semibold">{alquilerCount}</span> alquiler</>
-                  )}
-                </span>
+              <div className="h-[40px] px-[20px] py-[8px] flex flex-col justify-center items-start border border-[#E6E6E6]">
+                <div className="flex items-center gap-[8px]">
+                  <Home size={14} className="text-white/60 shrink-0" />
+                  <span className="font-body text-[13px] text-white whitespace-nowrap">
+                    <span className="font-semibold">{properties.length}</span>{" "}
+                    {properties.length === 1 ? "propiedad activa" : "propiedades activas"}
+                    {ventaCount > 0 && (
+                      <> <span className="text-white/40 mx-[3px]">|</span> <span className="font-semibold">{ventaCount}</span> venta</>
+                    )}
+                    {alquilerCount > 0 && (
+                      <> <span className="text-white/40 mx-[3px]">|</span> <span className="font-semibold">{alquilerCount}</span> alquiler</>
+                    )}
+                  </span>
+                </div>
               </div>
 
               {avgPricePerM2 && (
-                <div className="bg-black/40 backdrop-blur-sm px-[14px] py-[10px] flex items-center gap-[8px]">
-                  <Home size={14} className="text-white/60 shrink-0" />
-                  <span className="font-body text-[13px] text-white">
-                    <span className="font-semibold">{formatPrice(avgPricePerM2)}/m²</span> promedio
-                  </span>
+                <div className="h-[40px] px-[20px] py-[8px] flex flex-col justify-center items-start border border-[#E6E6E6]">
+                  <div className="flex items-center gap-[8px]">
+                    <Home size={14} className="text-white/60 shrink-0" />
+                    <span className="font-body text-[13px] text-white whitespace-nowrap">
+                      <span className="font-semibold">{formatPrice(avgPricePerM2)}/m²</span> promedio
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
