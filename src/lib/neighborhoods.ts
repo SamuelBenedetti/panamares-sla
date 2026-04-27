@@ -29,6 +29,7 @@ export const NEIGHBORHOODS: NeighborhoodConfig[] = [
   { slug: "coronado",        name: "Coronado",        priority: "LOW" },
   { slug: "versalles",       name: "Versalles",       priority: "LOW" },
   { slug: "rio-mar",         name: "Río Mar",         priority: "LOW" },
+  { slug: "panama",          name: "Panamá",          priority: "LOW" },
 ];
 
 export function getNeighborhoodBySlug(

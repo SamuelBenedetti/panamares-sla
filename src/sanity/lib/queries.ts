@@ -160,6 +160,21 @@ export const activeZonesQuery = groq`
   array::unique(*[_type == "property" && listingStatus == "activa" && defined(zone)].zone)
 `;
 
+// Per-zone property counts (for barrios index page)
+export const zonePropertyZonesQuery = groq`
+  *[_type == "property" && listingStatus == "activa" && defined(zone)] {
+    "zone": zone
+  }
+`;
+
+// All neighborhood CMS docs (for avgPricePerM2)
+export const allNeighborhoodContentQuery = groq`
+  *[_type == "neighborhood"] {
+    "slug": slug.current,
+    avgPricePerM2
+  }
+`;
+
 // Homepage trust strip stats
 export const siteStatsQuery = groq`{
   "activeListings": count(*[_type == "property" && listingStatus == "activa"]),

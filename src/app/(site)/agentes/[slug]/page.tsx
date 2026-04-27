@@ -142,68 +142,86 @@ export default async function AgentProfilePage({ params }: Props) {
 
       {/* ── Contenido ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[60px] xl:py-[100px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[64px] xl:gap-[80px]">
+        <div className="max-w-[1600px] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-[48px] xl:gap-[64px] items-start">
 
-          {/* Bio */}
-          {agent.bio && (
-            <div className="flex flex-col gap-[20px] max-w-[720px]">
-              <div className="flex flex-col gap-[8px]">
-                <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
-                  Sobre el asesor
-                </p>
-                <h2 className="font-heading font-normal text-[clamp(26px,3vw,38px)] text-[#0c1834] tracking-[-1px] leading-none">
-                  Trayectoria
-                </h2>
-              </div>
-              <div className="h-px bg-[#dfe5ef]" />
-              <div className="font-body text-[16px] text-[#5a6478] leading-[1.75] [&_p]:mb-4 [&_p:last-child]:mb-0">
-                <PortableText value={agent.bio} />
-              </div>
-            </div>
-          )}
+            {/* Left: Photo + Bio */}
+            <div className="lg:sticky lg:top-[100px] flex flex-col gap-[28px]">
+              {/* Larger portrait photo */}
+              {photoUrl && (
+                <div className="relative w-full aspect-[3/4] overflow-hidden bg-[#dfe5ef]">
+                  <Image
+                    src={urlFor(agent.photo!).width(800).height(1067).url()}
+                    alt={agent.name}
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 1024px) 100vw, 360px"
+                  />
+                </div>
+              )}
 
-          {/* Properties */}
-          <div className="flex flex-col gap-[28px]">
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-[16px]">
-              <div className="flex flex-col gap-[8px]">
-                <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
-                  Portafolio
-                </p>
-                <h2 className="font-heading font-normal text-[clamp(26px,3vw,38px)] text-[#0c1834] tracking-[-1px] leading-none">
-                  {listingCount > 0
-                    ? `${listingCount} ${listingCount === 1 ? "propiedad activa" : "propiedades activas"}`
-                    : "Propiedades"}
-                </h2>
-              </div>
-              <a
-                href={waHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-[8px] font-body font-medium text-[12px] text-[#5a6478] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors whitespace-nowrap"
-              >
-                Consultar disponibilidad
-                <ArrowRight size={13} />
-              </a>
+              {/* Bio */}
+              {agent.bio && (
+                <div className="flex flex-col gap-[16px]">
+                  <div className="flex flex-col gap-[8px]">
+                    <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
+                      Sobre el asesor
+                    </p>
+                    <h2 className="font-heading font-normal text-[clamp(24px,2.5vw,34px)] text-[#0c1834] tracking-[-1px] leading-none">
+                      Trayectoria
+                    </h2>
+                  </div>
+                  <div className="h-px bg-[#dfe5ef]" />
+                  <div className="font-body text-[15px] text-[#5a6478] leading-[1.75] [&_p]:mb-4 [&_p:last-child]:mb-0">
+                    <PortableText value={agent.bio} />
+                  </div>
+                </div>
+              )}
             </div>
 
-            {listingCount > 0 ? (
-              <PropertyGrid properties={agent.properties!} />
-            ) : (
-              <div className="border border-[#dfe5ef] bg-white py-[60px] flex flex-col items-center gap-[12px]">
-                <p className="font-body text-[15px] text-[#5a6478]">
-                  Este asesor no tiene propiedades activas en este momento.
-                </p>
+            {/* Right: Portfolio */}
+            <div className="flex flex-col gap-[28px]">
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-[16px]">
+                <div className="flex flex-col gap-[8px]">
+                  <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
+                    Portafolio
+                  </p>
+                  <h2 className="font-heading font-normal text-[clamp(26px,3vw,38px)] text-[#0c1834] tracking-[-1px] leading-none">
+                    {listingCount > 0
+                      ? `${listingCount} ${listingCount === 1 ? "propiedad activa" : "propiedades activas"}`
+                      : "Propiedades"}
+                  </h2>
+                </div>
                 <a
                   href={waHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-[8px] font-body font-medium text-[13px] text-[#0c1834] tracking-[1.2px] uppercase border-b border-[#0c1834] pb-[2px] hover:opacity-60 transition-opacity"
+                  className="inline-flex items-center gap-[8px] font-body font-medium text-[12px] text-[#5a6478] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors whitespace-nowrap"
                 >
                   Consultar disponibilidad
                   <ArrowRight size={13} />
                 </a>
               </div>
-            )}
+
+              {listingCount > 0 ? (
+                <PropertyGrid properties={agent.properties!} />
+              ) : (
+                <div className="border border-[#dfe5ef] bg-white py-[60px] flex flex-col items-center gap-[12px]">
+                  <p className="font-body text-[15px] text-[#5a6478]">
+                    Este asesor no tiene propiedades activas en este momento.
+                  </p>
+                  <a
+                    href={waHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-[8px] font-body font-medium text-[13px] text-[#0c1834] tracking-[1.2px] uppercase border-b border-[#0c1834] pb-[2px] hover:opacity-60 transition-opacity"
+                  >
+                    Consultar disponibilidad
+                    <ArrowRight size={13} />
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>

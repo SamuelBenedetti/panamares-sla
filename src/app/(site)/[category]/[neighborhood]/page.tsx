@@ -89,7 +89,7 @@ export default async function GeoTypePage({ params }: Props) {
   const neighborhood = getNeighborhoodBySlug(params.neighborhood);
   if (!category || !neighborhood) notFound();
 
-  const [properties, allCategoryProperties] = await Promise.all([
+  const [properties, allCategoryProperties, nbhContent] = await Promise.all([
     sanityFetch<Property[]>(propertiesByGeoTypeQuery, {
       propertyType: category.propertyType,
       businessType: category.businessType,
@@ -158,13 +158,16 @@ export default async function GeoTypePage({ params }: Props) {
         ]}
         title={h1}
         count={properties.length}
-        description={buildGeoSeoBlock(
-          typeLabel,
-          category.businessType === "venta" ? "en venta" : "en alquiler",
-          neighborhood.name,
-          neighborhood.priority,
-          properties.length
-        )}
+        description={
+          nbhContent?.seoBlock ??
+          buildGeoSeoBlock(
+            typeLabel,
+            category.businessType === "venta" ? "en venta" : "en alquiler",
+            neighborhood.name,
+            neighborhood.priority,
+            properties.length
+          )
+        }
       />
       <CategoryPageClient
         properties={properties}

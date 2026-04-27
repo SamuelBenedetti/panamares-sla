@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useCallback, useEffect, useTransition } from "react";
 import dynamic from "next/dynamic";
-import { X, ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
+import { X, ChevronDown, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import PropertyGrid from "@/components/properties/PropertyGrid";
 import type { MapProperty } from "@/components/properties/PropertyMapMulti";
@@ -42,9 +42,10 @@ interface Filters {
   bedrooms: number;
   bathrooms: number;
   propertyType: string;
+  neighborhoodFilter: string;
 }
 
-type SortOption = "relevancia" | "precio-asc" | "precio-desc" | "area-desc";
+type SortOption = "relevancia" | "precio-asc" | "precio-desc" | "area-desc" | "recientes";
 
 const INIT_FILTERS: Filters = {
   minPrice: "",
@@ -54,6 +55,7 @@ const INIT_FILTERS: Filters = {
   bedrooms: 0,
   bathrooms: 0,
   propertyType: "",
+  neighborhoodFilter: "",
 };
 
 const PRICE_MIN = 0;
@@ -137,11 +139,11 @@ function DualRangeSlider({ min, max, valueMin, valueMax, onChange, format }: {
 // ── Stepper ────────────────────────────────────────────────────────────────────
 function Stepper({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
   return (
-    <div className="flex flex-col gap-[8px]">
+    <div className="flex flex-col gap-[8px] flex-1">
       <p className="font-body text-[13px] text-[#5a6478]">{label}</p>
-      <div className="bg-[#f9f9f9] border border-[#e6e6e6] flex items-center justify-between px-[17.5px] py-[9px] w-[126px]">
+      <div className="bg-[#f9f9f9] border border-[#e6e6e6] flex items-center justify-between px-[10px] py-[9px] w-full">
         <button type="button" onClick={() => onChange(Math.max(0, value - 1))} className="font-body text-[14px] text-[rgba(12,25,53,0.3)] hover:text-[#0c1935] transition-colors leading-none">-</button>
-        <span className="font-body text-[16px] text-[#0c1935] leading-5">{value === 0 ? "Cualquiera" : `${value}+`}</span>
+        <span className="font-body text-[13px] text-[#0c1935] leading-5">{value === 0 ? "Todos" : `${value}+`}</span>
         <button type="button" onClick={() => onChange(value + 1)} className="font-body text-[14px] text-[rgba(12,25,53,0.3)] hover:text-[#0c1935] transition-colors leading-none">+</button>
       </div>
     </div>
@@ -150,7 +152,7 @@ function Stepper({ label, value, onChange }: { label: string; value: number; onC
 
 // ── FilterPanel (Figma-matched) ────────────────────────────────────────────────
 function FilterPanel({
-  filters, setFilters, onReset, hasActive, businessType, propertyTypes, neighborhoodSlug,
+  filters, setFilters, onReset, hasActive, businessType, propertyTypes, neighborhoodSlug, neighborhoodLinks,
 }: {
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
@@ -159,9 +161,8 @@ function FilterPanel({
   businessType: "venta" | "alquiler";
   propertyTypes: string[];
   neighborhoodSlug?: string;
+  neighborhoodLinks?: NeighborhoodLink[];
 }) {
-  const [expanded, setExpanded] = useState(false);
-
   function set<K extends keyof Filters>(key: K, value: Filters[K]) {
     setFilters((f) => ({ ...f, [key]: value }));
   }
@@ -171,8 +172,7 @@ function FilterPanel({
   const areaMin = filters.minArea !== "" ? Number(filters.minArea) : AREA_MIN;
   const areaMax = filters.maxArea !== "" ? Number(filters.maxArea) : AREA_MAX;
 
-  const inputBox = "bg-[#f9f9f9] border border-[#e6e6e6] px-[17.5px] py-[9px] w-[126px] font-body text-[16px] text-[#0c1935] tracking-[-0.32px] focus:outline-none focus:border-[#0c1935] placeholder:text-[rgba(12,25,53,0.3)] transition-colors text-center";
-
+  const inputBox = "bg-[#f9f9f9] border border-[#e6e6e6] px-[10px] py-[9px] flex-1 min-w-0 font-body text-[14px] text-[#0c1935] tracking-[-0.32px] focus:outline-none focus:border-[#0c1935] placeholder:text-[rgba(12,25,53,0.3)] transition-colors text-center";
 
   return (
     <div className="bg-white border border-[#dfe5ef] p-[21px] flex flex-col gap-[20px] w-full">
@@ -271,42 +271,56 @@ function FilterPanel({
         </div>
       </div>
 
-      {/* ── 5. Expanded: Habitaciones + Baños ── */}
-      {expanded && (
+      {/* ── 5. Barrio (solo Tier 2) ── */}
+      {!neighborhoodSlug && neighborhoodLinks && neighborhoodLinks.length > 0 && (
         <div className="flex flex-col gap-[15px] w-full">
-          <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px] pb-[10px] border-b border-[#e9e7e2]">
-            Habitaciones y Baños
+          <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px]">
+            Barrio
           </p>
-          <div className="flex gap-[15px]">
-            <Stepper label="Habitaciones" value={filters.bedrooms} onChange={(v) => set("bedrooms", v)} />
-            <Stepper label="Baños" value={filters.bathrooms} onChange={(v) => set("bathrooms", v)} />
+          <div className="relative">
+            <select
+              value={filters.neighborhoodFilter}
+              onChange={(e) => set("neighborhoodFilter", e.target.value)}
+              className="appearance-none bg-[#f9f9f9] border border-[#e6e6e6] h-[40px] w-full pl-[17.5px] pr-[40px] font-body text-[14px] text-[#0c1935] focus:outline-none focus:border-[#0c1935] transition-colors cursor-pointer"
+              style={{ color: filters.neighborhoodFilter === "" ? "rgba(12,25,53,0.3)" : "#0c1935" }}
+            >
+              <option value="">Todos los barrios</option>
+              {neighborhoodLinks.map((n) => (
+                <option key={n.slug} value={n.name} style={{ color: "#0c1935" }}>
+                  {n.name} ({n.count})
+                </option>
+              ))}
+            </select>
+            <ChevronDown size={10} className="absolute right-[14px] top-1/2 -translate-y-1/2 text-[#5a6478] pointer-events-none" />
           </div>
         </div>
       )}
 
-      {/* ── 6. Limpiar (solo si hay filtros activos) ── */}
+      {/* ── 6. Habitaciones + Baños ── */}
+      <div className="flex flex-col gap-[15px] w-full">
+        <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px] pb-[10px] border-b border-[#e9e7e2]">
+          Habitaciones y Baños
+        </p>
+        <div className="flex gap-[15px]">
+          <Stepper label="Habitaciones" value={filters.bedrooms} onChange={(v) => set("bedrooms", v)} />
+          <Stepper label="Baños" value={filters.bathrooms} onChange={(v) => set("bathrooms", v)} />
+        </div>
+      </div>
+
+      {/* ── 7. Limpiar (solo si hay filtros activos) ── */}
       {hasActive && (
         <button type="button" onClick={onReset} className="flex items-center gap-1.5 font-body text-[14px] text-[rgba(12,25,53,0.4)] hover:text-[#0c1935] transition-colors">
           <X size={13} /> Limpiar filtros
         </button>
       )}
 
-      {/* ── 7. Ver más / Ver menos ── */}
-      <button
-        type="button"
-        onClick={() => setExpanded((v) => !v)}
-        className="flex items-center justify-center gap-[10px] h-[36px] w-full border border-[#dfe5ef] hover:border-[#0c1935] px-[17px] py-[9px] font-body font-medium text-[16px] text-[#0c1834] transition-colors"
-      >
-        {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-        {expanded ? "Ver menos" : "Ver más"}
-      </button>
     </div>
   );
 }
 
 // ── Normalize helper ───────────────────────────────────────────────────────────
 function normalize(s: string) {
-  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
 // ── Main export ────────────────────────────────────────────────────────────────
@@ -340,7 +354,7 @@ export default function CategoryPageClient({
     filters.minPrice !== "" || filters.maxPrice !== "" ||
     filters.minArea !== "" || filters.maxArea !== "" ||
     filters.bedrooms > 0 || filters.bathrooms > 0 ||
-    filters.propertyType !== "";
+    filters.propertyType !== "" || filters.neighborhoodFilter !== "";
 
   function reset() {
     startTransition(() => { setFilters(INIT_FILTERS); setSearch(""); setVisible(PAGE_SIZE); });
@@ -368,10 +382,12 @@ export default function CategoryPageClient({
     if (filters.maxArea) result = result.filter((p) => (p.area ?? 0) <= Number(filters.maxArea));
     if (filters.bedrooms > 0) result = result.filter((p) => (p.bedrooms ?? 0) >= filters.bedrooms);
     if (filters.bathrooms > 0) result = result.filter((p) => (p.bathrooms ?? 0) >= filters.bathrooms);
+    if (filters.neighborhoodFilter) result = result.filter((p) => normalize(p.zone ?? "") === normalize(filters.neighborhoodFilter));
 
     if (sort === "precio-asc") result.sort((a, b) => a.price - b.price);
     else if (sort === "precio-desc") result.sort((a, b) => b.price - a.price);
     else if (sort === "area-desc") result.sort((a, b) => (b.area ?? 0) - (a.area ?? 0));
+    else if (sort === "recientes") result.sort((a, b) => new Date(b.publishedAt ?? 0).getTime() - new Date(a.publishedAt ?? 0).getTime());
     else result.sort((a, b) => { if (a.featured && !b.featured) return -1; if (!a.featured && b.featured) return 1; return 0; });
 
     return result;
@@ -384,13 +400,13 @@ export default function CategoryPageClient({
     <div className="bg-[#f9f9f9] pt-[24px] pb-[60px] xl:pt-[28px] xl:pb-[80px]">
       {contextBlock && (
         <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto mb-6">
-          <div className="max-w-[1600px] mx-auto">{contextBlock}</div>
+          <div className="max-w-[1920px] mx-auto">{contextBlock}</div>
         </div>
       )}
 
       {/* Sort row */}
       <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] mb-[20px]">
-        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-[12px]">
+        <div className="max-w-[1920px] mx-auto flex items-center justify-between gap-[12px]">
 
           {/* Left: mobile filter trigger + search context */}
           <div className="flex items-center gap-[10px]">
@@ -429,6 +445,7 @@ export default function CategoryPageClient({
               className="appearance-none bg-white border border-[#dfe5ef] pl-[14px] pr-[36px] py-[8px] font-body text-[13px] text-[#0c1834] focus:outline-none focus:border-[#0c1834] transition-colors cursor-pointer"
             >
               <option value="relevancia">Relevancia</option>
+              <option value="recientes">Más recientes</option>
               <option value="precio-asc">Precio: menor a mayor</option>
               <option value="precio-desc">Precio: mayor a menor</option>
               <option value="area-desc">Mayor área</option>
@@ -441,7 +458,7 @@ export default function CategoryPageClient({
 
       {/* Main layout */}
       <div className="px-[30px] xl:px-[20px] 2xl:px-[120px]">
-        <div className={`max-w-[1600px] mx-auto grid grid-cols-1 items-start gap-8 ${
+        <div className={`max-w-[1920px] mx-auto grid grid-cols-1 items-start gap-8 ${
           mapProps && mapProps.length > 0
             ? "lg:grid-cols-[260px_1fr_380px]"
             : "lg:grid-cols-[260px_1fr]"
@@ -457,25 +474,8 @@ export default function CategoryPageClient({
               businessType={businessType}
               propertyTypes={propertyTypes}
               neighborhoodSlug={neighborhoodSlug}
+              neighborhoodLinks={neighborhoodLinks}
             />
-
-            {neighborhoodLinks.length > 0 && (
-              <div className="hidden lg:flex flex-col mt-[2px] bg-white border border-[#dfe5ef] border-t-0">
-                <p className="font-body font-medium text-[11px] text-[#5a6478] tracking-[4px] uppercase px-[21px] pt-[18px] pb-[10px]">
-                  Por barrio
-                </p>
-                {neighborhoodLinks.map((n) => (
-                  <Link
-                    key={n.slug}
-                    href={`/${n.categorySlug}/${n.slug}/`}
-                    className="flex items-center justify-between px-[21px] py-[10px] font-body text-[14px] text-[#0c1834] hover:bg-[#f9f9f9] transition-colors border-t border-[#e9e7e2]"
-                  >
-                    <span>{n.name}</span>
-                    <span className="font-body text-[12px] text-[#5a6478]">{n.count}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
           </aside>
 
           {/* Grid + load more + mobile map */}
@@ -493,14 +493,14 @@ export default function CategoryPageClient({
               </div>
             ) : (
               <>
-                <PropertyGrid properties={shown} cols={2} />
+                <PropertyGrid properties={shown} cols={mapProps && mapProps.length > 0 ? 2 : 3} />
                 {remaining > 0 && (
                   <div className="pt-[48px] sm:flex sm:justify-center">
                     <button
                       onClick={() => setVisible((v) => v + PAGE_SIZE)}
                       className="w-full sm:w-auto inline-flex items-center justify-center gap-[8px] border border-[#dfe5ef] hover:border-[#0c1834] px-[32px] py-[14px] font-body font-medium text-[13px] text-[#0c1834] tracking-[1.2px] uppercase transition-colors"
                     >
-                      Ver más propiedades
+                      Cargar más
                       <span className="font-normal text-[#5a6478]">({remaining} restantes)</span>
                     </button>
                   </div>
@@ -555,6 +555,8 @@ export default function CategoryPageClient({
                 hasActive={hasActive}
                 businessType={businessType}
                 propertyTypes={propertyTypes}
+                neighborhoodSlug={neighborhoodSlug}
+                neighborhoodLinks={neighborhoodLinks}
               />
             </div>
             {/* Apply button */}

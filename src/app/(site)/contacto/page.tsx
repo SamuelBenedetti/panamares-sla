@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 import PropertyMap from "@/components/properties/PropertyMap";
-import { contactPointSchema } from "@/lib/jsonld";
+import { contactPointSchema, breadcrumbSchema } from "@/lib/jsonld";
 import {
+  BASE_URL,
   WHATSAPP_URL,
   WHATSAPP_EQUIPO_URL,
   PANAMARES_PHONE,
@@ -16,12 +18,26 @@ import {
 } from "@/lib/config";
 import ContactForm from "./ContactForm";
 
+export const metadata: Metadata = {
+  title: "Contacto",
+  description:
+    "Contacta con Panamares, inmobiliaria de lujo en Panama City. Llámanos, escríbenos por WhatsApp o visítanos en Punta Pacífica. Asesores disponibles de lunes a sábado.",
+  alternates: { canonical: `${BASE_URL}/contacto/` },
+};
+
 export default function ContactoPage() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(contactPointSchema()) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema([
+          { name: "Inicio", url: "/" },
+          { name: "Contacto", url: "/contacto/" },
+        ])) }}
       />
       {/* ── Hero ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[60px] xl:pt-[80px] pb-[80px] xl:pb-[112px]">
@@ -57,10 +73,8 @@ export default function ContactoPage() {
         <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 xl:grid-cols-[3fr_2fr] gap-[40px] xl:gap-[64px]">
 
-            {/* Left: Form + WhatsApp banner */}
+            {/* Left: WhatsApp banner + Form */}
             <div className="flex flex-col gap-[32px]">
-              <ContactForm />
-
               {/* WhatsApp banner */}
               <div className="bg-[rgba(0,180,36,0.05)] border border-[rgba(0,180,36,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-[16px] p-[21px]">
                 <div className="flex flex-col gap-[2px]">
@@ -84,6 +98,8 @@ export default function ContactoPage() {
                   Abrir WhatsApp
                 </a>
               </div>
+
+              <ContactForm />
             </div>
 
             {/* Right: Sidebar */}

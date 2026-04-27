@@ -273,7 +273,7 @@ export function articleSchema({
     publisher: {
       "@type": "Organization",
       name: "Panamares",
-      logo: { "@type": "ImageObject", url: `${BASE_URL}/barrio-punta-pacifica.png` },
+      logo: { "@type": "ImageObject", url: `${BASE_URL}/logo.png`, width: 200, height: 60 },
     },
     ...(authorName && {
       author: {
