@@ -18,13 +18,13 @@ export const metadata: Metadata = {
 
 const NEIGHBORHOOD_IMAGES: Record<string, string> = {
   "punta-pacifica":
-    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=700&h=900&fit=crop",
+    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1920&h=800&fit=crop&q=85",
   "punta-paitilla":
-    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&h=900&fit=crop",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&h=800&fit=crop&q=85",
   "avenida-balboa":
-    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=700&h=900&fit=crop",
+    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&h=800&fit=crop&q=85",
   "costa-del-este":
-    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&h=900&fit=crop",
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=800&fit=crop&q=85",
   "obarrio":
     "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=700&h=900&fit=crop",
   "calle-50":
