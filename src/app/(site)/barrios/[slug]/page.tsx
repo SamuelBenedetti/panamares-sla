@@ -171,7 +171,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0c1834] via-[#0c1834]/30 to-[#0c1834]/10" />
 
-        <div className="relative z-10 w-full px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] pb-[48px] xl:pb-[80px]">
+        <div className="relative z-10 w-full px-[24px] xl:px-[20px] 2xl:px-[120px] pb-[48px] xl:pb-[80px]">
           <div className="max-w-[1600px] mx-auto flex flex-col gap-[20px]">
 
             {/* Breadcrumb */}
@@ -239,7 +239,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
           2. ABOUT — Editorial block (ranking content)
       ═══════════════════════════════════════════════════════════════════════ */}
       {nbhContent?.seoBlock && (
-      <section className="bg-[#f9f9f9] px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] py-[64px] xl:py-[100px]">
+      <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[64px] xl:py-[100px]">
         <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px] gap-[48px] xl:gap-[80px]">
 
@@ -338,7 +338,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
           4. CATEGORY CARDS — Internal linking hub (SEO priority #1)
       ═══════════════════════════════════════════════════════════════════════ */}
       {categoryCards.length > 0 && (
-        <section className="bg-white border-t border-[#dfe5ef] px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] py-[64px] xl:py-[100px]">
+        <section className="bg-white border-t border-[#dfe5ef] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[64px] xl:py-[100px]">
           <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px]">
 
             <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[16px]">
@@ -392,7 +392,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
           5. MAP — Mapa de propiedades activas
       ═══════════════════════════════════════════════════════════════════════ */}
       {mapProps.length > 0 && (
-        <section className="bg-[#f9f9f9] border-t border-[#dfe5ef] px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] py-[64px] xl:py-[100px]">
+        <section className="bg-[#f9f9f9] border-t border-[#dfe5ef] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[64px] xl:py-[100px]">
           <div className="max-w-[1600px] mx-auto flex flex-col gap-[32px]">
 
             <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[16px]">
@@ -418,7 +418,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
           6. FEATURED LISTINGS
       ═══════════════════════════════════════════════════════════════════════ */}
       {featured.length > 0 && (
-        <section className="bg-[#f9f9f9] border-t border-[#dfe5ef] px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] py-[64px] xl:py-[100px]">
+        <section className="bg-[#f9f9f9] border-t border-[#dfe5ef] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[64px] xl:py-[100px]">
           <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px]">
 
             <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[16px]">
@@ -465,7 +465,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       {/* ═══════════════════════════════════════════════════════════════════════
           7. CTA — Conversión
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#121e3e] px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] py-[80px] xl:py-[120px]">
+      <section className="bg-[#121e3e] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[80px] xl:py-[120px]">
         <div className="max-w-[1600px] mx-auto flex flex-col items-center text-center gap-[24px]">
           <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase">
             Contáctenos
@@ -504,7 +504,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       {/* ═══════════════════════════════════════════════════════════════════════
           8. OTROS BARRIOS
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="bg-white border-t border-[#dfe5ef] px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] py-[64px] xl:py-[80px]">
+      <section className="bg-white border-t border-[#dfe5ef] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[64px] xl:py-[80px]">
         <div className="max-w-[1600px] mx-auto flex flex-col gap-[36px]">
 
           <div className="flex items-end justify-between">
