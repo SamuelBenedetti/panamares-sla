@@ -238,7 +238,7 @@ export default async function BarriosPage() {
                   <Link
                     key={n.slug}
                     href={`/barrios/${n.slug}/`}
-                    className="group relative overflow-hidden bg-[#0c1935] flex flex-col"
+                    className="relative overflow-hidden bg-[#0c1935] flex flex-col items-start justify-center"
                     style={{ aspectRatio: "326 / 434.66" }}
                   >
                     {/* Photo */}
@@ -246,25 +246,22 @@ export default async function BarriosPage() {
                       src={img}
                       alt={n.name}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      className="object-cover"
                       sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
                     />
 
-                    {/* Gradient: multiply blend — bottom dark, mid 20%, top transparent */}
-                    <div
-                      className="absolute inset-0 mix-blend-multiply"
-                      style={{
-                        background:
-                          "linear-gradient(to top, #1d212b 0%, rgba(29,33,43,0.2) 50%, rgba(29,33,43,0) 100%)",
-                      }}
-                    />
+                    {/* Gradient: multiply blend — exact Figma */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1d212b] via-[rgba(29,33,43,0.2)] via-[50%] to-[rgba(29,33,43,0)] mix-blend-multiply" />
 
-                    {/* Info overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-[24px] flex flex-col gap-[8px]">
-                      {/* Name */}
-                      <h3 className="font-body font-semibold text-[25px] text-white tracking-[-0.25px] leading-normal whitespace-nowrap">
-                        {n.name}
-                      </h3>
+                    {/* Info overlay — bottom-[0.34px] exacto del Figma */}
+                    <div className="absolute bottom-[0.34px] left-0 right-0 p-[24px] flex flex-col gap-[8px]">
+
+                      {/* Name — wrapper flex items-center w-full */}
+                      <div className="flex items-center w-full">
+                        <h3 className="font-body font-semibold text-[25px] text-white tracking-[-0.25px] leading-normal whitespace-nowrap">
+                          {n.name}
+                        </h3>
+                      </div>
 
                       {/* Stats */}
                       {price && (
@@ -276,7 +273,8 @@ export default async function BarriosPage() {
                             >
                               Precio promedio
                             </span>
-                            <div className="bg-white/20 px-[5px] py-[3px]">
+                            {/* w-full igual que en Figma */}
+                            <div className="bg-white/20 px-[5px] py-[3px] w-full">
                               <span className="font-body font-semibold text-[16px] text-white leading-normal whitespace-nowrap">
                                 {price}
                               </span>
