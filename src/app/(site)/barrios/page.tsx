@@ -197,7 +197,7 @@ export default async function BarriosPage() {
       </section>
 
       {/* ── Hero Slider ── */}
-      <section className="bg-[#f9f9f9] xl:px-[20px] 2xl:px-[120px] pb-[32px] xl:pb-[64px]">
+      <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] pb-[32px] xl:pb-[64px]">
         <div className="max-w-[1600px] mx-auto">
           <NeighborhoodSlider neighborhoods={sliderNeighborhoods} />
         </div>
