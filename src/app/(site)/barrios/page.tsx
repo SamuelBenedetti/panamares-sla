@@ -182,10 +182,10 @@ export default async function BarriosPage() {
               Barrios de{" "}
               <em className="italic">Panama City</em>
             </h1>
-            <p className="font-body text-[13px] xl:text-[14px] text-[#5a6478] leading-none shrink-0">
-              <span className="font-semibold text-[#0c1834]">{totalZones}</span>{" "}
-              Zonas con propiedades disponibles
-            </p>
+            <div className="flex items-start gap-[5px] bg-white px-[10px] py-[8px] shrink-0">
+              <span className="font-body font-semibold text-[13px] xl:text-[14px] text-[#0c1834] leading-none">{totalZones}</span>
+              <span className="font-body font-normal text-[13px] xl:text-[14px] text-[#5a6478] leading-none">Zonas con propiedades disponibles</span>
+            </div>
           </div>
         </div>
       </section>
