@@ -227,7 +227,7 @@ export default async function BarriosPage() {
             </div>
 
             {/* Cards grid — aspect-[326/434] portrait, 4 cols on xl */}
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[16px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-[16px]">
               {rest.map((n) => {
                 const img =
                   NEIGHBORHOOD_IMAGES[n.slug] ??
@@ -239,9 +239,9 @@ export default async function BarriosPage() {
                     key={n.slug}
                     href={`/barrios/${n.slug}/`}
                     className="relative overflow-hidden bg-[#0c1935] flex flex-col items-start justify-center"
-                    style={{ aspectRatio: "326 / 434.66" }}
+                    style={{ aspectRatio: "338 / 250" }}
                   >
-                    {/* Photo */}
+                    {/* Photo — fill the 338×250 card */}
                     <Image
                       src={img}
                       alt={n.name}
@@ -250,13 +250,13 @@ export default async function BarriosPage() {
                       sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
                     />
 
-                    {/* Gradient: multiply blend — exact Figma */}
+                    {/* Gradient: multiply blend — exacto Figma */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1d212b] via-[rgba(29,33,43,0.2)] via-[50%] to-[rgba(29,33,43,0)] mix-blend-multiply" />
 
-                    {/* Info overlay — bottom-[0.34px] exacto del Figma */}
+                    {/* Info overlay */}
                     <div className="absolute bottom-[0.34px] left-0 right-0 p-[24px] flex flex-col gap-[8px]">
 
-                      {/* Name — wrapper flex items-center w-full */}
+                      {/* Name */}
                       <div className="flex items-center w-full">
                         <h3 className="font-body font-semibold text-[25px] text-white tracking-[-0.25px] leading-normal whitespace-nowrap">
                           {n.name}
@@ -273,7 +273,6 @@ export default async function BarriosPage() {
                             >
                               Precio promedio
                             </span>
-                            {/* w-full igual que en Figma */}
                             <div className="bg-white/20 px-[5px] py-[3px] w-full">
                               <span className="font-body font-semibold text-[16px] text-white leading-normal whitespace-nowrap">
                                 {price}
