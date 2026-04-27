@@ -182,7 +182,7 @@ export default async function BarriosPage() {
               Barrios de{" "}
               <em className="italic">Panama City</em>
             </h1>
-            <div className="flex items-start gap-[5px] bg-white px-[10px] py-[8px] shrink-0">
+            <div className="flex items-start gap-[5px] bg-white px-[10px] py-[8px] w-fit shrink-0">
               <span className="font-body font-semibold text-[13px] xl:text-[14px] text-[#0c1834] leading-none">{totalZones}</span>
               <span className="font-body font-normal text-[13px] xl:text-[14px] text-[#5a6478] leading-none">Zonas con propiedades disponibles</span>
             </div>
