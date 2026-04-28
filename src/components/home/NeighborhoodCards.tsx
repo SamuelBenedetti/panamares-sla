@@ -73,8 +73,10 @@ export default function NeighborhoodCards({
                 src={n.image}
                 alt={`Propiedades en ${n.name}`}
                 fill
+                priority
+                quality={90}
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
-                sizes="(max-width: 1024px) 100vw, 25vw"
+                sizes="(max-width: 1024px) 100vw, 33vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[rgba(29,33,43,0.8)] via-[rgba(29,33,43,0.2)] to-[rgba(29,33,43,0)]" />
 

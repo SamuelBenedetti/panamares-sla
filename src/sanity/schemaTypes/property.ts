@@ -119,8 +119,7 @@ export default defineType({
       title: "ID de Wasi",
       type: "number",
       group: "basic",
-      description:
-        "ID numérico de la propiedad en Wasi. Se usa para generar la URL (Tier 4 SEO). Si se crea manualmente sin ID, se genera uno automático al generar el slug.",
+      description: "Identificador de sincronización con Wasi. No modificar.",
       validation: (r) => r.positive().integer(),
     }),
     defineField({
@@ -128,8 +127,8 @@ export default defineType({
       title: "Slug (URL)",
       type: "slug",
       group: "basic",
-      description:
-        "Formato obligatorio (SEO doc §3.2 Tier 4): {tipo-plural}-en-{venta|alquiler}-{barrio}-{wasiId}. Ej: apartamentos-en-venta-punta-pacifica-9833923. Usa el botón Generar.",
+      description: "URL de la propiedad en el sitio. Usa el botón Generar — no modificar manualmente.",
+      readOnly: ({ document }) => Boolean((document as Record<string, unknown>)?.wasiId),
       options: {
         source: (doc) => buildListingSlug(doc as Record<string, unknown>),
         maxLength: 120,
@@ -141,7 +140,6 @@ export default defineType({
             ? (slug as { current?: string }).current
             : undefined;
           if (!current) return "Slug requerido";
-          // Must match Tier 4 pattern: {type}-en-{venta|alquiler}-{zone}-{digits}
           const PATTERN = /^[a-z0-9-]+-en-(venta|alquiler)-[a-z0-9-]+-\d+$/;
           if (!PATTERN.test(current)) {
             return "El slug debe seguir el patrón SEO: {tipo}-en-{venta|alquiler}-{barrio}-{id}. Haz click en Generar.";
@@ -294,6 +292,7 @@ export default defineType({
       title: "Corregimiento",
       type: "string",
       group: "details",
+      description: "Subdivisión del barrio (ej: El Carmen, San Francisco Sur). Sincronizado desde Wasi.",
     }),
     defineField({
       name: "bedrooms",
@@ -565,7 +564,7 @@ export default defineType({
       type: "datetime",
       group: "management",
       initialValue: () => new Date().toISOString(),
-      description: "Usada en JSON-LD datePublished y sitemap lastmod.",
+      description: "Fecha en que la propiedad fue publicada en el sitio.",
     }),
     defineField({
       name: "noindex",
@@ -581,6 +580,7 @@ export default defineType({
       type: "boolean",
       group: "management",
       initialValue: false,
+      description: "Aparece en la sección destacada del homepage. Se sincroniza automáticamente desde Wasi (propiedad marcada como 'Destacada'). También se puede activar manualmente.",
     }),
     defineField({
       name: "recommended",
