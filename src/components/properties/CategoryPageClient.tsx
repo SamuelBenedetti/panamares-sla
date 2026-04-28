@@ -268,8 +268,22 @@ function FilterPanel({
           }))}
         />
         <div className="flex gap-[15px]">
-          <input type="number" placeholder="0 m²" value={filters.minArea} onChange={(e) => set("minArea", e.target.value)} className={`${inputBox} ${areaActive === "min" ? inputHighlight : inputDefault}`} />
-          <input type="number" placeholder="1000 m²" value={filters.maxArea} onChange={(e) => set("maxArea", e.target.value)} className={`${inputBox} ${areaActive === "max" ? inputHighlight : inputDefault}`} />
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="0 m²"
+            value={filters.minArea ? `${Number(filters.minArea).toLocaleString("en-US")} m²` : ""}
+            onChange={(e) => set("minArea", e.target.value.replace(/[^0-9]/g, ""))}
+            className={`${inputBox} ${areaActive === "min" ? inputHighlight : inputDefault}`}
+          />
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="1,000 m²"
+            value={filters.maxArea ? `${Number(filters.maxArea).toLocaleString("en-US")} m²` : ""}
+            onChange={(e) => set("maxArea", e.target.value.replace(/[^0-9]/g, ""))}
+            className={`${inputBox} ${areaActive === "max" ? inputHighlight : inputDefault}`}
+          />
         </div>
       </div>
 
