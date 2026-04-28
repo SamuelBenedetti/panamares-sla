@@ -233,8 +233,22 @@ function FilterPanel({
           }))}
         />
         <div className="flex gap-[15px]">
-          <input type="number" placeholder="$0" value={filters.minPrice} onChange={(e) => set("minPrice", e.target.value)} className={`${inputBox} ${priceActive === "min" ? inputHighlight : inputDefault}`} />
-          <input type="number" placeholder="$2,000,000" value={filters.maxPrice} onChange={(e) => set("maxPrice", e.target.value)} className={`${inputBox} ${priceActive === "max" ? inputHighlight : inputDefault}`} />
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="$0"
+            value={filters.minPrice ? `$${Number(filters.minPrice).toLocaleString("en-US")}` : ""}
+            onChange={(e) => set("minPrice", e.target.value.replace(/[^0-9]/g, ""))}
+            className={`${inputBox} ${priceActive === "min" ? inputHighlight : inputDefault}`}
+          />
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="$2,000,000"
+            value={filters.maxPrice ? `$${Number(filters.maxPrice).toLocaleString("en-US")}` : ""}
+            onChange={(e) => set("maxPrice", e.target.value.replace(/[^0-9]/g, ""))}
+            className={`${inputBox} ${priceActive === "max" ? inputHighlight : inputDefault}`}
+          />
         </div>
       </div>
 
