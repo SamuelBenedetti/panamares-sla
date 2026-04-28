@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { BreadcrumbItem } from "@/components/ui/Breadcrumb";
@@ -9,11 +10,12 @@ interface Props {
   breadcrumbs: BreadcrumbItem[];
   title: string;
   description?: string;
+  subtitle?: React.ReactNode;
   eyebrow?: string;
   count?: number;
 }
 
-export default function ListingPageHeader({ breadcrumbs, title, description, eyebrow, count }: Props) {
+export default function ListingPageHeader({ breadcrumbs, title, description, subtitle, eyebrow, count }: Props) {
   return (
     <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
       <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
@@ -56,6 +58,9 @@ export default function ListingPageHeader({ breadcrumbs, title, description, eye
             </p>
           )}
         </div>
+
+        {/* Subtítulo fijo (sin collapsible) */}
+        {subtitle}
 
         {/* SEO block — visible en desktop, colapsable en móvil */}
         {description && <SeoBlockCollapsible text={description} />}
