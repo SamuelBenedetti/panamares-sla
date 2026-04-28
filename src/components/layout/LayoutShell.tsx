@@ -27,8 +27,7 @@ export default function LayoutShell({ navCounts, footer, compareBar, children }:
   const hideChrome = isFullscreen;
   const hideFooter = isFullscreen || isNoFooter;
   const isTransparentTop =
-    pathname === "/" ||
-    (pathname.startsWith("/barrios/") && pathname !== "/barrios/");
+    pathname.startsWith("/barrios/") && pathname !== "/barrios/";
 
   return (
     <>
