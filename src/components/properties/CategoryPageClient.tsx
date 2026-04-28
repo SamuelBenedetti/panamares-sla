@@ -405,14 +405,14 @@ export default function CategoryPageClient({
   return (
     <div className="bg-[#f9f9f9] pt-[24px] pb-[60px] xl:pt-[28px] xl:pb-[80px]">
       {contextBlock && (
-        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto mb-6">
-          <div className="max-w-[1920px] mx-auto">{contextBlock}</div>
+        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1600px] mx-auto mb-6">
+          <div className="max-w-[1600px] mx-auto">{contextBlock}</div>
         </div>
       )}
 
       {/* Sort row */}
       <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] mb-[20px]">
-        <div className="max-w-[1920px] mx-auto flex items-center justify-between gap-[12px]">
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-[12px]">
 
           {/* Left: mobile filter trigger + search context */}
           <div className="flex items-center gap-[10px]">
@@ -464,7 +464,7 @@ export default function CategoryPageClient({
 
       {/* Main layout */}
       <div className="px-[30px] xl:px-[20px] 2xl:px-[120px]">
-        <div className={`max-w-[1920px] mx-auto grid grid-cols-1 items-start gap-8 ${
+        <div className={`max-w-[1600px] mx-auto grid grid-cols-1 items-start gap-8 ${
           mapProps && mapProps.length > 0
             ? "lg:grid-cols-[260px_1fr_380px]"
             : "lg:grid-cols-[260px_1fr]"
