@@ -185,7 +185,7 @@ export default function ComparePageClient({ properties }: Props) {
                     {rows.map((r) => (
                       <div key={r.label} className="flex flex-col gap-0.5">
                         {/* Show label inline on mobile */}
-                        <span className="font-body text-[11px] text-[#5a6478] uppercase tracking-[2px] lg:hidden">
+                        <span className="font-body text-[11px] text-[#5a6478] uppercase tracking-[2px] text-center lg:hidden">
                           {r.label}
                         </span>
                         <span className="font-body font-semibold text-[#0c1834] text-[15px] text-center leading-[30px] tracking-[-0.2px]">
