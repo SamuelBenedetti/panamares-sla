@@ -92,7 +92,7 @@ export default function PropertyCard({ property, priority = false }: { property:
         </div>
 
         {/* Stats — stacked on mobile, horizontal on desktop */}
-        <div className="flex flex-col gap-[8px] md:flex-row md:items-center md:gap-3 pt-1">
+        <div className="flex flex-row gap-[8px]  md:items-center md:gap-3 pt-1">
           {bedrooms != null && (
             <span className="flex items-center gap-[5px] font-body text-[#5a6478] text-[11px] leading-[16px]">
               <Bed size={13} strokeWidth={1.5} />
