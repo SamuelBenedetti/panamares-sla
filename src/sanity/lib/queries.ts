@@ -148,10 +148,13 @@ export const navCountsQuery = groq`{
     "casa de playa":  count(*[_type == "property" && propertyType == "casa de playa" && businessType == "venta" && listingStatus == "activa"])
   },
   "alquiler": {
-    "apartamento": count(*[_type == "property" && propertyType == "apartamento" && businessType == "alquiler" && listingStatus == "activa"]),
-    "casa":        count(*[_type == "property" && propertyType == "casa"        && businessType == "alquiler" && listingStatus == "activa"]),
-    "oficina":     count(*[_type == "property" && propertyType == "oficina"     && businessType == "alquiler" && listingStatus == "activa"]),
-    "local":       count(*[_type == "property" && propertyType == "local"       && businessType == "alquiler" && listingStatus == "activa"])
+    "apartamento":   count(*[_type == "property" && propertyType == "apartamento"  && businessType == "alquiler" && listingStatus == "activa"]),
+    "casa":          count(*[_type == "property" && propertyType == "casa"         && businessType == "alquiler" && listingStatus == "activa"]),
+    "penthouse":     count(*[_type == "property" && propertyType == "penthouse"    && businessType == "alquiler" && listingStatus == "activa"]),
+    "oficina":       count(*[_type == "property" && propertyType == "oficina"      && businessType == "alquiler" && listingStatus == "activa"]),
+    "local":         count(*[_type == "property" && propertyType == "local"        && businessType == "alquiler" && listingStatus == "activa"]),
+    "terreno":       count(*[_type == "property" && propertyType == "terreno"      && businessType == "alquiler" && listingStatus == "activa"]),
+    "casa de playa": count(*[_type == "property" && propertyType == "casa de playa" && businessType == "alquiler" && listingStatus == "activa"])
   }
 }`;
 
