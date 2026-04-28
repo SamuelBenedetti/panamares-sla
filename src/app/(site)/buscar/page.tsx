@@ -102,6 +102,11 @@ function BuscarContent() {
   const current = STEPS[step];
   const isLast = step === STEPS.length - 1;
 
+  const currentOptions: readonly string[] =
+    current.key === "presupuesto"
+      ? Object.keys(answers.intencion === "Alquilar" ? PRICE_MAP_ALQUILER : PRICE_MAP_COMPRA)
+      : current.options;
+
   function transition(fn: () => void) {
     setFading(true);
     setTimeout(() => {
@@ -211,7 +216,7 @@ function BuscarContent() {
 
             {/* Options */}
             <div className="flex flex-wrap items-center justify-center gap-[10px] md:gap-[12px] xl:gap-[16px]">
-              {current.options.map((option) => (
+              {currentOptions.map((option) => (
                 <button
                   key={option}
                   onClick={() => select(option)}
