@@ -66,7 +66,7 @@ export default function PropertyCard({ property, priority = false }: { property:
         {/* Title + description */}
         <div className="flex flex-col gap-[3px]">
           <Link href={`/propiedades/${slug?.current}`}>
-            <h3 className="font-body font-semibold text-[#0c1834] text-[14px] md:text-[15px] leading-tight tracking-[-0.2px] hover:opacity-70 transition-opacity line-clamp-2">
+            <h3 className="font-body font-semibold text-[#0c1834] text-[15px] md:text-[15px] leading-tight tracking-[-0.2px] hover:opacity-70 transition-opacity line-clamp-2">
               {title}
             </h3>
           </Link>
@@ -74,18 +74,18 @@ export default function PropertyCard({ property, priority = false }: { property:
             zoneSlug ? (
               <Link
                 href={`/barrios/${zoneSlug}/`}
-                className="font-body font-normal text-[#5a6478] text-[11px] md:text-[12px] leading-normal line-clamp-1 hover:text-[#0c1834] transition-colors"
+                className="font-body font-normal text-[#5a6478] text-[12px] md:text-[12px] leading-normal line-clamp-1 hover:text-[#0c1834] transition-colors"
               >
                 {zone}
               </Link>
             ) : (
-              <p className="font-body font-normal text-[#5a6478] text-[11px] md:text-[12px] leading-normal line-clamp-1">
+              <p className="font-body font-normal text-[#5a6478] text-[12px] md:text-[12px] leading-normal line-clamp-1">
                 {zone}
               </p>
             )
           )}
           {buildingName && (
-            <p className="font-body font-normal text-[#5a6478] text-[11px] md:text-[12px] leading-normal line-clamp-1">
+            <p className="font-body font-normal text-[#5a6478] text-[12px] md:text-[12px] leading-normal line-clamp-1">
               {buildingName}
             </p>
           )}
@@ -94,19 +94,19 @@ export default function PropertyCard({ property, priority = false }: { property:
         {/* Stats — stacked on mobile, horizontal on desktop */}
         <div className="flex flex-row gap-[8px]  md:items-center md:gap-3 pt-1">
           {bedrooms != null && (
-            <span className="flex items-center gap-[5px] font-body text-[#5a6478] text-[11px] leading-[16px]">
+            <span className="flex items-center gap-[5px] font-body text-[#5a6478] text-[12px] leading-[16px]">
               <Bed size={13} strokeWidth={1.5} />
               {bedrooms} hab.
             </span>
           )}
           {bathrooms != null && (
-            <span className="flex items-center gap-[5px] font-body text-[#5a6478] text-[11px] leading-[16px]">
+            <span className="flex items-center gap-[5px] font-body text-[#5a6478] text-[12px] leading-[16px]">
               <Bath size={13} strokeWidth={1.5} />
               {bathrooms} baños
             </span>
           )}
           {area != null && (
-            <span className="flex items-center gap-[5px] font-body text-[#5a6478] text-[11px] leading-[16px]">
+            <span className="flex items-center gap-[5px] font-body text-[#5a6478] text-[12px] leading-[16px]">
               <Maximize size={13} strokeWidth={1.5} />
               {area} m²
             </span>
@@ -121,7 +121,7 @@ export default function PropertyCard({ property, priority = false }: { property:
             </span>
           </Link>
           {pricePerM2 && (
-            <span className="font-body text-[#5a6478] text-[11px] leading-[16px]">
+            <span className="font-body text-[#5a6478] text-[12px] leading-[16px]">
               {formatPrice(pricePerM2)}/m²
             </span>
           )}
