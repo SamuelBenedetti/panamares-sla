@@ -84,7 +84,7 @@ export default function ComparePageClient({ properties }: Props) {
   ];
 
   return (
-    <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[40px] xl:py-[60px]">
+    <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[24px] pb-[60px] xl:pt-[28px] xl:pb-[80px]">
       <div className="max-w-[1440px] mx-auto flex flex-col gap-[30px]">
 
         {/* Breadcrumb */}
