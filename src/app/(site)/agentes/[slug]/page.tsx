@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Mail, MessageCircle, ArrowRight, ChevronRight } from "lucide-react";
+import { Phone, Mail, MessageCircle, ArrowRight } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { agentBySlugQuery } from "@/sanity/lib/queries";
@@ -11,6 +11,7 @@ import type { Agent } from "@/lib/types";
 import PropertyGrid from "@/components/properties/PropertyGrid";
 import { agentSchema, breadcrumbSchema } from "@/lib/jsonld";
 import { BASE_URL, whatsappLink } from "@/lib/config";
+import WhatsAppButton from "@/components/properties/WhatsAppButton";
 
 interface Props {
   params: { slug: string };
@@ -57,16 +58,18 @@ export default async function AgentProfilePage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdAgent) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
+      <WhatsAppButton message={waMessage} variant="floating" />
+
       {/* ── Hero ── */}
       <section className="bg-[#0c1834] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[110px] xl:pt-[140px] pb-[60px] xl:pb-[80px]">
         <div className="max-w-[1440px] mx-auto flex flex-col gap-[24px]">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-[8px]">
-            <Link href="/" className="font-body text-[13px] text-white/40 hover:text-white/70 transition-colors">Inicio</Link>
-            <ChevronRight size={12} className="text-white/25" />
-            <Link href="/agentes/" className="font-body text-[13px] text-white/40 hover:text-white/70 transition-colors">Asesores</Link>
-            <ChevronRight size={12} className="text-white/25" />
-            <span className="font-body text-[13px] text-white/70">{agent.name}</span>
+          <nav className="flex items-center gap-[8px] flex-wrap">
+            <Link href="/" className="font-body font-normal text-[14px] text-white/60 hover:text-white transition-colors">Inicio</Link>
+            <span className="text-white/30 text-[12px]">›</span>
+            <Link href="/agentes/" className="font-body font-normal text-[14px] text-white/60 hover:text-white transition-colors">Asesores</Link>
+            <span className="text-white/30 text-[12px]">›</span>
+            <span className="font-body font-medium text-[14px] text-white">{agent.name}</span>
           </nav>
 
           {/* Agent header — photo + info */}

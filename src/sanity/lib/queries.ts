@@ -271,7 +271,11 @@ export const agentBySlugQuery = groq`
     whatsapp,
     email,
     bio,
-    "properties": *[_type == "property" && references(^._id) && listingStatus == "activa"] | order(_createdAt desc) {
+    wasiUserId,
+    "properties": *[_type == "property" && listingStatus == "activa" && (
+      references(^._id) ||
+      (defined(^.wasiUserId) && agent._ref == "wasi-agent-" + string(^.wasiUserId))
+    )] | order(_createdAt desc) {
       ${CARD_FIELDS}
     }
   }

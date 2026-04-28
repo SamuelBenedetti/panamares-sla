@@ -51,6 +51,12 @@ export default defineType({
       type: "array",
       of: [{ type: "block" }],
     }),
+    defineField({
+      name: "wasiUserId",
+      title: "WASI User ID",
+      type: "number",
+      description: "ID numérico del usuario en WASI (id_user). Necesario para vincular las propiedades del agente.",
+    }),
   ],
   preview: {
     select: { title: "name", media: "photo" },
