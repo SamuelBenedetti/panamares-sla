@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
@@ -313,8 +313,8 @@ export default function PropertyGallery({ images, contained = false, propertyTit
           </div>
 
           {images.length > 1 && (
-            <div className="bg-white shadow-[0px_4px_16px_rgba(0,0,0,0.08)] px-[30px] xl:px-[20px] 2xl:px-[120px] py-4">
-              <div className="max-w-[1600px] mx-auto">
+            <div className="bg-white shadow-[0px_4px_16px_rgba(0,0,0,0.08)] px-[30px] xl:px-[60px] 2xl:px-[160px] py-4">
+              <div className="max-w-[1440px] mx-auto">
                 <div className="flex gap-[10px] overflow-x-auto pb-1">
                   {thumbs.map((img, i) => (
                     <button

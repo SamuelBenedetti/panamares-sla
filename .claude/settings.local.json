@@ -82,7 +82,16 @@
       "Bash(git branch *)",
       "Bash(git worktree *)",
       "mcp__figma__get_metadata",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(xargs -I {} ls -l {})",
+      "Bash(gh pr create --title 'fix: 3 categorías 404, navbar transparente en barrios/slug, mejoras Sanity' --body ' *)",
+      "PowerShell(Get-Command gh -ErrorAction SilentlyContinue)",
+      "Bash(git fetch *)",
+      "PowerShell($response = Invoke-RestMethod -Uri \"https://api.github.com/repos/Samuel33d/panamares/pulls?head=Samuel33d:claude/pedantic-goodall-b2bb45&state=open\" -Headers @{Accept=\"application/vnd.github.v3+json\"}; $response[0].html_url)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git rebase *)",
+      "Bash(git stash *)"
     ]
   },
   "enableAllProjectMcpServers": true,

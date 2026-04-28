@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { sanityFetch } from "@/sanity/lib/client";
@@ -31,8 +31,8 @@ export default async function GuiasPage() {
       />
 
       {/* ── Header — mismo patrón que el resto del sitio ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
 
           {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px] flex-wrap">
@@ -61,8 +61,8 @@ export default async function GuiasPage() {
       </section>
 
       {/* ── Guides grid ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[28px] pb-[80px] xl:pb-[100px]">
-        <div className="max-w-[1600px] mx-auto">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[28px] pb-[80px] xl:pb-[100px]">
+        <div className="max-w-[1440px] mx-auto">
           <GuiasPageClient guides={guides} />
         </div>
       </section>

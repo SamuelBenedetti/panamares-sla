@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ChevronRight } from "lucide-react";
@@ -100,8 +100,8 @@ export default async function BarriosPage() {
       />
 
       {/* ── Header ── */}
-      <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-0 xl:pb-[28px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
+      <section className="bg-[#f9f9f9] px-[24px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-0 xl:pb-[28px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
 
           {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px] flex-wrap">
@@ -132,16 +132,16 @@ export default async function BarriosPage() {
       </section>
 
       {/* ── Hero Slider ── */}
-      <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] pb-[32px] xl:pb-[64px]">
-        <div className="max-w-[1600px] mx-auto">
+      <section className="bg-[#f9f9f9] px-[24px] xl:px-[60px] 2xl:px-[160px] pb-[32px] xl:pb-[64px]">
+        <div className="max-w-[1440px] mx-auto">
           <NeighborhoodSlider neighborhoods={sliderNeighborhoods} />
         </div>
       </section>
 
       {/* ── Más barrios ── */}
       {rest.length > 0 && (
-        <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] pt-[100px] pb-[80px] xl:pb-[120px]">
-          <div className="max-w-[1600px] mx-auto flex flex-col gap-[30px]">
+        <section className="bg-[#f9f9f9] px-[24px] xl:px-[60px] 2xl:px-[160px] pt-[100px] pb-[80px] xl:pb-[120px]">
+          <div className="max-w-[1440px] mx-auto flex flex-col gap-[30px]">
 
             {/* Section header */}
             <div className="flex flex-col pb-[20px]">
@@ -237,8 +237,8 @@ export default async function BarriosPage() {
       )}
 
       {/* ── CTA ── */}
-      <section className="bg-[#121e3e] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[90px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
+      <section className="bg-[#121e3e] px-[24px] xl:px-[60px] 2xl:px-[160px] py-[70px] xl:py-[90px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
           <div className="flex flex-col gap-[14px]">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
               ¿No sabes por dónde empezar?

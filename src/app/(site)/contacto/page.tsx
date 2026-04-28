@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 import PropertyMap from "@/components/properties/PropertyMap";
@@ -40,8 +40,8 @@ export default function ContactoPage() {
         ])) }}
       />
       {/* ── Hero ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[60px] xl:pt-[80px] pb-[80px] xl:pb-[112px]">
-        <div className="max-w-[1600px] mx-auto">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[60px] xl:pt-[80px] pb-[80px] xl:pb-[112px]">
+        <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col gap-[20px]">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-[8px]">
@@ -69,8 +69,8 @@ export default function ContactoPage() {
       </section>
 
       {/* ── Form + Sidebar ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pb-[80px] xl:pb-[120px]">
-        <div className="max-w-[1600px] mx-auto">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pb-[80px] xl:pb-[120px]">
+        <div className="max-w-[1440px] mx-auto">
           <div className="grid grid-cols-1 xl:grid-cols-[3fr_2fr] gap-[40px] xl:gap-[64px]">
 
             {/* Left: WhatsApp banner + Form */}
@@ -213,8 +213,8 @@ export default function ContactoPage() {
       </section>
 
       {/* ── Únete al equipo ── */}
-      <section className="bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[80px] xl:py-[100px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col items-center xl:items-start xl:flex-row xl:justify-between gap-[32px] xl:gap-[40px]">
+      <section className="bg-[#121e3e] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[80px] xl:py-[100px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col items-center xl:items-start xl:flex-row xl:justify-between gap-[32px] xl:gap-[40px]">
           <div className="flex flex-col gap-[15px] items-center xl:items-start text-center xl:text-left">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
               ¿Eres agente independiente?

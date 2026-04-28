@@ -1,12 +1,12 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import PropertyGrid from "@/components/properties/PropertyGrid";
 import type { Property } from "@/lib/types";
 
 export default function FeaturedProperties({ properties }: { properties: Property[] }) {
   return (
-    <section className="bg-[#f9f9f9] py-[80px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
-      <div className="flex flex-col gap-8 max-w-[1600px] mx-auto">
+    <section className="bg-[#f9f9f9] py-[80px] px-[30px] xl:px-[60px] 2xl:px-[160px]">
+      <div className="flex flex-col gap-8 max-w-[1440px] mx-auto">
 
         {/* Header */}
         <div className="flex flex-col gap-2 items-start text-left">

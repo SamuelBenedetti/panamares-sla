@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo, useRef, useCallback, useEffect, useTransition } from "react";
 import dynamic from "next/dynamic";
@@ -405,14 +405,14 @@ export default function CategoryPageClient({
   return (
     <div className="bg-[#f9f9f9] pt-[24px] pb-[60px] xl:pt-[28px] xl:pb-[80px]">
       {contextBlock && (
-        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1600px] mx-auto mb-6">
-          <div className="max-w-[1600px] mx-auto">{contextBlock}</div>
+        <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] max-w-[1440px] mx-auto mb-6">
+          <div className="max-w-[1440px] mx-auto">{contextBlock}</div>
         </div>
       )}
 
       {/* Sort row */}
-      <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] mb-[20px]">
-        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-[12px]">
+      <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] mb-[20px]">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-[12px]">
 
           {/* Left: mobile filter trigger + search context */}
           <div className="flex items-center gap-[10px]">
@@ -463,8 +463,8 @@ export default function CategoryPageClient({
       </div>
 
       {/* Main layout */}
-      <div className="px-[30px] xl:px-[20px] 2xl:px-[120px]">
-        <div className={`max-w-[1600px] mx-auto grid grid-cols-1 items-start gap-8 ${
+      <div className="px-[30px] xl:px-[60px] 2xl:px-[160px]">
+        <div className={`max-w-[1440px] mx-auto grid grid-cols-1 items-start gap-8 ${
           mapProps && mapProps.length > 0
             ? "lg:grid-cols-[260px_1fr_380px]"
             : "lg:grid-cols-[260px_1fr]"

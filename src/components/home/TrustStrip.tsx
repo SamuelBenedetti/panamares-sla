@@ -1,4 +1,4 @@
-import { sanityFetch } from "@/sanity/lib/client";
+﻿import { sanityFetch } from "@/sanity/lib/client";
 import { siteStatsQuery } from "@/sanity/lib/queries";
 
 interface Stats {
@@ -17,8 +17,8 @@ export default async function TrustStrip() {
   ];
 
   return (
-    <section className="bg-[#f9f9f9] py-[36px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
-      <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-[36px] lg:gap-0 max-w-[1600px] mx-auto">
+    <section className="bg-[#f9f9f9] py-[36px] px-[30px] xl:px-[60px] 2xl:px-[160px]">
+      <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-[36px] lg:gap-0 max-w-[1440px] mx-auto">
         {items.map((item) => (
           <div key={item.label} className="flex flex-col gap-[8px] items-center">
             <p className="font-heading text-[#0d1835] text-[44px] leading-[38px] tracking-[-1.8px] font-medium">

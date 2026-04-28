@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 const PROPIEDADES = [
   { label: "Apartamentos en Venta", href: "/apartamentos-en-venta/" },
@@ -26,8 +26,8 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#0c1834] px-[30px] xl:px-[20px] 2xl:px-[120px]">
-      <div className="flex flex-col gap-12 max-w-[1600px] mx-auto pt-[100px] pb-[30px] md:pt-16 md:pb-16">
+    <footer className="bg-[#0c1834] px-[30px] xl:px-[60px] 2xl:px-[160px]">
+      <div className="flex flex-col gap-12 max-w-[1440px] mx-auto pt-[100px] pb-[30px] md:pt-16 md:pb-16">
 
         {/* Main columns — stacked on mobile, 4-col grid on md+ */}
         <div className="flex flex-col gap-12 md:grid md:grid-cols-4 md:gap-10">

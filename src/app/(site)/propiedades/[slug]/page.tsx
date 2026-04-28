@@ -218,8 +218,8 @@ export default async function PropertyDetailPage({ params }: Props) {
 
       {/* ── ABOVE THE FOLD: Gallery + Info ── */}
       <section className="bg-white">
-        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto pt-[16px] pb-[32px]">
-          <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
+        <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] max-w-[1920px] mx-auto pt-[16px] pb-[32px]">
+          <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
 
             {/* Breadcrumb */}
             <Breadcrumb items={breadcrumbItems} />
@@ -441,8 +441,8 @@ export default async function PropertyDetailPage({ params }: Props) {
 
       {/* ── BELOW FOLD: Description, Features, Map ── */}
       <section className="bg-[#f9f9f9] border-t border-[#dfe5ef]">
-        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto py-[36px]">
-          <div className="max-w-[1600px] mx-auto flex flex-col gap-[32px]">
+        <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] max-w-[1920px] mx-auto py-[36px]">
+          <div className="max-w-[1440px] mx-auto flex flex-col gap-[32px]">
 
               {/* Description */}
               {property.description && (
@@ -554,8 +554,8 @@ export default async function PropertyDetailPage({ params }: Props) {
 
       {/* Related properties */}
       {related.length > 0 && (
-        <section className="px-[30px] xl:px-[20px] 2xl:px-[120px] py-[56px]">
-          <div className="max-w-[1600px] mx-auto flex flex-col gap-[24px]">
+        <section className="px-[30px] xl:px-[60px] 2xl:px-[160px] py-[56px]">
+          <div className="max-w-[1440px] mx-auto flex flex-col gap-[24px]">
 
             <h2 className="font-heading font-normal text-[clamp(24px,2.5vw,36px)] text-[#0c1834] tracking-[-1px] leading-none">
               Propiedades relacionadas

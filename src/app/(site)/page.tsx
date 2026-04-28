@@ -1,4 +1,4 @@
-import { sanityFetch } from "@/sanity/lib/client";
+﻿import { sanityFetch } from "@/sanity/lib/client";
 import { featuredPropertiesQuery, propertyTypeCountsQuery, neighborhoodCountsQuery } from "@/sanity/lib/queries";
 import type { Property } from "@/lib/types";
 import type { Metadata } from "next";
@@ -36,8 +36,8 @@ export default async function HomePage() {
       <NeighborhoodCards counts={neighborhoodCounts} />
       <TrustStrip />
       <CTA />
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[48px] xl:py-[64px] border-t border-[#dfe5ef]">
-        <div className="max-w-[1600px] mx-auto">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[48px] xl:py-[64px] border-t border-[#dfe5ef]">
+        <div className="max-w-[1440px] mx-auto">
           <SeoBlock
             text="Panamares es la plataforma líder de bienes raíces de lujo en Ciudad de Panamá. Ofrecemos una selección exclusiva de apartamentos, casas, penthouses, oficinas, locales y terrenos en los barrios más cotizados: Punta Pacífica, Punta Paitilla, Costa del Este, Avenida Balboa y San Francisco. Nuestro equipo de asesores especializados te guía en cada paso del proceso, ya sea para comprar, alquilar o invertir en el mercado inmobiliario panameño. Con más de 15 años de experiencia, conocemos cada zona, cada edificio y cada oportunidad que ofrece la ciudad."
             collapsibleOnMobile

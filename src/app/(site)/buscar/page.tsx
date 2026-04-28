@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -156,7 +156,7 @@ function BuscarContent() {
 
       <div
         className={`relative z-10 h-full w-full flex flex-col items-center justify-center
-          px-[30px] xl:px-[20px] 2xl:px-[120px]
+          px-[30px] xl:px-[60px] 2xl:px-[160px]
           transition-opacity duration-[180ms]
           ${fading ? "opacity-0" : "opacity-100"}`}
       >

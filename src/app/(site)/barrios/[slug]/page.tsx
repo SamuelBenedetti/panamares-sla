@@ -174,8 +174,8 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0c1834] via-[#0c1834]/30 to-[#0c1834]/10" />
 
-        <div className="relative z-10 w-full px-[24px] xl:px-[20px] 2xl:px-[120px] pb-[48px] xl:pb-[80px]">
-          <div className="max-w-[1600px] mx-auto flex flex-col gap-[20px]">
+        <div className="relative z-10 w-full px-[24px] xl:px-[60px] 2xl:px-[160px] pb-[48px] xl:pb-[80px]">
+          <div className="max-w-[1440px] mx-auto flex flex-col gap-[20px]">
 
             {/* Breadcrumb */}
             <nav className="flex items-center gap-[8px] flex-wrap">
@@ -235,8 +235,8 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
           2. ABOUT — Editorial block (ranking content)
       ═══════════════════════════════════════════════════════════════════════ */}
       {nbhContent?.seoBlock && (
-      <section className="bg-[#f9f9f9] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[80px] xl:py-[112px]">
-        <div className="max-w-[1600px] mx-auto">
+      <section className="bg-[#f9f9f9] px-[24px] xl:px-[60px] 2xl:px-[160px] py-[80px] xl:py-[112px]">
+        <div className="max-w-[1440px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-[64px] xl:gap-[100px] 2xl:gap-[200px]">
 
             {/* Left — text */}
@@ -346,8 +346,8 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
           5. LISTINGS — Cards + mapa (tabs Comprar / Alquilar)
       ═══════════════════════════════════════════════════════════════════════ */}
       {properties.length > 0 && (
-        <section className="bg-white border-t border-[#dfe5ef] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[80px] xl:py-[130px]">
-          <div className="max-w-[1600px] mx-auto">
+        <section className="bg-white border-t border-[#dfe5ef] px-[24px] xl:px-[60px] 2xl:px-[160px] py-[80px] xl:py-[130px]">
+          <div className="max-w-[1440px] mx-auto">
             <NeighborhoodListingsSection
               ventaProps={ventaProps}
               alquilerProps={alquilerProps}
@@ -373,8 +373,8 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
        {/* ═══════════════════════════════════════════════════════════════════════
           7. CTA — Conversión
       ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#121e3e] px-[24px] xl:px-[20px] 2xl:px-[120px] py-[80px] xl:py-[120px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col items-center text-center gap-[24px]">
+      <section className="bg-[#121e3e] px-[24px] xl:px-[60px] 2xl:px-[160px] py-[80px] xl:py-[120px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col items-center text-center gap-[24px]">
           <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase">
             Contáctenos
           </p>

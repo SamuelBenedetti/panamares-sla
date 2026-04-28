@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ChevronRight, ShieldCheck, Star, TrendingUp, MapPin, Award } from "lucide-react";
@@ -32,8 +32,8 @@ export default async function SobreNosotrosPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
       {/* ── Header ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[80px] xl:pb-[112px]">
-        <div className="max-w-[1600px] mx-auto">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-[80px] xl:pb-[112px]">
+        <div className="max-w-[1440px] mx-auto">
         <div className="flex flex-col gap-[20px] max-w-[768px]">
 
           {/* Breadcrumb */}
@@ -76,8 +76,8 @@ export default async function SobreNosotrosPage() {
       </section>
 
       {/* ── Nuestra oficina ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px]">
-        <div className="max-w-[1600px] mx-auto">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px]">
+        <div className="max-w-[1440px] mx-auto">
           <div className="relative aspect-[390/720] xl:aspect-auto xl:h-[720px] overflow-hidden flex flex-col justify-end p-[30px] xl:p-0">
             <Image
               src="/oficina.jpg"
@@ -101,8 +101,8 @@ export default async function SobreNosotrosPage() {
       </section>
 
       {/* ── Stats bar ── */}
-      <section className="bg-[#0d1835] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[50px] xl:py-[70px]">
-        <div className="max-w-[1600px] mx-auto">
+      <section className="bg-[#0d1835] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[50px] xl:py-[70px]">
+        <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[50px] xl:gap-0">
             {[
               { value: "15+",    label: "Años en el Mercado" },
@@ -124,8 +124,8 @@ export default async function SobreNosotrosPage() {
       </section>
 
       {/* ── Nuestra ubicación ── */}
-      <section className="bg-white px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[96px] border-t border-[#dfe5ef]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[24px]">
+      <section className="bg-white px-[30px] xl:px-[60px] 2xl:px-[160px] py-[70px] xl:py-[96px] border-t border-[#dfe5ef]">
+        <div className="max-w-[1440px] mx-auto flex flex-col gap-[24px]">
           <div className="flex flex-col gap-[8px]">
             <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
               Encuéntranos
@@ -146,8 +146,8 @@ export default async function SobreNosotrosPage() {
       </section>
 
       {/* ── Nuestra Historia ── */}
-      <section className="bg-white px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[112px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px] xl:gap-[48px]">
+      <section className="bg-white px-[30px] xl:px-[60px] 2xl:px-[160px] py-[70px] xl:py-[112px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col gap-[40px] xl:gap-[48px]">
 
           {/* Eyebrow + Grid grouped close together */}
           <div className="flex flex-col gap-[8px]">
@@ -232,8 +232,8 @@ export default async function SobreNosotrosPage() {
         </div>
       </section>
       {/* ── El equipo ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[96px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[56px] items-center">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[70px] xl:py-[96px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col gap-[56px] items-center">
 
           {/* Header */}
           <div className="flex flex-col gap-[12px] items-center">
@@ -292,8 +292,8 @@ export default async function SobreNosotrosPage() {
         </div>
       </section>
       {/* ── Reconocimientos ── */}
-      <section className="bg-white px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[96px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[48px] xl:gap-[40px]">
+      <section className="bg-white px-[30px] xl:px-[60px] 2xl:px-[160px] py-[70px] xl:py-[96px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[48px] xl:gap-[40px]">
 
           {/* Left — icon + heading */}
           <div className="flex flex-col gap-[15px]">
@@ -329,7 +329,7 @@ export default async function SobreNosotrosPage() {
         </div>
       </section>
       {/* ── CTA contacto ── */}
-      <section className="relative bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[80px] xl:py-[130px] overflow-hidden">
+      <section className="relative bg-[#121e3e] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[80px] xl:py-[130px] overflow-hidden">
 
         {/* Palm tree — left */}
         <div className="absolute left-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block">
@@ -341,7 +341,7 @@ export default async function SobreNosotrosPage() {
           <Image src="/palm-right.svg" alt="" fill className="object-cover object-left" sizes="300px" />
         </div>
 
-        <div className="relative z-10 max-w-[1600px] mx-auto flex flex-col gap-[16px] items-center">
+        <div className="relative z-10 max-w-[1440px] mx-auto flex flex-col gap-[16px] items-center">
 
           {/* Eyebrow + Heading */}
           <div className="flex flex-col gap-[12px] items-center">

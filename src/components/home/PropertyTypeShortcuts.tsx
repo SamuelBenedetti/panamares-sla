@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Building2, Home, Layers, Briefcase, ShoppingBag, MapPin } from "lucide-react";
 import PropertyTypeShortcutsScroll from "./PropertyTypeShortcutsScroll";
 
@@ -13,8 +13,8 @@ const SHORTCUTS = [
 
 export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record<string, number> }) {
   return (
-    <section className="bg-white py-[80px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
-      <div className="flex flex-col gap-8 max-w-[1600px] mx-auto">
+    <section className="bg-white py-[80px] px-[30px] xl:px-[60px] 2xl:px-[160px]">
+      <div className="flex flex-col gap-8 max-w-[1440px] mx-auto">
 
         <div className="flex flex-col gap-2 items-center text-center">
           <p className="font-body font-medium text-[#5a6478] text-[12px] uppercase tracking-[5px]">

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { sanityFetch } from "@/sanity/lib/client";
@@ -31,8 +31,8 @@ export default async function AgentesPage() {
       />
 
       {/* ── Header — mismo patrón que ListingPageHeader ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
 
           {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px] flex-wrap">
@@ -61,8 +61,8 @@ export default async function AgentesPage() {
       </section>
 
       {/* ── Grid ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[28px] pb-[80px] xl:pb-[100px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[40px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[28px] pb-[80px] xl:pb-[100px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col gap-[40px]">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[12px]">
             <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
               Equipo Panamares
@@ -81,8 +81,8 @@ export default async function AgentesPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-[#121e3e] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[70px] xl:py-[90px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
+      <section className="bg-[#121e3e] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[70px] xl:py-[90px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col xl:flex-row xl:items-center xl:justify-between gap-[32px]">
           <div className="flex flex-col gap-[14px]">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
               ¿Eres agente independiente?

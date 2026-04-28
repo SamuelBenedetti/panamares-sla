@@ -1,12 +1,12 @@
-import { PropertyGridSkeleton } from "./PropertyCardSkeleton";
+﻿import { PropertyGridSkeleton } from "./PropertyCardSkeleton";
 
 export default function ListingPageSkeleton() {
   return (
     <div className="bg-[#f9f9f9]">
 
       {/* Header skeleton — mismo patrón que ListingPageHeader */}
-      <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
+      <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
+        <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
 
           {/* Breadcrumb */}
           <div className="flex items-center gap-[8px]">
@@ -32,15 +32,15 @@ export default function ListingPageSkeleton() {
       </div>
 
       {/* Sort row */}
-      <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] mb-[20px]">
-        <div className="max-w-[1600px] mx-auto flex items-center justify-end">
+      <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] mb-[20px]">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-end">
           <div className="h-[36px] w-[160px] bg-[#e9e7e2] animate-pulse" />
         </div>
       </div>
 
       {/* Sidebar + grid */}
-      <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] pb-[60px] xl:pb-[80px]">
-        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[309px_1fr] gap-8 items-start">
+      <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] pb-[60px] xl:pb-[80px]">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-[309px_1fr] gap-8 items-start">
 
           {/* Sidebar skeleton */}
           <div className="bg-white border border-[#dfe5ef] p-[21px] flex flex-col gap-[20px]">

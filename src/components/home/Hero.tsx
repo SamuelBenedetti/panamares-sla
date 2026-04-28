@@ -1,9 +1,9 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import SearchBar from "./SearchBar";
 
 export default function Hero() {
   return (
-    <section className="relative flex items-center justify-center min-h-screen bg-brand-navy overflow-hidden -mt-20 px-[30px] xl:px-[20px] 2xl:px-[120px]">
+    <section className="relative flex items-center justify-center min-h-screen bg-brand-navy overflow-hidden -mt-20 px-[30px] xl:px-[60px] 2xl:px-[160px]">
       {/* Background image — next/image with priority for LCP */}
       <Image
         src="/hero-bg.jpg"
@@ -20,7 +20,7 @@ export default function Hero() {
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[rgba(13,24,53,0.85)] to-transparent pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-4 w-full max-w-[1600px] mx-auto text-center">
+      <div className="relative z-10 flex flex-col items-center gap-4 w-full max-w-[1440px] mx-auto text-center">
 
         {/* Eyebrow */}
         <p className="text-white text-[11px] font-medium uppercase tracking-[5px] font-body">

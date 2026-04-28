@@ -1,4 +1,4 @@
-import type { Faq } from "@/lib/faqs";
+﻿import type { Faq } from "@/lib/faqs";
 
 interface Props {
   faqs: Faq[];
@@ -13,8 +13,8 @@ export default function FaqSection({ faqs }: Props) {
   if (!faqs.length) return null;
 
   return (
-    <section className="bg-white border-t border-[#dfe5ef] px-[30px] xl:px-[20px] 2xl:px-[120px] py-[60px] xl:py-[80px]">
-      <div className="max-w-[1600px] mx-auto">
+    <section className="bg-white border-t border-[#dfe5ef] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[60px] xl:py-[80px]">
+      <div className="max-w-[1440px] mx-auto">
         {/* Header */}
         <div className="mb-[40px] xl:mb-[48px]">
           <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4 mb-[10px]">

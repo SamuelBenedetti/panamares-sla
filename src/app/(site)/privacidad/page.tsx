@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Política de Privacidad",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function PrivacidadPage() {
   return (
-    <section className="bg-white px-[30px] xl:px-[20px] 2xl:px-[120px] py-[100px]">
+    <section className="bg-white px-[30px] xl:px-[60px] 2xl:px-[160px] py-[100px]">
       <div className="max-w-[800px] mx-auto flex flex-col gap-[40px]">
 
         <div className="flex flex-col gap-[12px]">

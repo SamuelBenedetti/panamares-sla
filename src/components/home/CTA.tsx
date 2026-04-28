@@ -1,10 +1,10 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 import { whatsappLink } from "@/lib/config";
 
 export default function CTA() {
   return (
-    <section className="relative bg-[#121e3e] py-14 md:py-[80px] px-6 xl:px-[20px] 2xl:px-[120px] overflow-hidden">
+    <section className="relative bg-[#121e3e] py-14 md:py-[80px] px-6 xl:px-[60px] 2xl:px-[160px] overflow-hidden">
 
       {/* Palm tree — left */}
       <div className="absolute left-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block">
@@ -28,7 +28,7 @@ export default function CTA() {
         />
       </div>
 
-      <div className="relative z-10 flex flex-col gap-4 items-center text-center max-w-[1600px] mx-auto">
+      <div className="relative z-10 flex flex-col gap-4 items-center text-center max-w-[1440px] mx-auto">
 
         {/* Eyebrow */}
         <p className="font-body font-medium text-white/50 text-[12px] uppercase tracking-[5px]">
