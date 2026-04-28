@@ -16,7 +16,7 @@ export default function SearchBar() {
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
-      <div className="flex items-center justify-between border border-white px-[18px] py-[12px] w-full backdrop-blur-md bg-white/10">
+      <div className="flex items-center justify-between border border-white px-[21px] py-[12px] w-full backdrop-blur-md bg-white/10">
         <input
           type="text"
           value={query}
