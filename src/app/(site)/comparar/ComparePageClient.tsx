@@ -7,7 +7,7 @@ import type { Property } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import { BASE_URL, whatsappLink } from "@/lib/config";
 import { formatPrice } from "@/lib/utils";
-import Breadcrumb from "@/components/ui/Breadcrumb";
+import ListingPageHeader from "@/components/properties/ListingPageHeader";
 
 type Tag = "oferta" | "economico" | "ubicacion" | "espacio";
 
@@ -85,20 +85,14 @@ export default function ComparePageClient({ properties }: Props) {
   ];
 
   return (
-    <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[24px] pb-[60px] xl:pt-[28px] xl:pb-[80px]">
-      <div className="max-w-[1440px] mx-auto flex flex-col gap-[20px]">
-
-        {/* Breadcrumb */}
-        <Breadcrumb items={[
+    <>
+      <ListingPageHeader
+        breadcrumbs={[
           { label: "Inicio", href: "/" },
           { label: "Comparar propiedades" },
-        ]} />
-
-        {/* H1 + descripción */}
-        <div className="flex flex-col gap-[12px]">
-          <h1 className="font-heading font-normal text-[clamp(28px,2.5vw,36px)] text-[#0c1834] leading-none tracking-[-1.8px]">
-            Lista comparada de propiedades
-          </h1>
+        ]}
+        title="Lista comparada de propiedades"
+        subtitle={
           <p className="font-body text-[14px] text-[#0c1834] leading-[22px] max-w-[700px]">
             <span className="font-semibold">
               Compara lado a lado las propiedades que seleccionaste y visualiza rápidamente las diferencias en precio, tamaño, ubicación y potencial de valorización.
@@ -107,7 +101,11 @@ export default function ComparePageClient({ properties }: Props) {
               Usa esta vista clara para identificar la mejor oportunidad y tomar una decisión con mayor confianza.
             </span>
           </p>
-        </div>
+        }
+      />
+
+      <div className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pb-[60px] xl:pb-[80px]">
+        <div className="max-w-[1440px] mx-auto">
 
         {/* Main layout: sidebar + cards */}
         <div className="flex gap-[24px] items-start">
@@ -221,6 +219,8 @@ export default function ComparePageClient({ properties }: Props) {
         </div>
 
       </div>
-    </section>
+        </div>
+      </div>
+    </>
   );
 }
