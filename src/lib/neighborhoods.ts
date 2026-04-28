@@ -63,10 +63,10 @@ export const NEIGHBORHOOD_IMAGES: Record<string, string> = {
 
 /** Hero/slider images for barrios pages */
 export const NEIGHBORHOOD_HERO_IMAGES: Record<string, string> = {
-  "punta-pacifica": "/hero-punta-pacifica.png",
-  "punta-paitilla": "/hero-punta-paitilla.png",
-  "avenida-balboa": "/hero-avenida-balboa.png",
-  "costa-del-este": "/hero-costa-del-este.png",
+  "punta-pacifica": "/card-punta-pacifica.png",
+  "punta-paitilla": "/card-punta-paitilla.png",
+  "avenida-balboa": "/card-avenida-balboa.png",
+  "costa-del-este": "/card-costa-del-este.png",
 };
 
 export function getNeighborhoodBySlug(
