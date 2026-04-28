@@ -92,7 +92,7 @@ export default function NeighborhoodSlider({
       {neighborhoods.map((nb, i) => (
         <div
           key={nb.slug}
-          className={`absolute bottom-0 left-0 right-0 p-[20px] sm:p-[30px] flex flex-col gap-[8px] transition-opacity duration-500 ease-in-out ${i === current ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`absolute bottom-0 left-0 right-0 p-[20px] sm:p-[30px] flex flex-col gap-[8px] transition-opacity duration-500 ease-in-out pointer-events-none ${i === current ? "opacity-100" : "opacity-0"}`}
         >
           {/* "favorites" label */}
           <div className="flex gap-[10px] items-start">
@@ -106,7 +106,7 @@ export default function NeighborhoodSlider({
           <div className="flex items-center w-full">
             <Link
               href={`/barrios/${nb.slug}/`}
-              className="font-heading font-normal text-[38px] sm:text-[60px] text-white tracking-[-1.2px] sm:tracking-[-1.8px] leading-none sm:leading-normal hover:text-white/90 transition-colors"
+              className="font-heading font-normal text-[38px] sm:text-[60px] text-white tracking-[-1.2px] sm:tracking-[-1.8px] leading-none sm:leading-normal hover:text-white/90 transition-colors pointer-events-auto"
             >
               {nb.name}
             </Link>
