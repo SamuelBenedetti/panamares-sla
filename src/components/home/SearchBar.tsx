@@ -15,21 +15,21 @@ export default function SearchBar() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-[900px]">
-      <div className="flex items-center justify-between border border-white px-[21px] py-[15px] w-full backdrop-blur-md bg-white/10">
+    <form onSubmit={handleSubmit} className="w-full">
+      <div className="flex items-center justify-between border border-white px-[18px] py-[12px] w-full backdrop-blur-md bg-white/10">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Suite ejecutiva con vista a la bahía..."
-          className="flex-1 bg-transparent text-white placeholder:text-[rgba(255,255,255,0.5)] font-body font-semibold text-[20px] focus:outline-none"
+          className="flex-1 bg-transparent text-white placeholder:text-[rgba(255,255,255,0.5)] font-body font-semibold text-[15px] focus:outline-none"
         />
         <button
           type="submit"
           aria-label="Buscar"
-          className="ml-[21px] flex-shrink-0 hover:opacity-70 transition-opacity"
+          className="ml-[16px] flex-shrink-0 hover:opacity-70 transition-opacity"
         >
-          <Search size={30} className="text-white" />
+          <Search size={20} className="text-white" />
         </button>
       </div>
     </form>
