@@ -32,7 +32,7 @@ export const NEIGHBORHOODS: NeighborhoodConfig[] = [
   { slug: "panama",          name: "Panamá",          priority: "LOW" },
 ];
 
-/** Local images for each neighborhood slug — single source of truth */
+/** Card images for homepage neighborhood cards */
 export const NEIGHBORHOOD_IMAGES: Record<string, string> = {
   "punta-pacifica":  "/card-punta-pacifica.png",
   "punta-paitilla":  "/card-punta-paitilla.png",
@@ -59,6 +59,14 @@ export const NEIGHBORHOOD_IMAGES: Record<string, string> = {
   "versalles":       "/card-versalles.png",
   "rio-mar":         "/card-rio-mar.png",
   "panama":          "/hero-bg.jpg",
+};
+
+/** Hero/slider images for barrios pages */
+export const NEIGHBORHOOD_HERO_IMAGES: Record<string, string> = {
+  "punta-pacifica": "/hero-punta-pacifica.png",
+  "punta-paitilla": "/hero-punta-paitilla.png",
+  "avenida-balboa": "/hero-avenida-balboa.png",
+  "costa-del-este": "/hero-costa-del-este.png",
 };
 
 export function getNeighborhoodBySlug(

@@ -13,7 +13,7 @@ const SHORTCUTS = [
 
 export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record<string, number> }) {
   return (
-    <section className="bg-white py-[80px] px-[30px] xl:px-[60px] 2xl:px-[160px]">
+    <section className="bg-white py-[80px] md:pt-[32px] md:pb-[80px] xl:pt-[80px] px-[30px] xl:px-[60px] 2xl:px-[160px]">
       <div className="flex flex-col gap-8 max-w-[1440px] mx-auto">
 
         <div className="flex flex-col gap-2 items-center text-center">

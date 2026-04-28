@@ -204,7 +204,7 @@ export default async function AgentProfilePage({ params }: Props) {
               </div>
 
               {listingCount > 0 ? (
-                <PropertyGrid properties={agent.properties!} />
+                <PropertyGrid properties={agent.properties!} cols={4} gap="tight" />
               ) : (
                 <div className="border border-[#dfe5ef] bg-white py-[60px] flex flex-col items-center gap-[12px]">
                   <p className="font-body text-[15px] text-[#5a6478]">

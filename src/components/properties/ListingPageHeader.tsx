@@ -15,7 +15,7 @@ interface Props {
   count?: number;
 }
 
-export default function ListingPageHeader({ breadcrumbs, title, description, subtitle, eyebrow, count }: Props) {
+export default function ListingPageHeader({ breadcrumbs, title, description, subtitle, eyebrow }: Props) {
   return (
     <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
       <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
@@ -41,7 +41,7 @@ export default function ListingPageHeader({ breadcrumbs, title, description, sub
           ))}
         </nav>
 
-        {/* H1 + contador */}
+        {/* H1 */}
         <div className="flex flex-col gap-[8px]">
           {eyebrow && (
             <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
@@ -51,12 +51,6 @@ export default function ListingPageHeader({ breadcrumbs, title, description, sub
           <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] 2xl:text-[52px] text-[#0c1834] leading-none tracking-[-1.8px] max-w-[850px]">
             {title}
           </h1>
-          {count != null && (
-            <p className="font-body text-[14px] text-[#5a6478] leading-none">
-              <span className="font-semibold text-[#0c1834]">{count}</span>{" "}
-              {title.toLowerCase()} disponibles
-            </p>
-          )}
         </div>
 
         {/* Subtítulo fijo (sin collapsible) */}
@@ -64,6 +58,7 @@ export default function ListingPageHeader({ breadcrumbs, title, description, sub
 
         {/* SEO block — visible en desktop, colapsable en móvil */}
         {description && <SeoBlockCollapsible text={description} />}
+
 
       </div>
     </section>

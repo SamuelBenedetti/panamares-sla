@@ -157,20 +157,21 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
       ? "bg-[#0c1834]/95 backdrop-blur-[10px] shadow-lg"
       : "bg-white backdrop-blur-[10px] border-b border-[#dfdfdf] shadow-[0px_1px_2px_rgba(0,0,0,0.05)]";
 
+  const effectiveHeaderClass = open ? "bg-[#0c1834] backdrop-blur-[10px]" : headerClass;
+
   const logoColor = isLight ? "text-[#0c1834]" : "text-white";
+  const effectiveLogoColor = open ? "text-white" : logoColor;
   const linkColor = isLight ? "text-[#0c1834] hover:text-[#0c1834]/60" : "text-[#faf8f5] hover:text-white/70";
-  const mobileMenuBg = isLight ? "bg-white" : "bg-[#0c1834]";
-  const mobileLinkColor = isLight ? "text-[#0c1834]" : "text-[#faf8f5]";
-  const mobileSubLinkColor = isLight ? "text-[#5a6478]" : "text-[#faf8f5]/60";
   const toggleColor = isLight ? "text-[#0c1834]" : "text-white";
+  const effectiveToggleColor = open ? "text-white" : toggleColor;
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 xl:px-[60px] 2xl:px-[160px] ${headerClass}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 xl:px-[60px] 2xl:px-[160px] ${effectiveHeaderClass}`}>
       <nav className="flex h-[80px] items-center max-w-[1440px] mx-auto">
 
         {/* Logo */}
         <div className="flex-1">
-          <Link href="/" className={`font-heading font-medium text-[26px] md:text-[30px] uppercase tracking-[2.4px] ${logoColor}`}>
+          <Link href="/" className={`font-heading font-medium text-[26px] md:text-[30px] uppercase tracking-[2.4px] ${effectiveLogoColor}`}>
             Panamares
           </Link>
         </div>
@@ -232,7 +233,7 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
 
         {/* Mobile toggle */}
         <button
-          className={`lg:hidden p-1 relative w-8 h-8 flex items-center justify-center ml-auto ${toggleColor}`}
+          className={`lg:hidden p-1 relative w-8 h-8 flex items-center justify-center ml-auto ${effectiveToggleColor}`}
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -246,16 +247,16 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
       </nav>
 
       {/* Mobile menu */}
-      <div className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${open ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}>
-        <div className={`${mobileMenuBg} border-t ${isLight ? "border-[#E9E7E2]" : "border-white/10"} px-6 pb-6`}>
+      <div className={`lg:hidden transition-all duration-300 ease-in-out ${open ? "max-h-[calc(100dvh-80px)] opacity-100" : "max-h-0 overflow-hidden opacity-0"}`}>
+        <div className="bg-[#0c1834] border-t border-white/10 px-6 pb-6 overflow-y-auto max-h-[calc(100dvh-80px)]">
           <ul className="flex flex-col pt-4">
             {NAV_ITEMS.map((item) => (
-              <li key={item.href} className={`border-b ${isLight ? "border-[#E9E7E2]" : "border-white/10"}`}>
+              <li key={item.href} className="border-b border-white/10">
                 {item.dropdown ? (
                   <>
                     <button
                       onClick={() => setMobileExpanded(mobileExpanded === item.label ? null : item.label)}
-                      className={`w-full flex items-center justify-between py-3.5 text-base font-medium font-body uppercase tracking-[0.35px] ${mobileLinkColor}`}
+                      className="w-full flex items-center justify-between py-3.5 text-base font-medium font-body uppercase tracking-[0.35px] text-[#faf8f5]"
                     >
                       {item.label}
                       <ChevronDown
@@ -270,7 +271,7 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
                             key={sub.href}
                             href={sub.href}
                             onClick={() => setOpen(false)}
-                            className={`py-2 font-body text-[15px] ${mobileSubLinkColor} hover:opacity-100 transition-opacity`}
+                            className="py-2 font-body text-[15px] text-[#faf8f5]/60 hover:opacity-100 transition-opacity"
                           >
                             {sub.label}
                           </Link>
@@ -282,7 +283,7 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={`block py-3.5 text-base font-medium font-body uppercase tracking-[0.35px] ${mobileLinkColor}`}
+                    className="block py-3.5 text-base font-medium font-body uppercase tracking-[0.35px] text-[#faf8f5]"
                   >
                     {item.label}
                   </Link>

@@ -33,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PropiedadesEnAlquilerPage({
   searchParams = {},
 }: {
-  searchParams?: { buscar?: string; habitaciones?: string; minPrice?: string; maxPrice?: string };
+  searchParams?: { buscar?: string; habitaciones?: string; minPrice?: string; maxPrice?: string; categoria?: string };
 }) {
   const properties = await sanityFetch<Property[]>(propertiesByIntentQuery, {
     businessType: "alquiler",
@@ -80,6 +80,7 @@ export default async function PropiedadesEnAlquilerPage({
         initialBedrooms={searchParams.habitaciones ? Number(searchParams.habitaciones) : 0}
         initialMinPrice={searchParams.minPrice ?? ""}
         initialMaxPrice={searchParams.maxPrice ?? ""}
+        initialCategoria={searchParams.categoria ?? ""}
       />
       <CTA />
     </>

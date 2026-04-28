@@ -13,12 +13,12 @@ export default function SeoBlockCollapsible({ text, className = "" }: Props) {
   return (
     <div className={`max-w-[600px] xl:max-w-[850px] ${className}`}>
       {/* Desktop: always fully visible */}
-      <p className="hidden md:block font-body text-[16px] text-[#0c1834] leading-[1.55] tracking-[-0.32px]">
+      <p className="hidden md:block font-body text-[14px] text-[#5a6478] leading-[1.6] tracking-[-0.2px]">
         {text}
       </p>
       {/* Mobile: collapsible */}
       <div className="md:hidden">
-        <p className={`font-body text-[15px] text-[#0c1834] leading-[1.55] tracking-[-0.32px] ${expanded ? "" : "line-clamp-3"}`}>
+        <p className={`font-body text-[14px] text-[#5a6478] leading-[1.6] tracking-[-0.2px] ${expanded ? "" : "line-clamp-3"}`}>
           {text}
         </p>
         <button

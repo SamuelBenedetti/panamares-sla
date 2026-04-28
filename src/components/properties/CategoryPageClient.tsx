@@ -19,6 +19,12 @@ interface NeighborhoodLink {
   categorySlug: string;
 }
 
+const CATEGORIA_TYPES: Record<string, string[]> = {
+  residencial: ["apartamento", "casa", "penthouse", "casa de playa"],
+  comercial:   ["oficina", "local"],
+  otro:        ["terreno"],
+};
+
 interface Props {
   properties: Property[];
   categorySlug: string;
@@ -31,6 +37,7 @@ interface Props {
   initialBedrooms?: number;
   initialMinPrice?: string;
   initialMaxPrice?: string;
+  initialCategoria?: string;
 }
 
 interface Filters {
@@ -42,6 +49,7 @@ interface Filters {
   bathrooms: number;
   propertyType: string;
   neighborhoodFilter: string;
+  categoria: string;
 }
 
 type SortOption = "relevancia" | "precio-asc" | "precio-desc" | "area-desc" | "recientes";
@@ -55,6 +63,7 @@ const INIT_FILTERS: Filters = {
   bathrooms: 0,
   propertyType: "",
   neighborhoodFilter: "",
+  categoria: "",
 };
 
 const PRICE_MIN = 0;
@@ -129,20 +138,29 @@ function DualRangeSlider({ min, max, valueMin, valueMax, onChange, onActiveHandl
 }
 
 // ── Stepper ────────────────────────────────────────────────────────────────────
+const STEPPER_MAX = 4;
+
 function Stepper({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
+  const display = value === 0 ? "Todos" : value >= STEPPER_MAX ? "4+" : `${value}`;
   return (
     <div className="flex flex-col gap-[8px] flex-1">
       <p className="font-body text-[13px] text-[#5a6478]">{label}</p>
       <div className="bg-[#f9f9f9] border border-[#e6e6e6] flex items-center justify-between px-[10px] py-[9px] w-full">
         <button type="button" onClick={() => onChange(Math.max(0, value - 1))} className="font-body text-[14px] text-[rgba(12,25,53,0.3)] hover:text-[#0c1935] transition-colors leading-none">-</button>
-        <span className="font-body text-[13px] text-[#0c1935] leading-5">{value === 0 ? "Todos" : `${value}+`}</span>
-        <button type="button" onClick={() => onChange(value + 1)} className="font-body text-[14px] text-[rgba(12,25,53,0.3)] hover:text-[#0c1935] transition-colors leading-none">+</button>
+        <span className="font-body text-[13px] text-[#0c1935] leading-5">{display}</span>
+        <button type="button" onClick={() => onChange(Math.min(STEPPER_MAX, value + 1))} className="font-body text-[14px] text-[rgba(12,25,53,0.3)] hover:text-[#0c1935] transition-colors leading-none">+</button>
       </div>
     </div>
   );
 }
 
 // ── FilterPanel (Figma-matched) ────────────────────────────────────────────────
+const CATEGORIA_LABELS: Record<string, string> = {
+  residencial: "Residencial",
+  comercial:   "Comercial",
+  otro:        "Otro",
+};
+
 function FilterPanel({
   filters, setFilters, onReset, hasActive, businessType, propertyTypes, neighborhoodSlug, neighborhoodLinks,
 }: {
@@ -296,21 +314,21 @@ function FilterPanel({
 
       {/* ── 6. Ver más — Habitaciones + Baños ── */}
       <div className="flex flex-col gap-[15px] w-full">
-        <button
-          type="button"
-          onClick={() => setShowMore((v) => !v)}
-          className="flex items-center justify-center gap-[8px] w-full h-[40px] border border-[#e6e6e6] font-body text-[14px] text-[#0c1935] hover:border-[#0c1935] transition-colors"
-        >
-          <ChevronDown size={14} className={`transition-transform duration-200 ${showMore ? "rotate-180" : ""}`} />
-          Ver más
-        </button>
-
         {showMore && (
           <div className="flex gap-[15px]">
             <Stepper label="Habitaciones" value={filters.bedrooms} onChange={(v) => set("bedrooms", v)} />
             <Stepper label="Baños" value={filters.bathrooms} onChange={(v) => set("bathrooms", v)} />
           </div>
         )}
+
+        <button
+          type="button"
+          onClick={() => setShowMore((v) => !v)}
+          className="flex items-center justify-center gap-[8px] w-full h-[40px] border border-[#e6e6e6] font-body text-[14px] text-[#0c1935] hover:border-[#0c1935] transition-colors"
+        >
+          <ChevronDown size={14} className={`transition-transform duration-200 ${showMore ? "rotate-180" : ""}`} />
+          {showMore ? "Cerrar" : "Ver más"}
+        </button>
       </div>
 
       {/* ── 7. Limpiar (solo si hay filtros activos) ── */}
@@ -332,7 +350,7 @@ function normalize(s: string) {
 // ── Main export ────────────────────────────────────────────────────────────────
 export default function CategoryPageClient({
   properties, categorySlug, neighborhoodLinks, neighborhoodSlug, contextBlock, mapProps,
-  initialSearch = "", initialBedrooms = 0, initialMinPrice = "", initialMaxPrice = "",
+  initialSearch = "", initialBedrooms = 0, initialMinPrice = "", initialMaxPrice = "", initialCategoria = "",
 }: Props) {
   const businessType: "venta" | "alquiler" = categorySlug.includes("alquiler") ? "alquiler" : "venta";
 
@@ -348,6 +366,7 @@ export default function CategoryPageClient({
     bedrooms: initialBedrooms,
     minPrice: initialMinPrice,
     maxPrice: initialMaxPrice,
+    categoria: initialCategoria,
   });
 
   const [search, setSearch] = useState(initialSearch);
@@ -360,7 +379,8 @@ export default function CategoryPageClient({
     filters.minPrice !== "" || filters.maxPrice !== "" ||
     filters.minArea !== "" || filters.maxArea !== "" ||
     filters.bedrooms > 0 || filters.bathrooms > 0 ||
-    filters.propertyType !== "" || filters.neighborhoodFilter !== "";
+    filters.propertyType !== "" || filters.neighborhoodFilter !== "" ||
+    filters.categoria !== "";
 
   function reset() {
     startTransition(() => { setFilters(INIT_FILTERS); setSearch(""); setVisible(PAGE_SIZE); });
@@ -381,6 +401,10 @@ export default function CategoryPageClient({
       );
     }
 
+    if (filters.categoria && CATEGORIA_TYPES[filters.categoria] && !filters.propertyType) {
+      const allowed = CATEGORIA_TYPES[filters.categoria];
+      result = result.filter((p) => allowed.includes(p.propertyType ?? ""));
+    }
     if (filters.propertyType) result = result.filter((p) => p.propertyType === filters.propertyType);
     if (filters.minPrice) result = result.filter((p) => p.price >= Number(filters.minPrice));
     if (filters.maxPrice) result = result.filter((p) => p.price <= Number(filters.maxPrice));
@@ -414,7 +438,7 @@ export default function CategoryPageClient({
       <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] mb-[20px]">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-[12px]">
 
-          {/* Left: mobile filter trigger + search context */}
+          {/* Left: mobile filter trigger + count tag + search context */}
           <div className="flex items-center gap-[10px]">
             {/* Mobile filter button — hidden on desktop */}
             <button
@@ -426,19 +450,11 @@ export default function CategoryPageClient({
               {hasActive && <span className="w-[6px] h-[6px] rounded-full bg-[#d4a435]" />}
             </button>
 
-            {/* Search context — solo visible si hay búsqueda activa */}
-            {search && (
-              <span className="flex items-center gap-[6px] font-body text-[13px] text-[#5a6478]">
-                Resultados para <span className="font-semibold text-[#0c1834]">&quot;{search}&quot;</span>
-                <button
-                  onClick={() => setSearch("")}
-                  className="text-[#5a6478] hover:text-[#0c1834] transition-colors"
-                  aria-label="Borrar búsqueda"
-                >
-                  <X size={11} />
-                </button>
-              </span>
-            )}
+            {/* Count tag */}
+            <div className="hidden lg:flex items-center bg-white border border-[#dfe5ef] px-[14px] py-[8px] font-body text-[13px] text-[#0c1834]">
+              <span className="font-semibold">{filtered.length}</span>&nbsp;propiedades disponibles
+            </div>
+
           </div>
 
           {/* Sort */}

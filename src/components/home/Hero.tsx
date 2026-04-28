@@ -3,8 +3,8 @@ import SearchBar from "./SearchBar";
 
 export default function Hero() {
   return (
-    <section className="relative flex items-center justify-center min-h-screen bg-brand-navy overflow-hidden -mt-20 px-[30px] xl:px-[60px] 2xl:px-[160px]">
-      {/* Background image — next/image with priority for LCP */}
+    <section className="relative flex items-center justify-center min-h-screen md:min-h-[75vh] xl:min-h-screen bg-brand-navy overflow-hidden -mt-20 px-[24px] xl:px-[60px] 2xl:px-[160px]">
+      {/* Background image — next only priority for LCP */}
       <Image
         src="/hero-bg.jpg"
         alt="Ciudad de Panamá — Panamares inmobiliaria de lujo"
@@ -20,21 +20,21 @@ export default function Hero() {
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[rgba(13,24,53,0.85)] to-transparent pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-4 w-full max-w-[1440px] mx-auto text-center">
+      <div className="relative z-10 flex flex-col items-center gap-[20px] w-full max-w-[1440px] mx-auto text-center">
 
         {/* Eyebrow */}
-        <p className="text-white text-[11px] font-medium uppercase tracking-[5px] font-body">
-          Ciudad de Panamá · Propiedades de Lujo
+        <p className="text-white text-[12px] font-medium uppercase tracking-[5px] font-body leading-[20px]">
+          Ciudad de Panamá &amp;<br />Propiedades de Lujo
         </p>
 
         {/* Heading */}
-        <h1 className="flex flex-col items-center gap-1 font-heading font-light text-white text-[clamp(52px,6vw,78px)] 2xl:text-[68px] leading-[1] tracking-[-0.03em]">
+        <h1 className="flex flex-col items-center gap-[5px] font-heading font-light text-white text-[68px] xl:text-[clamp(52px,6vw,78px)] 2xl:text-[68px] leading-[0.875] xl:leading-[1] tracking-[-2.4px] xl:tracking-[-0.03em]">
           <span className="not-italic">Bienes Raíces</span>
           <span className="italic">en Panama</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="font-body text-white text-sm md:text-[15px] pb-[16px]">
+        <p className="font-body text-white text-[16px] px-[50px] xl:px-0 pt-[4px] pb-[30px] xl:pb-[16px]">
           Propiedades exclusivas en{" "}
           <strong className="font-bold">las mejores zonas de la ciudad.</strong>
         </p>

@@ -6,31 +6,27 @@ import { useRouter, useSearchParams } from "next/navigation";
 const STEPS = [
   {
     paso: "01",
-    heading: ["¿Qué tipo de propiedad", "se ajusta a sus necesidades?"],
-    italic: [false, true],
-    options: ["Residencial", "Comercial", "Otro"],
-    key: "tipo",
+    heading: ["¿Qué estás", "buscando?"],
+    key: "intencion",
+    options: ["Comprar", "Alquilar"],
   },
   {
     paso: "02",
-    heading: ["¿Qué estás", "buscando?"],
-    italic: [false, true],
-    options: ["Comprar – Uso personal", "Comprar – Inversión", "Comprar – Ambos", "Alquilar"],
-    key: "intencion",
+    heading: ["¿Qué tipo de", "propiedad?"],
+    key: "tipo",
+    options: ["Residencial", "Comercial", "Terreno"],
   },
   {
     paso: "03",
-    heading: ["¿Cuánto espacio", "necesitas?"],
-    italic: [false, true],
-    options: ["1 habitación", "2 habitaciones", "3 habitaciones", "4+ habitaciones"],
+    heading: ["¿Cuántas", "habitaciones?"],
     key: "habitaciones",
+    options: ["1 habitación", "2 habitaciones", "3 habitaciones", "4+ habitaciones"],
   },
   {
     paso: "04",
-    heading: ["¿Cuál es su", "presupuesto estimado?"],
-    italic: [false, true],
-    options: ["- $200k", "$200k – $500k", "$500k – $1M", "$1M+", "Flexible"],
+    heading: ["¿Cuál es su", "presupuesto?"],
     key: "presupuesto",
+    options: [] as string[], // dynamic based on intencion
   },
 ] as const;
 
@@ -44,29 +40,49 @@ const BEDS_MAP: Record<string, string> = {
   "4+ habitaciones": "4",
 };
 
-const PRICE_MAP: Record<string, { min?: string; max?: string }> = {
-  "- $200k": { max: "200000" },
-  "$200k – $500k": { min: "200000", max: "500000" },
-  "$500k – $1M": { min: "500000", max: "1000000" },
-  "$1M+": { min: "1000000" },
+const PRICE_MAP_COMPRA: Record<string, { min?: string; max?: string }> = {
+  "Menos de $150k":    { max: "150000" },
+  "$150k – $350k":     { min: "150000", max: "350000" },
+  "$350k – $700k":     { min: "350000", max: "700000" },
+  "$700k – $1.5M":     { min: "700000", max: "1500000" },
+  "Más de $1.5M":      { min: "1500000" },
+  "Flexible":          {},
 };
 
+const PRICE_MAP_ALQUILER: Record<string, { min?: string; max?: string }> = {
+  "Menos de $800/mes":       { max: "800" },
+  "$800 – $1,500/mes":       { min: "800",  max: "1500" },
+  "$1,500 – $3,000/mes":     { min: "1500", max: "3000" },
+  "$3,000 – $6,000/mes":     { min: "3000", max: "6000" },
+  "Más de $6,000/mes":       { min: "6000" },
+  "Flexible":                {},
+};
+
+const TIPO_MAP: Record<string, string> = {
+  "Residencial": "residencial",
+  "Comercial":   "comercial",
+  "Terreno":     "otro",
+};
+
+// Comercial y Terreno no tienen habitaciones — saltar paso 3
+const SKIP_BEDS = new Set(["Comercial", "Terreno"]);
+
 function buildUrl(answers: Answers, originalQuery?: string): string {
-  const base =
-    answers.intencion === "Alquilar"
-      ? "/propiedades-en-alquiler/"
-      : "/propiedades-en-venta/";
+  const isAlquiler = answers.intencion === "Alquilar";
+  const base = isAlquiler ? "/propiedades-en-alquiler/" : "/propiedades-en-venta/";
 
   const params = new URLSearchParams();
 
-  if (originalQuery) {
-    params.set("buscar", originalQuery);
-  }
+  if (originalQuery) params.set("buscar", originalQuery);
+
+  const categoria = answers.tipo ? TIPO_MAP[answers.tipo] : undefined;
+  if (categoria) params.set("categoria", categoria);
 
   const beds = answers.habitaciones ? BEDS_MAP[answers.habitaciones] : undefined;
   if (beds) params.set("habitaciones", beds);
 
-  const range = answers.presupuesto ? PRICE_MAP[answers.presupuesto] : undefined;
+  const priceMap = isAlquiler ? PRICE_MAP_ALQUILER : PRICE_MAP_COMPRA;
+  const range = answers.presupuesto ? priceMap[answers.presupuesto] : undefined;
   if (range?.min) params.set("minPrice", range.min);
   if (range?.max) params.set("maxPrice", range.max);
 
@@ -100,7 +116,11 @@ function BuscarContent() {
     if (isLast) {
       router.push(buildUrl(next, originalQuery));
     } else {
-      transition(() => setStep((s) => s + 1));
+      // Skip habitaciones step if tipo is Comercial or Otro
+      const nextStep = step + 1;
+      const shouldSkipBeds =
+        STEPS[nextStep]?.key === "habitaciones" && SKIP_BEDS.has(next.tipo ?? "");
+      transition(() => setStep((s) => s + (shouldSkipBeds ? 2 : 1)));
     }
   }
 
@@ -116,7 +136,10 @@ function BuscarContent() {
     if (isLast) {
       router.push(buildUrl(answers, originalQuery));
     } else {
-      transition(() => setStep((s) => s + 1));
+      const nextStep = step + 1;
+      const shouldSkipBeds =
+        STEPS[nextStep]?.key === "habitaciones" && SKIP_BEDS.has(answers.tipo ?? "");
+      transition(() => setStep((s) => s + (shouldSkipBeds ? 2 : 1)));
     }
   }
 
