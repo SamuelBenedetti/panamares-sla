@@ -13,8 +13,8 @@
  *
  * WASI is READ-ONLY here. This script only calls GET endpoints.
  * It writes exclusively to Sanity (createIfNotExists + patch).
- * Manual fields in Sanity (featured, recommended, fairPrice, rented)
- * are never overwritten after the initial creation.
+ * featured is synced from WASI id_status_on_page === 3 ("Outstanding") on every run.
+ * Manual fields in Sanity (recommended, fairPrice, rented) are never overwritten.
  * Agent is sourced from WASI id_user and updated automatically on every sync.
  */
 
@@ -677,6 +677,7 @@ async function buildWasiFields(prop) {
     businessType,
     propertyType,
     listingStatus,
+    featured: Number(prop.id_status_on_page) === 3,
     rented: mapRented(prop),
     price,
     zone:     zone || "Panamá",
@@ -828,13 +829,12 @@ async function main() {
         await sanity.createIfNotExists({
           _id,
           _type:       "property",
-          featured:    false,
           recommended: false,
           fairPrice:   false,
           rented:      false,
         });
-        // Patch WASI-sourced fields (includes rented, which mirrors WASI id_availability=3)
-        // Never touches featured/recommended/fairPrice/agent
+        // Patch WASI-sourced fields (includes featured from id_status_on_page, rented from id_availability)
+        // Never touches recommended/fairPrice
         await sanity.patch(_id).set(fields).commit();
       }
 
