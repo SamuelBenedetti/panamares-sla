@@ -133,7 +133,10 @@ function BuscarContent() {
     if (step === 0) {
       router.push("/");
     } else {
-      transition(() => setStep((s) => s - 1));
+      const prevStep = step - 1;
+      const shouldSkipBeds =
+        STEPS[prevStep]?.key === "habitaciones" && SKIP_BEDS.has(answers.tipo ?? "");
+      transition(() => setStep((s) => s - (shouldSkipBeds ? 2 : 1)));
     }
   }
 
