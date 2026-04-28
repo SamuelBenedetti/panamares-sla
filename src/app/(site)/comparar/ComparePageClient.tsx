@@ -219,7 +219,6 @@ export default function ComparePageClient({ properties }: Props) {
         </div>
 
       </div>
-        </div>
       </div>
     </>
   );
