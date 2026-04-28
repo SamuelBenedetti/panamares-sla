@@ -123,6 +123,8 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isBuscar = pathname.startsWith("/buscar");
+  const isBarrioSlug = pathname.startsWith("/barrios/") && pathname !== "/barrios/";
+  const isTransparentTop = isHome || isBarrioSlug;
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -145,9 +147,9 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
 
   // /buscar siempre muestra el navbar oscuro (no hay scroll)
   const effectiveScrolled = scrolled || isBuscar;
-  const isLight = !isHome && !isBuscar && !scrolled;
+  const isLight = !isTransparentTop && !isBuscar && !scrolled;
 
-  const headerClass = isHome
+  const headerClass = isTransparentTop
     ? effectiveScrolled
       ? "bg-[#0c1834]/95 backdrop-blur-[10px] shadow-lg"
       : "bg-white/5 backdrop-blur-[10px]"

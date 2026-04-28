@@ -71,6 +71,18 @@ export const CATEGORIES: CategoryConfig[] = [
       "Los penthouses en venta en Panama City representan lo más exclusivo del mercado inmobiliario panameño. Panamares cuenta con una selección curada en Punta Pacífica, Punta Paitilla y Avenida Balboa, con vistas panorámicas al océano Pacífico, terrazas privadas y acabados de primera línea. Cada propiedad incluye información completa de precio, metros cuadrados de terraza, habitaciones y amenidades del edificio. Los penthouses más cotizados de la ciudad ofrecen doble altura, piscinas privadas y acceso exclusivo desde el ascensor. Habla con nuestros agentes especializados en propiedades de lujo para recibir asesoramiento personalizado y acceder a las mejores oportunidades del mercado.",
   },
   {
+    slug: "penthouses-en-alquiler",
+    propertyType: "penthouse",
+    businessType: "alquiler",
+    h1: "Penthouses en Alquiler en Panama",
+    metaTitle: "Penthouses en Alquiler en Panama City",
+    metaDescription:
+      "Penthouses de lujo en alquiler en Panama City. Vistas panorámicas, acabados premium en Punta Pacífica y Punta Paitilla.",
+    primaryKeyword: "penthouse en alquiler Panama City",
+    seoBlock:
+      "Alquila un penthouse de lujo en Panama City con Panamares. Contamos con una selección exclusiva en Punta Pacífica, Punta Paitilla y Avenida Balboa, con vistas panorámicas al océano Pacífico, terrazas privadas y acabados de primera línea. Ideales para ejecutivos, diplomáticos y familias que buscan lo mejor de la vida en Panamá sin el compromiso de compra. Nuestros penthouses en alquiler incluyen opciones amuebladas, acceso exclusivo desde el ascensor y amenidades premium del edificio. Nuestros agentes especializados en propiedades de lujo te acompañan para encontrar el penthouse perfecto según tus requerimientos y presupuesto.",
+  },
+  {
     slug: "apartaestudios-en-venta",
     propertyType: "apartaestudio",
     businessType: "venta",
@@ -141,6 +153,30 @@ export const CATEGORIES: CategoryConfig[] = [
     primaryKeyword: "terrenos en venta Panama",
     seoBlock:
       "Encuentra terrenos en venta en Panama para tu próximo proyecto residencial o comercial con Panamares. Ofrecemos lotes en Panama City, Panamá Oeste, La Chorrera y provincia, con acceso a servicios básicos y vías principales de comunicación. Cada terreno incluye información de área en m², zonificación permitida, topografía y precio por metro cuadrado. Ideal para constructoras, desarrolladoras e inversores privados que buscan oportunidades de desarrollo en un mercado con alta valorización. También disponemos de terrenos con planos aprobados listos para construir. Nuestros agentes te acompañan en el análisis y la negociación de cada oportunidad.",
+  },
+  {
+    slug: "terrenos-en-alquiler",
+    propertyType: "terreno",
+    businessType: "alquiler",
+    h1: "Terrenos en Alquiler en Panama",
+    metaTitle: "Terrenos en Alquiler en Panama",
+    metaDescription:
+      "Terrenos en alquiler en Panama City y provincia. Para uso comercial, industrial o agrícola.",
+    primaryKeyword: "terrenos en alquiler Panama",
+    seoBlock:
+      "Encuentra terrenos en alquiler en Panama para tu proyecto comercial, industrial o agropecuario con Panamares. Ofrecemos lotes en Panama City, Panamá Oeste y provincia, con acceso a vías principales y servicios básicos. Cada terreno incluye información de área en m², zonificación permitida y precio mensual. Ideal para empresas que necesitan espacio temporal para operaciones, almacenaje o desarrollo de proyectos sin invertir en compra. Nuestros agentes te orientan para encontrar el terreno en alquiler que mejor se adapta a las necesidades de tu negocio.",
+  },
+  {
+    slug: "casas-de-playa-en-alquiler",
+    propertyType: "casa de playa",
+    businessType: "alquiler",
+    h1: "Casas de Playa en Alquiler en Panama",
+    metaTitle: "Casas de Playa en Alquiler en Panama",
+    metaDescription:
+      "Casas de playa en alquiler en Panama. Propiedades en Coclé, Farallón y las mejores costas panameñas.",
+    primaryKeyword: "casas de playa en alquiler Panama",
+    seoBlock:
+      "Alquila una casa de playa en Panama con Panamares. Propiedades frente al mar en Farallón, Coronado, Santa Clara y las mejores playas de Coclé, a menos de dos horas de Panama City. Desde cabañas privadas hasta villas con piscina y acceso directo a la playa. Ideal para vacaciones, fines de semana o estancias temporales en uno de los destinos costeros más cotizados de Centroamérica. También disponemos de opciones para alquiler turístico de corta estancia. Nuestros agentes conocen cada comunidad costera para ayudarte a encontrar la casa de playa perfecta.",
   },
   {
     slug: "casas-de-playa-en-venta",

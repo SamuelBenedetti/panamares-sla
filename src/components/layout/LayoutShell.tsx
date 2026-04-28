@@ -26,11 +26,14 @@ export default function LayoutShell({ navCounts, footer, compareBar, children }:
   const isNoFooter = NO_FOOTER_ROUTES.some((r) => pathname.startsWith(r));
   const hideChrome = isFullscreen;
   const hideFooter = isFullscreen || isNoFooter;
+  const isTransparentTop =
+    pathname === "/" ||
+    (pathname.startsWith("/barrios/") && pathname !== "/barrios/");
 
   return (
     <>
       {!hideChrome && <Navbar navCounts={navCounts} />}
-      <main className={`min-h-screen ${hideChrome ? "" : "pt-20"}`}>{children}</main>
+      <main className={`min-h-screen ${hideChrome || isTransparentTop ? "" : "pt-20"}`}>{children}</main>
       {!hideFooter && footer}
       {!hideChrome && compareBar}
     </>

@@ -825,6 +825,10 @@ async function main() {
       const { _id, fields } = result;
 
       if (!DRY_RUN) {
+        // publishedAt from Wasi creation date (only set on first import, never overwritten)
+        const wasiDate = detail.created_at ?? detail.creation_date ?? detail.date_created ?? detail.publication_date ?? null;
+        const publishedAt = wasiDate ? new Date(wasiDate).toISOString() : new Date().toISOString();
+
         // Create with manual-field defaults if new
         await sanity.createIfNotExists({
           _id,
@@ -832,6 +836,7 @@ async function main() {
           recommended: false,
           fairPrice:   false,
           rented:      false,
+          publishedAt,
         });
         // Patch WASI-sourced fields (includes featured from id_status_on_page, rented from id_availability)
         // Never touches recommended/fairPrice
