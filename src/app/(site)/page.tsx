@@ -1,15 +1,14 @@
-﻿import { sanityFetch } from "@/sanity/lib/client";
-import { featuredPropertiesQuery, propertyTypeCountsQuery, neighborhoodCountsQuery } from "@/sanity/lib/queries";
-import type { Property } from "@/lib/types";
+﻿import type { Property } from "@/lib/types";
+import { sanityFetch } from "@/sanity/lib/client";
+import { featuredPropertiesQuery, neighborhoodCountsQuery, propertyTypeCountsQuery } from "@/sanity/lib/queries";
 import type { Metadata } from "next";
 
-import Hero from "@/components/home/Hero";
-import PropertyTypeShortcuts from "@/components/home/PropertyTypeShortcuts";
-import FeaturedProperties from "@/components/home/FeaturedProperties";
-import NeighborhoodCards from "@/components/home/NeighborhoodCards";
-import TrustStrip from "@/components/home/TrustStrip";
 import CTA from "@/components/home/CTA";
-import SeoBlock from "@/components/home/SeoBlock";
+import FeaturedProperties from "@/components/home/FeaturedProperties";
+import Hero from "@/components/home/Hero";
+import NeighborhoodCards from "@/components/home/NeighborhoodCards";
+import PropertyTypeShortcuts from "@/components/home/PropertyTypeShortcuts";
+import TrustStrip from "@/components/home/TrustStrip";
 import { BASE_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
