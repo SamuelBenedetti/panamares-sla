@@ -5,21 +5,29 @@
  */
 
 import { createClient } from "@sanity/client";
-import { readFileSync } from "fs";
 import { createRequire } from "module";
+import { config } from "dotenv";
+
+config({ path: ".env.local" });
 
 const require = createRequire(import.meta.url);
 const XLSX = require("xlsx");
 
 const DRY_RUN = process.argv.includes("--dry-run");
-const XLSX_PATH = "C:/Users/sbene/Downloads/PH GT.xlsx";
+const XLSX_PATH = process.argv.find(a => a.startsWith("--file="))?.split("=")[1] ?? "data.xlsx";
 const SHEET_NAME = "PANAMARES";
 
+const missing = ["NEXT_PUBLIC_SANITY_PROJECT_ID", "SANITY_WRITE_TOKEN"].filter(k => !process.env[k]);
+if (missing.length) {
+  console.error(`\n❌ Missing env vars: ${missing.join(", ")}`);
+  console.error("   Add them to .env.local and retry.\n");
+  process.exit(1);
+}
+
 const client = createClient({
-  projectId: "2hojajwk",
-  dataset: "production",
-  token:
-    "skY1C2gN11YJqcPWii0DlkWhjdHgmNHIvMpeKuf0ui99uSwlztfjYDCapFilYtAfAKfqeE9hGoCQI9Ju9xW1dZ3tclkrpcnEsOkckKxN6LSShpy5cD2xyXPGjBhLUkgiJwWA6DGDJqAXbCAY2BStgevDXDuS3bOlCUeeFB0IuptPGuhPUxdu",
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
+  token: process.env.SANITY_WRITE_TOKEN,
   apiVersion: "2023-01-01",
   useCdn: false,
 });
