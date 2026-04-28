@@ -405,8 +405,8 @@ export default function CategoryPageClient({
     if (filters.maxPrice) result = result.filter((p) => p.price <= Number(filters.maxPrice));
     if (filters.minArea) result = result.filter((p) => (p.area ?? 0) >= Number(filters.minArea));
     if (filters.maxArea) result = result.filter((p) => (p.area ?? 0) <= Number(filters.maxArea));
-    if (filters.bedrooms > 0) result = result.filter((p) => (p.bedrooms ?? 0) >= filters.bedrooms);
-    if (filters.bathrooms > 0) result = result.filter((p) => (p.bathrooms ?? 0) >= filters.bathrooms);
+    if (filters.bedrooms > 0) result = result.filter((p) => filters.bedrooms >= STEPPER_MAX ? (p.bedrooms ?? 0) >= filters.bedrooms : (p.bedrooms ?? 0) === filters.bedrooms);
+    if (filters.bathrooms > 0) result = result.filter((p) => filters.bathrooms >= STEPPER_MAX ? (p.bathrooms ?? 0) >= filters.bathrooms : (p.bathrooms ?? 0) === filters.bathrooms);
     if (filters.neighborhoodFilter) result = result.filter((p) => normalize(p.zone ?? "") === normalize(filters.neighborhoodFilter));
 
     if (sort === "precio-asc") result.sort((a, b) => a.price - b.price);
