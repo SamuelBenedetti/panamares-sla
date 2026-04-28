@@ -248,7 +248,7 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
 
       {/* Mobile menu */}
       <div className={`lg:hidden transition-all duration-300 ease-in-out ${open ? "max-h-[calc(100dvh-80px)] opacity-100" : "max-h-0 overflow-hidden opacity-0"}`}>
-        <div className="bg-[#0c1834] border-t border-white/10 px-6 pb-6 overflow-y-auto max-h-[calc(100dvh-80px)]">
+        <div className="bg-[#0c1834] border-t border-white/10  pb-6 overflow-y-auto max-h-[calc(100dvh-80px)]">
           <ul className="flex flex-col pt-4">
             {NAV_ITEMS.map((item) => (
               <li key={item.href} className="border-b border-white/10">
