@@ -38,21 +38,21 @@ export default function PropertyCard({ property, priority = false }: { property:
         {/* Tags — stack vertically top-left */}
         <div className="absolute top-[11px] left-[10px] flex flex-col gap-[4px]">
           {recommended && (
-            <div className="bg-blue-500 backdrop-blur-[2px] px-[10px] py-[4px]">
+            <div className="bg-[#8B00EE] backdrop-blur-[2px] px-[10px] py-[2px]">
               <span className="font-body font-semibold text-white text-[12px] uppercase leading-[16px]">
                 Recomendado
               </span>
             </div>
           )}
           {fairPrice && (
-            <div className="bg-[#00b424] backdrop-blur-[2px] px-[10px] py-[4px]">
+            <div className="bg-[#007ECC] backdrop-blur-[2px] px-[10px] py-[2px]">
               <span className="font-body font-semibold text-white text-[12px] uppercase leading-[16px]">
                 Precio Justo
               </span>
             </div>
           )}
           {rented && (
-            <div className="bg-[#e03131] backdrop-blur-[2px] px-[10px] py-[4px]">
+            <div className="bg-[#0D1835] backdrop-blur-[2px] px-[10px] py-[2px]">
               <span className="font-body font-semibold text-white text-[12px] uppercase leading-[16px]">
                 Alquilado
               </span>
@@ -62,11 +62,11 @@ export default function PropertyCard({ property, priority = false }: { property:
       </div>
 
       {/* Content */}
-      <div className="flex flex-col gap-[6px] p-[8px] md:p-[14px] flex-1">
+      <div className="flex flex-col gap-[6px] p-[8px] md:p-[11px] flex-1">
         {/* Title + description */}
         <div className="flex flex-col gap-[3px]">
           <Link href={`/propiedades/${slug?.current}`}>
-            <h3 className="font-body font-semibold text-[#0c1834] text-[14px] md:text-[17px] leading-tight tracking-[-0.2px] hover:opacity-70 transition-opacity line-clamp-2">
+            <h3 className="font-body font-semibold text-[#0c1834] text-[14px] md:text-[15px] leading-tight tracking-[-0.2px] hover:opacity-70 transition-opacity line-clamp-2">
               {title}
             </h3>
           </Link>
@@ -74,12 +74,12 @@ export default function PropertyCard({ property, priority = false }: { property:
             zoneSlug ? (
               <Link
                 href={`/barrios/${zoneSlug}/`}
-                className="font-body font-normal text-[#5a6478] text-[11px] md:text-[13px] leading-normal line-clamp-1 hover:text-[#0c1834] transition-colors"
+                className="font-body font-normal text-[#5a6478] text-[11px] md:text-[12px] leading-normal line-clamp-1 hover:text-[#0c1834] transition-colors"
               >
                 {zone}
               </Link>
             ) : (
-              <p className="font-body font-normal text-[#5a6478] text-[11px] md:text-[13px] leading-normal line-clamp-1">
+              <p className="font-body font-normal text-[#5a6478] text-[11px] md:text-[12px] leading-normal line-clamp-1">
                 {zone}
               </p>
             )
@@ -116,7 +116,7 @@ export default function PropertyCard({ property, priority = false }: { property:
         {/* Price */}
         <div className="flex flex-col gap-[4px] pt-[6px]">
           <Link href={`/propiedades/${slug?.current}`}>
-            <span className="font-body font-bold text-[#0c1834] text-[16px] md:text-[18px] leading-normal tracking-[-0.2px]">
+            <span className="font-body font-bold text-[#0c1834] text-[16px] md:text-[16px] leading-normal tracking-[-0.2px]">
               {formatPrice(price)}
             </span>
           </Link>

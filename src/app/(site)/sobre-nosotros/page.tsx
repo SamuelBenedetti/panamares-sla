@@ -54,19 +54,19 @@ export default async function SobreNosotrosPage() {
 
           {/* H1 */}
           <h1 className="flex flex-col gap-[3px] text-[#0c1834]">
-            <span className="font-heading font-normal text-[clamp(38px,5vw,60px)] leading-none tracking-[-1.8px]">
+            <span className="font-heading font-normal text-[clamp(32px,4.2vw,52px)] leading-none tracking-[-1.8px]">
               Más de 15 años
             </span>
-            <span className="font-heading font-medium italic text-[clamp(44px,6vw,70px)] leading-none tracking-[-2.1px]">
+            <span className="font-heading font-medium italic text-[clamp(38px,5.2vw,60px)] leading-none tracking-[-2.1px]">
               conectando sueños
             </span>
-            <span className="font-heading font-normal text-[clamp(38px,5vw,60px)] leading-none tracking-[-1.8px]">
+            <span className="font-heading font-normal text-[clamp(32px,4.2vw,52px)] leading-none tracking-[-1.8px]">
               con propiedades
             </span>
           </h1>
 
           {/* Body */}
-          <p className="font-body text-[#5a6478] text-[18px] xl:text-[20px] leading-relaxed max-w-[576px] pt-[11px]">
+          <p className="font-body text-[#5a6478] text-[16px] xl:text-[17px] leading-relaxed max-w-[576px] pt-[11px]">
             <span className="font-semibold">Panamares nació con una convicción: que el mercado inmobiliario de lujo en Panamá </span>
             <span className="font-light">merecía una representación diferente, más honesta, más elegante, más humana.</span>
           </p>
@@ -91,7 +91,7 @@ export default async function SobreNosotrosPage() {
               <p className="font-body font-normal text-[12px] text-white tracking-[5px] uppercase leading-4">
                 Nuestra oficina
               </p>
-              <p className="font-heading font-normal text-[30px] leading-[32px] tracking-[-0.9px] text-[#faf8f5]">
+              <p className="font-heading font-normal text-[30px] md:text-[25px] leading-[32px] md:leading-[28px] tracking-[-0.9px] text-[#faf8f5]">
                 Punta Pacífica,<br className="xl:hidden" />{" "}
                 <span>Ciudad de Panamá</span>
               </p>
@@ -111,7 +111,7 @@ export default async function SobreNosotrosPage() {
               { value: "98%",    label: "Clientes Satisfechos" },
             ].map(({ value, label }) => (
               <div key={label} className="flex flex-col gap-[10px] items-center">
-                <p className="font-heading font-medium text-[clamp(44px,4vw,60px)] text-white tracking-[-1.8px] leading-none">
+                <p className="font-heading font-medium text-[clamp(38px,3.5vw,52px)] text-white tracking-[-1.8px] leading-none">
                   {value}
                 </p>
                 <p className="font-body font-medium text-[13px] xl:text-[14px] text-white/50 uppercase tracking-wide whitespace-nowrap text-center">
@@ -130,7 +130,7 @@ export default async function SobreNosotrosPage() {
             <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
               Encuéntranos
             </p>
-            <h2 className="font-heading font-normal text-[clamp(28px,3vw,44px)] text-[#0c1834] tracking-[-1.2px] leading-none">
+            <h2 className="font-heading font-normal text-[clamp(24px,2.5vw,38px)] text-[#0c1834] tracking-[-1.2px] leading-none">
               Torre Oceánica, Piso 18 — Punta Pacífica
             </h2>
           </div>
@@ -163,8 +163,8 @@ export default async function SobreNosotrosPage() {
               {/* Left — heading + paragraphs, bottom-aligned with cards */}
               <div className="flex flex-col gap-[20px]">
                 <div className="flex flex-col text-[#0c1834]">
-                  <p className="font-heading font-normal text-[clamp(36px,4vw,60px)] leading-none tracking-[-1.8px]">Fundada sobre</p>
-                  <p className="font-heading font-medium italic text-[clamp(36px,4vw,60px)] leading-none tracking-[-1.8px]">la confianza</p>
+                  <p className="font-heading font-normal text-[clamp(30px,3.5vw,52px)] leading-none tracking-[-1.8px]">Fundada sobre</p>
+                  <p className="font-heading font-medium italic text-[clamp(30px,3.5vw,52px)] leading-none tracking-[-1.8px]">la confianza</p>
                 </div>
                 <div className="flex flex-col gap-[20px] pt-[8px]">
                   <p className="font-body font-medium text-[15px] xl:text-[17px] text-[#5a6478] leading-relaxed">
@@ -240,7 +240,7 @@ export default async function SobreNosotrosPage() {
             <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4 text-center">
               El equipo
             </p>
-            <p className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] tracking-[-1.8px] leading-none text-center">
+            <p className="font-heading font-normal text-[clamp(30px,3.5vw,52px)] text-[#0c1834] tracking-[-1.8px] leading-none text-center">
               Asesores de confianza
             </p>
           </div>
@@ -275,7 +275,7 @@ export default async function SobreNosotrosPage() {
                   )}
                   </div>
                   <div className="flex flex-col gap-[10px] items-center w-full">
-                    <p className="font-heading font-normal text-[30px] text-[#0d1835] tracking-[-0.9px] leading-7 text-center w-full">
+                    <p className="font-heading font-normal text-[30px] md:text-[25px] text-[#0d1835] tracking-[-0.9px] leading-7 text-center w-full">
                       {agent.name}
                     </p>
                     {agent.role && (
@@ -299,8 +299,8 @@ export default async function SobreNosotrosPage() {
           <div className="flex flex-col gap-[15px]">
             <Award size={52} strokeWidth={1} className="text-[#0c1834]" />
             <div className="flex flex-col text-[#0c1834] tracking-[-1.8px]">
-              <p className="font-heading font-normal text-[clamp(34px,4vw,60px)] leading-none">Reconocida como la</p>
-              <p className="font-heading font-medium italic text-[clamp(34px,4vw,60px)] leading-none">mejor firma inmobiliaria</p>
+              <p className="font-heading font-normal text-[clamp(28px,3.5vw,52px)] leading-none">Reconocida como la</p>
+              <p className="font-heading font-medium italic text-[clamp(28px,3.5vw,52px)] leading-none">mejor firma inmobiliaria</p>
             </div>
           </div>
 
@@ -348,7 +348,7 @@ export default async function SobreNosotrosPage() {
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4 text-center">
               ¿Tienes alguna consulta?
             </p>
-            <p className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-white tracking-[-1.8px] leading-none text-center">
+            <p className="font-heading font-normal text-[clamp(30px,3.5vw,52px)] text-white tracking-[-1.8px] leading-none text-center">
               Estamos para ayudarte
             </p>
           </div>

@@ -87,7 +87,7 @@ export default async function AgentesPage() {
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
               ¿Eres agente independiente?
             </p>
-            <h2 className="font-heading font-normal text-[clamp(32px,4vw,54px)] text-white tracking-[-1.6px] leading-none">
+            <h2 className="font-heading font-normal text-[clamp(28px,3.2vw,46px)] text-white tracking-[-1.6px] leading-none">
               Únete al equipo Panamares
             </h2>
             <p className="font-body font-light text-[15px] text-white/60 leading-relaxed max-w-[480px]">

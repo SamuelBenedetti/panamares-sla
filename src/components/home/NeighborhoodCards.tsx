@@ -53,10 +53,10 @@ export default function NeighborhoodCards({
 
         {/* Header — centered */}
         <div className="flex flex-col gap-2 items-center text-center">
-          <p className="font-body font-medium text-[#737b8c] text-[12px] uppercase tracking-[5px]">
+          <p className="font-body font-medium text-[#737b8c] text-[12px] md:text-[11px] uppercase tracking-[5px]">
             {eyebrow}
           </p>
-          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(32px,3vw,44px)] 2xl:text-[40px] tracking-[-1.8px] leading-none">
+          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(28px,2.5vw,36px)] 2xl:text-[34px] tracking-[-1.8px] leading-none">
             {heading}
           </h2>
         </div>
@@ -81,7 +81,7 @@ export default function NeighborhoodCards({
               <div className="absolute inset-0 bg-gradient-to-t from-[rgba(29,33,43,0.8)] via-[rgba(29,33,43,0.2)] to-[rgba(29,33,43,0)]" />
 
               <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-2">
-                <h3 className="font-body font-semibold text-white text-[25px] leading-tight tracking-[-0.25px]">
+                <h3 className="font-body font-semibold text-white text-[25px] md:text-[21px] leading-tight tracking-[-0.25px]">
                   {n.name}
                 </h3>
                 <div className="flex gap-2.5 pt-1">

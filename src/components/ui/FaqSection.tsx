@@ -20,7 +20,7 @@ export default function FaqSection({ faqs }: Props) {
           <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4 mb-[10px]">
             FAQ
           </p>
-          <h2 className="font-heading font-normal text-[36px] xl:text-[44px] text-[#0c1834] tracking-[-1px] xl:tracking-[-1.3px] leading-none">
+          <h2 className="font-heading font-normal text-[36px] xl:text-[38px] text-[#0c1834] tracking-[-1px] xl:tracking-[-1.3px] leading-none">
             Preguntas frecuentes
           </h2>
         </div>

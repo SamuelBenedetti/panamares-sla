@@ -180,16 +180,16 @@ function BuscarContent() {
               <h1 className="w-full flex flex-col items-center gap-[6px] md:gap-[8px]">
                 <span
                   className="font-heading font-light not-italic text-white
-                    text-[60px] md:text-[68px] lg:text-[62px] xl:text-[95px] 2xl:text-[90px]
-                    leading-[56px] md:leading-[64px] lg:leading-[58px] xl:leading-[90px] 2xl:leading-[108px]"
+                    text-[52px] md:text-[58px] lg:text-[54px] xl:text-[80px] 2xl:text-[76px]
+                    leading-[48px] md:leading-[54px] lg:leading-[50px] xl:leading-[76px] 2xl:leading-[92px]"
                   style={{ letterSpacing: "-0.03em" }}
                 >
                   {current.heading[0]}
                 </span>
                 <span
                   className="font-heading font-light italic text-white
-                    text-[60px] md:text-[68px] lg:text-[62px] xl:text-[95px] 2xl:text-[90px]
-                    leading-[56px] md:leading-[64px] lg:leading-[58px] xl:leading-[90px] 2xl:leading-[108px]"
+                    text-[52px] md:text-[58px] lg:text-[54px] xl:text-[80px] 2xl:text-[76px]
+                    leading-[48px] md:leading-[54px] lg:leading-[50px] xl:leading-[76px] 2xl:leading-[92px]"
                   style={{ letterSpacing: "-0.03em" }}
                 >
                   {current.heading[1]}
@@ -203,7 +203,7 @@ function BuscarContent() {
                 <button
                   key={option}
                   onClick={() => select(option)}
-                  className="border border-[rgba(250,248,245,0.5)] px-[18px] md:px-[21px] py-[12px] md:py-[14px] font-body font-medium text-[15px] md:text-[16px] lg:text-[17px] xl:text-[18px] leading-[20px] text-white hover:bg-[rgba(250,248,245,0.08)] hover:border-[rgba(250,248,245,0.9)] transition-all duration-150 whitespace-nowrap cursor-pointer"
+                  className="border border-[rgba(250,248,245,0.5)] px-[18px] md:px-[21px] py-[12px] md:py-[14px] font-body font-medium text-[15px] md:text-[14px] lg:text-[15px] xl:text-[16px] leading-[20px] text-white hover:bg-[rgba(250,248,245,0.08)] hover:border-[rgba(250,248,245,0.9)] transition-all duration-150 whitespace-nowrap cursor-pointer"
                 >
                   {option}
                 </button>
@@ -215,7 +215,7 @@ function BuscarContent() {
           <div className="flex items-center justify-center gap-[10px]">
             <button
               onClick={goBack}
-              className="flex items-center gap-[8px] md:gap-[10px] px-[16px] md:px-[20px] py-[10px] md:py-[12px] font-body font-medium text-[15px] md:text-[16px] xl:text-[18px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+              className="flex items-center gap-[8px] md:gap-[10px] px-[16px] md:px-[20px] py-[10px] md:py-[12px] font-body font-medium text-[15px] md:text-[14px] xl:text-[15px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
             >
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden>
                 <path d="M13 4L7 10L13 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -224,7 +224,7 @@ function BuscarContent() {
             </button>
             <button
               onClick={skip}
-              className="flex items-center gap-[8px] md:gap-[10px] px-[16px] md:px-[20px] py-[10px] md:py-[12px] font-body font-medium text-[15px] md:text-[16px] xl:text-[18px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+              className="flex items-center gap-[8px] md:gap-[10px] px-[16px] md:px-[20px] py-[10px] md:py-[12px] font-body font-medium text-[15px] md:text-[14px] xl:text-[15px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
             >
               Omitir
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden>
