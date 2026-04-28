@@ -84,7 +84,7 @@ export default function ComparePageClient({ properties }: Props) {
   ];
 
   return (
-    <section className="bg-[#f9f9f9] px-[30px] lg:px-[60px] xl:px-[120px] 2xl:px-[260px] py-[60px] xl:py-[110px]">
+    <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[40px] xl:py-[60px]">
       <div className="max-w-[1440px] mx-auto flex flex-col gap-[30px]">
 
         {/* Breadcrumb */}
@@ -110,7 +110,7 @@ export default function ComparePageClient({ properties }: Props) {
         </nav>
 
         {/* H1 + descripción */}
-        <div className="flex flex-col gap-[20px] pr-0 xl:pr-[300px] 2xl:pr-[550px]">
+        <div className="flex flex-col gap-[20px]">
           <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] leading-none tracking-[-1.8px]">
             Lista comparada de propiedades
           </h1>
