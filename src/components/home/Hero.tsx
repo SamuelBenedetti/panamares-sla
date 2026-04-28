@@ -40,7 +40,9 @@ export default function Hero() {
         </p>
 
         {/* Search */}
-        <SearchBar />
+        <div className="w-full max-w-[700px]">
+          <SearchBar />
+        </div>
       </div>
     </section>
   );
