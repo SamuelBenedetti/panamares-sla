@@ -40,7 +40,7 @@ export default function ContactoPage() {
         ])) }}
       />
       {/* ── Hero ── */}
-      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[60px] xl:pt-[80px] pb-[80px] xl:pb-[112px]">
+      <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-[80px] xl:pb-[112px]">
         <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col gap-[20px]">
             {/* Breadcrumb */}
