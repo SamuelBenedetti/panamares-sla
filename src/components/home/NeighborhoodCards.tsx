@@ -48,15 +48,15 @@ export default function NeighborhoodCards({
       }));
 
   return (
-    <section className={`${sectionClassName} py-[130px] px-[30px] xl:px-[20px] 2xl:px-[120px]`}>
-      <div className="flex flex-col gap-12 max-w-[1600px] mx-auto">
+    <section className={`${sectionClassName} py-[80px] px-[30px] xl:px-[20px] 2xl:px-[120px]`}>
+      <div className="flex flex-col gap-8 max-w-[1600px] mx-auto">
 
         {/* Header — centered */}
-        <div className="flex flex-col gap-3 items-center text-center">
+        <div className="flex flex-col gap-2 items-center text-center">
           <p className="font-body font-medium text-[#737b8c] text-[12px] uppercase tracking-[5px]">
             {eyebrow}
           </p>
-          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(40px,4vw,60px)] 2xl:text-[52px] tracking-[-1.8px] leading-none">
+          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(32px,3vw,44px)] 2xl:text-[40px] tracking-[-1.8px] leading-none">
             {heading}
           </h2>
         </div>

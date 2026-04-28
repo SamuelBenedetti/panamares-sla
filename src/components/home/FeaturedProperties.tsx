@@ -5,15 +5,15 @@ import type { Property } from "@/lib/types";
 
 export default function FeaturedProperties({ properties }: { properties: Property[] }) {
   return (
-    <section className="bg-[#f9f9f9] py-[130px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
-      <div className="flex flex-col gap-12 max-w-[1600px] mx-auto">
+    <section className="bg-[#f9f9f9] py-[80px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
+      <div className="flex flex-col gap-8 max-w-[1600px] mx-auto">
 
         {/* Header */}
-        <div className="flex flex-col gap-3 items-start text-left">
+        <div className="flex flex-col gap-2 items-start text-left">
           <p className="font-body font-medium text-[#5a6478] text-[12px] uppercase tracking-[5px]">
             Selección destacada
           </p>
-          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(50px,4vw,60px)] 2xl:text-[52px] tracking-[-0.03em] leading-[1.1]">
+          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(32px,3vw,44px)] 2xl:text-[40px] tracking-[-0.03em] leading-[1.1]">
             Propiedades en Venta
           </h2>
         </div>

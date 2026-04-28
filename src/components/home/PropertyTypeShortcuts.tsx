@@ -13,14 +13,14 @@ const SHORTCUTS = [
 
 export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record<string, number> }) {
   return (
-    <section className="bg-white py-[130px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
-      <div className="flex flex-col gap-12 max-w-[1600px] mx-auto">
+    <section className="bg-white py-[80px] px-[30px] xl:px-[20px] 2xl:px-[120px]">
+      <div className="flex flex-col gap-8 max-w-[1600px] mx-auto">
 
-        <div className="flex flex-col gap-3 items-center text-center">
+        <div className="flex flex-col gap-2 items-center text-center">
           <p className="font-body font-medium text-[#5a6478] text-[12px] uppercase tracking-[5px]">
             Explorar por tipo
           </p>
-          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(50px,4vw,60px)] 2xl:text-[52px] tracking-[-0.03em] leading-[1.1]">
+          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(32px,3vw,44px)] 2xl:text-[40px] tracking-[-0.03em] leading-[1.1]">
             ¿Qué tipo de propiedad buscas?
           </h2>
         </div>
@@ -39,7 +39,7 @@ export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record
                   <s.Icon size={22} className="text-[#0c1834]" strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col gap-[5px] items-center">
-                  <span className="font-body font-semibold text-[#0c1834] text-[18px] tracking-[-0.18px] text-center leading-normal">
+                  <span className="font-body font-semibold text-[#0c1834] text-[15px] tracking-[-0.18px] text-center leading-normal">
                     {s.label}
                   </span>
                   <span className="font-body font-medium text-[rgba(12,24,52,0.5)] text-[14px] leading-[16px]">

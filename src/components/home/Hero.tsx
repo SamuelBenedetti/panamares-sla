@@ -28,13 +28,13 @@ export default function Hero() {
         </p>
 
         {/* Heading */}
-        <h1 className="flex flex-col items-center gap-1 font-heading font-light text-white text-[clamp(48px,5.5vw,72px)] 2xl:text-[64px] leading-[1] tracking-[-0.03em]">
+        <h1 className="flex flex-col items-center gap-1 font-heading font-light text-white text-[clamp(52px,6vw,78px)] 2xl:text-[68px] leading-[1] tracking-[-0.03em]">
           <span className="not-italic">Bienes Raíces</span>
           <span className="italic">en Panama</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="font-body text-white text-sm md:text-base pb-[20px]">
+        <p className="font-body text-white text-sm md:text-[15px] pb-[16px]">
           Propiedades exclusivas en{" "}
           <strong className="font-bold">las mejores zonas de la ciudad.</strong>
         </p>
