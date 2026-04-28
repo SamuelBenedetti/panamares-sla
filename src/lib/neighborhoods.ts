@@ -32,6 +32,35 @@ export const NEIGHBORHOODS: NeighborhoodConfig[] = [
   { slug: "panama",          name: "Panamá",          priority: "LOW" },
 ];
 
+/** Local images for each neighborhood slug — single source of truth */
+export const NEIGHBORHOOD_IMAGES: Record<string, string> = {
+  "punta-pacifica":  "/card-punta-pacifica.png",
+  "punta-paitilla":  "/card-punta-paitilla.png",
+  "avenida-balboa":  "/card-avenida-balboa.png",
+  "costa-del-este":  "/card-costa-del-este.png",
+  "obarrio":         "/card-obarrio.png",
+  "calle-50":        "/card-calle-50.png",
+  "san-francisco":   "/card-san-francisco.png",
+  "bella-vista":     "/card-bella-vista.png",
+  "albrook":         "/card-albrook.png",
+  "coco-del-mar":    "/card-coco-del-mar.png",
+  "santa-maria":     "/card-santa-maria.png",
+  "marbella":        "/card-marbella.png",
+  "el-cangrejo":     "/card-el-cangrejo.png",
+  "altos-del-golf":  "/card-altos-del-golf.png",
+  "via-porras":      "/card-via-porras.png",
+  "condado-del-rey": "/card-condado-del-rey.png",
+  "amador":          "/card-amador.png",
+  "los-andes":       "/card-los-andes.png",
+  "carrasquilla":    "/card-carrasquilla.png",
+  "loma-alegre":     "/card-loma-alegre.png",
+  "alto-del-chase":  "/card-alto-del-chase.png",
+  "coronado":        "/card-coronado.png",
+  "versalles":       "/card-versalles.png",
+  "rio-mar":         "/card-rio-mar.png",
+  "panama":          "/hero-bg.jpg",
+};
+
 export function getNeighborhoodBySlug(
   slug: string
 ): NeighborhoodConfig | undefined {

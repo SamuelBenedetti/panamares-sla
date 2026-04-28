@@ -7,7 +7,6 @@ import Link from "next/link";
 import PropertyGrid from "@/components/properties/PropertyGrid";
 import type { MapProperty } from "@/components/properties/PropertyMapMulti";
 import type { Property } from "@/lib/types";
-import { formatPriceCompact } from "@/lib/utils";
 
 const PropertyMapMulti = dynamic(() => import("@/components/properties/PropertyMapMulti"), { ssr: false });
 
@@ -63,13 +62,12 @@ const PRICE_MAX = 2_000_000;
 const AREA_MIN = 0;
 const AREA_MAX = 1000;
 
-function formatArea(v: number) { return `${Math.round(v)} m²`; }
 
 // ── Dual Range Slider ──────────────────────────────────────────────────────────
-function DualRangeSlider({ min, max, valueMin, valueMax, onChange, format }: {
+function DualRangeSlider({ min, max, valueMin, valueMax, onChange, onActiveHandle }: {
   min: number; max: number; valueMin: number; valueMax: number;
   onChange: (min: number, max: number) => void;
-  format: (v: number) => string;
+  onActiveHandle?: (handle: "min" | "max" | null) => void;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const dragging = useRef<"min" | "max" | null>(null);
@@ -100,19 +98,13 @@ function DualRangeSlider({ min, max, valueMin, valueMax, onChange, format }: {
 
   function startDrag(handle: "min" | "max") {
     dragging.current = handle;
+    onActiveHandle?.(handle);
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
   }
 
   return (
-    <div className="relative w-full h-5 my-2 mt-8">
-      {/* Max value tooltip */}
-      <div
-        className="absolute -top-8 -translate-x-1/2 bg-[#0c1935] text-white font-body text-[12px] px-3 py-1 whitespace-nowrap pointer-events-none"
-        style={{ left: `${rightPct}%` }}
-      >
-        {format(valueMax)}
-      </div>
+    <div className="relative w-full h-5 my-2">
       {/* Track */}
       <div ref={trackRef} className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-[2px] bg-[#e6e6e6]">
         <div
@@ -163,6 +155,10 @@ function FilterPanel({
   neighborhoodSlug?: string;
   neighborhoodLinks?: NeighborhoodLink[];
 }) {
+  const [showMore, setShowMore] = useState(false);
+  const [priceActive, setPriceActive] = useState<"min" | "max" | null>(null);
+  const [areaActive, setAreaActive] = useState<"min" | "max" | null>(null);
+
   function set<K extends keyof Filters>(key: K, value: Filters[K]) {
     setFilters((f) => ({ ...f, [key]: value }));
   }
@@ -172,7 +168,9 @@ function FilterPanel({
   const areaMin = filters.minArea !== "" ? Number(filters.minArea) : AREA_MIN;
   const areaMax = filters.maxArea !== "" ? Number(filters.maxArea) : AREA_MAX;
 
-  const inputBox = "bg-[#f9f9f9] border border-[#e6e6e6] px-[10px] py-[9px] flex-1 min-w-0 font-body text-[14px] text-[#0c1935] tracking-[-0.32px] focus:outline-none focus:border-[#0c1935] placeholder:text-[rgba(12,25,53,0.3)] transition-colors text-center";
+  const inputBox = "border px-[10px] py-[9px] flex-1 min-w-0 font-body text-[14px] text-[#0c1935] tracking-[-0.32px] focus:outline-none focus:border-[#0c1935] placeholder:text-[rgba(12,25,53,0.3)] transition-colors text-center";
+  const inputDefault = "bg-[#f9f9f9] border-[#e6e6e6]";
+  const inputHighlight = "bg-[#0c1834] border-[#0c1834] text-white placeholder:text-white/50";
 
   return (
     <div className="bg-white border border-[#dfe5ef] p-[21px] flex flex-col gap-[20px] w-full">
@@ -187,7 +185,7 @@ function FilterPanel({
             href={neighborhoodSlug ? `/propiedades-en-venta/${neighborhoodSlug}/` : "/propiedades-en-venta/"}
             className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
               businessType === "venta"
-                ? "bg-[#727b8c] text-[#faf8f5]"
+                ? "bg-[#0c1834] text-white"
                 : "bg-[rgba(12,25,53,0.1)] text-[rgba(12,24,52,0.4)] hover:bg-[rgba(12,25,53,0.15)]"
             }`}
           >
@@ -197,7 +195,7 @@ function FilterPanel({
             href={neighborhoodSlug ? `/propiedades-en-alquiler/${neighborhoodSlug}/` : "/propiedades-en-alquiler/"}
             className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
               businessType === "alquiler"
-                ? "bg-[#727b8c] text-[#faf8f5]"
+                ? "bg-[#0c1834] text-white"
                 : "bg-[rgba(12,25,53,0.1)] text-[rgba(12,24,52,0.4)] hover:bg-[rgba(12,25,53,0.15)]"
             }`}
           >
@@ -214,7 +212,7 @@ function FilterPanel({
         <DualRangeSlider
           min={PRICE_MIN} max={PRICE_MAX}
           valueMin={priceMin} valueMax={priceMax}
-          format={formatPriceCompact}
+          onActiveHandle={setPriceActive}
           onChange={(lo, hi) => setFilters((f) => ({
             ...f,
             minPrice: lo === PRICE_MIN ? "" : String(Math.round(lo)),
@@ -222,8 +220,8 @@ function FilterPanel({
           }))}
         />
         <div className="flex gap-[15px]">
-          <input type="number" placeholder="$0" value={filters.minPrice} onChange={(e) => set("minPrice", e.target.value)} className={inputBox} />
-          <input type="number" placeholder="$2,000,000" value={filters.maxPrice} onChange={(e) => set("maxPrice", e.target.value)} className={inputBox} />
+          <input type="number" placeholder="$0" value={filters.minPrice} onChange={(e) => set("minPrice", e.target.value)} className={`${inputBox} ${priceActive === "min" ? inputHighlight : inputDefault}`} />
+          <input type="number" placeholder="$2,000,000" value={filters.maxPrice} onChange={(e) => set("maxPrice", e.target.value)} className={`${inputBox} ${priceActive === "max" ? inputHighlight : inputDefault}`} />
         </div>
       </div>
 
@@ -235,7 +233,7 @@ function FilterPanel({
         <DualRangeSlider
           min={AREA_MIN} max={AREA_MAX}
           valueMin={areaMin} valueMax={areaMax}
-          format={formatArea}
+          onActiveHandle={setAreaActive}
           onChange={(lo, hi) => setFilters((f) => ({
             ...f,
             minArea: lo === AREA_MIN ? "" : String(Math.round(lo)),
@@ -243,8 +241,8 @@ function FilterPanel({
           }))}
         />
         <div className="flex gap-[15px]">
-          <input type="number" placeholder="0 m²" value={filters.minArea} onChange={(e) => set("minArea", e.target.value)} className={inputBox} />
-          <input type="number" placeholder="1000 m²" value={filters.maxArea} onChange={(e) => set("maxArea", e.target.value)} className={inputBox} />
+          <input type="number" placeholder="0 m²" value={filters.minArea} onChange={(e) => set("minArea", e.target.value)} className={`${inputBox} ${areaActive === "min" ? inputHighlight : inputDefault}`} />
+          <input type="number" placeholder="1000 m²" value={filters.maxArea} onChange={(e) => set("maxArea", e.target.value)} className={`${inputBox} ${areaActive === "max" ? inputHighlight : inputDefault}`} />
         </div>
       </div>
 
@@ -260,7 +258,7 @@ function FilterPanel({
             className="appearance-none bg-[#f9f9f9] border border-[#e6e6e6] h-[40px] w-full pl-[17.5px] pr-[40px] font-body text-[14px] text-[#0c1935] focus:outline-none focus:border-[#0c1935] transition-colors cursor-pointer"
             style={{ color: filters.propertyType === "" ? "rgba(12,25,53,0.3)" : "#0c1935" }}
           >
-            <option value="">Tipo de propiedad</option>
+            <option value="">Todos los tipos</option>
             {propertyTypes.map((t) => (
               <option key={t} value={t} style={{ color: "#0c1935" }}>
                 {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -296,15 +294,23 @@ function FilterPanel({
         </div>
       )}
 
-      {/* ── 6. Habitaciones + Baños ── */}
+      {/* ── 6. Ver más — Habitaciones + Baños ── */}
       <div className="flex flex-col gap-[15px] w-full">
-        <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px] pb-[10px] border-b border-[#e9e7e2]">
-          Habitaciones y Baños
-        </p>
-        <div className="flex gap-[15px]">
-          <Stepper label="Habitaciones" value={filters.bedrooms} onChange={(v) => set("bedrooms", v)} />
-          <Stepper label="Baños" value={filters.bathrooms} onChange={(v) => set("bathrooms", v)} />
-        </div>
+        <button
+          type="button"
+          onClick={() => setShowMore((v) => !v)}
+          className="flex items-center justify-center gap-[8px] w-full h-[40px] border border-[#e6e6e6] font-body text-[14px] text-[#0c1935] hover:border-[#0c1935] transition-colors"
+        >
+          <ChevronDown size={14} className={`transition-transform duration-200 ${showMore ? "rotate-180" : ""}`} />
+          Ver más
+        </button>
+
+        {showMore && (
+          <div className="flex gap-[15px]">
+            <Stepper label="Habitaciones" value={filters.bedrooms} onChange={(v) => set("bedrooms", v)} />
+            <Stepper label="Baños" value={filters.bathrooms} onChange={(v) => set("bathrooms", v)} />
+          </div>
+        )}
       </div>
 
       {/* ── 7. Limpiar (solo si hay filtros activos) ── */}
@@ -336,7 +342,7 @@ export default function CategoryPageClient({
     return Array.from(types).sort();
   }, [properties]);
 
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [filters, setFilters] = useState<Filters>({
     ...INIT_FILTERS,
     bedrooms: initialBedrooms,

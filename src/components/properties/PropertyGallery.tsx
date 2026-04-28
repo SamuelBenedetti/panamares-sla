@@ -16,16 +16,11 @@ interface Props {
 
 export default function PropertyGallery({ images, contained = false, propertyTitle }: Props) {
   const [active, setActive] = useState(0);
-  const [fading, setFading] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(0);
 
   const changeTo = useCallback((newIdx: number) => {
-    setFading(true);
-    setTimeout(() => {
-      setActive(newIdx);
-      setFading(false);
-    }, 200);
+    setActive(newIdx);
   }, []);
 
   const prev = useCallback(() => changeTo(active === 0 ? images.length - 1 : active - 1), [active, images.length, changeTo]);
@@ -190,20 +185,22 @@ export default function PropertyGallery({ images, contained = false, propertyTit
       {contained ? (
         <div className="flex flex-col gap-[8px]">
           <div
-            className="relative h-[240px] md:h-[340px] lg:h-[420px] w-full overflow-hidden bg-[#0c1935] cursor-zoom-in"
+            className="relative h-[260px] md:h-[380px] lg:h-[520px] w-full overflow-hidden bg-[#0c1935] cursor-zoom-in"
             onClick={() => openLightbox(active)}
             onTouchStart={onTouchStart}
             onTouchEnd={e => onTouchEnd(e, next, prev)}
           >
-            <Image
-              key={images[active].url}
-              src={images[active].url}
-              alt={images[active].alt ?? `Foto de ${propertyTitle ?? "propiedad"}`}
-              fill
-              priority
-              className={`object-cover transition-opacity duration-200 ${fading ? "opacity-0" : "opacity-100"}`}
-              sizes="(max-width: 1024px) 100vw, 60vw"
-            />
+            {images.map((img, i) => (
+              <Image
+                key={img.url}
+                src={img.url}
+                alt={img.alt ?? `Foto de ${propertyTitle ?? "propiedad"}`}
+                fill
+                priority={i === 0}
+                className={`object-cover transition-opacity duration-500 ease-in-out ${i === active ? "opacity-100" : "opacity-0"}`}
+                sizes="(max-width: 1024px) 100vw, 60vw"
+              />
+            ))}
 
             {images.length > 1 && (
               <div
@@ -270,15 +267,17 @@ export default function PropertyGallery({ images, contained = false, propertyTit
             onTouchStart={onTouchStart}
             onTouchEnd={e => onTouchEnd(e, next, prev)}
           >
-            <Image
-              key={images[active].url}
-              src={images[active].url}
-              alt={images[active].alt ?? `Foto de ${propertyTitle ?? "propiedad"}`}
-              fill
-              priority
-              className={`object-cover transition-opacity duration-200 ${fading ? "opacity-0" : "opacity-100"}`}
-              sizes="100vw"
-            />
+            {images.map((img, i) => (
+              <Image
+                key={img.url}
+                src={img.url}
+                alt={img.alt ?? `Foto de ${propertyTitle ?? "propiedad"}`}
+                fill
+                priority={i === 0}
+                className={`object-cover transition-opacity duration-500 ease-in-out ${i === active ? "opacity-100" : "opacity-0"}`}
+                sizes="100vw"
+              />
+            ))}
 
             {images.length > 1 && (
               <div

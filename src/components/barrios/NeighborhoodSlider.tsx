@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
@@ -19,28 +19,45 @@ export default function NeighborhoodSlider({
   neighborhoods: SliderNeighborhood[];
 }) {
   const [current, setCurrent] = useState(0);
-  const n = neighborhoods[current];
 
   const prev = () =>
     setCurrent((c) => (c - 1 + neighborhoods.length) % neighborhoods.length);
   const next = () =>
     setCurrent((c) => (c + 1) % neighborhoods.length);
 
+  const touchStartX = useRef<number | null>(null);
+
+  function onTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function onTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 50) return;
+    if (delta < 0) next(); else prev();
+  }
+
   return (
     <div
       className="relative w-full overflow-hidden bg-[#0c1935] h-[65vh] sm:h-auto sm:aspect-[16/8] xl:aspect-[1037/412]"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
-      {/* Background image */}
-      <Image
-        key={n.slug}
-        src={n.image}
-        alt={n.name}
-        fill
-        priority
-        quality={90}
-        className="object-cover"
-        sizes="100vw"
-      />
+      {/* All images — crossfade via opacity */}
+      {neighborhoods.map((nb, i) => (
+        <Image
+          key={nb.slug}
+          src={nb.image}
+          alt={nb.name}
+          fill
+          priority={i === 0}
+          quality={90}
+          className={`object-cover transition-opacity duration-500 ease-in-out ${i === current ? "opacity-100" : "opacity-0"}`}
+          sizes="100vw"
+        />
+      ))}
 
       {/* Gradient: 80% dark at bottom → 20% at 50% → transparent at top */}
       <div
@@ -71,70 +88,61 @@ export default function NeighborhoodSlider({
         </div>
       </div>
 
-      {/* Bottom overlay */}
-      <div className="absolute bottom-0 left-0 right-0 p-[20px] sm:p-[30px] flex flex-col gap-[8px]">
-
-        {/* "favorites" label */}
-        <div className="flex gap-[10px] items-start">
-          <Star
-            size={15}
-            className="text-white/50 shrink-0"
-            style={{ marginTop: "0.5px" }}
-          />
-          <span
-            className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase"
-            style={{ lineHeight: "16px" }}
-          >
-            favorites
-          </span>
-        </div>
-
-        {/* Neighborhood name */}
-        <div className="flex items-center w-full">
-          <Link
-            href={`/barrios/${n.slug}/`}
-            className="font-heading font-normal text-[38px] sm:text-[60px] text-white tracking-[-1.2px] sm:tracking-[-1.8px] leading-none sm:leading-normal hover:text-white/90 transition-colors"
-          >
-            {n.name}
-          </Link>
-        </div>
-
-        {/* Stats */}
-        {(n.avgPrice || n.propertyCount !== undefined) && (
-          <div className="flex gap-[10px] items-start pt-[4px]">
-            {n.avgPrice && (
-              <div className="flex flex-col gap-[10px] items-start">
-                <span
-                  className="font-body font-normal text-[15px] text-white whitespace-nowrap"
-                  style={{ lineHeight: "16px" }}
-                >
-                  Precio promedio
-                </span>
-                <div className="bg-white/20 px-[5px] py-[3px]">
-                  <span className="font-body font-semibold text-[20px] text-white leading-normal whitespace-nowrap">
-                    {n.avgPrice}
-                  </span>
-                </div>
-              </div>
-            )}
-            {n.propertyCount !== undefined && (
-              <div className="flex flex-col gap-[10px] items-start">
-                <span
-                  className="font-body font-normal text-[15px] text-white whitespace-nowrap"
-                  style={{ lineHeight: "16px" }}
-                >
-                  Propiedades
-                </span>
-                <div className="bg-white/20 px-[5px] py-[3px]">
-                  <span className="font-body font-semibold text-[20px] text-white leading-normal">
-                    {n.propertyCount}
-                  </span>
-                </div>
-              </div>
-            )}
+      {/* Bottom overlay — crossfade per slide */}
+      {neighborhoods.map((nb, i) => (
+        <div
+          key={nb.slug}
+          className={`absolute bottom-0 left-0 right-0 p-[20px] sm:p-[30px] flex flex-col gap-[8px] transition-opacity duration-500 ease-in-out ${i === current ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        >
+          {/* "favorites" label */}
+          <div className="flex gap-[10px] items-start">
+            <Star size={15} className="text-white/50 shrink-0" style={{ marginTop: "0.5px" }} />
+            <span className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase" style={{ lineHeight: "16px" }}>
+              favorites
+            </span>
           </div>
-        )}
-      </div>
+
+          {/* Neighborhood name */}
+          <div className="flex items-center w-full">
+            <Link
+              href={`/barrios/${nb.slug}/`}
+              className="font-heading font-normal text-[38px] sm:text-[60px] text-white tracking-[-1.2px] sm:tracking-[-1.8px] leading-none sm:leading-normal hover:text-white/90 transition-colors"
+            >
+              {nb.name}
+            </Link>
+          </div>
+
+          {/* Stats */}
+          {(nb.avgPrice || nb.propertyCount !== undefined) && (
+            <div className="flex gap-[10px] items-start pt-[4px]">
+              {nb.avgPrice && (
+                <div className="flex flex-col gap-[10px] items-start">
+                  <span className="font-body font-normal text-[15px] text-white whitespace-nowrap" style={{ lineHeight: "16px" }}>
+                    Precio promedio
+                  </span>
+                  <div className="bg-white/20 px-[5px] py-[3px]">
+                    <span className="font-body font-semibold text-[20px] text-white leading-normal whitespace-nowrap">
+                      {nb.avgPrice}
+                    </span>
+                  </div>
+                </div>
+              )}
+              {nb.propertyCount !== undefined && (
+                <div className="flex flex-col gap-[10px] items-start">
+                  <span className="font-body font-normal text-[15px] text-white whitespace-nowrap" style={{ lineHeight: "16px" }}>
+                    Propiedades
+                  </span>
+                  <div className="bg-white/20 px-[5px] py-[3px]">
+                    <span className="font-body font-semibold text-[20px] text-white leading-normal">
+                      {nb.propertyCount}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

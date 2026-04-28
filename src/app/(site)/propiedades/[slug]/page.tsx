@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   Bed, Bath, Maximize, Car, MapPin, Phone,
-  Star, BadgeCheck, Banknote, KeyRound, Building2, Home,
+  Star, BadgeCheck, Banknote, KeyRound,
 } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
@@ -181,14 +181,20 @@ export default async function PropertyDetailPage({ params }: Props) {
 
   const waMessage = `Hola, me interesa la propiedad ID ${property._id}${property.zone ? ` en ${property.zone}` : ""}: ${property.title} — ${BASE_URL}/propiedades/${property.slug.current}`;
 
-  // Build breadcrumb items — Inicio → Categoría → Geo-tipo → Título
+  // Build breadcrumb items — Inicio → Categoría → Barrio → Título limpio
+  // El geo-nivel usa solo el nombre del barrio (no repite la categoría).
+  // El título elimina sufijos de intent que Wasi añade (ej. "- Casa en venta en X").
+  const cleanTitle = property.title
+    .replace(/\s*[-–]\s*(apartamento|casa|penthouse|oficina|local|terreno)\s+en\s+(venta|alquiler).*/i, "")
+    .trim();
+
   const breadcrumbItems = [
     { label: "Inicio", href: "/" },
     { label: categoryLabel, href: `/${categorySlug}/` },
-    ...(neighborhoodSlug
-      ? [{ label: `${categoryLabel} en ${property.zone}`, href: `/${categorySlug}/${neighborhoodSlug}/` }]
+    ...(neighborhoodSlug && property.zone
+      ? [{ label: property.zone, href: `/${categorySlug}/${neighborhoodSlug}/` }]
       : []),
-    { label: property.title },
+    { label: cleanTitle },
   ];
 
   const jsonLdListing = listingSchema(property);
@@ -210,24 +216,44 @@ export default async function PropertyDetailPage({ params }: Props) {
       {/* Floating WhatsApp — mobile */}
       <WhatsAppButton message={waMessage} variant="floating" />
 
-      {/* Breadcrumb */}
-      <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto py-[20px]">
-        <div className="max-w-[1600px] mx-auto">
-          <Breadcrumb items={breadcrumbItems} />
-        </div>
-      </div>
+      {/* ── ABOVE THE FOLD: Gallery + Info ── */}
+      <section className="bg-white">
+        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto pt-[16px] pb-[32px]">
+          <div className="max-w-[1600px] mx-auto flex flex-col gap-[16px]">
 
-      {/* Full-width gallery */}
-      <PropertyGallery images={galleryImages} propertyTitle={property.title} />
+            {/* Breadcrumb */}
+            <Breadcrumb items={breadcrumbItems} />
 
-      {/* ── MAIN: Content + Sidebar ── */}
-      <section className="bg-[#f9f9f9]">
-        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto py-[40px]">
-          <div className="max-w-[1600px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-[32px] items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-[28px] items-start">
 
-            {/* Right: Sticky sidebar — order-2 on desktop so content column is left */}
-            <div className="lg:sticky lg:top-[100px] flex flex-col gap-[16px] lg:order-2">
+              {/* LEFT: Gallery */}
+              <PropertyGallery images={galleryImages} propertyTitle={property.title} contained />
+
+              {/* RIGHT: Sticky panel — zone, title, stats, price card */}
+              <div className="lg:sticky lg:top-[100px] flex flex-col gap-[12px]">
+
+                {/* Zone + condition */}
+                <div className="flex items-center gap-[8px] flex-wrap">
+                  {property.zone && (
+                    <div className="flex items-center gap-[6px]">
+                      <MapPin size={12} className="text-[#0d1835] shrink-0" />
+                      <span className="font-body font-medium text-[11px] text-[#0d1835] uppercase tracking-[2px] leading-4">
+                        {property.zone}
+                      </span>
+                    </div>
+                  )}
+                  {property.condition && (
+                    <span className="font-body font-medium text-[11px] text-[#566070] bg-[#f0f2f5] px-[8px] py-[3px] uppercase tracking-[1px]">
+                      {property.condition}
+                    </span>
+                  )}
+                </div>
+
+                {/* H1 */}
+                <h1 className="font-body font-semibold text-[clamp(20px,2.2vw,28px)] text-[#0c1834] tracking-[-0.3px] leading-tight">
+                  {property.title}
+                </h1>
+
 
               {/* Main card — price, stats, CTAs */}
               <div className="bg-white border border-[#dfe5ef] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] p-[26px] flex flex-col gap-[25px]">
@@ -260,24 +286,24 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                 {/* Price */}
                 <div className="flex flex-col gap-[6px]">
-                  <p className="font-body font-medium text-[11px] text-[#566070] tracking-[4px] uppercase leading-4">
+                  <p className="font-body font-medium text-[11px] lg:text-[14px] text-[#566070] tracking-[4px] uppercase leading-4">
                     {property.businessType === "venta" ? "Precio de venta" : "Precio de alquiler"}
                   </p>
                   <div className="flex items-end gap-[8px] flex-wrap">
-                    <span className="font-body font-bold text-[40px] text-[#0c1834] tracking-[-0.6px] leading-[1.1]">
+                    <span className="font-body font-bold text-[40px] lg:text-[46px] text-[#0c1834] tracking-[-0.6px] leading-[1.1]">
                       {formatPrice(property.price)}
                     </span>
                     {property.businessType === "alquiler" && (
-                      <span className="font-body font-normal text-[16px] text-[#566070] pb-[4px]">/mes</span>
+                      <span className="font-body font-normal text-[16px] lg:text-[20px] text-[#566070] pb-[4px]">/mes</span>
                     )}
                   </div>
                   {property.businessType === "venta" && property.area && property.area > 0 && (
-                    <span className="font-body font-medium text-[13px] text-[#5a6478]">
+                    <span className="font-body font-medium text-[13px] lg:text-[16px] text-[#5a6478]">
                       {formatPrice(Math.round(property.price / property.area))}/m²
                     </span>
                   )}
                   {property.adminFee != null && property.adminFee > 0 && (
-                    <p className="font-body font-normal text-[12px] text-[#8a95a3] leading-4">
+                    <p className="font-body font-normal text-[12px] lg:text-[14px] text-[#8a95a3] leading-4">
                       + ${property.adminFee}/mes mantenimiento
                     </p>
                   )}
@@ -285,35 +311,35 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                 {/* Stats row — centered columns, icon above label */}
                 {(property.bedrooms != null || property.bathrooms != null || property.area != null || property.parking != null) && (
-                  <div className="flex border-y border-[#dfe5ef] py-[14px] gap-[12px]">
+                  <div className="flex border-y border-[#dfe5ef] py-[14px] gap-[8px]">
                     {property.bedrooms != null && (
                       <div className="flex-1 flex flex-col items-center gap-[2px]">
-                        <Bed size={16} className="text-[#0c1935]" />
-                        <span className="font-body font-medium text-[15px] text-[#0d1835] leading-none">
+                        <Bed size={15} className="text-[#0c1935]" />
+                        <span className="font-body font-medium text-[13px] lg:text-[15px] text-[#0d1835] leading-none whitespace-nowrap">
                           {property.bedrooms === 0 ? "Estudio" : `${property.bedrooms} hab.`}
                         </span>
                       </div>
                     )}
                     {property.bathrooms != null && (
                       <div className="flex-1 flex flex-col items-center gap-[2px]">
-                        <Bath size={16} className="text-[#0c1935]" />
-                        <span className="font-body font-medium text-[15px] text-[#0d1835] leading-none">
+                        <Bath size={15} className="text-[#0c1935]" />
+                        <span className="font-body font-medium text-[13px] lg:text-[15px] text-[#0d1835] leading-none whitespace-nowrap">
                           {property.bathrooms}{property.halfBathrooms ? ".5" : ""} {property.bathrooms === 1 ? "baño" : "baños"}
                         </span>
                       </div>
                     )}
                     {property.area != null && (
                       <div className="flex-1 flex flex-col items-center gap-[2px]">
-                        <Maximize size={16} className="text-[#0c1935]" />
-                        <span className="font-body font-medium text-[15px] text-[#0d1835] leading-none">
+                        <Maximize size={15} className="text-[#0c1935]" />
+                        <span className="font-body font-medium text-[13px] lg:text-[15px] text-[#0d1835] leading-none whitespace-nowrap">
                           {property.area} m²
                         </span>
                       </div>
                     )}
                     {property.parking != null && (
                       <div className="flex-1 flex flex-col items-center gap-[2px]">
-                        <Car size={16} className="text-[#0c1935]" />
-                        <span className="font-body font-medium text-[15px] text-[#0d1835] leading-none">
+                        <Car size={15} className="text-[#0c1935]" />
+                        <span className="font-body font-medium text-[13px] lg:text-[15px] text-[#0d1835] leading-none whitespace-nowrap">
                           {property.parking} park.
                         </span>
                       </div>
@@ -322,7 +348,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                 )}
 
                 {/* Agent strip */}
-                <div className="bg-[#f8f8f9] p-[15px] flex items-center gap-[12px]">
+                <div className="bg-[#f8f8f9] p-[15px] flex flex-col sm:flex-row sm:items-center gap-[10px] sm:gap-[12px]">
                   {property.agent ? (
                     <div className="flex-1 flex items-center gap-[10px] min-w-0">
                       {property.agent.photo ? (
@@ -363,7 +389,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                       </div>
                     </div>
                   )}
-                  <div className="shrink-0 flex flex-col items-start">
+                  <div className="shrink-0 flex flex-col items-start sm:items-end">
                     <p className="font-body text-[12px] text-[#5a6478] leading-normal">Atención disponible de lunes</p>
                     <p className="font-body text-[12px] text-[#5a6478] leading-normal">
                       a sábado <span className="font-semibold">8am – 7pm</span>
@@ -407,82 +433,22 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </div>
               )}
 
-            </div>
-
-            {/* Left: Content */}
-            <div className="flex flex-col gap-[40px] lg:order-1">
-
-              {/* Zone + H1 + inline stats strip */}
-              <div className="flex flex-col gap-[20px]">
-                {/* Zone */}
-                {property.zone && (
-                  <div className="flex items-center gap-[8px]">
-                    <MapPin size={13} className="text-[#0d1835] shrink-0" />
-                    <span className="font-body font-normal text-[12px] text-[#0d1835] uppercase tracking-[1.2px] leading-4">
-                      {property.zone}
-                    </span>
-                  </div>
-                )}
-
-                {/* H1 */}
-                <h1 className="font-body font-semibold text-[35px] text-[#0c1834] tracking-[-0.35px] leading-tight">
-                  {property.title}
-                </h1>
-
-                {/* Inline stats strip — icon + bold number + gray label */}
-                {(property.bedrooms != null || property.bathrooms != null || property.area != null || property.parking != null || property.propertyType || property.buildingName) && (
-                  <div className="flex flex-wrap items-center gap-x-[24px] gap-y-[12px] border-y border-[#dfdfdf] py-[21px]">
-                    {property.bedrooms != null && (
-                      <div className="flex items-center gap-[8px]">
-                        <Bed size={16} className="text-[#0c1935] shrink-0" />
-                        <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">{property.bedrooms}</span>
-                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">Habitaciones</span>
-                      </div>
-                    )}
-                    {property.bathrooms != null && (
-                      <div className="flex items-center gap-[8px]">
-                        <Bath size={16} className="text-[#0c1935] shrink-0" />
-                        <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">
-                          {property.bathrooms}{property.halfBathrooms ? ".5" : ""}
-                        </span>
-                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">Baños</span>
-                      </div>
-                    )}
-                    {property.area != null && (
-                      <div className="flex items-center gap-[8px]">
-                        <Maximize size={16} className="text-[#0c1935] shrink-0" />
-                        <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">{property.area}</span>
-                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">m²</span>
-                      </div>
-                    )}
-                    {property.parking != null && (
-                      <div className="flex items-center gap-[8px]">
-                        <Car size={16} className="text-[#0c1935] shrink-0" />
-                        <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">{property.parking}</span>
-                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">Plazas de aparcamiento</span>
-                      </div>
-                    )}
-                    {property.propertyType && (
-                      <div className="flex items-center gap-[8px]">
-                        <Home size={16} className="text-[#0c1935] shrink-0" />
-                        <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5 capitalize">{property.propertyType}</span>
-                      </div>
-                    )}
-                    {property.buildingName && (
-                      <div className="flex items-center gap-[8px]">
-                        <Building2 size={16} className="text-[#0c1935] shrink-0" />
-                        <span className="font-body font-bold text-[14px] text-[#0c1935] leading-5">{property.buildingName}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BELOW FOLD: Description, Features, Map ── */}
+      <section className="bg-[#f9f9f9] border-t border-[#dfe5ef]">
+        <div className="px-[30px] xl:px-[20px] 2xl:px-[120px] max-w-[1920px] mx-auto py-[36px]">
+          <div className="max-w-[1600px] mx-auto flex flex-col gap-[32px]">
 
               {/* Description */}
               {property.description && (
-                <div className="flex flex-col gap-[16px]">
-                  <h2 className="font-body font-bold text-[20px] text-[#0c1834] tracking-[-0.6px] leading-7">Descripción</h2>
-                  <div className="font-body font-normal text-[16px] text-[#5a6478] leading-[22.75px] [&_p]:mb-3 [&_p:last-child]:mb-0">
+                <div className="flex flex-col gap-[12px]">
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Descripción</h2>
+                  <div className="font-body font-normal text-[14px] text-[#5a6478] leading-[21px] [&_p]:mb-3 [&_p:last-child]:mb-0 max-w-[760px]">
                     <PortableText value={property.description} />
                   </div>
                 </div>
@@ -490,13 +456,13 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* Características — 3 categorías */}
               {(property.featuresInterior ?? []).length > 0 && (
-                <div className="flex flex-col gap-[24px]">
-                  <h2 className="font-body font-bold text-[20px] text-[#0c1834] tracking-[-0.6px] leading-7">Interior</h2>
-                  <ul className="grid grid-cols-2 lg:grid-cols-3 gap-x-[12px] gap-y-[12px]">
+                <div className="flex flex-col gap-[16px]">
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Interior</h2>
+                  <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-[12px] gap-y-[10px]">
                     {(property.featuresInterior ?? []).map((f, i) => (
-                      <li key={i} className="flex items-start gap-[8px]">
+                      <li key={i} className="flex items-start gap-[7px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">{f}</span>
+                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -504,13 +470,13 @@ export default async function PropertyDetailPage({ params }: Props) {
               )}
 
               {(property.featuresBuilding ?? []).length > 0 && (
-                <div className="flex flex-col gap-[24px]">
-                  <h2 className="font-body font-bold text-[20px] text-[#0c1834] tracking-[-0.6px] leading-7">Amenidades del edificio</h2>
-                  <ul className="grid grid-cols-2 lg:grid-cols-3 gap-x-[12px] gap-y-[12px]">
+                <div className="flex flex-col gap-[16px]">
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Amenidades del edificio</h2>
+                  <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-[12px] gap-y-[10px]">
                     {(property.featuresBuilding ?? []).map((f, i) => (
-                      <li key={i} className="flex items-start gap-[8px]">
+                      <li key={i} className="flex items-start gap-[7px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">{f}</span>
+                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -518,13 +484,13 @@ export default async function PropertyDetailPage({ params }: Props) {
               )}
 
               {(property.featuresLocation ?? []).length > 0 && (
-                <div className="flex flex-col gap-[24px]">
-                  <h2 className="font-body font-bold text-[20px] text-[#0c1834] tracking-[-0.6px] leading-7">Ubicación</h2>
-                  <ul className="grid grid-cols-2 lg:grid-cols-3 gap-x-[12px] gap-y-[12px]">
+                <div className="flex flex-col gap-[16px]">
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Zona y ubicación</h2>
+                  <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-[12px] gap-y-[10px]">
                     {(property.featuresLocation ?? []).map((f, i) => (
-                      <li key={i} className="flex items-start gap-[8px]">
+                      <li key={i} className="flex items-start gap-[7px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">{f}</span>
+                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -536,92 +502,80 @@ export default async function PropertyDetailPage({ params }: Props) {
                (property.featuresBuilding ?? []).length === 0 &&
                (property.featuresLocation ?? []).length === 0 &&
                (property.features ?? []).length > 0 && (
-                <div className="flex flex-col gap-[24px]">
-                  <h2 className="font-body font-bold text-[20px] text-[#0c1834] tracking-[-0.6px] leading-7">Características</h2>
-                  <ul className="grid grid-cols-2 lg:grid-cols-3 gap-x-[12px] gap-y-[12px]">
+                <div className="flex flex-col gap-[16px]">
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Características</h2>
+                  <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-[12px] gap-y-[10px]">
                     {(property.features ?? []).map((f, i) => (
-                      <li key={i} className="flex items-start gap-[8px]">
+                      <li key={i} className="flex items-start gap-[7px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[14px] text-[#5a6478] leading-5">{f}</span>
+                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{f}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              {/* Ubicación — solo si hay coordenadas */}
+              {/* Mapa */}
               {property.location && (
-              <div className="flex flex-col gap-[16px]">
-                <h2 className="font-body font-bold text-[20px] text-[#0c1834] tracking-[-0.6px] leading-7">Ubicación</h2>
-                <div className="relative bg-white border border-[#dfe5ef] overflow-hidden h-[256px]">
-                  {property.location ? (
-                    <>
-                      <PropertyMap
-                        lat={property.location.lat}
-                        lng={property.location.lng}
-                        title={property.title}
-                        className="w-full h-[256px]"
-                      />
-                      {/* Neighborhood overlay */}
-                      {property.zone && (
-                        <div className="absolute bottom-0 left-0 z-10 pointer-events-none">
-                          {neighborhoodSlug ? (
-                            <Link
-                              href={`/barrios/${neighborhoodSlug}/`}
-                              className="pointer-events-auto inline-flex items-center gap-[6px] bg-white/90 backdrop-blur-sm border border-[#dfe5ef] px-[12px] py-[7px] hover:bg-white transition-colors"
-                            >
-                              <MapPin size={12} className="text-[#b8891e] shrink-0" />
-                              <span className="font-body font-medium text-[12px] text-[#0c1834] tracking-[-0.2px]">{property.zone}</span>
-                            </Link>
-                          ) : (
-                            <div className="inline-flex items-center gap-[6px] bg-white/90 backdrop-blur-sm border border-[#dfe5ef] px-[12px] py-[7px]">
-                              <MapPin size={12} className="text-[#b8891e] shrink-0" />
-                              <span className="font-body font-medium text-[12px] text-[#0c1834] tracking-[-0.2px]">{property.zone}</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center gap-[8px]">
-                      <MapPin size={32} className="text-[#b8891e]" />
-                      <p className="font-body font-normal text-[14px] text-[#5a6478] leading-5 text-center">
-                        {[property.zone, "Ciudad de Panamá"].filter(Boolean).join(", ")}
-                      </p>
-                      <p className="font-body font-normal text-[12px] text-[rgba(115,123,140,0.6)] leading-4">
-                        Panamá, República de Panamá
-                      </p>
-                    </div>
-                  )}
+                <div className="flex flex-col gap-[12px]">
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Ubicación</h2>
+                  <div className="relative bg-white border border-[#dfe5ef] overflow-hidden h-[256px]">
+                    <PropertyMap
+                      lat={property.location.lat}
+                      lng={property.location.lng}
+                      title={property.title}
+                      className="w-full h-[256px]"
+                    />
+                    {property.zone && (
+                      <div className="absolute bottom-0 left-0 z-10 pointer-events-none">
+                        {neighborhoodSlug ? (
+                          <Link
+                            href={`/barrios/${neighborhoodSlug}/`}
+                            className="pointer-events-auto inline-flex items-center gap-[6px] bg-white/90 backdrop-blur-sm border border-[#dfe5ef] px-[12px] py-[7px] hover:bg-white transition-colors"
+                          >
+                            <MapPin size={12} className="text-[#b8891e] shrink-0" />
+                            <span className="font-body font-medium text-[12px] text-[#0c1834] tracking-[-0.2px]">{property.zone}</span>
+                          </Link>
+                        ) : (
+                          <div className="inline-flex items-center gap-[6px] bg-white/90 backdrop-blur-sm border border-[#dfe5ef] px-[12px] py-[7px]">
+                            <MapPin size={12} className="text-[#b8891e] shrink-0" />
+                            <span className="font-body font-medium text-[12px] text-[#0c1834] tracking-[-0.2px]">{property.zone}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
               )}
 
-            </div>
           </div>
-        </div>
         </div>
       </section>
 
       {/* Related properties */}
       {related.length > 0 && (
-        <section className="px-[30px] xl:px-[20px] 2xl:px-[120px] py-[80px]">
-          <div className="max-w-[1600px] mx-auto flex flex-col gap-[32px]">
+        <section className="px-[30px] xl:px-[20px] 2xl:px-[120px] py-[56px]">
+          <div className="max-w-[1600px] mx-auto flex flex-col gap-[24px]">
 
-            <h2 className="font-heading font-normal text-[clamp(28px,3vw,42px)] text-[#0c1834] tracking-[-1.2px] leading-none">
+            <h2 className="font-heading font-normal text-[clamp(24px,2.5vw,36px)] text-[#0c1834] tracking-[-1px] leading-none">
               Propiedades relacionadas
             </h2>
 
-            {/* Mobile: horizontal scroll */}
-            <div className="flex lg:hidden overflow-x-auto gap-[16px] pb-[8px] snap-x snap-mandatory">
+            {/* Mobile: 1-col */}
+            <div className="grid md:hidden grid-cols-1 gap-[16px]">
               {related.slice(0, 6).map((p) => (
-                <div key={p._id} className="w-full shrink-0 snap-start">
-                  <PropertyCard property={p} />
-                </div>
+                <PropertyCard key={p._id} property={p} />
               ))}
             </div>
 
-            {/* Desktop: 3-col grid */}
+            {/* Tablet: 2-col */}
+            <div className="hidden md:grid lg:hidden grid-cols-2 gap-5">
+              {related.slice(0, 6).map((p) => (
+                <PropertyCard key={p._id} property={p} />
+              ))}
+            </div>
+
+            {/* Desktop: 3-col */}
             <div className="hidden lg:grid grid-cols-3 gap-6">
               {related.slice(0, 6).map((p) => (
                 <PropertyCard key={p._id} property={p} />

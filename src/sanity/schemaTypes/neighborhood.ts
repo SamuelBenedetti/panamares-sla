@@ -33,11 +33,11 @@ export default defineType({
     }),
     defineField({
       name: "seoBlock",
-      title: "Descripción del barrio (80–120 palabras)",
+      title: "Descripción del barrio",
       type: "text",
       rows: 5,
       description:
-        "Texto visible en la página y usado como meta description. Describe el estilo de vida, ubicación y mercado inmobiliario del barrio.",
+        "Escribe un párrafo corto sobre el barrio: cómo es vivir ahí, qué lo hace especial, tipo de propiedades y ambiente. Este texto aparece en la página del barrio.",
     }),
   ],
   preview: {

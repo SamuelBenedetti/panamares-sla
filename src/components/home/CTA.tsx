@@ -36,7 +36,7 @@ export default function CTA() {
         </p>
 
         {/* Heading */}
-        <div className="flex flex-col items-center text-white text-[clamp(36px,4vw,60px)] tracking-[-0.03em]">
+        <div className="flex flex-col items-center text-white text-[clamp(36px,4vw,60px)] 2xl:text-[52px] tracking-[-0.03em]">
           <span className="font-heading font-normal not-italic leading-tight">
             ¿Listo para encontrar tu
           </span>

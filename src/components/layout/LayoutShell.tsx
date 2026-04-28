@@ -15,18 +15,24 @@ interface Props {
   children: React.ReactNode;
 }
 
-const FULLSCREEN_ROUTES = ["/buscar"];
+// Rutas sin navbar ni footer
+const FULLSCREEN_ROUTES: string[] = [];
+// Rutas con navbar pero sin footer
+const NO_FOOTER_ROUTES = ["/buscar"];
 
 export default function LayoutShell({ navCounts, footer, compareBar, children }: Props) {
   const pathname = usePathname();
   const isFullscreen = FULLSCREEN_ROUTES.some((r) => pathname.startsWith(r));
+  const isNoFooter = NO_FOOTER_ROUTES.some((r) => pathname.startsWith(r));
+  const hideChrome = isFullscreen;
+  const hideFooter = isFullscreen || isNoFooter;
 
   return (
     <>
-      {!isFullscreen && <Navbar navCounts={navCounts} />}
-      <main className={`min-h-screen ${isFullscreen ? "" : "pt-20"}`}>{children}</main>
-      {!isFullscreen && footer}
-      {!isFullscreen && compareBar}
+      {!hideChrome && <Navbar navCounts={navCounts} />}
+      <main className={`min-h-screen ${hideChrome ? "" : "pt-20"}`}>{children}</main>
+      {!hideFooter && footer}
+      {!hideChrome && compareBar}
     </>
   );
 }

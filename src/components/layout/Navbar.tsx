@@ -46,7 +46,6 @@ const BARRIOS_ITEMS = [
 ];
 
 const NAV_ITEMS_STATIC = [
-  { href: "/guias/", label: "Gu\u00edas", dropdown: null },
   { href: "/sobre-nosotros/", label: "Nosotros", dropdown: null },
 ];
 
@@ -122,7 +121,8 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const pathname = usePathname();
-  const isHome = pathname === "/" || pathname === "/buscar";
+  const isHome = pathname === "/";
+  const isBuscar = pathname.startsWith("/buscar");
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -143,13 +143,15 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
     closeTimer.current = setTimeout(() => setActiveDropdown(null), 150);
   }
 
-  const isLight = !isHome && !scrolled;
+  // /buscar siempre muestra el navbar oscuro (no hay scroll)
+  const effectiveScrolled = scrolled || isBuscar;
+  const isLight = !isHome && !isBuscar && !scrolled;
 
   const headerClass = isHome
-    ? scrolled
+    ? effectiveScrolled
       ? "bg-[#0c1834]/95 backdrop-blur-[10px] shadow-lg"
       : "bg-white/5 backdrop-blur-[10px]"
-    : scrolled
+    : effectiveScrolled
       ? "bg-[#0c1834]/95 backdrop-blur-[10px] shadow-lg"
       : "bg-white backdrop-blur-[10px] border-b border-[#dfdfdf] shadow-[0px_1px_2px_rgba(0,0,0,0.05)]";
 

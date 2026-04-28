@@ -46,7 +46,7 @@ export default function ListingPageHeader({ breadcrumbs, title, description, eye
               {eyebrow}
             </p>
           )}
-          <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] leading-none tracking-[-1.8px] max-w-[850px]">
+          <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] 2xl:text-[52px] text-[#0c1834] leading-none tracking-[-1.8px] max-w-[850px]">
             {title}
           </h1>
           {count != null && (

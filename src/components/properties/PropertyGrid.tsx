@@ -10,10 +10,10 @@ export default function PropertyGrid({ properties, cols = 3 }: { properties: Pro
     );
   }
 
-  const colClass = cols === 2 ? "xl:grid-cols-2" : "xl:grid-cols-3";
+  const colClass = cols === 2 ? "xl:grid-cols-2" : "xl:grid-cols-[31%,31%,31%]";
 
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 ${colClass} gap-3 md:gap-6`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${colClass} gap-3 md:gap-9`}>
       {properties.map((p, index) => (
         <PropertyCard key={p._id} property={p} priority={index === 0} />
       ))}

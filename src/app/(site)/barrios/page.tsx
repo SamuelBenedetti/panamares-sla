@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ChevronRight } from "lucide-react";
-import { getSlugByName, NEIGHBORHOODS } from "@/lib/neighborhoods";
+import { getSlugByName, NEIGHBORHOODS, NEIGHBORHOOD_IMAGES } from "@/lib/neighborhoods";
 import { sanityFetch } from "@/sanity/lib/client";
 import { activeZonesQuery, neighborhoodCountsQuery } from "@/sanity/lib/queries";
 import { breadcrumbSchema } from "@/lib/jsonld";
@@ -14,57 +14,6 @@ export const metadata: Metadata = {
   description:
     "Explora los mejores barrios de Ciudad de Panamá: Punta Pacífica, Punta Paitilla, Avenida Balboa, Costa del Este y más. Guía completa de propiedades por zona.",
   alternates: { canonical: `${BASE_URL}/barrios/` },
-};
-
-const NEIGHBORHOOD_IMAGES: Record<string, string> = {
-  "punta-pacifica":
-    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1920&h=800&fit=crop&q=85",
-  "punta-paitilla":
-    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&h=800&fit=crop&q=85",
-  "avenida-balboa":
-    "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&h=800&fit=crop&q=85",
-  "costa-del-este":
-    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=800&fit=crop&q=85",
-  "obarrio":
-    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=700&h=900&fit=crop",
-  "calle-50":
-    "https://images.unsplash.com/photo-1582063289852-62e3ba2747f8?w=700&h=900&fit=crop",
-  "san-francisco":
-    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&h=900&fit=crop",
-  "marbella":
-    "https://images.unsplash.com/photo-1567496898669-ee935f5f647a?w=700&h=900&fit=crop",
-  "albrook":
-    "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=700&h=900&fit=crop",
-  "coronado":
-    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700&h=900&fit=crop",
-  "coco-del-mar":
-    "https://images.unsplash.com/photo-1494526585095-c41746248156?w=700&h=900&fit=crop",
-  "santa-maria":
-    "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=700&h=900&fit=crop",
-  "el-cangrejo":
-    "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=700&h=900&fit=crop",
-  "altos-del-golf":
-    "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=700&h=900&fit=crop",
-  "via-porras":
-    "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=700&h=900&fit=crop",
-  "bella-vista":
-    "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=700&h=900&fit=crop",
-  "condado-del-rey":
-    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&h=900&fit=crop",
-  "amador":
-    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&h=900&fit=crop",
-  "los-andes":
-    "https://images.unsplash.com/photo-1448375240586-882707db888b?w=700&h=900&fit=crop",
-  "carrasquilla":
-    "https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?w=700&h=900&fit=crop",
-  "loma-alegre":
-    "https://images.unsplash.com/photo-1558036117-15d82a90b9b1?w=700&h=900&fit=crop",
-  "alto-del-chase":
-    "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=700&h=900&fit=crop",
-  "versalles":
-    "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=700&h=900&fit=crop",
-  "rio-mar":
-    "https://images.unsplash.com/photo-1473186578172-c141e6798cf4?w=700&h=900&fit=crop",
 };
 
 // Static avg price/m² per featured slider neighborhoods
@@ -93,14 +42,6 @@ const AVG_PRICE: Record<string, string> = {
   "coronado":       "$2,400/m²",
   "versalles":      "$2,400/m²",
   "rio-mar":        "$2,400/m²",
-};
-
-// Local hi-res images for featured slider
-const FEATURED_LOCAL_IMAGES: Record<string, string> = {
-  "punta-pacifica": "/barrio-punta-pacifica.png",
-  "punta-paitilla": "/barrio-punta-paitilla.png",
-  "avenida-balboa": "/barrio-avenida-balboa.png",
-  "costa-del-este": "/barrio-costa-del-este.png",
 };
 
 const FEATURED_SLUGS = [
@@ -138,7 +79,7 @@ export default async function BarriosPage() {
   const sliderNeighborhoods = FEATURED_SLUGS.map((slug) => ({
     slug,
     name: NEIGHBORHOODS.find((n) => n.slug === slug)?.name ?? slug,
-    image: FEATURED_LOCAL_IMAGES[slug] ?? NEIGHBORHOOD_IMAGES[slug],
+    image: NEIGHBORHOOD_IMAGES[slug],
     avgPrice: AVG_PRICE[slug],
     propertyCount: countBySlugs[slug] ?? undefined,
   }));
@@ -223,9 +164,7 @@ export default async function BarriosPage() {
             {/* Cards grid — aspect-[326/434] portrait, 4 cols on xl */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-[16px]">
               {rest.map((n) => {
-                const img =
-                  NEIGHBORHOOD_IMAGES[n.slug] ??
-                  NEIGHBORHOOD_IMAGES["punta-pacifica"];
+                const img = NEIGHBORHOOD_IMAGES[n.slug];
                 const price = AVG_PRICE[n.slug];
 
                 return (
@@ -304,7 +243,7 @@ export default async function BarriosPage() {
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
               ¿No sabes por dónde empezar?
             </p>
-            <h2 className="font-heading font-normal text-[clamp(32px,4vw,54px)] text-white tracking-[-1.6px] leading-none">
+            <h2 className="font-heading font-normal text-[clamp(32px,4vw,54px)] 2xl:text-[46px] text-white tracking-[-1.6px] leading-none">
               Te ayudamos a elegir
             </h2>
             <p className="font-body font-light text-[15px] text-white/60 leading-relaxed max-w-[480px]">

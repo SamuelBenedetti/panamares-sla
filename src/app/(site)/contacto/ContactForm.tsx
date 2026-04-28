@@ -145,7 +145,7 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={status === "loading"}
-          className="bg-[#0d1835] w-full xl:w-auto inline-flex items-center justify-center xl:justify-start gap-[8px] px-[32px] py-[14px] font-body font-medium text-[14px] text-white tracking-[1.4px] uppercase hover:opacity-80 transition-opacity whitespace-nowrap disabled:opacity-50"
+          className="bg-[#0d1835] w-full xl:w-fit inline-flex items-center justify-center xl:justify-start gap-[8px] px-[32px] py-[14px] font-body font-medium text-[14px] text-white tracking-[1.4px] uppercase hover:opacity-80 transition-opacity whitespace-nowrap disabled:opacity-50"
         >
           {status === "loading" ? "Enviando..." : "Enviar mensaje"}
           <Send size={14} />

@@ -121,11 +121,22 @@ function BuscarContent() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#0d1835] -mt-20 overflow-hidden">
+    <div className="relative h-[calc(100vh-80px)] bg-[#0d1835] overflow-hidden">
 
-      {/* Palm decorative — right always visible, left desktop only */}
+      {/* Close — volver al inicio */}
+      <a
+        href="/"
+        className="absolute top-[20px] right-[24px] z-20 flex items-center gap-[8px] border border-white/20 px-[14px] py-[8px] text-white/50 hover:text-white hover:border-white/60 transition-all duration-150 font-body text-[13px] font-medium"
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+          <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
+        <span className="hidden sm:inline">Volver al inicio</span>
+      </a>
+
+      {/* Palm decorative */}
       <div
-        className="hidden xl:block absolute -bottom-[100px] -left-[30px] pointer-events-none select-none w-[420px] h-[75vh]"
+        className="hidden xl:block absolute bottom-0 -left-[30px] pointer-events-none select-none w-[420px] h-[70%]"
         style={{
           backgroundImage: "url('/palm-left.svg')",
           backgroundSize: "contain",
@@ -134,7 +145,7 @@ function BuscarContent() {
         }}
       />
       <div
-        className="absolute -bottom-[100px] -right-[120px] pointer-events-none select-none w-[280px] xl:w-[480px] h-[65vh] xl:h-[75vh] scale-x-[-1]"
+        className="absolute bottom-0 -right-[80px] pointer-events-none select-none w-[280px] xl:w-[480px] h-[60%] xl:h-[70%] scale-x-[-1]"
         style={{
           backgroundImage: "url('/palm-left.svg')",
           backgroundSize: "contain",
@@ -143,44 +154,42 @@ function BuscarContent() {
         }}
       />
 
-      {/*
-        Section (304:761)
-        Mobile:  pt-[200px] pb-[120px]
-        Desktop: pt-[300px] pb-[120px]
-      */}
       <div
-        className={`relative z-10 w-full flex flex-row items-start justify-center
-          pt-[200px] pb-[120px] xl:pt-[300px]
+        className={`relative z-10 h-full w-full flex flex-col items-center justify-center
           px-[30px] xl:px-[20px] 2xl:px-[120px]
           transition-opacity duration-[180ms]
           ${fading ? "opacity-0" : "opacity-100"}`}
       >
-        <div className="w-full max-w-[1400px] flex flex-col items-center gap-[130px] xl:gap-[70px]">
+        <div className="w-full max-w-[1400px] flex flex-col items-center gap-[48px] md:gap-[56px] lg:gap-[64px]">
 
-          <div className="w-full flex flex-col items-center gap-[70px]">
+          <div className="w-full flex flex-col items-center gap-[40px] md:gap-[48px] lg:gap-[52px]">
 
-            <div className="w-full flex flex-col items-center gap-[30px] text-center">
+            <div className="w-full flex flex-col items-center gap-[20px] md:gap-[26px] text-center">
 
               {/* Step indicator */}
               <div className="flex items-center justify-center gap-[10px]">
-                <span className="font-body font-medium text-[12px] leading-[16px] text-white tracking-[5px] uppercase">
+                <span className="font-body font-medium text-[11px] md:text-[12px] leading-[16px] text-white tracking-[5px] uppercase">
                   paso {current.paso}
                 </span>
-                <span className="font-body font-medium text-[12px] leading-[16px] text-[#5a6478] tracking-[5px] uppercase">
+                <span className="font-body font-medium text-[11px] md:text-[12px] leading-[16px] text-[#5a6478] tracking-[5px] uppercase">
                   /04
                 </span>
               </div>
 
               {/* H1 */}
-              <h1 className="w-full flex flex-col items-center gap-[10px]">
+              <h1 className="w-full flex flex-col items-center gap-[6px] md:gap-[8px]">
                 <span
-                  className="font-heading font-light not-italic text-white text-[60px] xl:text-[130px] leading-[60px] xl:leading-[120px]"
+                  className="font-heading font-light not-italic text-white
+                    text-[60px] md:text-[68px] lg:text-[62px] xl:text-[95px] 2xl:text-[90px]
+                    leading-[56px] md:leading-[64px] lg:leading-[58px] xl:leading-[90px] 2xl:leading-[108px]"
                   style={{ letterSpacing: "-0.03em" }}
                 >
                   {current.heading[0]}
                 </span>
                 <span
-                  className="font-heading font-light italic text-white text-[63px] xl:text-[130px] leading-[60px] xl:leading-[120px]"
+                  className="font-heading font-light italic text-white
+                    text-[60px] md:text-[68px] lg:text-[62px] xl:text-[95px] 2xl:text-[90px]
+                    leading-[56px] md:leading-[64px] lg:leading-[58px] xl:leading-[90px] 2xl:leading-[108px]"
                   style={{ letterSpacing: "-0.03em" }}
                 >
                   {current.heading[1]}
@@ -189,12 +198,12 @@ function BuscarContent() {
             </div>
 
             {/* Options */}
-            <div className="flex flex-wrap items-center justify-center gap-[10px] xl:gap-[20px]">
+            <div className="flex flex-wrap items-center justify-center gap-[10px] md:gap-[12px] xl:gap-[16px]">
               {current.options.map((option) => (
                 <button
                   key={option}
                   onClick={() => select(option)}
-                  className="border border-[rgba(250,248,245,0.5)] px-[21px] py-[15px] font-body font-medium text-[16px] xl:text-[20px] leading-[20px] text-white hover:bg-[rgba(250,248,245,0.08)] hover:border-[rgba(250,248,245,0.9)] transition-all duration-150 whitespace-nowrap cursor-pointer"
+                  className="border border-[rgba(250,248,245,0.5)] px-[18px] md:px-[21px] py-[12px] md:py-[14px] font-body font-medium text-[15px] md:text-[16px] lg:text-[17px] xl:text-[18px] leading-[20px] text-white hover:bg-[rgba(250,248,245,0.08)] hover:border-[rgba(250,248,245,0.9)] transition-all duration-150 whitespace-nowrap cursor-pointer"
                 >
                   {option}
                 </button>
@@ -206,19 +215,19 @@ function BuscarContent() {
           <div className="flex items-center justify-center gap-[10px]">
             <button
               onClick={goBack}
-              className="flex items-center gap-[10px] px-[20px] py-[12px] font-body font-medium text-[20px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+              className="flex items-center gap-[8px] md:gap-[10px] px-[16px] md:px-[20px] py-[10px] md:py-[12px] font-body font-medium text-[15px] md:text-[16px] xl:text-[18px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden>
                 <path d="M13 4L7 10L13 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               Retornar
             </button>
             <button
               onClick={skip}
-              className="flex items-center gap-[10px] px-[20px] py-[12px] font-body font-medium text-[20px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+              className="flex items-center gap-[8px] md:gap-[10px] px-[16px] md:px-[20px] py-[10px] md:py-[12px] font-body font-medium text-[15px] md:text-[16px] xl:text-[18px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
             >
               Omitir
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden>
                 <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>

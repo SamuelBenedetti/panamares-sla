@@ -13,7 +13,7 @@ export default function FeaturedProperties({ properties }: { properties: Propert
           <p className="font-body font-medium text-[#5a6478] text-[12px] uppercase tracking-[5px]">
             Selección destacada
           </p>
-          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(50px,4vw,60px)] tracking-[-0.03em] leading-[1.1]">
+          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(50px,4vw,60px)] 2xl:text-[52px] tracking-[-0.03em] leading-[1.1]">
             Propiedades en Venta
           </h2>
         </div>
