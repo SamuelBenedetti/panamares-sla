@@ -154,12 +154,7 @@ function Stepper({ label, value, onChange }: { label: string; value: number; onC
   );
 }
 
-// ── FilterPanel (Figma-matched) ────────────────────────────────────────────────
-const CATEGORIA_LABELS: Record<string, string> = {
-  residencial: "Residencial",
-  comercial:   "Comercial",
-  otro:        "Otro",
-};
+
 
 function FilterPanel({
   filters, setFilters, onReset, hasActive, businessType, propertyTypes, neighborhoodSlug, neighborhoodLinks,
