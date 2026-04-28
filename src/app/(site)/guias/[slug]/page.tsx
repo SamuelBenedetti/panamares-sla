@@ -107,7 +107,7 @@ export default async function GuideDetailPage({ params }: Props) {
             )}
           </div>
 
-          <h1 className="font-heading font-normal text-[clamp(32px,4.5vw,60px)] text-white leading-none tracking-[-1.8px] max-w-[800px]">
+          <h1 className="font-heading font-normal text-[clamp(28px,3.8vw,52px)] text-white leading-none tracking-[-1.8px] max-w-[800px]">
             {guide.title}
           </h1>
 
@@ -228,7 +228,7 @@ export default async function GuideDetailPage({ params }: Props) {
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4">
               ¿Listo para dar el siguiente paso?
             </p>
-            <h2 className="font-heading font-normal text-[clamp(30px,4vw,50px)] text-white tracking-[-1.5px] leading-none">
+            <h2 className="font-heading font-normal text-[clamp(26px,3.2vw,42px)] text-white tracking-[-1.5px] leading-none">
               Habla con un asesor
             </h2>
             <p className="font-body font-light text-[15px] text-white/60 leading-relaxed max-w-[440px]">

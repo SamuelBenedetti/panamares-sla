@@ -31,12 +31,12 @@ export default function CTA() {
       <div className="relative z-10 flex flex-col gap-4 items-center text-center max-w-[1440px] mx-auto">
 
         {/* Eyebrow */}
-        <p className="font-body font-medium text-white/50 text-[12px] uppercase tracking-[5px]">
+        <p className="font-body font-medium text-white/50 text-[12px] md:text-[11px] uppercase tracking-[5px]">
           Contáctenos
         </p>
 
         {/* Heading */}
-        <div className="flex flex-col items-center text-white text-[clamp(28px,3vw,44px)] 2xl:text-[40px] tracking-[-0.03em]">
+        <div className="flex flex-col items-center text-white text-[clamp(28px,2.5vw,36px)] 2xl:text-[34px] tracking-[-0.03em]">
           <span className="font-heading font-normal not-italic leading-tight">
             ¿Listo para encontrar tu
           </span>
