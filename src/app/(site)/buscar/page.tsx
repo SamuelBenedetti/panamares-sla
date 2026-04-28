@@ -123,17 +123,6 @@ function BuscarContent() {
   return (
     <div className="relative h-[calc(100vh-80px)] bg-[#0d1835] overflow-hidden">
 
-      {/* Close — volver al inicio */}
-      <a
-        href="/"
-        className="absolute top-[20px] right-[24px] z-20 flex items-center gap-[8px] border border-white/20 px-[14px] py-[8px] text-white/50 hover:text-white hover:border-white/60 transition-all duration-150 font-body text-[13px] font-medium"
-      >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-          <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-        </svg>
-        <span className="hidden sm:inline">Volver al inicio</span>
-      </a>
-
       {/* Palm decorative */}
       <div
         className="hidden xl:block absolute bottom-0 -left-[30px] pointer-events-none select-none w-[420px] h-[70%]"
