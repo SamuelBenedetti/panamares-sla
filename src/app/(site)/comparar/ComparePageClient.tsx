@@ -7,6 +7,7 @@ import type { Property } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import { BASE_URL, whatsappLink } from "@/lib/config";
 import { formatPrice } from "@/lib/utils";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 
 type Tag = "oferta" | "economico" | "ubicacion" | "espacio";
 
@@ -85,36 +86,20 @@ export default function ComparePageClient({ properties }: Props) {
 
   return (
     <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[24px] pb-[60px] xl:pt-[28px] xl:pb-[80px]">
-      <div className="max-w-[1440px] mx-auto flex flex-col gap-[30px]">
+      <div className="max-w-[1440px] mx-auto flex flex-col gap-[20px]">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-[8px] flex-wrap">
-          <Link
-            href="/"
-            className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
-          >
-            Inicio
-          </Link>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
-            <path d="M6 12l4-4-4-4" stroke="#737b8c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span className="font-body font-medium text-[16px] text-[#5a6478] tracking-[-0.32px]">
-            Propiedades
-          </span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0">
-            <path d="M6 12l4-4-4-4" stroke="#737b8c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
-            Lista comparada de propiedades
-          </span>
-        </nav>
+        <Breadcrumb items={[
+          { label: "Inicio", href: "/" },
+          { label: "Comparar propiedades" },
+        ]} />
 
         {/* H1 + descripción */}
-        <div className="flex flex-col gap-[20px]">
-          <h1 className="font-heading font-normal text-[clamp(36px,4vw,60px)] text-[#0c1834] leading-none tracking-[-1.8px]">
+        <div className="flex flex-col gap-[12px]">
+          <h1 className="font-heading font-normal text-[clamp(28px,2.5vw,36px)] text-[#0c1834] leading-none tracking-[-1.8px]">
             Lista comparada de propiedades
           </h1>
-          <p className="font-body text-[16px] text-[#0c1834] leading-[22px]">
+          <p className="font-body text-[14px] text-[#0c1834] leading-[22px] max-w-[700px]">
             <span className="font-semibold">
               Compara lado a lado las propiedades que seleccionaste y visualiza rápidamente las diferencias en precio, tamaño, ubicación y potencial de valorización.
             </span>{" "}
@@ -132,14 +117,14 @@ export default function ComparePageClient({ properties }: Props) {
 
             {/* Tags */}
             <div className="flex flex-col gap-[12px]">
-              <p className="font-body font-medium text-[#5a6478] text-[16px] leading-[20px] tracking-[3.2px] uppercase">
+              <p className="font-body font-medium text-[#5a6478] text-[13px] leading-[20px] tracking-[3.2px] uppercase">
                 Tags
               </p>
               {TAGS.map((t) => (
                 <button
                   key={t.key}
                   onClick={() => setActiveTag(t.key)}
-                  className={`text-left px-[20px] h-[40px] font-body text-[16px] transition-colors border ${
+                  className={`text-left px-[16px] h-[36px] font-body text-[14px] transition-colors border ${
                     activeTag === t.key
                       ? "bg-[#727b8c] text-white border-[#727b8c] font-semibold"
                       : "border-[#e6e6e6] text-[rgba(12,25,53,0.3)] hover:border-[#0c1834] hover:text-[#0c1834]"
@@ -152,11 +137,11 @@ export default function ComparePageClient({ properties }: Props) {
 
             {/* Características labels — aligned with card data rows via IMG_H */}
             <div className="flex flex-col gap-[16px]">
-              <p className="font-body font-medium text-[#5a6478] text-[16px] leading-[20px] tracking-[3.2px] uppercase">
+              <p className="font-body font-medium text-[#5a6478] text-[13px] leading-[20px] tracking-[3.2px] uppercase">
                 Características
               </p>
               {rows.map((r) => (
-                <p key={r.label} className="font-body font-medium text-[#0c1935] text-[20px] leading-[30px]">
+                <p key={r.label} className="font-body font-medium text-[#0c1935] text-[15px] leading-[30px]">
                   {r.label}
                 </p>
               ))}
@@ -189,8 +174,8 @@ export default function ComparePageClient({ properties }: Props) {
                       sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                     />
                     {badge && (
-                      <div className={`absolute top-[13px] left-[12px] ${badge.bg} px-[10px] py-[4px] backdrop-blur-[2px]`}>
-                        <span className="font-body font-semibold text-white text-[20px] leading-[30px] uppercase">
+                      <div className={`absolute top-[13px] left-[12px] ${badge.bg} px-[8px] py-[3px] backdrop-blur-[2px]`}>
+                        <span className="font-body font-semibold text-white text-[14px] leading-[20px] uppercase">
                           {badge.label}
                         </span>
                       </div>
@@ -198,32 +183,32 @@ export default function ComparePageClient({ properties }: Props) {
                   </div>
 
                   {/* Data rows */}
-                  <div className="flex flex-col gap-[20px] p-[20px]">
+                  <div className="flex flex-col gap-[16px] p-[16px]">
                     {rows.map((r) => (
                       <div key={r.label} className="flex flex-col gap-0.5">
                         {/* Show label inline on mobile */}
                         <span className="font-body text-[11px] text-[#5a6478] uppercase tracking-[2px] lg:hidden">
                           {r.label}
                         </span>
-                        <span className="font-body font-semibold text-[#0c1834] text-[20px] text-center leading-[30px] tracking-[-0.2px]">
+                        <span className="font-body font-semibold text-[#0c1834] text-[15px] text-center leading-[30px] tracking-[-0.2px]">
                           {r.value(p)}
                         </span>
                       </div>
                     ))}
 
                     {/* Action buttons */}
-                    <div className="flex gap-[8px] pt-[8px]">
+                    <div className="flex gap-[8px] pt-[4px]">
                       <a
                         href={whatsappLink(waMsg)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center bg-[#0d1835] text-white font-body font-medium text-[16px] leading-[16px] px-[20px] py-[10px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] hover:bg-[#162444] transition-colors"
+                        className="flex-1 flex items-center justify-center bg-[#0d1835] text-white font-body font-medium text-[14px] leading-[14px] px-[16px] py-[9px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] hover:bg-[#162444] transition-colors"
                       >
                         Contáctenos
                       </a>
                       <Link
                         href={`/propiedades/${p.slug?.current}`}
-                        className="flex-1 flex items-center justify-center border border-[#dfe5ef] text-[#0c1834] font-body font-medium text-[16px] leading-[16px] px-[17px] py-[9px] hover:bg-gray-50 transition-colors"
+                        className="flex-1 flex items-center justify-center border border-[#dfe5ef] text-[#0c1834] font-body font-medium text-[14px] leading-[14px] px-[14px] py-[8px] hover:bg-gray-50 transition-colors"
                       >
                         Ver propiedad
                       </Link>
