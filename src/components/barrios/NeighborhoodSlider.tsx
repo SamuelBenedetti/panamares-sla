@@ -95,7 +95,7 @@ export default function NeighborhoodSlider({
           className={`absolute bottom-0 left-0 right-0 p-[20px] sm:p-[30px] flex flex-col gap-[8px] transition-opacity duration-500 ease-in-out pointer-events-none ${i === current ? "opacity-100" : "opacity-0"}`}
         >
           {/* "favorites" label + name — grouped tightly */}
-          <div className="flex flex-col gap-[6px]">
+          <div className="flex flex-col gap-[2px]">
             <div className="flex gap-[10px] items-start">
               <Star size={15} className="text-white/50 shrink-0" style={{ marginTop: "0.5px" }} />
               <span className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase" style={{ lineHeight: "16px" }}>
