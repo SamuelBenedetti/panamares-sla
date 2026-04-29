@@ -21,12 +21,18 @@ export default function PropertyMap({ lat, lng, title, className = "w-full h-[40
   useEffect(() => {
     const el = wrapperRef.current;
     if (!el) return;
-    // Start fetching 300px before the element reaches the viewport
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setShouldLoad(true);
           observer.disconnect();
+          // Defer Mapbox bundle load until browser is idle so it doesn't
+          // block TBT on pages where the map is immediately visible (desktop).
+          if ("requestIdleCallback" in window) {
+            (window as typeof window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void })
+              .requestIdleCallback(() => setShouldLoad(true), { timeout: 2000 });
+          } else {
+            setTimeout(() => setShouldLoad(true), 500);
+          }
         }
       },
       { rootMargin: "300px" }
