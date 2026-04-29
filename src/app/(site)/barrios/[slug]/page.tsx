@@ -327,7 +327,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
                     {properties.length}
                   </span>
                   <span className="font-heading font-normal text-[clamp(18px,2vw,30px)] text-[#0c1834] tracking-[-0.9px] leading-none">
-                    listings
+                    {properties.length === 1 ? "propiedad" : "propiedades"}
                   </span>
                 </div>
               </div>
