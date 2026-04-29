@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Mail, ArrowRight, ChevronRight, MessageCircle } from "lucide-react";
+import { Phone, Mail, ArrowRight, ChevronRight } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { agentBySlugQuery } from "@/sanity/lib/queries";
