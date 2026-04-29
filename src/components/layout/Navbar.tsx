@@ -9,14 +9,18 @@ import LangToggle from "./LangToggle";
 
 
 const COMPRAR_ITEMS_BASE = [
-  { label: "Ver todas",    href: "/propiedades-en-venta/",          typeKey: null },
-  { label: "Apartamentos", href: "/apartamentos-en-venta/",         typeKey: "apartamento" },
-  { label: "Casas",        href: "/casas-en-venta/",                typeKey: "casa" },
-  { label: "Penthouses",   href: "/penthouses-en-venta/",           typeKey: "penthouse" },
-  { label: "Oficinas",     href: "/oficinas-en-venta/",             typeKey: "oficina" },
-  { label: "Locales",      href: "/locales-comerciales-en-venta/",  typeKey: "local" },
-  { label: "Terrenos",     href: "/terrenos-en-venta/",             typeKey: "terreno" },
-  { label: "Casas de playa",     href: "/casas-de-playa-en-venta/", typeKey: "casa de playa" },
+  { label: "Ver todas",       href: "/propiedades-en-venta/",           typeKey: null },
+  { label: "Apartamentos",    href: "/apartamentos-en-venta/",          typeKey: "apartamento" },
+  { label: "Apartaestudios",  href: "/apartaestudios-en-venta/",        typeKey: "apartaestudio" },
+  { label: "Casas",           href: "/casas-en-venta/",                 typeKey: "casa" },
+  { label: "Penthouses",      href: "/penthouses-en-venta/",            typeKey: "penthouse" },
+  { label: "Oficinas",        href: "/oficinas-en-venta/",              typeKey: "oficina" },
+  { label: "Locales",         href: "/locales-comerciales-en-venta/",   typeKey: "local" },
+  { label: "Terrenos",        href: "/terrenos-en-venta/",              typeKey: "terreno" },
+  { label: "Casas de playa",  href: "/casas-de-playa-en-venta/",       typeKey: "casa de playa" },
+  { label: "Edificios",       href: "/edificios-en-venta/",             typeKey: "edificio" },
+  { label: "Fincas",          href: "/fincas-en-venta/",               typeKey: "finca" },
+  { label: "Lotes comerciales", href: "/lotes-comerciales-en-venta/",  typeKey: "lote comercial" },
 ];
 
 const ALQUILAR_ITEMS_BASE = [

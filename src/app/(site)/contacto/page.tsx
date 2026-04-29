@@ -1,9 +1,7 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { MapPin, Phone, Mail, Clock, Send, ChevronRight } from "lucide-react";
-
-const PropertyMap = dynamic(() => import("@/components/properties/PropertyMap"), { ssr: false });
+import ContactMap from "./ContactMap";
 import { contactPointSchema, breadcrumbSchema } from "@/lib/jsonld";
 import {
   BASE_URL,
@@ -186,12 +184,7 @@ export default function ContactoPage() {
                   Nuestra ubicación
                 </p>
                 <div className="border border-[#dfe5ef] overflow-hidden h-[260px]">
-                  <PropertyMap
-                    lat={PANAMARES_LAT}
-                    lng={PANAMARES_LNG}
-                    title={`Panamares — ${PANAMARES_STREET}, ${PANAMARES_LOCALITY}`}
-                    className="w-full h-[260px]"
-                  />
+                  <ContactMap lat={PANAMARES_LAT} lng={PANAMARES_LNG} title={`Panamares — ${PANAMARES_STREET}, ${PANAMARES_LOCALITY}`} />
                 </div>
               </div>
 
