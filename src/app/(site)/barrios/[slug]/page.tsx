@@ -10,7 +10,6 @@ import { formatPrice } from "@/lib/utils";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { allNeighborhoodContentQuery, neighborhoodContentQuery, propertiesByNeighborhoodQuery, zonePropertyZonesQuery } from "@/sanity/lib/queries";
-import { PortableText } from "@portabletext/react";
 import { ChevronRight, Home } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -249,12 +248,9 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
                 Sobre <em className="italic">{neighborhood.name}</em>
               </h2>
 
-              <div className="font-body text-[17px] xl:text-[20px] text-[#737b8c] leading-[1.7] mt-[32px] [&_p]:mb-4 [&_p:last-child]:mb-0">
-                {nbhContent.about
-                  ? <PortableText value={nbhContent.about} />
-                  : <p>{nbhContent.seoBlock}</p>
-                }
-              </div>
+              <p className="font-body text-[17px] xl:text-[20px] text-[#737b8c] leading-[1.7] mt-[32px]">
+                {nbhContent.seoBlock}
+              </p>
 
               {properties.length > 0 && (
                 <p className="font-body text-[15px] xl:text-[17px] text-[#737b8c] mt-[20px]">
