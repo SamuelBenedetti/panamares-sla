@@ -319,6 +319,9 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
               <Phone size={18} />
               Contáctenos
             </Link>
+            <div className="flex justify-center pt-1">
+              <LangToggle isLight={false} />
+            </div>
           </div>
         </div>
       </div>
