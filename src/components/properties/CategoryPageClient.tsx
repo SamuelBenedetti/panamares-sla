@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useCallback, useEffect, useTransition } from "react";
 import dynamic from "next/dynamic";
-import { X, ChevronDown, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import Link from "next/link";
 import PropertyGrid from "@/components/properties/PropertyGrid";
 import type { MapProperty } from "@/components/properties/PropertyMapMulti";
@@ -539,13 +539,14 @@ export default function CategoryPageClient({
               <>
                 <PropertyGrid properties={shown} cols={mapProps && mapProps.length > 0 ? 2 : 3} />
                 {remaining > 0 && (
-                  <div className="pt-[48px] sm:flex sm:justify-center">
+                  <div className="pt-[48px] flex justify-center">
                     <button
                       onClick={() => setVisible((v) => v + PAGE_SIZE)}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-[8px] border border-[#dfe5ef] hover:border-[#0c1834] px-[32px] py-[14px] font-body font-medium text-[13px] text-[#0c1834] tracking-[1.2px] uppercase transition-colors"
+                      className="inline-flex items-center gap-[8px] font-body font-medium text-[#5a6478] text-[14px] uppercase tracking-[0.35px] hover:text-[#0c1834] transition-colors"
                     >
                       Cargar más
-                      <span className="font-normal text-[#5a6478]">({remaining} restantes)</span>
+                      <span className="font-normal">({remaining} restantes)</span>
+                      <ArrowRight size={16} />
                     </button>
                   </div>
                 )}

@@ -29,6 +29,8 @@ export const NEIGHBORHOODS: NeighborhoodConfig[] = [
   { slug: "coronado",        name: "Coronado",        priority: "LOW" },
   { slug: "versalles",       name: "Versalles",       priority: "LOW" },
   { slug: "rio-mar",         name: "Río Mar",         priority: "LOW" },
+  { slug: "panama-pacifico", name: "Panamá Pacífico", priority: "MEDIUM" },
+  { slug: "farallon",        name: "Farallón",        priority: "MEDIUM" },
 ];
 
 /** Card images for homepage neighborhood cards */
@@ -57,14 +59,18 @@ export const NEIGHBORHOOD_IMAGES: Record<string, string> = {
   "coronado":        "/card-coronado.png",
   "versalles":       "/card-versalles.png",
   "rio-mar":         "/card-rio-mar.png",
+  "panama-pacifico": "/card-panama-pacifico.png",
+  "farallon":        "/card-farallon.png",
 };
 
 /** Hero/slider images for barrios pages */
 export const NEIGHBORHOOD_HERO_IMAGES: Record<string, string> = {
-  "punta-pacifica": "/card-punta-pacifica.png",
-  "punta-paitilla": "/card-punta-paitilla.png",
-  "avenida-balboa": "/card-avenida-balboa.png",
-  "costa-del-este": "/card-costa-del-este.png",
+  "punta-pacifica":  "/card-punta-pacifica.png",
+  "punta-paitilla":  "/card-punta-paitilla.png",
+  "avenida-balboa":  "/card-avenida-balboa.png",
+  "costa-del-este":  "/card-costa-del-este.png",
+  "panama-pacifico": "/card-panama-pacifico.png",
+  "farallon":        "/card-farallon.png",
 };
 
 export function getNeighborhoodBySlug(
