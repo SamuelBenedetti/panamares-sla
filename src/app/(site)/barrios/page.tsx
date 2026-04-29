@@ -4,7 +4,9 @@ import Image from "next/image";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { getSlugByName, NEIGHBORHOODS, NEIGHBORHOOD_IMAGES } from "@/lib/neighborhoods";
 import { sanityFetch } from "@/sanity/lib/client";
-import { activeZonesQuery, neighborhoodCountsQuery } from "@/sanity/lib/queries";
+import { urlFor } from "@/sanity/lib/image";
+import { activeZonesQuery, neighborhoodCountsQuery, allNeighborhoodContentQuery } from "@/sanity/lib/queries";
+import type { SanityImage } from "@/lib/types";
 import { breadcrumbSchema } from "@/lib/jsonld";
 import { BASE_URL } from "@/lib/config";
 import NeighborhoodSlider from "@/components/barrios/NeighborhoodSlider";
@@ -52,7 +54,7 @@ const FEATURED_SLUGS = [
 ];
 
 export default async function BarriosPage() {
-  const [activeZoneNames, counts] = await Promise.all([
+  const [activeZoneNames, counts, allNbhContent] = await Promise.all([
     sanityFetch<string[]>(activeZonesQuery),
     sanityFetch<{
       puntaPacifica: number;
@@ -60,7 +62,14 @@ export default async function BarriosPage() {
       avenidaBalboa: number;
       costaDelEste: number;
     }>(neighborhoodCountsQuery),
+    sanityFetch<Array<{ slug: string; avgPricePerM2: number | null; photo?: SanityImage }>>(allNeighborhoodContentQuery),
   ]);
+
+  const photoMap = new Map(
+    allNbhContent
+      .filter((n) => n.photo)
+      .map((n) => [n.slug, urlFor(n.photo!).width(800).height(600).fit("crop").url()])
+  );
 
   const activeSlugs = new Set(
     activeZoneNames
@@ -78,7 +87,7 @@ export default async function BarriosPage() {
   const sliderNeighborhoods = FEATURED_SLUGS.map((slug) => ({
     slug,
     name: NEIGHBORHOODS.find((n) => n.slug === slug)?.name ?? slug,
-    image: NEIGHBORHOOD_IMAGES[slug],
+    image: photoMap.get(slug) ?? NEIGHBORHOOD_IMAGES[slug] ?? "/hero-bg.jpg",
     avgPrice: AVG_PRICE[slug],
     propertyCount: countBySlugs[slug] ?? undefined,
   }));
@@ -163,7 +172,7 @@ export default async function BarriosPage() {
             {/* Cards grid — aspect-[326/434] portrait, 4 cols on xl */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-[16px]">
               {rest.map((n) => {
-                const img = NEIGHBORHOOD_IMAGES[n.slug];
+                const img = photoMap.get(n.slug) ?? NEIGHBORHOOD_IMAGES[n.slug] ?? "/hero-bg.jpg";
                 const price = AVG_PRICE[n.slug];
 
                 return (

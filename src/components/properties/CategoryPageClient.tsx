@@ -419,8 +419,7 @@ export default function CategoryPageClient({
       result = result.filter((p) =>
         normalize(p.title ?? "").includes(q) ||
         normalize(p.propertyType ?? "").includes(q) ||
-        normalize(p.zone ?? "").includes(q) ||
-        normalize(p.buildingName ?? "").includes(q)
+        normalize(p.zone ?? "").includes(q)
       );
     }
 

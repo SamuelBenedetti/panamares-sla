@@ -1,6 +1,7 @@
-﻿import type { Property } from "@/lib/types";
+﻿import type { Property, SanityImage } from "@/lib/types";
 import { sanityFetch } from "@/sanity/lib/client";
-import { featuredPropertiesQuery, neighborhoodCountsQuery, propertyTypeCountsQuery } from "@/sanity/lib/queries";
+import { urlFor } from "@/sanity/lib/image";
+import { featuredPropertiesQuery, neighborhoodCountsQuery, propertyTypeCountsQuery, allNeighborhoodContentQuery } from "@/sanity/lib/queries";
 import type { Metadata } from "next";
 
 import CTA from "@/components/home/CTA";
@@ -20,11 +21,18 @@ export const metadata: Metadata = {
 
 
 export default async function HomePage() {
-  const [featured, typeCounts, neighborhoodCounts] = await Promise.all([
+  const [featured, typeCounts, neighborhoodCounts, allNbhContent] = await Promise.all([
     sanityFetch<Property[]>(featuredPropertiesQuery),
     sanityFetch<Record<string, number>>(propertyTypeCountsQuery),
     sanityFetch<Record<string, number>>(neighborhoodCountsQuery),
+    sanityFetch<Array<{ slug: string; photo?: SanityImage }>>(allNeighborhoodContentQuery),
   ]);
+
+  const neighborhoodPhotos = Object.fromEntries(
+    allNbhContent
+      .filter((n) => n.photo)
+      .map((n) => [n.slug, urlFor(n.photo!).width(700).height(930).fit("crop").url()])
+  );
 
   return (
     <>
@@ -32,7 +40,7 @@ export default async function HomePage() {
       <PropertyTypeShortcuts counts={typeCounts} />
       <FeaturedProperties properties={featured} />
 
-      <NeighborhoodCards counts={neighborhoodCounts} />
+      <NeighborhoodCards counts={neighborhoodCounts} photos={neighborhoodPhotos} />
       <TrustStrip />
       <CTA />
     </>

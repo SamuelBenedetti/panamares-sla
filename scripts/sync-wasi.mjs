@@ -51,6 +51,14 @@ const sanity = createClient({
   useCdn: false,
 });
 
+// ── Agent overrides ───────────────────────────────────────────────────────────
+// WASI returns these id_user values but the user records are inaccessible.
+// All 4 affected properties are assigned to Carlos Bustamante (173217).
+const AGENT_OVERRIDES = {
+  234976: 173217,
+  218300: 173217,
+};
+
 // ── Maps (same as import-wasi.mjs, kept in sync) ─────────────────────────────
 
 const TYPE_SLUG_PLURAL = {
@@ -288,11 +296,13 @@ function mapRented(prop) {
 }
 
 function mapCondition(prop) {
-  const raw = String(prop.condition ?? prop.id_condition ?? "").toLowerCase();
-  if (raw.includes("nuevo")   || raw === "1") return "nuevo";
-  if (raw.includes("plano")   || raw === "3") return "en_planos";
-  if (raw.includes("construc")|| raw === "4") return "en_construccion";
-  if (raw.includes("usado")   || raw === "2") return "usado";
+  // WASI returns id_property_condition (numeric) + property_condition_label (English string)
+  const id  = Number(prop.id_property_condition ?? prop.id_condition ?? 0);
+  const raw = String(prop.property_condition_label ?? prop.condition ?? "").toLowerCase();
+  if (id === 1 || raw.includes("new")    || raw.includes("nuevo"))   return "nuevo";
+  if (id === 3 || raw.includes("plan")   || raw.includes("plano"))   return "en_planos";
+  if (id === 4 || raw.includes("construc"))                           return "en_construccion";
+  // id=2 "Used" is WASI's default — agents rarely fill it consciously, skip it
   return undefined;
 }
 
@@ -661,7 +671,15 @@ async function buildWasiFields(prop) {
   const listingStatus = mapListingStatus(prop);
 
   const rawZone = String(prop.zone_label ?? prop.neighborhood ?? prop.barrio ?? "").trim();
-  const zone    = normalizeZone(rawZone) ?? rawZone;
+  // Fallback to city_label if zone_label is empty and city matches a known zone
+  const rawZoneFallback = !rawZone ? String(prop.city_label ?? "").trim() : rawZone;
+  const zone = normalizeZone(rawZoneFallback) ?? rawZoneFallback;
+
+  // Skip if still no recognizable zone after fallback
+  if (!rawZoneFallback || !normalizeZone(rawZoneFallback)) {
+    console.log(`  ⚠️  SKIP wasiId=${wasiId} — no zone_label (${prop.city_label ?? "?"}, ${prop.region_label ?? "?"})`);
+    return null;
+  }
 
   const price = parseNum(
     businessType === "alquiler"
@@ -683,9 +701,6 @@ async function buildWasiFields(prop) {
     zone:     zone || "Panamá",
     province: String(prop.province ?? prop.provincia ?? "Panamá").trim(),
 
-    ...(prop.building_name                                ? { buildingName:  String(prop.building_name).trim() } : {}),
-    ...(prop.tower                                        ? { tower:         String(prop.tower).trim() }         : {}),
-    ...(prop.model                                        ? { model:         String(prop.model).trim() }         : {}),
     ...(parseNum(prop.floor) !== null                     ? { floor:         parseNum(prop.floor) }              : {}),
     ...(parseNum(prop.building_date) !== null             ? { yearBuilt:     parseNum(prop.building_date) }      : {}),
     ...(mapCondition(prop)                                ? { condition:     mapCondition(prop) }                 : {}),
@@ -705,7 +720,8 @@ async function buildWasiFields(prop) {
 
   // Agent — link to wasi-agent-{id_user} if WASI provides one
   if (prop.id_user) {
-    fields.agent = { _type: "reference", _ref: `wasi-agent-${prop.id_user}` };
+    const resolvedUserId = AGENT_OVERRIDES[prop.id_user] ?? prop.id_user;
+    fields.agent = { _type: "reference", _ref: `wasi-agent-${resolvedUserId}` };
   }
 
   // Description → Portable Text
@@ -746,7 +762,7 @@ async function buildWasiFields(prop) {
         const url = photos[i].url_big ?? photos[i].url ?? photos[i].url_original;
         if (!url) continue;
         const img = await uploadImage(url, `wasi-${wasiId}-${i + 1}.jpg`);
-        if (img) gallery.push(img);
+        if (img) gallery.push({ ...img, _key: `g${i}` });
       }
       if (gallery.length > 0) fields.gallery = gallery;
     }

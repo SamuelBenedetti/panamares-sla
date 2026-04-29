@@ -47,7 +47,6 @@ const DEMO_PROPERTY: Property = {
   listingStatus: "activa",
   price: 485000,
   zone: "Punta Pacifica",
-  buildingName: "Luxe Residences",
   bedrooms: 3,
   bathrooms: 2,
   area: 151,
@@ -95,8 +94,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (property.bedrooms != null) statsParts.push(`${property.bedrooms} Hab`);
   if (property.area != null) statsParts.push(`${property.area}m²`);
   const statsStr = statsParts.length ? ` │ ${statsParts.join(", ")}` : "";
-  const buildingPrefix = property.buildingName ? `${property.buildingName} — ` : "";
-  const title = `${buildingPrefix}${ptLabel} en ${intent} en ${zone}${statsStr}`;
+  const title = `${ptLabel} en ${intent} en ${zone}${statsStr}`;
 
   const intentLabel = property.businessType === "venta" ? "en venta" : "en alquiler";
   const parts: string[] = [`${property.propertyType} ${intentLabel} en ${zone}, Panama City.`];
@@ -104,7 +102,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (property.bathrooms != null) parts.push(`${property.bathrooms} baños.`);
   if (property.area != null) parts.push(`${property.area} m².`);
   parts.push(`Precio: ${formatPrice(property.price)}${property.businessType === "alquiler" ? "/mes" : ""}.`);
-  if (property.buildingName) parts.push(`Edificio ${property.buildingName}.`);
   parts.push("Contáctanos hoy.");
   const description = parts.join(" ");
 

@@ -62,7 +62,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
   const [properties, nbhContent, allNbhContent, allZones] = await Promise.all([
     sanityFetch<Property[]>(propertiesByNeighborhoodQuery, { neighborhood: neighborhood.name }),
     sanityFetch<Neighborhood | null>(neighborhoodContentQuery, { slug: params.slug }),
-    sanityFetch<Array<{ slug: string; avgPricePerM2: number | null }>>(allNeighborhoodContentQuery),
+    sanityFetch<Array<{ slug: string; avgPricePerM2: number | null; photo?: import("@/lib/types").SanityImage }>>(allNeighborhoodContentQuery),
     sanityFetch<Array<{ zone: string }>>(zonePropertyZonesQuery),
   ]);
 
@@ -131,12 +131,18 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
   const zoneCounts = new Map<string, number>();
   for (const { zone } of allZones) zoneCounts.set(zone, (zoneCounts.get(zone) ?? 0) + 1);
 
+  const nearbyPhotoMap = new Map(
+    allNbhContent
+      .filter((n) => n.photo)
+      .map((n) => [n.slug, urlFor(n.photo!).width(700).height(930).fit("crop").url()])
+  );
+
   const nearbyCards: NeighborhoodCardData[] = nearby.map((n) => {
     const avg = avgPriceMap.get(n.slug);
     return {
       name:     n.name,
       slug:     n.slug,
-      image:    NEIGHBORHOOD_IMAGES[n.slug] ?? "/hero-bg.jpg",
+      image:    nearbyPhotoMap.get(n.slug) ?? "/hero-bg.jpg",
       avgPrice: avg ? `$${avg.toLocaleString("en-US")}/m²` : "",
       count:    zoneCounts.get(n.name) ?? 0,
     };

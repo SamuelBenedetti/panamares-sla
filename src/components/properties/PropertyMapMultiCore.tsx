@@ -89,7 +89,7 @@ export default function PropertyMapMultiCore({ properties, height = "h-full" }: 
 
     // Add pins
     withCoords.forEach((p) => {
-      const popup = new mapboxgl.Popup({ offset: 20, maxWidth: "260px" }).setHTML(
+      const popup = new mapboxgl.Popup({ offset: 25, maxWidth: "260px", anchor: "bottom" }).setHTML(
         buildPopupHtml(p)
       );
       new mapboxgl.Marker({ color: "#C9A84C" })

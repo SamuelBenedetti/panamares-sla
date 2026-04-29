@@ -9,7 +9,7 @@ import { getSlugByName } from "@/lib/neighborhoods";
 import CompareButton from "./CompareButton";
 
 export default function PropertyCard({ property, priority = false }: { property: Property; priority?: boolean }) {
-  const { title, slug, price, bedrooms, bathrooms, area, zone, buildingName, mainImage, recommended, fairPrice, rented } = property;
+  const { title, slug, price, bedrooms, bathrooms, area, zone, mainImage, recommended, fairPrice, rented } = property;
 
   const imageUrl = mainImage
     ? urlFor(mainImage).width(600).height(400).url()
@@ -83,11 +83,6 @@ export default function PropertyCard({ property, priority = false }: { property:
                 {zone}
               </p>
             )
-          )}
-          {buildingName && (
-            <p className="font-body font-normal text-[#5a6478] text-[12px] md:text-[12px] leading-normal line-clamp-1">
-              {buildingName}
-            </p>
           )}
         </div>
 

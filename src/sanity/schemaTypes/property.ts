@@ -242,24 +242,6 @@ export default defineType({
 
     // ─── Detalles ─────────────────────────────────────────────────────────────
     defineField({
-      name: "buildingName",
-      title: "Nombre del edificio / torre",
-      type: "string",
-      group: "details",
-    }),
-    defineField({
-      name: "tower",
-      title: "Torre",
-      type: "string",
-      group: "details",
-    }),
-    defineField({
-      name: "model",
-      title: "Modelo / Unidad",
-      type: "string",
-      group: "details",
-    }),
-    defineField({
       name: "floor",
       title: "Piso",
       type: "number",

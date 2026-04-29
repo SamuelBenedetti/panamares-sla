@@ -26,9 +26,6 @@ export interface Property {
   price: number;
   zone?: string;
   province?: string;
-  buildingName?: string;
-  tower?: string;
-  model?: string;
   floor?: number;
   yearBuilt?: number;
   condition?: string;

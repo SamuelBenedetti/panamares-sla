@@ -27,6 +27,8 @@ const COUNT_KEYS: Record<string, string> = {
 interface Props {
   /** Live counts from Sanity (homepage usage) */
   counts?: Record<string, number>;
+  /** Resolved photo URLs keyed by slug (homepage usage) */
+  photos?: Record<string, string>;
   /** Override full neighborhood data (barrios page usage) */
   neighborhoods?: NeighborhoodCardData[];
   eyebrow?: string;
@@ -36,6 +38,7 @@ interface Props {
 
 export default function NeighborhoodCards({
   counts,
+  photos,
   neighborhoods,
   eyebrow = "Los mejores barrios",
   heading = "Explorar por Ubicación",
@@ -44,6 +47,7 @@ export default function NeighborhoodCards({
   const items: NeighborhoodCardData[] = neighborhoods
     ?? DEFAULT_NEIGHBORHOODS.map((n) => ({
         ...n,
+        image: photos?.[n.slug] ?? n.image ?? "/hero-bg.jpg",
         count: counts?.[COUNT_KEYS[n.slug]] ?? 0,
       }));
 

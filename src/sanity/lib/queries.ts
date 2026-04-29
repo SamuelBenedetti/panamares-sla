@@ -14,7 +14,6 @@ const CARD_FIELDS = groq`
   bathrooms,
   area,
   zone,
-  buildingName,
   publishedAt,
   mainImage,
   location,
@@ -68,9 +67,6 @@ export const propertyBySlugQuery = groq`
     condition,
     floor,
     yearBuilt,
-    tower,
-    model,
-    buildingName,
     description,
     featuresInterior,
     featuresBuilding,
@@ -170,11 +166,12 @@ export const zonePropertyZonesQuery = groq`
   }
 `;
 
-// All neighborhood CMS docs (for avgPricePerM2)
+// All neighborhood CMS docs (for avgPricePerM2 + photo)
 export const allNeighborhoodContentQuery = groq`
   *[_type == "neighborhood"] {
     "slug": slug.current,
-    avgPricePerM2
+    avgPricePerM2,
+    photo
   }
 `;
 
@@ -271,11 +268,7 @@ export const agentBySlugQuery = groq`
     whatsapp,
     email,
     bio,
-    wasiUserId,
-    "properties": *[_type == "property" && listingStatus == "activa" && (
-      references(^._id) ||
-      (defined(^.wasiUserId) && agent._ref == "wasi-agent-" + string(^.wasiUserId))
-    )] | order(_createdAt desc) {
+    "properties": *[_type == "property" && listingStatus == "activa" && references(^._id)] | order(_createdAt desc) {
       ${CARD_FIELDS}
     }
   }

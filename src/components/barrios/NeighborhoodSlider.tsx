@@ -41,7 +41,7 @@ export default function NeighborhoodSlider({
 
   return (
     <div
-      className="relative w-full overflow-hidden bg-[#0c1935] h-[65vh] sm:h-auto sm:aspect-[16/8] xl:aspect-[1037/412]"
+      className="relative w-full overflow-hidden bg-[#0c1935] h-[65vh] sm:h-auto sm:aspect-[16/9] xl:aspect-[1037/480]"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
@@ -54,7 +54,7 @@ export default function NeighborhoodSlider({
           fill
           priority={i === 0}
           quality={90}
-          className={`object-cover object-[center_25%] transition-opacity duration-500 ease-in-out ${i === current ? "opacity-100" : "opacity-0"}`}
+          className={`object-cover object-[center_65%] transition-opacity duration-500 ease-in-out ${i === current ? "opacity-100" : "opacity-0"}`}
           sizes="100vw"
         />
       ))}
@@ -105,7 +105,7 @@ export default function NeighborhoodSlider({
             <div className="flex items-center w-full">
               <Link
                 href={`/barrios/${nb.slug}/`}
-                className="font-heading font-normal text-[38px] sm:text-[60px] text-white tracking-[-1.2px] sm:tracking-[-1.8px] leading-none sm:leading-normal hover:text-white/90 transition-colors pointer-events-auto"
+                className={`font-heading font-normal text-[38px] sm:text-[60px] text-white tracking-[-1.2px] sm:tracking-[-1.8px] leading-none sm:leading-normal hover:text-white/90 transition-colors ${i === current ? "pointer-events-auto" : "pointer-events-none"}`}
               >
                 {nb.name}
               </Link>
