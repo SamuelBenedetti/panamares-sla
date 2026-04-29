@@ -44,6 +44,12 @@ export default function PropertyGallery({ images, contained = false, propertyTit
   // Swipe support — shared ref for touch start X position
   const touchStartX = useRef<number | null>(null);
 
+  // Auto-scroll thumbnails to keep active thumb visible
+  const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  useEffect(() => {
+    thumbRefs.current[active]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+  }, [active]);
+
   function onTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
   }
@@ -240,6 +246,7 @@ export default function PropertyGallery({ images, contained = false, propertyTit
               {thumbs.map((img, i) => (
                 <button
                   key={i}
+                  ref={el => { thumbRefs.current[i] = el; }}
                   onClick={() => changeTo(i)}
                   className={`relative shrink-0 w-[52px] h-[52px] overflow-hidden transition-opacity ${
                     i === active ? "border-2 border-[#0d1835] p-[2px]" : "opacity-60 hover:opacity-100"
