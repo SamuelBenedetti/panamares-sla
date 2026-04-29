@@ -1,30 +1,35 @@
-import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-import {
-  Bed, Bath, Maximize, Car, MapPin, Phone,
-  Star, BadgeCheck, Banknote, KeyRound,
-} from "lucide-react";
-import { PortableText } from "@portabletext/react";
-import { sanityFetch } from "@/sanity/lib/client";
-import { propertyBySlugQuery, relatedPropertiesQuery } from "@/sanity/lib/queries";
-import { urlFor } from "@/sanity/lib/image";
-import { getCategorySlugFor } from "@/lib/categories";
-import type { Property } from "@/lib/types";
+import CTA from "@/components/home/CTA";
 import PropertyGallery from "@/components/properties/PropertyGallery";
-import PropertyMap from "@/components/properties/PropertyMap";
-import PropertyCard from "@/components/properties/PropertyCard";
 import PropertyGrid from "@/components/properties/PropertyGrid";
+import PropertyMap from "@/components/properties/PropertyMap";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ShareButton from "@/components/ui/ShareButton";
-import { listingSchema, breadcrumbSchema } from "@/lib/jsonld";
+import { CATEGORIES, getCategorySlugFor } from "@/lib/categories";
 import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
-import { formatPrice } from "@/lib/utils";
-import { CATEGORIES } from "@/lib/categories";
+import { breadcrumbSchema, listingSchema } from "@/lib/jsonld";
 import { getSlugByName } from "@/lib/neighborhoods";
-import CTA from "@/components/home/CTA";
+import type { Property } from "@/lib/types";
+import { formatPrice } from "@/lib/utils";
+import { sanityFetch } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
+import { propertyBySlugQuery, relatedPropertiesQuery } from "@/sanity/lib/queries";
+import { PortableText } from "@portabletext/react";
+import {
+  BadgeCheck, Banknote,
+  Bath,
+  Bed,
+  Car,
+  KeyRound,
+  MapPin,
+  Maximize,
+  Phone,
+  Star,
+} from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
 
 interface Props {
   params: { slug: string };

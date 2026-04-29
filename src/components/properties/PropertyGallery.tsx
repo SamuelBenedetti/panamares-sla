@@ -46,8 +46,13 @@ export default function PropertyGallery({ images, contained = false, propertyTit
 
   // Auto-scroll thumbnails to keep active thumb visible
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const thumbScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    thumbRefs.current[active]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    const thumb = thumbRefs.current[active];
+    const container = thumbScrollRef.current;
+    if (!thumb || !container) return;
+    const scrollTarget = thumb.offsetLeft - container.offsetWidth / 2 + thumb.offsetWidth / 2;
+    container.scrollTo({ left: scrollTarget, behavior: "smooth" });
   }, [active]);
 
   function onTouchStart(e: React.TouchEvent) {
@@ -80,8 +85,7 @@ export default function PropertyGallery({ images, contained = false, propertyTit
 
   if (images.length === 0) return null;
 
-  // Spec: up to 8 thumbnails
-  const thumbs = images.slice(0, 8);
+  const thumbs = images;
 
   return (
     <>
@@ -118,15 +122,17 @@ export default function PropertyGallery({ images, contained = false, propertyTit
             onTouchStart={onTouchStart}
             onTouchEnd={e => onTouchEnd(e, lbNext, lbPrev)}
           >
-            <Image
-              key={images[lightboxIdx].url}
-              src={images[lightboxIdx].url}
-              alt={images[lightboxIdx].alt ?? `${propertyTitle ?? "Propiedad"} — foto ${lightboxIdx + 1}`}
-              fill
-              className="object-contain"
-              sizes="100vw"
-              priority
-            />
+            {images.map((img, i) => (
+              <Image
+                key={img.url}
+                src={img.url}
+                alt={img.alt ?? `${propertyTitle ?? "Propiedad"} — foto ${i + 1}`}
+                fill
+                priority={i === 0}
+                className={`object-contain transition-opacity duration-500 ease-in-out ${i === lightboxIdx ? "opacity-100" : "opacity-0"}`}
+                sizes="100vw"
+              />
+            ))}
           </div>
 
           {/* Desktop side arrows — hidden on mobile */}
@@ -242,7 +248,7 @@ export default function PropertyGallery({ images, contained = false, propertyTit
           </div>
 
           {images.length > 1 && (
-            <div className="flex gap-[8px] overflow-x-auto pb-1">
+            <div ref={thumbScrollRef} className="flex gap-[8px] overflow-x-hidden max-w-[592px] w-full">
               {thumbs.map((img, i) => (
                 <button
                   key={i}
