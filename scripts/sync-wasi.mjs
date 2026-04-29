@@ -190,6 +190,12 @@ const ZONE_MAP = {
   "Versalles":        "Versalles",
   "Rio Mar":          "Río Mar",
   "Río Mar":          "Río Mar",
+  "Panamá Pacifico":  "Panamá Pacífico",
+  "Panama Pacifico":  "Panamá Pacífico",
+  "Farallón":         "Farallón",
+  "Farallon":         "Farallón",
+  "Río Hato":         "Farallón",
+  "Rio Hato":         "Farallón",
 };
 
 const ZONE_TO_SLUG = {
@@ -217,6 +223,8 @@ const ZONE_TO_SLUG = {
   "Coronado":        "coronado",
   "Versalles":       "versalles",
   "Río Mar":         "rio-mar",
+  "Panamá Pacífico": "panama-pacifico",
+  "Farallón":        "farallon",
 };
 
 // ── Field helpers ─────────────────────────────────────────────────────────────

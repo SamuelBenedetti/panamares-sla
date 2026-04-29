@@ -20,7 +20,7 @@ export default function FeaturedProperties({ properties }: { properties: Propert
 
         {/* Grid */}
         {properties.length > 0 ? (
-          <PropertyGrid properties={properties} cols={3} gap="tight" />
+          <PropertyGrid properties={properties} cols={4} gap="tight" />
         ) : (
           <p className="font-body text-[#5a6478] text-center py-12">
             Pronto agregaremos propiedades destacadas.

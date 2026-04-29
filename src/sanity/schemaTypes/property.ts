@@ -42,6 +42,8 @@ const ZONE_TO_SLUG: Record<string, string> = {
   "Coronado":        "coronado",
   "Versalles":       "versalles",
   "Río Mar":         "rio-mar",
+  "Panamá Pacífico": "panama-pacifico",
+  "Farallón":        "farallon",
 };
 
 function slugifyFallback(str: string): string {
@@ -92,6 +94,8 @@ const NEIGHBORHOODS = [
   "Coronado",
   "Versalles",
   "Río Mar",
+  "Panamá Pacífico",
+  "Farallón",
 ];
 
 export default defineType({

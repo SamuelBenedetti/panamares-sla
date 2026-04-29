@@ -40,7 +40,7 @@ export const propertiesByIdsQuery = groq`
 
 // Homepage — featured active listings
 export const featuredPropertiesQuery = groq`
-  *[_type == "property" && featured == true && listingStatus == "activa"] | order(_createdAt desc) [0...6] {
+  *[_type == "property" && featured == true && listingStatus == "activa"] | order(_createdAt desc) [0...8] {
     ${CARD_FIELDS}
   }
 `;
