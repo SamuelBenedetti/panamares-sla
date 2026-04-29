@@ -61,7 +61,7 @@ export default async function AgentProfilePage({ params }: Props) {
       <WhatsAppButton message={waMessage} variant="floating" />
 
       {/* ── Hero ── */}
-      <section className="bg-[#0c1834] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[110px] xl:pt-[140px] pb-[80px] xl:pb-[112px]">
+      <section className="bg-[#0c1834] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-[60px]">
         <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col gap-[20px] max-w-[768px]">
 
