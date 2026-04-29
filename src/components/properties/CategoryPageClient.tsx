@@ -203,7 +203,7 @@ function FilterPanel({
             className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
               businessType === "venta"
                 ? "bg-[#0c1834] text-white"
-                : "bg-[rgba(12,25,53,0.1)] text-[rgba(12,24,52,0.4)] hover:bg-[rgba(12,25,53,0.15)]"
+                : "bg-[rgba(12,25,53,0.1)] text-[#5a6478] hover:bg-[rgba(12,25,53,0.15)]"
             }`}
           >
             Comprar
@@ -213,7 +213,7 @@ function FilterPanel({
             className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
               businessType === "alquiler"
                 ? "bg-[#0c1834] text-white"
-                : "bg-[rgba(12,25,53,0.1)] text-[rgba(12,24,52,0.4)] hover:bg-[rgba(12,25,53,0.15)]"
+                : "bg-[rgba(12,25,53,0.1)] text-[#5a6478] hover:bg-[rgba(12,25,53,0.15)]"
             }`}
           >
             Alquilar
@@ -297,7 +297,9 @@ function FilterPanel({
           Tipo de propiedad
         </p>
         <div className="relative">
+          <label htmlFor="filter-type" className="sr-only">Tipo de propiedad</label>
           <select
+            id="filter-type"
             value={filters.propertyType}
             onChange={(e) => set("propertyType", e.target.value)}
             className="appearance-none bg-[#f9f9f9] border border-[#e6e6e6] h-[40px] w-full pl-[17.5px] pr-[40px] font-body text-[14px] text-[#0c1935] focus:outline-none focus:border-[#0c1935] transition-colors cursor-pointer"
@@ -321,7 +323,9 @@ function FilterPanel({
             Barrio
           </p>
           <div className="relative">
+            <label htmlFor="filter-barrio" className="sr-only">Barrio</label>
             <select
+              id="filter-barrio"
               value={filters.neighborhoodFilter}
               onChange={(e) => set("neighborhoodFilter", e.target.value)}
               className="appearance-none bg-[#f9f9f9] border border-[#e6e6e6] h-[40px] w-full pl-[17.5px] pr-[40px] font-body text-[14px] text-[#0c1935] focus:outline-none focus:border-[#0c1935] transition-colors cursor-pointer"

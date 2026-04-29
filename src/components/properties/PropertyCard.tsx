@@ -74,12 +74,12 @@ export default function PropertyCard({ property, priority = false }: { property:
             zoneSlug ? (
               <Link
                 href={`/barrios/${zoneSlug}/`}
-                className="font-body font-normal text-[#5a6478] text-[14px] lg:text-[12px] leading-normal line-clamp-1 hover:text-[#0c1834] transition-colors"
+                className="font-body font-normal text-[#5a6478] text-[14px] lg:text-[12px] leading-normal line-clamp-1 hover:text-[#0c1834] transition-colors py-[3px] inline-block"
               >
                 {zone}
               </Link>
             ) : (
-              <p className="font-body font-normal text-[#5a6478] text-[14px] lg:text-[12px] leading-normal line-clamp-1">
+              <p className="font-body font-normal text-[#5a6478] text-[14px] lg:text-[12px] leading-normal line-clamp-1 py-[3px]">
                 {zone}
               </p>
             )
