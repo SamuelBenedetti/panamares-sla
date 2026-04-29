@@ -4,6 +4,10 @@ import { useEffect } from "react";
 
 export default function GoogleTranslate() {
   useEffect(() => {
+    // Only load the GT script when the user has already chosen English.
+    // Spanish visitors (the default) never touch Google's servers.
+    if (!document.cookie.includes("googtrans=/es/en")) return;
+
     const win = window as typeof window & {
       googleTranslateElementInit?: () => void;
       google?: { translate: { TranslateElement: new (...args: unknown[]) => unknown } };
