@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, X, Phone } from "lucide-react";
 import { whatsappLink } from "@/lib/config";
@@ -116,9 +116,7 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
     ...NAV_ITEMS_STATIC,
   ];
 
-  const [scrolled, setScrolled] = useState(() =>
-    typeof window !== "undefined" ? window.scrollY > 40 : false
-  );
+  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
@@ -128,6 +126,16 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
   const isBarrioSlug = pathname.startsWith("/barrios/") && pathname !== "/barrios/";
   const isTransparentTop = isHome || isBarrioSlug;
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useLayoutEffect(() => {
+    const saved = sessionStorage.getItem("nav-scrolled");
+    if (saved !== null) {
+      sessionStorage.removeItem("nav-scrolled");
+      setScrolled(saved === "1");
+    } else {
+      setScrolled(window.scrollY > 40);
+    }
+  }, []);
 
   useEffect(() => {
     function onScroll() { setScrolled(window.scrollY > 40); }

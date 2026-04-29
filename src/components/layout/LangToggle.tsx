@@ -16,6 +16,7 @@ function applyLang(lang: "es" | "en") {
     document.cookie = `googtrans=; path=/; ${exp}`;
     document.cookie = `googtrans=; path=/; domain=.${window.location.hostname}; ${exp}`;
   }
+  sessionStorage.setItem("nav-scrolled", window.scrollY > 40 ? "1" : "0");
   window.location.reload();
 }
 
