@@ -29,6 +29,8 @@ interface Props {
   counts?: Record<string, number>;
   /** Resolved photo URLs keyed by slug (homepage usage) */
   photos?: Record<string, string>;
+  /** Formatted price strings keyed by slug, e.g. "$3,200/m²" */
+  prices?: Record<string, string>;
   /** Override full neighborhood data (barrios page usage) */
   neighborhoods?: NeighborhoodCardData[];
   eyebrow?: string;
@@ -39,6 +41,7 @@ interface Props {
 export default function NeighborhoodCards({
   counts,
   photos,
+  prices,
   neighborhoods,
   eyebrow = "Los mejores barrios",
   heading = "Explorar por Ubicación",
@@ -48,6 +51,7 @@ export default function NeighborhoodCards({
     ?? DEFAULT_NEIGHBORHOODS.map((n) => ({
         ...n,
         image: photos?.[n.slug] ?? n.image ?? "/hero-bg.jpg",
+        avgPrice: prices?.[n.slug] ?? n.avgPrice,
         count: counts?.[COUNT_KEYS[n.slug]] ?? 0,
       }));
 

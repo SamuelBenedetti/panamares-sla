@@ -25,7 +25,7 @@ export default async function HomePage() {
     sanityFetch<Property[]>(featuredPropertiesQuery),
     sanityFetch<Record<string, number>>(propertyTypeCountsQuery),
     sanityFetch<Record<string, number>>(neighborhoodCountsQuery),
-    sanityFetch<Array<{ slug: string; photo?: SanityImage }>>(allNeighborhoodContentQuery),
+    sanityFetch<Array<{ slug: string; avgPricePerM2?: number | null; photo?: SanityImage }>>(allNeighborhoodContentQuery),
   ]);
 
   const neighborhoodPhotos = Object.fromEntries(
@@ -34,13 +34,19 @@ export default async function HomePage() {
       .map((n) => [n.slug, urlFor(n.photo!).width(700).height(930).fit("crop").url()])
   );
 
+  const neighborhoodPrices = Object.fromEntries(
+    allNbhContent
+      .filter((n) => n.avgPricePerM2)
+      .map((n) => [n.slug, `$${n.avgPricePerM2!.toLocaleString("en-US")}/m²`])
+  );
+
   return (
     <>
       <Hero />
       <PropertyTypeShortcuts counts={typeCounts} />
       <FeaturedProperties properties={featured} />
 
-      <NeighborhoodCards counts={neighborhoodCounts} photos={neighborhoodPhotos} />
+      <NeighborhoodCards counts={neighborhoodCounts} photos={neighborhoodPhotos} prices={neighborhoodPrices} />
       <TrustStrip />
       <CTA />
     </>

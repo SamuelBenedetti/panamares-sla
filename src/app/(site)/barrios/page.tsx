@@ -5,7 +5,7 @@ import { ArrowRight, ChevronRight } from "lucide-react";
 import { getSlugByName, NEIGHBORHOODS, NEIGHBORHOOD_IMAGES } from "@/lib/neighborhoods";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { activeZonesQuery, neighborhoodCountsQuery, allNeighborhoodContentQuery } from "@/sanity/lib/queries";
+import { activeZonesQuery, zonePropertyZonesQuery, allNeighborhoodContentQuery } from "@/sanity/lib/queries";
 import type { SanityImage } from "@/lib/types";
 import { breadcrumbSchema } from "@/lib/jsonld";
 import { BASE_URL } from "@/lib/config";
@@ -18,32 +18,18 @@ export const metadata: Metadata = {
   alternates: { canonical: `${BASE_URL}/barrios/` },
 };
 
-// Static avg price/m² per featured slider neighborhoods
-const AVG_PRICE: Record<string, string> = {
-  "punta-pacifica": "$3,200/m²",
-  "punta-paitilla": "$3,000/m²",
-  "avenida-balboa": "$2,800/m²",
-  "costa-del-este": "$2,500/m²",
-  "obarrio":        "$3,200/m²",
-  "calle-50":       "$2,900/m²",
-  "san-francisco":  "$2,600/m²",
-  "bella-vista":    "$2,400/m²",
-  "albrook":        "$2,400/m²",
-  "coco-del-mar":   "$2,400/m²",
-  "santa-maria":    "$2,400/m²",
-  "marbella":       "$2,400/m²",
-  "el-cangrejo":    "$2,400/m²",
-  "altos-del-golf": "$2,400/m²",
-  "via-porras":     "$2,400/m²",
-  "condado-del-rey":"$2,400/m²",
-  "amador":         "$2,400/m²",
-  "los-andes":      "$2,400/m²",
-  "carrasquilla":   "$2,400/m²",
-  "loma-alegre":    "$2,400/m²",
-  "alto-del-chase": "$2,400/m²",
-  "coronado":       "$2,400/m²",
-  "versalles":      "$2,400/m²",
-  "rio-mar":        "$2,400/m²",
+// Static avg price/m² fallback (used when Sanity doc has no avgPricePerM2)
+const AVG_PRICE_FALLBACK: Record<string, string> = {
+  "punta-pacifica":  "$3,200/m²",
+  "punta-paitilla":  "$3,000/m²",
+  "avenida-balboa":  "$2,800/m²",
+  "costa-del-este":  "$2,500/m²",
+  "obarrio":         "$3,200/m²",
+  "calle-50":        "$2,900/m²",
+  "san-francisco":   "$2,600/m²",
+  "bella-vista":     "$2,400/m²",
+  "panama-pacifico": "$2,000/m²",
+  "farallon":        "$1,800/m²",
 };
 
 const FEATURED_SLUGS = [
@@ -54,14 +40,9 @@ const FEATURED_SLUGS = [
 ];
 
 export default async function BarriosPage() {
-  const [activeZoneNames, counts, allNbhContent] = await Promise.all([
+  const [activeZoneNames, allZones, allNbhContent] = await Promise.all([
     sanityFetch<string[]>(activeZonesQuery),
-    sanityFetch<{
-      puntaPacifica: number;
-      puntaPaitilla: number;
-      avenidaBalboa: number;
-      costaDelEste: number;
-    }>(neighborhoodCountsQuery),
+    sanityFetch<{ zone: string }[]>(zonePropertyZonesQuery),
     sanityFetch<Array<{ slug: string; avgPricePerM2: number | null; photo?: SanityImage }>>(allNeighborhoodContentQuery),
   ]);
 
@@ -77,19 +58,27 @@ export default async function BarriosPage() {
       .filter((s): s is string => s !== undefined)
   );
 
-  const countBySlugs: Record<string, number> = {
-    "punta-pacifica": counts.puntaPacifica,
-    "punta-paitilla": counts.puntaPaitilla,
-    "avenida-balboa": counts.avenidaBalboa,
-    "costa-del-este": counts.costaDelEste,
-  };
+  // Count active properties per slug from all zones
+  const countBySlug: Record<string, number> = {};
+  for (const { zone } of allZones) {
+    const slug = getSlugByName(zone);
+    if (slug) countBySlug[slug] = (countBySlug[slug] ?? 0) + 1;
+  }
+
+  // Price map: Sanity avgPricePerM2 takes priority over static fallback
+  const priceBySlug: Record<string, string> = { ...AVG_PRICE_FALLBACK };
+  for (const { slug, avgPricePerM2 } of allNbhContent) {
+    if (avgPricePerM2) {
+      priceBySlug[slug] = `$${avgPricePerM2.toLocaleString("en-US")}/m²`;
+    }
+  }
 
   const sliderNeighborhoods = FEATURED_SLUGS.map((slug) => ({
     slug,
     name: NEIGHBORHOODS.find((n) => n.slug === slug)?.name ?? slug,
     image: photoMap.get(slug) ?? NEIGHBORHOOD_IMAGES[slug] ?? "/hero-bg.jpg",
-    avgPrice: AVG_PRICE[slug],
-    propertyCount: countBySlugs[slug] ?? undefined,
+    avgPrice: priceBySlug[slug],
+    propertyCount: countBySlug[slug] ?? undefined,
   }));
 
   const rest = NEIGHBORHOODS.filter((n) => !FEATURED_SLUGS.includes(n.slug));
@@ -173,7 +162,8 @@ export default async function BarriosPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-[16px]">
               {rest.map((n) => {
                 const img = photoMap.get(n.slug) ?? NEIGHBORHOOD_IMAGES[n.slug] ?? "/hero-bg.jpg";
-                const price = AVG_PRICE[n.slug];
+                const price = priceBySlug[n.slug];
+                const count = countBySlug[n.slug] ?? 0;
 
                 return (
                   <Link
@@ -182,7 +172,6 @@ export default async function BarriosPage() {
                     className="group relative overflow-hidden bg-[#0c1935] flex flex-col items-start justify-center"
                     style={{ aspectRatio: "338 / 250" }}
                   >
-                    {/* Photo — fill the 338×250 card */}
                     <Image
                       src={img}
                       alt={n.name}
@@ -190,49 +179,39 @@ export default async function BarriosPage() {
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
                       sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
                     />
-
-                    {/* Gradient: multiply blend — exacto Figma */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1d212b] via-[rgba(29,33,43,0.2)] via-[50%] to-[rgba(29,33,43,0)] mix-blend-multiply" />
 
-                    {/* Info overlay */}
                     <div className="absolute bottom-[0.34px] left-0 right-0 p-[24px] flex flex-col gap-[8px]">
+                      <h3 className="font-body font-semibold text-[25px] text-white tracking-[-0.25px] leading-normal whitespace-nowrap">
+                        {n.name}
+                      </h3>
 
-                      {/* Name */}
-                      <div className="flex items-center w-full">
-                        <h3 className="font-body font-semibold text-[25px] text-white tracking-[-0.25px] leading-normal whitespace-nowrap">
-                          {n.name}
-                        </h3>
-                      </div>
-
-                      {/* Stats */}
-                      {price && (
+                      {(price || count > 0) && (
                         <div className="flex gap-[10px] items-start pt-[4px]">
-                          <div className="flex flex-col gap-[10px] items-start">
-                            <span
-                              className="font-body font-normal text-[12px] text-white whitespace-nowrap"
-                              style={{ lineHeight: "16px" }}
-                            >
-                              Precio promedio
-                            </span>
-                            <div className="bg-white/20 px-[5px] py-[3px] w-full">
-                              <span className="font-body font-semibold text-[16px] text-white leading-normal whitespace-nowrap">
-                                {price}
+                          {price && (
+                            <div className="flex flex-col gap-[10px] items-start">
+                              <span className="font-body font-normal text-[12px] text-white whitespace-nowrap" style={{ lineHeight: "16px" }}>
+                                Precio promedio
                               </span>
+                              <div className="bg-white/20 px-[5px] py-[3px]">
+                                <span className="font-body font-semibold text-[16px] text-white leading-normal whitespace-nowrap">
+                                  {price}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                          <div className="flex flex-col gap-[10px] items-start">
-                            <span
-                              className="font-body font-normal text-[12px] text-white whitespace-nowrap"
-                              style={{ lineHeight: "16px" }}
-                            >
-                              Propiedades
-                            </span>
-                            <div className="bg-white/20 px-[5px] py-[3px]">
-                              <span className="font-body font-semibold text-[16px] text-white leading-normal">
-                                —
+                          )}
+                          {count > 0 && (
+                            <div className="flex flex-col gap-[10px] items-start">
+                              <span className="font-body font-normal text-[12px] text-white whitespace-nowrap" style={{ lineHeight: "16px" }}>
+                                Propiedades
                               </span>
+                              <div className="bg-white/20 px-[5px] py-[3px]">
+                                <span className="font-body font-semibold text-[16px] text-white leading-normal">
+                                  {count}
+                                </span>
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       )}
                     </div>
