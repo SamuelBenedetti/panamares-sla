@@ -94,31 +94,9 @@ export default function NeighborhoodListingsSection({
         )}
       </div>
 
-      {/* Map — mobile/tablet: above cards, desktop: side by side */}
-      {activeMapMarkers.length > 0 && (
-        <div className="xl:hidden">
-          <PropertyMapMulti properties={activeMapMarkers} height="h-[280px] sm:h-[360px]" />
-        </div>
-      )}
-
-      {/* Cards + Map */}
-      <div className={activeMapMarkers.length > 0 ? "xl:grid xl:grid-cols-2 xl:gap-[48px] flex flex-col gap-[32px] items-start" : "flex gap-[48px] items-start"}>
-        <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${activeMapMarkers.length === 0 ? "flex-1 xl:grid-cols-4" : ""}`}>
-          {featured.map((p, i) => (
-            <PropertyCard key={p._id} property={p} priority={i === 0} />
-          ))}
-        </div>
-
-        {activeMapMarkers.length > 0 && (
-          <div className="hidden xl:block sticky top-[110px]">
-            <PropertyMapMulti properties={activeMapMarkers} height="h-[590px]" />
-          </div>
-        )}
-      </div>
-
       {/* Ver por tipo */}
       {activeCategories.length > 0 && (
-        <div className="flex flex-col gap-[24px] pt-[20px]">
+        <div className="flex flex-col gap-[24px]">
           <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
             Ver por tipo en {neighborhoodName}
           </p>
@@ -143,6 +121,28 @@ export default function NeighborhoodListingsSection({
           </div>
         </div>
       )}
+
+      {/* Map — mobile/tablet: above cards, desktop: side by side */}
+      {activeMapMarkers.length > 0 && (
+        <div className="xl:hidden">
+          <PropertyMapMulti properties={activeMapMarkers} height="h-[280px] sm:h-[360px]" />
+        </div>
+      )}
+
+      {/* Cards + Map */}
+      <div className={activeMapMarkers.length > 0 ? "xl:grid xl:grid-cols-2 xl:gap-[48px] flex flex-col gap-[32px] items-start" : "flex gap-[48px] items-start"}>
+        <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${activeMapMarkers.length === 0 ? "flex-1 xl:grid-cols-4" : ""}`}>
+          {featured.map((p, i) => (
+            <PropertyCard key={p._id} property={p} priority={i === 0} />
+          ))}
+        </div>
+
+        {activeMapMarkers.length > 0 && (
+          <div className="hidden xl:block sticky top-[110px]">
+            <PropertyMapMulti properties={activeMapMarkers} height="h-[590px]" />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

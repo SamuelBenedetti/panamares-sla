@@ -97,15 +97,19 @@ interface NavCounts {
 }
 
 export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
-  const COMPRAR_ITEMS = COMPRAR_ITEMS_BASE.map((item) => ({
-    ...item,
-    count: item.typeKey ? (navCounts?.venta?.[item.typeKey] ?? 0) : undefined,
-  }));
+  const COMPRAR_ITEMS = COMPRAR_ITEMS_BASE
+    .map((item) => ({
+      ...item,
+      count: item.typeKey ? (navCounts?.venta?.[item.typeKey] ?? 0) : undefined,
+    }))
+    .filter((item) => item.typeKey === null || (item.count ?? 0) >= 1);
 
-  const ALQUILAR_ITEMS = ALQUILAR_ITEMS_BASE.map((item) => ({
-    ...item,
-    count: item.typeKey ? (navCounts?.alquiler?.[item.typeKey] ?? 0) : undefined,
-  }));
+  const ALQUILAR_ITEMS = ALQUILAR_ITEMS_BASE
+    .map((item) => ({
+      ...item,
+      count: item.typeKey ? (navCounts?.alquiler?.[item.typeKey] ?? 0) : undefined,
+    }))
+    .filter((item) => item.typeKey === null || (item.count ?? 0) >= 1);
 
   const activeBarrios = BARRIOS_ITEMS;
 
