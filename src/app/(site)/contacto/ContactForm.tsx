@@ -101,11 +101,12 @@ export default function ContactForm() {
       </div>
 
       <div className="flex flex-col gap-[8px]">
-        <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
+        <label htmlFor="motivo" className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
           Motivo de contacto
         </label>
           <div className="relative">
             <select
+              id="motivo"
               value={form.motivo}
               onChange={(e) => setForm({ ...form, motivo: e.target.value })}
               className="appearance-none bg-white border border-[#dfe5ef] px-[17px] py-[13px] font-body text-[14px] text-[#0c1935] outline-none focus:border-[#0c1834] transition-colors w-full cursor-pointer"

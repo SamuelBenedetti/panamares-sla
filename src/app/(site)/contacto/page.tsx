@@ -1,7 +1,9 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { MapPin, Phone, Mail, Clock, Send, ChevronRight } from "lucide-react";
-import PropertyMap from "@/components/properties/PropertyMap";
+
+const PropertyMap = dynamic(() => import("@/components/properties/PropertyMap"), { ssr: false });
 import { contactPointSchema, breadcrumbSchema } from "@/lib/jsonld";
 import {
   BASE_URL,
