@@ -49,7 +49,7 @@ export default async function BarriosPage() {
   const photoMap = new Map(
     allNbhContent
       .filter((n) => n.photo)
-      .map((n) => [n.slug, urlFor(n.photo!).width(800).height(600).fit("crop").url()])
+      .map((n) => [n.slug, urlFor(n.photo!).width(1920).height(900).fit("crop").url()])
   );
 
   const activeSlugs = new Set(

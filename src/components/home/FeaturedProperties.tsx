@@ -13,7 +13,7 @@ export default function FeaturedProperties({ properties }: { properties: Propert
           <p className="font-body font-medium text-[#5a6478] text-[12px] md:text-[11px] uppercase tracking-[5px]">
             Selección destacada
           </p>
-          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(28px,2.5vw,36px)] 2xl:text-[34px] tracking-[-0.03em] leading-[1.1]">
+          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(34px,2.5vw,38px)] 2xl:text-[38px] tracking-[-0.03em] leading-[1.1]">
             Propiedades en Venta
           </h2>
         </div>
@@ -28,10 +28,10 @@ export default function FeaturedProperties({ properties }: { properties: Propert
         )}
 
         {/* Ver más propiedades — centered */}
-        <div className="flex justify-center pt-2">
+        <div className="flex justify-center pt-[52px]">
           <Link
             href="/propiedades-en-venta/"
-            className="inline-flex items-center gap-2 font-body font-medium text-[#5a6478] text-[16px] md:text-[14px] uppercase tracking-[0.35px] hover:text-[#0c1834] transition-colors"
+            className="inline-flex items-center gap-[10px] border border-[#dfe5ef] text-[#0c1834] font-body font-medium text-[18px] px-[24px] py-[14px] hover:bg-gray-50 transition-colors"
           >
             Ver más propiedades
             <ArrowRight size={18} />

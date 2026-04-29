@@ -20,7 +20,7 @@ export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record
           <p className="font-body font-medium text-[#5a6478] text-[12px] md:text-[11px] uppercase tracking-[5px]">
             Explorar por tipo
           </p>
-          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(28px,2.5vw,36px)] 2xl:text-[34px] tracking-[-0.03em] leading-[1.1]">
+          <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(34px,2.5vw,38px)] 2xl:text-[38px] tracking-[-0.03em] leading-[1.1]">
             ¿Qué tipo de propiedad buscas?
           </h2>
         </div>

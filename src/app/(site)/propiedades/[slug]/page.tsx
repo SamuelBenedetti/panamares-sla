@@ -14,6 +14,7 @@ import type { Property } from "@/lib/types";
 import PropertyGallery from "@/components/properties/PropertyGallery";
 import PropertyMap from "@/components/properties/PropertyMap";
 import PropertyCard from "@/components/properties/PropertyCard";
+import PropertyGrid from "@/components/properties/PropertyGrid";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ShareButton from "@/components/ui/ShareButton";
@@ -29,36 +30,6 @@ interface Props {
   params: { slug: string };
 }
 
-// ── Placeholder property for layout testing ──────────────────────────────────
-const DEMO_GALLERY: { url: string; alt: string }[] = [
-  { url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=800&fit=crop", alt: "Vista exterior" },
-  { url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop", alt: "Sala de estar" },
-  { url: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop", alt: "Cocina" },
-  { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop", alt: "Fachada" },
-  { url: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=800&fit=crop", alt: "Habitación principal" },
-];
-
-const DEMO_PROPERTY: Property = {
-  _id: "demo-001",
-  title: "Luxe Residences Torre A — Apto 1803",
-  slug: { current: "demo" },
-  businessType: "venta",
-  propertyType: "apartamento",
-  listingStatus: "activa",
-  price: 485000,
-  zone: "Punta Pacifica",
-  bedrooms: 3,
-  bathrooms: 2,
-  area: 151,
-  parking: 1,
-  adminFee: 380,
-  rentalEstimate: 2800,
-  featured: true,
-  recommended: true,
-  featuresInterior: ["Aire acondicionado", "Amueblado parcial", "Cocina equipada", "Closets empotrados", "Pisos de mármol", "Balcón panorámico"],
-  featuresBuilding: ["Piscina infinita", "Gimnasio equipado", "Área de BBQ", "Salón social", "Conserje 24h", "Lobby con seguridad"],
-  featuresLocation: ["Acceso al Corredor Sur", "Cerca de Johns Hopkins", "Parque Urracá a 5 min", "Comunidad cerrada"],
-};
 
 function BulletCheck() {
   return (
@@ -73,8 +44,6 @@ function BulletCheck() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // Demo is only for local development — hide from search engines everywhere
-  if (params.slug === "demo") return { title: "Demo — Panamares", robots: { index: false, follow: false } };
   const property = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
   if (!property) return {};
   // Sold/retired listings 301-redirect at the page handler below; keep their
@@ -118,44 +87,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PropertyDetailPage({ params }: Props) {
-  // Demo route is only allowed in development; in production it returns 404.
-  const isDemo = params.slug === "demo";
-  if (isDemo && process.env.NODE_ENV === "production") notFound();
+  const fetched = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
+  if (!fetched) notFound();
+  const property = fetched;
 
-  let property: Property;
-  let related: Property[];
-  let galleryImages: { url: string; alt: string }[];
+  // Sold/retired listings → 301 to best-fit category page (SEO doc §4.4).
+  if (property.listingStatus !== "activa") {
+    redirect(`/${getCategorySlugFor(property.propertyType, property.businessType)}/`);
+  }
 
-  if (isDemo) {
-    property = DEMO_PROPERTY;
-    related = [];
-    galleryImages = DEMO_GALLERY;
-  } else {
-    const fetched = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
-    if (!fetched) notFound();
-    property = fetched;
+  const related = await sanityFetch<Property[]>(relatedPropertiesQuery, {
+    zone: property.zone ?? "",
+    propertyType: property.propertyType,
+    currentSlug: params.slug,
+  });
 
-    // Sold/retired listings → 301 to best-fit category page (SEO doc §4.4).
-    if (property.listingStatus !== "activa") {
-      redirect(`/${getCategorySlugFor(property.propertyType, property.businessType)}/`);
-    }
-
-    related = await sanityFetch<Property[]>(relatedPropertiesQuery, {
-      zone: property.zone ?? "",
-      propertyType: property.propertyType,
-      currentSlug: params.slug,
-    });
-
-    galleryImages = (property.gallery ?? []).map((img) => ({
-      url: urlFor(img).width(1200).height(800).url(),
-      alt: img.alt ?? property.title,
-    }));
-    if (galleryImages.length === 0 && property.mainImage) {
-      galleryImages.push({ url: urlFor(property.mainImage).width(1200).height(800).url(), alt: property.title });
-    }
-    if (galleryImages.length === 0) {
-      galleryImages.push({ url: "/placeholder-property.jpg", alt: property.title });
-    }
+  const galleryImages: { url: string; alt: string }[] = (property.gallery ?? []).map((img) => ({
+    url: urlFor(img).width(1200).height(800).url(),
+    alt: img.alt ?? property.title,
+  }));
+  if (galleryImages.length === 0 && property.mainImage) {
+    galleryImages.push({ url: urlFor(property.mainImage).width(1200).height(800).url(), alt: property.title });
+  }
+  if (galleryImages.length === 0) {
+    galleryImages.push({ url: "/placeholder-property.jpg", alt: property.title });
   }
 
   // Derive category slug (e.g. "apartamentos-en-venta") — single source of truth.
@@ -404,12 +359,10 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <Phone size={18} className="text-[#0d1835] shrink-0" />
                     <span className="font-body font-medium text-[14px] text-[#0d1835] leading-5">Llamar ahora</span>
                   </a>
-                  <div className="flex justify-center pt-[2px]">
-                    <ShareButton
-                      url={`${BASE_URL}/propiedades/${property.slug.current}/`}
-                      title={property.title}
-                    />
-                  </div>
+                  <ShareButton
+                    url={`${BASE_URL}/propiedades/${property.slug.current}/`}
+                    title={property.title}
+                  />
                 </div>
               </div>
 
@@ -558,26 +511,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               Propiedades relacionadas
             </h2>
 
-            {/* Mobile: 1-col */}
-            <div className="grid md:hidden grid-cols-1 gap-[16px]">
-              {related.slice(0, 6).map((p) => (
-                <PropertyCard key={p._id} property={p} />
-              ))}
-            </div>
-
-            {/* Tablet: 2-col */}
-            <div className="hidden md:grid lg:hidden grid-cols-2 gap-5">
-              {related.slice(0, 6).map((p) => (
-                <PropertyCard key={p._id} property={p} />
-              ))}
-            </div>
-
-            {/* Desktop: 3-col */}
-            <div className="hidden lg:grid grid-cols-3 gap-6">
-              {related.slice(0, 6).map((p) => (
-                <PropertyCard key={p._id} property={p} />
-              ))}
-            </div>
+            <PropertyGrid properties={related.slice(0, 4)} cols={4} gap="tight" />
 
           </div>
         </section>

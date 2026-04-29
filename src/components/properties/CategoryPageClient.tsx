@@ -2,9 +2,10 @@
 
 import { useState, useMemo, useRef, useCallback, useEffect, useTransition } from "react";
 import dynamic from "next/dynamic";
-import { ArrowRight, ChevronDown, SlidersHorizontal, X } from "lucide-react";
+import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import Link from "next/link";
 import PropertyGrid from "@/components/properties/PropertyGrid";
+import PaginationClient from "@/components/ui/PaginationClient";
 import type { MapProperty } from "@/components/properties/PropertyMapMulti";
 import type { Property } from "@/lib/types";
 
@@ -67,7 +68,8 @@ const INIT_FILTERS: Filters = {
 };
 
 const PRICE_MIN = 0;
-const PRICE_MAX = 2_000_000;
+const PRICE_MAX_VENTA   = 2_000_000;
+const PRICE_MAX_ALQUILER = 10_000;
 const AREA_MIN = 0;
 const AREA_MAX = 1000;
 
@@ -172,6 +174,8 @@ function FilterPanel({
   const [priceActive, setPriceActive] = useState<"min" | "max" | null>(null);
   const [areaActive, setAreaActive] = useState<"min" | "max" | null>(null);
 
+  const PRICE_MAX = businessType === "alquiler" ? PRICE_MAX_ALQUILER : PRICE_MAX_VENTA;
+
   function set<K extends keyof Filters>(key: K, value: Filters[K]) {
     setFilters((f) => ({ ...f, [key]: value }));
   }
@@ -219,7 +223,7 @@ function FilterPanel({
 
       {/* ── 2. Gama de precios ── */}
       <div className="flex flex-col gap-[15px] w-full">
-        <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px] pb-[10px] border-b border-[#e9e7e2]">
+        <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px]">
           Gama de precios
         </p>
         <DualRangeSlider
@@ -244,7 +248,7 @@ function FilterPanel({
           <input
             type="text"
             inputMode="numeric"
-            placeholder="$2,000,000"
+            placeholder={businessType === "alquiler" ? "$10,000" : "$2,000,000"}
             value={filters.maxPrice ? `$${Number(filters.maxPrice).toLocaleString("en-US")}` : ""}
             onChange={(e) => set("maxPrice", e.target.value.replace(/[^0-9]/g, ""))}
             className={`${inputBox} ${priceActive === "max" ? inputHighlight : inputDefault}`}
@@ -254,7 +258,7 @@ function FilterPanel({
 
       {/* ── 3. Tamaño ── */}
       <div className="flex flex-col gap-[15px] w-full">
-        <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px] pb-[10px] border-b border-[#e9e7e2]">
+        <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px]">
           Tamaño
         </p>
         <DualRangeSlider
@@ -394,8 +398,9 @@ export default function CategoryPageClient({
 
   const [search, setSearch] = useState(initialSearch);
   const [sort, setSort] = useState<SortOption>("relevancia");
-  const [visible, setVisible] = useState(PAGE_SIZE);
+  const [currentPage, setCurrentPage] = useState(1);
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const hasActive =
     search !== "" ||
@@ -406,12 +411,12 @@ export default function CategoryPageClient({
     filters.categoria !== "";
 
   function reset() {
-    startTransition(() => { setFilters(INIT_FILTERS); setSearch(""); setVisible(PAGE_SIZE); });
+    startTransition(() => { setFilters(INIT_FILTERS); setSearch(""); setCurrentPage(1); });
   }
 
-  useEffect(() => { startTransition(() => setVisible(PAGE_SIZE)); }, [filters, sort, search]);
+  useEffect(() => { startTransition(() => setCurrentPage(1)); }, [filters, sort, search]);
 
-  const filtered = useMemo(() => {
+const filtered = useMemo(() => {
     let result = [...properties];
 
     if (search.trim()) {
@@ -432,8 +437,8 @@ export default function CategoryPageClient({
     if (filters.maxPrice) result = result.filter((p) => p.price <= Number(filters.maxPrice));
     if (filters.minArea) result = result.filter((p) => (p.area ?? 0) >= Number(filters.minArea));
     if (filters.maxArea) result = result.filter((p) => (p.area ?? 0) <= Number(filters.maxArea));
-    if (filters.bedrooms > 0) result = result.filter((p) => filters.bedrooms >= STEPPER_MAX ? (p.bedrooms ?? 0) >= filters.bedrooms : (p.bedrooms ?? 0) === filters.bedrooms);
-    if (filters.bathrooms > 0) result = result.filter((p) => filters.bathrooms >= STEPPER_MAX ? (p.bathrooms ?? 0) >= filters.bathrooms : (p.bathrooms ?? 0) === filters.bathrooms);
+    if (filters.bedrooms > 0) result = result.filter((p) => (p.bedrooms ?? 0) >= filters.bedrooms);
+    if (filters.bathrooms > 0) result = result.filter((p) => (p.bathrooms ?? 0) >= filters.bathrooms);
     if (filters.neighborhoodFilter) result = result.filter((p) => normalize(p.zone ?? "") === normalize(filters.neighborhoodFilter));
 
     if (sort === "precio-asc") result.sort((a, b) => a.price - b.price);
@@ -445,8 +450,8 @@ export default function CategoryPageClient({
     return result;
   }, [properties, filters, sort, search]);
 
-  const shown = filtered.slice(0, visible);
-  const remaining = filtered.length - visible;
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const shown = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   return (
     <div className="bg-[#f9f9f9] pt-[24px] pb-[60px] xl:pt-[28px] xl:pb-[80px]">
@@ -504,8 +509,8 @@ export default function CategoryPageClient({
       <div className="px-[30px] xl:px-[60px] 2xl:px-[160px]">
         <div className={`max-w-[1440px] mx-auto grid grid-cols-1 items-start gap-8 ${
           mapProps && mapProps.length > 0
-            ? "lg:grid-cols-[260px_1fr_380px]"
-            : "lg:grid-cols-[260px_1fr]"
+            ? "lg:grid-cols-[300px_1fr_380px]"
+            : "lg:grid-cols-[300px_1fr]"
         }`}>
 
           {/* Sidebar — desktop only */}
@@ -522,35 +527,33 @@ export default function CategoryPageClient({
             />
           </aside>
 
-          {/* Grid + load more + mobile map */}
-          <div>
-            {filtered.length === 0 ? (
-              <div className="text-center py-24">
-                <p className="font-body text-[18px] text-[#5a6478]">
-                  {search
-                    ? `No encontramos propiedades para "${search}".`
-                    : "No hay propiedades con estos filtros."}
-                </p>
-                <button onClick={reset} className="mt-4 font-body text-[14px] text-[#0c1834] underline hover:no-underline transition-all">
-                  Limpiar filtros
-                </button>
-              </div>
-            ) : (
-              <>
-                <PropertyGrid properties={shown} cols={mapProps && mapProps.length > 0 ? 2 : 3} />
-                {remaining > 0 && (
-                  <div className="pt-[48px] flex justify-center">
-                    <button
-                      onClick={() => setVisible((v) => v + PAGE_SIZE)}
-                      className="inline-flex items-center gap-[8px] font-body font-medium text-[#5a6478] text-[14px] uppercase tracking-[0.35px] hover:text-[#0c1834] transition-colors"
-                    >
-                      Cargar más
-                      <span className="font-normal">({remaining} restantes)</span>
-                      <ArrowRight size={16} />
-                    </button>
-                  </div>
-                )}
-              </>
+          {/* Grid + pagination + mobile map */}
+          <div ref={gridRef}>
+            {/* Grid con min-h fijo para que la paginación no salte */}
+            <div className="min-h-[60vh] lg:min-h-[1800px]">
+              {filtered.length === 0 ? (
+                <div className="text-center py-24">
+                  <p className="font-body text-[18px] text-[#5a6478]">
+                    {search
+                      ? `No encontramos propiedades para "${search}".`
+                      : "No hay propiedades con estos filtros."}
+                  </p>
+                  <button onClick={reset} className="mt-4 font-body text-[14px] text-[#0c1834] underline hover:no-underline transition-all">
+                    Limpiar filtros
+                  </button>
+                </div>
+              ) : (
+                <PropertyGrid properties={shown} cols={mapProps && mapProps.length > 0 ? 2 : 3} gap="tight" pageSize={PAGE_SIZE} />
+              )}
+            </div>
+
+            {/* Paginación siempre fuera del min-h */}
+            {filtered.length > 0 && (
+              <PaginationClient
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onChange={(page) => setCurrentPage(page)}
+              />
             )}
 
             {/* Mobile map — below grid, hidden on desktop */}

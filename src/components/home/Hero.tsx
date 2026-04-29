@@ -28,7 +28,7 @@ export default function Hero() {
         </p>
 
         {/* Heading */}
-        <h1 className="flex flex-col items-center gap-[5px] font-heading font-light text-white text-[68px] xl:text-[clamp(52px,6vw,78px)] 2xl:text-[68px] leading-[0.875] xl:leading-[1] tracking-[-2.4px] xl:tracking-[-0.03em]">
+        <h1 className="flex flex-col items-center gap-[5px] font-heading font-light text-white text-[68px] xl:text-[clamp(52px,6vw,78px)] 2xl:text-[74px] leading-[0.875] xl:leading-[1] tracking-[-2.4px] xl:tracking-[-0.03em]">
           <span className="not-italic">Bienes Raíces</span>
           <span className="italic">en Panama</span>
         </h1>

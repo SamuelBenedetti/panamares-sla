@@ -13,8 +13,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+const PAGE_SIZE = 6;
+
 interface Props {
   params: { slug: string };
+  searchParams: { page?: string };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -34,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function AgentProfilePage({ params }: Props) {
+export default async function AgentProfilePage({ params, searchParams }: Props) {
   const agent = await sanityFetch<Agent | null>(agentBySlugQuery, { slug: params.slug });
   if (!agent) notFound();
 
@@ -44,7 +47,13 @@ export default async function AgentProfilePage({ params }: Props) {
 
   const waMessage = `Hola ${agent.name}, me interesa conocer más sobre sus propiedades en Panamares.`;
   const waHref = whatsappLink(waMessage);
-  const listingCount = agent.properties?.length ?? 0;
+  const allProperties = agent.properties ?? [];
+  const listingCount = allProperties.length;
+
+  const currentPage = Math.max(1, parseInt(searchParams.page ?? "1", 10));
+  const totalPages = Math.ceil(listingCount / PAGE_SIZE);
+  const offset = (currentPage - 1) * PAGE_SIZE;
+  const pageProperties = allProperties.slice(offset, offset + PAGE_SIZE);
 
   const jsonLdAgent = agentSchema(agent);
   const jsonLdBreadcrumb = breadcrumbSchema([
@@ -221,7 +230,13 @@ export default async function AgentProfilePage({ params }: Props) {
 
             {/* Right: Portfolio — first on mobile */}
             <div id="portfolio" className="order-1 lg:order-2">
-              <AgentPortfolioGrid properties={agent.properties ?? []} waHref={waHref} />
+              <AgentPortfolioGrid
+                properties={pageProperties}
+                waHref={waHref}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                basePath={`/agentes/${params.slug}/`}
+              />
             </div>
           </div>
         </div>

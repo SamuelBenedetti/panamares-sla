@@ -257,6 +257,21 @@ export const allAgentsQuery = groq`
   }
 `;
 
+export const agentsPageQuery = groq`
+  *[_type == "agent"] | order(name asc) [$offset...$end] {
+    _id,
+    name,
+    slug,
+    photo,
+    role,
+    phone,
+    whatsapp,
+    email
+  }
+`;
+
+export const agentsCountQuery = groq`count(*[_type == "agent"])`;
+
 export const agentBySlugQuery = groq`
   *[_type == "agent" && slug.current == $slug][0] {
     _id,

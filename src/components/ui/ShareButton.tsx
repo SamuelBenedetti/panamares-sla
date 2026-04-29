@@ -28,14 +28,14 @@ export default function ShareButton({ url, title }: Props) {
   return (
     <button
       onClick={handleShare}
-      className="flex items-center gap-[5px] text-[#8a95a3] hover:text-[#0c1834] transition-colors"
+      className="w-full flex items-center justify-center gap-[8px] px-[21px] py-[13px] text-[#8a95a3] hover:text-[#0c1834] transition-colors"
       aria-label="Compartir propiedad"
     >
       {copied
-        ? <Check size={13} className="text-[#22a05a]" />
-        : <Share2 size={13} />
+        ? <Check size={18} className="text-[#22a05a] shrink-0" />
+        : <Share2 size={18} className="shrink-0" />
       }
-      <span className="font-body font-normal text-[12px] leading-4">
+      <span className="font-body font-medium text-[14px] leading-5">
         {copied ? "¡Copiado!" : "Compartir"}
       </span>
     </button>

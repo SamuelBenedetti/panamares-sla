@@ -17,6 +17,7 @@ iframe.skiptranslate,
 }
 body {
   top: 0 !important;
+  overflow-anchor: none;
 }
 
 @layer utilities {

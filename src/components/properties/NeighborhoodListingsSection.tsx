@@ -91,15 +91,15 @@ export default function NeighborhoodListingsSection({
 
       {/* Cards + Map */}
       <div className="flex gap-[48px] items-start">
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-[24px]">
+        <div className={`flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 ${activeMapMarkers.length === 0 ? "xl:grid-cols-4" : ""}`}>
           {featured.map((p, i) => (
             <PropertyCard key={p._id} property={p} priority={i === 0} />
           ))}
         </div>
 
         {activeMapMarkers.length > 0 && (
-          <div className="hidden xl:block shrink-0 w-[480px] sticky top-[80px]">
-            <PropertyMapMulti properties={activeMapMarkers} height="h-[620px]" />
+          <div className="hidden xl:block shrink-0 w-[480px] sticky top-[110px]">
+            <PropertyMapMulti properties={activeMapMarkers} height="h-[590px]" />
           </div>
         )}
       </div>

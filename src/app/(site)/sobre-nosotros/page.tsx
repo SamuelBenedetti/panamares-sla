@@ -48,7 +48,7 @@ export default async function SobreNosotrosPage() {
           </nav>
 
           {/* Eyebrow */}
-          <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
+          <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4 pt-4">
             Quiénes somos
           </p>
 
