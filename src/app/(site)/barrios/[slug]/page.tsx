@@ -153,6 +153,17 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
   const ventaProps    = sortedByPrice.filter((p) => p.businessType === "venta");
   const alquilerProps = sortedByPrice.filter((p) => p.businessType === "alquiler");
 
+  // ── Category links for "Ver por tipo" section ──────────────────────────────
+  const toCategoryLinks = (intent: "venta" | "alquiler") =>
+    categoryCards
+      .filter(({ cat }) => cat.businessType === intent)
+      .map(({ cat, count }) => ({
+        slug: cat.slug,
+        label: cat.h1.split(" en ")[0],
+        count,
+      }));
+  const categoryLinks = { venta: toCategoryLinks("venta"), alquiler: toCategoryLinks("alquiler") };
+
   // ── Most common property type ──────────────────────────────────────────────
   const mostCommonType = categoryCards.length > 0
     ? categoryCards.reduce((prev, curr) => curr.count > prev.count ? curr : prev)
@@ -359,6 +370,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
               allMapMarkers={mapProps}
               neighborhoodName={neighborhood.name}
               neighborhoodSlug={params.slug}
+              categoryLinks={categoryLinks}
             />
           </div>
         </section>

@@ -22,6 +22,20 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/propiedades-en-venta/:neighborhood",
+        destination: "/barrios/:neighborhood",
+        permanent: true,
+      },
+      {
+        source: "/propiedades-en-alquiler/:neighborhood",
+        destination: "/barrios/:neighborhood",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

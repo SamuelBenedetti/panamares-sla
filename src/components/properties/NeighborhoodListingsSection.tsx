@@ -18,12 +18,19 @@ interface MapMarker {
   imageUrl?: string;
 }
 
+interface CategoryLink {
+  slug: string;
+  label: string;
+  count: number;
+}
+
 interface Props {
   ventaProps: Property[];
   alquilerProps: Property[];
   allMapMarkers: MapMarker[];
   neighborhoodName: string;
   neighborhoodSlug: string;
+  categoryLinks: { venta: CategoryLink[]; alquiler: CategoryLink[] };
 }
 
 export default function NeighborhoodListingsSection({
@@ -32,6 +39,7 @@ export default function NeighborhoodListingsSection({
   allMapMarkers,
   neighborhoodName,
   neighborhoodSlug,
+  categoryLinks,
 }: Props) {
   const defaultTab: "venta" | "alquiler" = ventaProps.length > 0 ? "venta" : "alquiler";
   const [tab, setTab] = useState<"venta" | "alquiler">(defaultTab);
@@ -43,10 +51,7 @@ export default function NeighborhoodListingsSection({
   const activeSlugs = new Set(activeProps.map((p) => p.slug.current));
   const activeMapMarkers = allMapMarkers.filter((m) => activeSlugs.has(m.slug));
 
-  const viewAllHref =
-    tab === "venta"
-      ? `/propiedades-en-venta/${neighborhoodSlug}/`
-      : `/propiedades-en-alquiler/${neighborhoodSlug}/`;
+  const activeCategories = tab === "venta" ? categoryLinks.venta : categoryLinks.alquiler;
 
   return (
     <div className="flex flex-col gap-[48px]">
@@ -89,31 +94,55 @@ export default function NeighborhoodListingsSection({
         )}
       </div>
 
+      {/* Map — mobile/tablet: above cards, desktop: side by side */}
+      {activeMapMarkers.length > 0 && (
+        <div className="xl:hidden">
+          <PropertyMapMulti properties={activeMapMarkers} height="h-[280px] sm:h-[360px]" />
+        </div>
+      )}
+
       {/* Cards + Map */}
-      <div className="flex gap-[48px] items-start">
-        <div className={`flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 ${activeMapMarkers.length === 0 ? "xl:grid-cols-4" : ""}`}>
+      <div className={activeMapMarkers.length > 0 ? "xl:grid xl:grid-cols-2 xl:gap-[48px] flex flex-col gap-[32px] items-start" : "flex gap-[48px] items-start"}>
+        <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${activeMapMarkers.length === 0 ? "flex-1 xl:grid-cols-4" : ""}`}>
           {featured.map((p, i) => (
             <PropertyCard key={p._id} property={p} priority={i === 0} />
           ))}
         </div>
 
         {activeMapMarkers.length > 0 && (
-          <div className="hidden xl:block shrink-0 w-[480px] sticky top-[110px]">
+          <div className="hidden xl:block sticky top-[110px]">
             <PropertyMapMulti properties={activeMapMarkers} height="h-[590px]" />
           </div>
         )}
       </div>
 
-      {/* Ver todas */}
-      <div className="flex justify-center pt-[52px]">
-        <Link
-          href={viewAllHref}
-          className="inline-flex items-center gap-[10px] border border-[#dfe5ef] text-[#0c1834] font-body font-medium text-[18px] px-[24px] py-[14px] hover:bg-gray-50 transition-colors"
-        >
-          Ver todas las propiedades en {neighborhoodName}
-          <ArrowRight size={18} />
-        </Link>
-      </div>
+      {/* Ver por tipo */}
+      {activeCategories.length > 0 && (
+        <div className="flex flex-col gap-[24px] pt-[20px]">
+          <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
+            Ver por tipo en {neighborhoodName}
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-[10px]">
+            {activeCategories.map((cat) => (
+              <Link
+                key={cat.slug}
+                href={`/${cat.slug}/${neighborhoodSlug}/`}
+                className="group flex items-center justify-between border border-[#dfe5ef] px-[20px] py-[16px] hover:border-[#0c1834] transition-colors"
+              >
+                <div className="flex flex-col gap-[2px]">
+                  <span className="font-heading font-normal text-[28px] text-[#0c1834] leading-none tracking-[-1px]">
+                    {cat.count}
+                  </span>
+                  <span className="font-body text-[13px] text-[#737b8c] leading-snug">
+                    {cat.label}
+                  </span>
+                </div>
+                <ArrowRight size={16} className="text-[#0c1834] opacity-30 group-hover:opacity-100 transition-opacity shrink-0" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

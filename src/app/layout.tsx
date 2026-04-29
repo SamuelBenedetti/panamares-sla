@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/barrio-punta-pacifica.png",
+        url: "/hero-bg.jpg",
         width: 1200,
         height: 630,
         alt: "Panamares — Inmobiliaria de lujo en Panama City",

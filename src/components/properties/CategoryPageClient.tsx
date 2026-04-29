@@ -513,8 +513,15 @@ const filtered = useMemo(() => {
             : "lg:grid-cols-[300px_1fr]"
         }`}>
 
+          {/* Mobile map — full-width row above grid, hidden on desktop */}
+          {mapProps && mapProps.length > 0 && (
+            <div className="col-span-full lg:hidden">
+              <PropertyMapMulti properties={mapProps} height="h-[280px] sm:h-[360px]" />
+            </div>
+          )}
+
           {/* Sidebar — desktop only */}
-          <aside className="hidden lg:flex lg:sticky lg:top-[100px] flex-col gap-[0px]">
+          <aside className="hidden lg:flex lg:sticky lg:top-[110px] flex-col gap-[0px]">
             <FilterPanel
               filters={filters}
               setFilters={setFilters}
@@ -527,7 +534,7 @@ const filtered = useMemo(() => {
             />
           </aside>
 
-          {/* Grid + pagination + mobile map */}
+          {/* Grid + pagination */}
           <div ref={gridRef}>
             {/* Grid con min-h fijo para que la paginación no salte */}
             <div className="min-h-[60vh] lg:min-h-[1800px]">
@@ -555,19 +562,12 @@ const filtered = useMemo(() => {
                 onChange={(page) => setCurrentPage(page)}
               />
             )}
-
-            {/* Mobile map — below grid, hidden on desktop */}
-            {mapProps && mapProps.length > 0 && (
-              <div className="lg:hidden mt-[32px]">
-                <PropertyMapMulti properties={mapProps} height="h-[300px]" />
-              </div>
-            )}
           </div>
 
           {/* Map — desktop right sidebar, hidden on mobile */}
           {mapProps && mapProps.length > 0 && (
-            <div className="hidden lg:block lg:sticky lg:top-[100px]">
-              <PropertyMapMulti properties={mapProps} height="h-[380px]" />
+            <div className="hidden lg:block lg:sticky lg:top-[110px]">
+              <PropertyMapMulti properties={mapProps} height="h-[590px]" />
             </div>
           )}
         </div>

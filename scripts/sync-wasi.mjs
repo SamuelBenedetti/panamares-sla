@@ -330,8 +330,10 @@ function buildSlug(wasiId, propertyType, businessType, zone) {
 function extractBuildingFromWasiTitle(raw) {
   if (!raw) return null;
   let s = String(raw).trim()
-    .toLowerCase()
-    .replace(/\b\w/g, c => c.toUpperCase());
+  .normalize("NFC")      // ← primero componer los caracteres (á, é, í, ó, ú como un solo code point)
+  .toLowerCase()         // ← luego lowercase
+  .replace(/(^|\s)(\S)/g, (_, space, char) => space + char.toUpperCase());
+
 
   const PREFIXES = [
     /^Se Alquila\s+/i, /^Se Vende\s+/i, /^En Venta\s+/i,

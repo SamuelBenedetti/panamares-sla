@@ -91,7 +91,9 @@
       "Bash(git checkout *)",
       "Bash(git merge *)",
       "Bash(git rebase *)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(rm \"C:/Users/sbene/Desktop/panamares/src/app/\\(site\\)/propiedades-en-venta/[neighborhood]/page.tsx\")",
+      "Bash(rm \"C:/Users/sbene/Desktop/panamares/src/app/\\(site\\)/propiedades-en-alquiler/[neighborhood]/page.tsx\")"
     ]
   },
   "enableAllProjectMcpServers": true,
