@@ -59,52 +59,51 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-[24px]">
-      <div className="grid grid-cols-2 gap-[20px]">
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
-            Nombre completo *
-          </label>
-          <input
-            required
-            type="text"
-            value={form.nombre}
-            onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-            placeholder="Ej. María González"
-            className="bg-white border border-[#dfe5ef] px-[17px] py-[14px] font-body text-[14px] text-[#0c1935] placeholder:text-[rgba(115,123,140,0.5)] outline-none focus:border-[#0c1834] transition-colors w-full"
-          />
-        </div>
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
-            Correo electrónico *
-          </label>
-          <input
-            required
-            type="email"
-            value={form.correo}
-            onChange={(e) => setForm({ ...form, correo: e.target.value })}
-            placeholder="correo@ejemplo.com"
-            className="bg-white border border-[#dfe5ef] px-[17px] py-[14px] font-body text-[14px] text-[#0c1935] placeholder:text-[rgba(115,123,140,0.5)] outline-none focus:border-[#0c1834] transition-colors w-full"
-          />
-        </div>
+      <div className="flex flex-col gap-[8px]">
+        <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
+          Nombre completo *
+        </label>
+        <input
+          required
+          type="text"
+          value={form.nombre}
+          onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+          placeholder="Ej. María González"
+          className="bg-white border border-[#dfe5ef] px-[17px] py-[14px] font-body text-[14px] text-[#0c1935] placeholder:text-[rgba(115,123,140,0.5)] outline-none focus:border-[#0c1834] transition-colors w-full"
+        />
       </div>
 
-      <div className="grid grid-cols-2 gap-[20px]">
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
-            Teléfono / WhatsApp
-          </label>
-          <input
-            type="tel"
-            value={form.telefono}
-            onChange={(e) => setForm({ ...form, telefono: e.target.value })}
-            placeholder="+507 6587-1849"
-            className="bg-white border border-[#dfe5ef] px-[17px] py-[14px] font-body text-[14px] text-[#0c1935] placeholder:text-[rgba(115,123,140,0.5)] outline-none focus:border-[#0c1834] transition-colors w-full"
-          />
-        </div>
-        <div className="flex flex-col gap-[8px]">
-          <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
-            Motivo de contacto
-          </label>
+      <div className="flex flex-col gap-[8px]">
+        <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
+          Correo electrónico *
+        </label>
+        <input
+          required
+          type="email"
+          value={form.correo}
+          onChange={(e) => setForm({ ...form, correo: e.target.value })}
+          placeholder="correo@ejemplo.com"
+          className="bg-white border border-[#dfe5ef] px-[17px] py-[14px] font-body text-[14px] text-[#0c1935] placeholder:text-[rgba(115,123,140,0.5)] outline-none focus:border-[#0c1834] transition-colors w-full"
+        />
+      </div>
+
+      <div className="flex flex-col gap-[8px]">
+        <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
+          Teléfono / WhatsApp
+        </label>
+        <input
+          type="tel"
+          value={form.telefono}
+          onChange={(e) => setForm({ ...form, telefono: e.target.value })}
+          placeholder="+507 6587-1849"
+          className="bg-white border border-[#dfe5ef] px-[17px] py-[14px] font-body text-[14px] text-[#0c1935] placeholder:text-[rgba(115,123,140,0.5)] outline-none focus:border-[#0c1834] transition-colors w-full"
+        />
+      </div>
+
+      <div className="flex flex-col gap-[8px]">
+        <label className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4">
+          Motivo de contacto
+        </label>
           <div className="relative">
             <select
               value={form.motivo}
@@ -125,7 +124,6 @@ export default function ContactForm() {
               <path d="M1 1L7 7L13 1" stroke="#737b8c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-        </div>
       </div>
 
       <div className="flex flex-col gap-[8px]">
