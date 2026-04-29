@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Mail, MessageCircle, ArrowRight } from "lucide-react";
+import { Phone, Mail, ArrowRight, ChevronRight, MessageCircle } from "lucide-react";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { agentBySlugQuery } from "@/sanity/lib/queries";
@@ -63,83 +63,65 @@ export default async function AgentProfilePage({ params }: Props) {
       {/* ── Hero ── */}
       <section className="bg-[#0c1834] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[110px] xl:pt-[140px] pb-[60px] xl:pb-[80px]">
         <div className="max-w-[1440px] mx-auto flex flex-col gap-[24px]">
+
           {/* Breadcrumb */}
           <nav className="flex items-center gap-[8px] flex-wrap">
             <Link href="/" className="font-body font-normal text-[14px] text-white/60 hover:text-white transition-colors">Inicio</Link>
-            <span className="text-white/30 text-[12px]">›</span>
+            <ChevronRight size={12} className="text-white/30" />
             <Link href="/agentes/" className="font-body font-normal text-[14px] text-white/60 hover:text-white transition-colors">Asesores</Link>
-            <span className="text-white/30 text-[12px]">›</span>
+            <ChevronRight size={12} className="text-white/30" />
             <span className="font-body font-medium text-[14px] text-white">{agent.name}</span>
           </nav>
 
-          {/* Agent header — photo + info */}
-          <div className="flex flex-col sm:flex-row items-start gap-[28px] xl:gap-[40px]">
-            {/* Photo */}
-            <div className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] xl:w-[140px] xl:h-[140px] shrink-0 overflow-hidden bg-[#162444]">
-              {photoUrl ? (
-                <Image
-                  src={photoUrl}
-                  alt={agent.name}
-                  fill
-                  className="object-cover object-top"
-                  sizes="140px"
-                  priority
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="font-heading text-[48px] text-white/20 leading-none">{agent.name[0]}</span>
-                </div>
-              )}
-            </div>
+          {/* Role eyebrow */}
+          {agent.role && (
+            <p className="font-body font-medium text-[11px] text-[#d4a435] tracking-[4px] uppercase leading-4">
+              {agent.role}
+            </p>
+          )}
 
-            {/* Info */}
-            <div className="flex flex-col gap-[12px]">
-              {agent.role && (
-                <p className="font-body font-medium text-[11px] text-[#d4a435] tracking-[4px] uppercase leading-4">
-                  {agent.role}
-                </p>
-              )}
-              <h1 className="font-heading font-normal text-[clamp(34px,4vw,56px)] text-white leading-none tracking-[-1.5px]">
-                {agent.name}
-              </h1>
-              {listingCount > 0 && (
-                <p className="font-body text-[14px] text-white/50">
-                  {listingCount} {listingCount === 1 ? "propiedad activa" : "propiedades activas"}
-                </p>
-              )}
+          {/* H1 */}
+          <h1 className="font-heading font-normal text-[clamp(34px,4vw,56px)] text-white leading-none tracking-[-1.5px]">
+            {agent.name}
+          </h1>
 
-              {/* Contact pills */}
-              <div className="flex flex-wrap gap-[10px] pt-[4px]">
-                <a
-                  href={waHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-[8px] bg-[#00b424] hover:bg-[#009e1f] px-[16px] py-[9px] font-body font-medium text-[13px] text-white transition-colors"
-                >
-                  <MessageCircle size={14} />
-                  WhatsApp
-                </a>
-                {agent.phone && (
-                  <a
-                    href={`tel:${agent.phone}`}
-                    className="inline-flex items-center gap-[8px] bg-white/10 hover:bg-white/20 border border-white/20 px-[16px] py-[9px] font-body text-[13px] text-white transition-colors"
-                  >
-                    <Phone size={13} />
-                    {agent.phone}
-                  </a>
-                )}
-                {agent.email && (
-                  <a
-                    href={`mailto:${agent.email}`}
-                    className="inline-flex items-center gap-[8px] bg-white/10 hover:bg-white/20 border border-white/20 px-[16px] py-[9px] font-body text-[13px] text-white transition-colors"
-                  >
-                    <Mail size={13} />
-                    {agent.email}
-                  </a>
-                )}
-              </div>
-            </div>
+          {listingCount > 0 && (
+            <p className="font-body text-[14px] text-white/50">
+              {listingCount} {listingCount === 1 ? "propiedad activa" : "propiedades activas"}
+            </p>
+          )}
+
+          {/* Contact buttons — all in one row */}
+          <div className="flex flex-wrap gap-[10px]">
+            <a
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-[8px] bg-[#00b424] hover:bg-[#009e1f] px-[16px] py-[9px] font-body font-medium text-[13px] text-white transition-colors"
+            >
+              <MessageCircle size={14} />
+              WhatsApp
+            </a>
+            {agent.phone && (
+              <a
+                href={`tel:${agent.phone}`}
+                className="inline-flex items-center gap-[8px] bg-white/10 hover:bg-white/20 border border-white/20 px-[16px] py-[9px] font-body text-[13px] text-white transition-colors"
+              >
+                <Phone size={13} />
+                {agent.phone}
+              </a>
+            )}
+            {agent.email && (
+              <a
+                href={`mailto:${agent.email}`}
+                className="inline-flex items-center gap-[8px] bg-white/10 hover:bg-white/20 border border-white/20 px-[16px] py-[9px] font-body text-[13px] text-white transition-colors"
+              >
+                <Mail size={13} />
+                {agent.email}
+              </a>
+            )}
           </div>
+
         </div>
       </section>
 
@@ -207,7 +189,7 @@ export default async function AgentProfilePage({ params }: Props) {
               </div>
 
               {listingCount > 0 ? (
-                <PropertyGrid properties={agent.properties!} cols={4} gap="tight" />
+                <PropertyGrid properties={agent.properties!} cols={3} gap="tight" />
               ) : (
                 <div className="border border-[#dfe5ef] bg-white py-[60px] flex flex-col items-center gap-[12px]">
                   <p className="font-body text-[15px] text-[#5a6478]">
