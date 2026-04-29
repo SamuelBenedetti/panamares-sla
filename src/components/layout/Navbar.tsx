@@ -180,7 +180,7 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
   const effectiveToggleColor = open ? "text-white" : toggleColor;
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 xl:px-[60px] 2xl:px-[160px] ${effectiveHeaderClass}`}>
+    <header className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-300 px-6 xl:px-[60px] 2xl:px-[160px] ${effectiveHeaderClass}`}>
       <nav className="flex h-[80px] items-center max-w-[1440px] mx-auto">
 
         {/* Logo */}

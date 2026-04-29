@@ -1,9 +1,8 @@
 ﻿"use client";
 
 import React from "react";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 import type { BreadcrumbItem } from "@/components/ui/Breadcrumb";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import SeoBlockCollapsible from "@/components/properties/SeoBlockCollapsible";
 
 interface Props {
@@ -21,25 +20,7 @@ export default function ListingPageHeader({ breadcrumbs, title, description, sub
       <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-[8px] flex-wrap">
-          {breadcrumbs.map((item, i) => (
-            <span key={i} className="flex items-center gap-[8px]">
-              {i > 0 && <ChevronRight size={13} className="text-[#5a6478]" />}
-              {item.href ? (
-                <Link
-                  href={item.href}
-                  className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
-                >
-                  {item.label}
-                </Link>
-              ) : (
-                <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
-                  {item.label}
-                </span>
-              )}
-            </span>
-          ))}
-        </nav>
+        <Breadcrumb items={breadcrumbs} />
 
         {/* H1 */}
         <div className="flex flex-col gap-[8px]">
