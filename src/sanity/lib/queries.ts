@@ -210,7 +210,8 @@ export const neighborhoodContentQuery = groq`
     slug,
     photo,
     avgPricePerM2,
-    seoBlock
+    seoBlock,
+    about
   }
 `;
 

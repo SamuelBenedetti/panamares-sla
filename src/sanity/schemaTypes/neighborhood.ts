@@ -39,6 +39,13 @@ export default defineType({
       description:
         "Escribe un párrafo corto sobre el barrio: cómo es vivir ahí, qué lo hace especial, tipo de propiedades y ambiente. Este texto aparece en la página del barrio.",
     }),
+    defineField({
+      name: "about",
+      title: "Descripción extendida (Rich Text)",
+      type: "array",
+      of: [{ type: "block" }],
+      description: "Versión extendida con formato enriquecido. Si está presente, se usa en lugar de la descripción simple.",
+    }),
   ],
   preview: {
     select: { title: "name", media: "photo" },
