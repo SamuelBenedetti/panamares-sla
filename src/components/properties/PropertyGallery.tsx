@@ -246,6 +246,7 @@ export default function PropertyGallery({ images, contained = false, propertyTit
               {thumbs.map((img, i) => (
                 <button
                   key={i}
+                  ref={el => { thumbRefs.current[i] = el; }}
                   onClick={() => changeTo(i)}
                   className={`relative shrink-0 w-[52px] h-[52px] overflow-hidden transition-opacity ${
                     i === active ? "border-2 border-[#0d1835] p-[2px]" : "opacity-60 hover:opacity-100"
@@ -325,7 +326,6 @@ export default function PropertyGallery({ images, contained = false, propertyTit
                   {thumbs.map((img, i) => (
                     <button
                       key={i}
-                      ref={el => { thumbRefs.current[i] = el; }}
                       onClick={() => changeTo(i)}
                       className={`relative shrink-0 w-[72px] h-[72px] overflow-hidden transition-opacity ${
                         i === active ? "border-2 border-[#0d1835] p-[2px]" : "opacity-60 hover:opacity-100"
