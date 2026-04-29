@@ -4,6 +4,7 @@ import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import { organizationSchema } from "@/lib/jsonld";
 import { BASE_URL } from "@/lib/config";
+import GoogleTranslate from "@/components/layout/GoogleTranslate";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -62,10 +63,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }}
         />
         {children}
-        {/* Google Translate removed — was loading ~150 KiB unnecessarily.
-            NOTE: LangToggle (Navbar) sets googtrans cookies; translation will
-            no longer apply until GT is restored or replaced with a native i18n
-            solution (next-intl / next-i18next). */}
+        <GoogleTranslate />
       </body>
     </html>
   );

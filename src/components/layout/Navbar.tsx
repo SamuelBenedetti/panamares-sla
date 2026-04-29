@@ -116,7 +116,9 @@ export default function Navbar({ navCounts }: { navCounts: NavCounts }) {
     ...NAV_ITEMS_STATIC,
   ];
 
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(() =>
+    typeof window !== "undefined" ? window.scrollY > 40 : false
+  );
   const [open, setOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);

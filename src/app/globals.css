@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide all Google Translate injected UI */
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+.goog-te-ftab-float,
+.goog-te-menu-frame,
+#goog-gt-tt,
+#goog-te-spinner-pos,
+.goog-te-gadget,
+.skiptranslate,
+iframe.skiptranslate,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
