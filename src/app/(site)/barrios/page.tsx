@@ -67,7 +67,6 @@ export default async function BarriosPage() {
       .map((name) => getSlugByName(name))
       .filter((s): s is string => s !== undefined)
   );
-  activeSlugs.add("costa-del-este");
 
   const countBySlugs: Record<string, number> = {
     "punta-pacifica": counts.puntaPacifica,
