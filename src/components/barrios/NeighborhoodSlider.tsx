@@ -53,9 +53,9 @@ export default function NeighborhoodSlider({
           alt={nb.name}
           fill
           priority={i === 0}
-          quality={90}
+          quality={70}
           className={`object-cover object-[center_65%] transition-opacity duration-500 ease-in-out ${i === current ? "opacity-100" : "opacity-0"}`}
-          sizes="100vw"
+          sizes="(max-width: 1280px) 100vw, 1320px"
         />
       ))}
 

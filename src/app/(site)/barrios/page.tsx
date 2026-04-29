@@ -177,7 +177,7 @@ export default async function BarriosPage() {
                       alt={n.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1d212b] via-[rgba(29,33,43,0.2)] via-[50%] to-[rgba(29,33,43,0)] mix-blend-multiply" />
 
