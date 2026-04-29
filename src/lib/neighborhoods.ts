@@ -29,7 +29,6 @@ export const NEIGHBORHOODS: NeighborhoodConfig[] = [
   { slug: "coronado",        name: "Coronado",        priority: "LOW" },
   { slug: "versalles",       name: "Versalles",       priority: "LOW" },
   { slug: "rio-mar",         name: "Río Mar",         priority: "LOW" },
-  { slug: "panama",          name: "Panamá",          priority: "LOW" },
 ];
 
 /** Card images for homepage neighborhood cards */
@@ -58,7 +57,6 @@ export const NEIGHBORHOOD_IMAGES: Record<string, string> = {
   "coronado":        "/card-coronado.png",
   "versalles":       "/card-versalles.png",
   "rio-mar":         "/card-rio-mar.png",
-  "panama":          "/hero-bg.jpg",
 };
 
 /** Hero/slider images for barrios pages */
