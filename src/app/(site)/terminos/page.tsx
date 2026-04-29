@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description:
     "Lee los términos y condiciones de uso del sitio web de Panamares. Condiciones de servicio para la intermediación inmobiliaria en Panama City.",
-  alternates: { canonical: "https://panamares.vercel.app/terminos/" },
+  alternates: { canonical: "https://panamares-sla.vercel.app/terminos/" },
 };
 
 export default function TerminosPage() {
