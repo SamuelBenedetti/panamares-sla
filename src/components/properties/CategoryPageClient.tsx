@@ -199,7 +199,7 @@ function FilterPanel({
         </p>
         <div className="flex gap-[10px] w-full">
           <Link
-            href={neighborhoodSlug ? `/propiedades-en-venta/${neighborhoodSlug}/` : "/propiedades-en-venta/"}
+            href="/propiedades-en-venta/"
             className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
               businessType === "venta"
                 ? "bg-[#0c1834] text-white"
@@ -209,7 +209,7 @@ function FilterPanel({
             Comprar
           </Link>
           <Link
-            href={neighborhoodSlug ? `/propiedades-en-alquiler/${neighborhoodSlug}/` : "/propiedades-en-alquiler/"}
+            href="/propiedades-en-alquiler/"
             className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
               businessType === "alquiler"
                 ? "bg-[#0c1834] text-white"

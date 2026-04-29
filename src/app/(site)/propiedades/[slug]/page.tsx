@@ -115,7 +115,7 @@ export default async function PropertyDetailPage({ params }: Props) {
     galleryImages.push({ url: urlFor(property.mainImage).width(1200).height(800).url(), alt: property.title });
   }
   if (galleryImages.length === 0) {
-    galleryImages.push({ url: "/placeholder-property.jpg", alt: property.title });
+    galleryImages.push({ url: "/hero-bg.jpg", alt: property.title });
   }
 
   // Derive category slug (e.g. "apartamentos-en-venta") — single source of truth.

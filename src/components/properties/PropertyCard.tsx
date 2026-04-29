@@ -13,7 +13,7 @@ export default function PropertyCard({ property, priority = false }: { property:
 
   const imageUrl = mainImage
     ? urlFor(mainImage).width(800).height(530).fit("crop").url()
-    : "/placeholder-property.jpg";
+    : "/hero-bg.jpg";
 
   const pricePerM2 = area && area > 0 ? Math.round(price / area) : null;
   const zoneSlug = zone ? getSlugByName(zone) : undefined;

@@ -1,10 +1,11 @@
 ﻿import type { Metadata } from "next";
+import { BASE_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Política de Privacidad",
   description:
     "Consulta la política de privacidad de Panamares. Información sobre el tratamiento de datos personales recabados a través de panamares.com.",
-  alternates: { canonical: "https://panamares-sla.vercel.app/privacidad/" },
+  alternates: { canonical: `${BASE_URL}/privacidad/` },
 };
 
 export default function PrivacidadPage() {

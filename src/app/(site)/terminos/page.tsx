@@ -1,10 +1,11 @@
 ﻿import type { Metadata } from "next";
+import { BASE_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description:
     "Lee los términos y condiciones de uso del sitio web de Panamares. Condiciones de servicio para la intermediación inmobiliaria en Panama City.",
-  alternates: { canonical: "https://panamares-sla.vercel.app/terminos/" },
+  alternates: { canonical: `${BASE_URL}/terminos/` },
 };
 
 export default function TerminosPage() {
