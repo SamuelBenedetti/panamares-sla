@@ -71,7 +71,7 @@ export default function NeighborhoodCards({
 
         {/* Cards grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {items.map((n) => (
+          {items.map((n, i) => (
             <Link
               key={n.slug}
               href={`/barrios/${n.slug}/`}
@@ -81,10 +81,10 @@ export default function NeighborhoodCards({
                 src={n.image}
                 alt={`Propiedades en ${n.name}`}
                 fill
-                priority
-                quality={90}
+                priority={i === 0}
+                quality={75}
                 className="object-cover scale-105 group-hover:scale-110 transition-transform duration-500 will-change-transform"
-                sizes="(max-width: 1024px) 100vw, 33vw"
+                sizes="(max-width: 1024px) 100vw, 25vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[rgba(29,33,43,0.8)] via-[rgba(29,33,43,0.2)] to-[rgba(29,33,43,0)]" />
 
