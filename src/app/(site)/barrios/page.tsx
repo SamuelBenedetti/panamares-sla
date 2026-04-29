@@ -85,7 +85,7 @@ export default async function BarriosPage() {
   }));
 
   const rest = NEIGHBORHOODS.filter((n) => !FEATURED_SLUGS.includes(n.slug));
-  const totalZones = FEATURED_SLUGS.length + rest.length;
+  const totalZones = activeSlugs.size;
 
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: "Inicio", url: "/" },
