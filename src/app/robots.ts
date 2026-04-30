@@ -2,8 +2,7 @@ import type { MetadataRoute } from "next";
 import { BASE_URL } from "@/lib/config";
 
 export default function robots(): MetadataRoute.Robots {
-  //! This is just for testing with https://www.screamingfrog - Switch to the production URL panamares.com when you're done
-  const isProduction = BASE_URL === "https://panamares-sla.vercel.app/";
+  const isProduction = BASE_URL === "https://panamares.com";
 
   if (!isProduction) {
     return {
