@@ -43,7 +43,7 @@ const nextConfig = {
         source: "/:path*",
         has: [{ type: "host", value: "(?!panamares\\.com$).*" }],
         headers: [
-          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+          { key: "X-Robots-Tag", value: "noindex" },
         ],
       },
       {
