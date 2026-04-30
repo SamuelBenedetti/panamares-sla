@@ -38,14 +38,14 @@ const nextConfig = {
   },
   async headers() {
     return [
-      // P0-02: Deindex staging (any non-production host)
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "(?!panamares\\.com$).*" }],
-        headers: [
-          { key: "X-Robots-Tag", value: "noindex" },
-        ],
-      },
+      // P0-02: Deindex staging (any non-production host) — temporarily disabled for SF audit
+      // {
+      //   source: "/:path*",
+      //   has: [{ type: "host", value: "(?!panamares\\.com$).*" }],
+      //   headers: [
+      //     { key: "X-Robots-Tag", value: "noindex, nofollow" },
+      //   ],
+      // },
       {
         source: "/(apartamentos|apartaestudios|casas|casas-de-playa|penthouses|oficinas|locales|locales-comerciales|terrenos|lotes-comerciales|edificios|fincas|propiedades-en-venta|propiedades-en-alquiler|barrios)/:path*",
         headers: [
