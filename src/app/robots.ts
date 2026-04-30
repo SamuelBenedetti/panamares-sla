@@ -2,6 +2,14 @@ import type { MetadataRoute } from "next";
 import { BASE_URL } from "@/lib/config";
 
 export default function robots(): MetadataRoute.Robots {
+  const isProduction = BASE_URL === "https://panamares.com";
+
+  if (!isProduction) {
+    return {
+      rules: { userAgent: "*", disallow: "/" },
+    };
+  }
+
   return {
     rules: [
       {
