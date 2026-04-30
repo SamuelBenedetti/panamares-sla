@@ -11,7 +11,7 @@ import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import CTA from "@/components/home/CTA";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
-import { BASE_URL } from "@/lib/config";
+import { canonical } from "@/lib/seo";
 
 // Generates the Tier 3 header SEO block specific to type × intent × neighborhood combo.
 function buildGeoSeoBlock(
@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const typeLabel = category.h1.split(" en Panama")[0];
   const title = `${typeLabel} en ${neighborhood.name}, Panama`;
   const description = `${typeLabel} en ${neighborhood.name}. ${properties.length} propiedades disponibles. Encuentra las mejores opciones en esta zona exclusiva de Panama City.`;
-  const url = `/${params.category}/${params.neighborhood}/`;
+  const url = `/${params.category}/${params.neighborhood}`;
 
   const shouldIndex = properties.length >= 2;
   const firstImage = properties.find((p) => p.mainImage)?.mainImage;
@@ -75,7 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: { canonical: `${BASE_URL}${url}` },
+    alternates: { canonical: canonical(url) },
     robots: { index: shouldIndex, follow: true },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },

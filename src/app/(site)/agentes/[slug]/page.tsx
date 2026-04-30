@@ -1,7 +1,8 @@
 import AgentPortfolioGrid from "@/components/agents/AgentPortfolioGrid";
 import CTA from "@/components/home/CTA";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
-import { BASE_URL, whatsappLink } from "@/lib/config";
+import { canonical } from "@/lib/seo";
+import { whatsappLink } from "@/lib/config";
 import { agentSchema, breadcrumbSchema } from "@/lib/jsonld";
 import type { Agent } from "@/lib/types";
 import { sanityFetch } from "@/sanity/lib/client";
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${agent.name} — Asesor Inmobiliario`,
     description: `${agent.name}${agent.role ? `, ${agent.role}` : ""} en Panamares. Conoce su trayectoria y propiedades disponibles en Panama City.`,
-    alternates: { canonical: `${BASE_URL}/agentes/${params.slug}/` },
+    alternates: { canonical: canonical(`/agentes/${params.slug}`) },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
       twitter: { card: "summary_large_image", images: [ogImage] },

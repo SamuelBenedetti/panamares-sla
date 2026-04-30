@@ -6,13 +6,13 @@ import { allGuidesQuery } from "@/sanity/lib/queries";
 import type { Guide } from "@/lib/types";
 import GuiasPageClient from "@/components/home/GuiasPageClient";
 import { breadcrumbSchema } from "@/lib/jsonld";
-import { BASE_URL } from "@/lib/config";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Guías de Bienes Raíces en Panama",
   description:
     "Guías y recursos para comprar, alquilar e invertir en bienes raíces en Panama. Consejos de expertos del mercado panameño.",
-  alternates: { canonical: `${BASE_URL}/guias/` },
+  alternates: { canonical: canonical("/guias") },
 };
 
 export default async function GuiasPage() {

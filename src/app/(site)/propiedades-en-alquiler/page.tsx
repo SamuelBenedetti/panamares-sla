@@ -9,7 +9,7 @@ import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import CTA from "@/components/home/CTA";
-import { BASE_URL } from "@/lib/config";
+import { canonical } from "@/lib/seo";
 
 const H1 = "Propiedades en Alquiler en Panamá";
 const DESCRIPTION =
@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Propiedades en Alquiler en Panama",
     description: DESCRIPTION,
-    alternates: { canonical: `${BASE_URL}/propiedades-en-alquiler/` },
+    alternates: { canonical: canonical("/propiedades-en-alquiler") },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
       twitter: { card: "summary_large_image", images: [ogImage] },

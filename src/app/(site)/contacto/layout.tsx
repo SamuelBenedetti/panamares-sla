@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import { breadcrumbSchema } from "@/lib/jsonld";
-import { BASE_URL } from "@/lib/config";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Contacto",
   description:
     "Contáctanos para comprar, vender o alquilar propiedades en Panama City. Nuestros asesores están disponibles de lunes a sábado.",
   alternates: {
-    canonical: `${BASE_URL}/contacto/`,
+    canonical: canonical("/contacto"),
   },
 };
 
 const jsonLd = breadcrumbSchema([
   { name: "Inicio", url: "/" },
-  { name: "Contacto", url: "/contacto/" },
+  { name: "Contacto", url: "/contacto" },
 ]);
 
 export default function ContactoLayout({ children }: { children: React.ReactNode }) {

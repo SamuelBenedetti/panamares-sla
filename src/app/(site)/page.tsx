@@ -1,7 +1,7 @@
 ﻿import type { Property, SanityImage } from "@/lib/types";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { featuredPropertiesQuery, neighborhoodCountsQuery, propertyTypeCountsQuery, allNeighborhoodContentQuery } from "@/sanity/lib/queries";
+import { allNeighborhoodContentQuery, featuredPropertiesQuery, neighborhoodCountsQuery, propertyTypeCountsQuery } from "@/sanity/lib/queries";
 import type { Metadata } from "next";
 
 import CTA from "@/components/home/CTA";
@@ -10,13 +10,13 @@ import Hero from "@/components/home/Hero";
 import NeighborhoodCards from "@/components/home/NeighborhoodCards";
 import PropertyTypeShortcuts from "@/components/home/PropertyTypeShortcuts";
 import TrustStrip from "@/components/home/TrustStrip";
-import { BASE_URL } from "@/lib/config";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Bienes Raíces en Panama City",
   description:
     "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en Punta Pacífica, Punta Paitilla y las mejores zonas de la ciudad.",
-  alternates: { canonical: BASE_URL },
+  alternates: { canonical: canonical("/") },
 };
 
 

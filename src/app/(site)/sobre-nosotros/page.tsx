@@ -7,7 +7,7 @@ import { allAgentsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import type { Agent } from "@/lib/types";
 import { breadcrumbSchema } from "@/lib/jsonld";
-import { BASE_URL } from "@/lib/config";
+import { canonical } from "@/lib/seo";
 import PropertyMap from "@/components/properties/PropertyMap";
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description:
     "Panamares es una agencia inmobiliaria de lujo en Panama City. Conoce nuestro equipo y nuestra trayectoria en el mercado panameño.",
   alternates: {
-    canonical: `${BASE_URL}/sobre-nosotros/`,
+    canonical: canonical("/sobre-nosotros"),
   },
 };
 

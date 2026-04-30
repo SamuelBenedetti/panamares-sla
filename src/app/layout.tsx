@@ -3,6 +3,7 @@ import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import { organizationSchema } from "@/lib/jsonld";
+import { canonical } from "@/lib/seo";
 import { BASE_URL } from "@/lib/config";
 import GoogleTranslate from "@/components/layout/GoogleTranslate";
 
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
     site: "@panamares",
   },
   alternates: {
-    canonical: BASE_URL,
+    canonical: canonical("/"),
   },
 };
 

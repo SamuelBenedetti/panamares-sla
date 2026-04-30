@@ -9,7 +9,7 @@ import { guideBySlugQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import type { Guide } from "@/lib/types";
 import { breadcrumbSchema, articleSchema } from "@/lib/jsonld";
-import { BASE_URL } from "@/lib/config";
+import { canonical } from "@/lib/seo";
 
 const CATEGORY_LABELS: Record<string, string> = {
   comprar:  "Comprar",
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: guide.title,
     description: guide.excerpt,
     robots: { index: true, follow: true },
-    alternates: { canonical: `${BASE_URL}/guias/${params.slug}/` },
+    alternates: { canonical: canonical(`/guias/${params.slug}`) },
     openGraph: {
       title: guide.title,
       description: guide.excerpt,

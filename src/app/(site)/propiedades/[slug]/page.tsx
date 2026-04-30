@@ -6,6 +6,7 @@ import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ShareButton from "@/components/ui/ShareButton";
 import { CATEGORIES, getCategorySlugFor } from "@/lib/categories";
+import { canonical } from "@/lib/seo";
 import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
 import { breadcrumbSchema, listingSchema } from "@/lib/jsonld";
 import { getSlugByName } from "@/lib/neighborhoods";
@@ -85,7 +86,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     robots: { index: true, follow: true },
-    alternates: { canonical: `${BASE_URL}/propiedades/${property.slug.current}/` },
+    alternates: { canonical: canonical(`/propiedades/${property.slug.current}`) },
     openGraph: { title, description, images: ogImage ? [{ url: ogImage }] : [] },
     twitter: { card: "summary_large_image", title, description, images: ogImage ? [ogImage] : [] },
   };
@@ -365,7 +366,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <span className="font-body font-medium text-[14px] text-[#0d1835] leading-5">Llamar ahora</span>
                   </a>
                   <ShareButton
-                    url={`${BASE_URL}/propiedades/${property.slug.current}/`}
+                    url={`${BASE_URL}/propiedades/${property.slug.current}`}
                     title={property.title}
                   />
                 </div>

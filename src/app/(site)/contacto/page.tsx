@@ -2,9 +2,9 @@
 import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, Send, ChevronRight } from "lucide-react";
 import ContactMap from "./ContactMap";
+import { canonical } from "@/lib/seo";
 import { contactPointSchema, breadcrumbSchema } from "@/lib/jsonld";
 import {
-  BASE_URL,
   WHATSAPP_URL,
   WHATSAPP_EQUIPO_URL,
   PANAMARES_PHONE,
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: "Contacto",
   description:
     "Contacta con Panamares, inmobiliaria de lujo en Panama City. Llámanos, escríbenos por WhatsApp o visítanos en Punta Pacífica. Asesores disponibles de lunes a sábado.",
-  alternates: { canonical: `${BASE_URL}/contacto/` },
+  alternates: { canonical: canonical("/contacto") },
 };
 
 export default function ContactoPage() {

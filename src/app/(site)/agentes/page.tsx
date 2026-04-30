@@ -7,13 +7,13 @@ import type { Agent } from "@/lib/types";
 import AgentGrid from "@/components/agents/AgentGrid";
 import Pagination from "@/components/ui/Pagination";
 import { breadcrumbSchema } from "@/lib/jsonld";
-import { BASE_URL } from "@/lib/config";
+import { canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Nuestros Agentes Inmobiliarios",
   description:
     "Conoce al equipo de agentes de Panamares. Expertos en el mercado inmobiliario de Panamá City con años de experiencia en Punta Pacífica, Punta Paitilla y las mejores zonas de la capital.",
-  alternates: { canonical: `${BASE_URL}/agentes/` },
+  alternates: { canonical: canonical("/agentes") },
 };
 
 const PAGE_SIZE = 12;

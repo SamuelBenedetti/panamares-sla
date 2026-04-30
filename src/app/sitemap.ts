@@ -51,7 +51,7 @@ export default async function sitemap({
   // ── Sitemap 0: Listings (Tier 4) ──────────────────────────────────────────
   if (id === 0) {
     return activeProperties.map((p) => ({
-      url: `${BASE_URL}/propiedades/${p.slug}/`,
+      url: `${BASE_URL}/propiedades/${p.slug}`,
       lastModified: new Date(p.updatedAt),
       changeFrequency: "weekly",
       priority: 0.8,
@@ -82,13 +82,13 @@ export default async function sitemap({
       },
       // Tier 1 — Intent hubs
       {
-        url: `${BASE_URL}/propiedades-en-venta/`,
+        url: `${BASE_URL}/propiedades-en-venta`,
         lastModified: new Date(),
         changeFrequency: "daily",
         priority: 0.9,
       },
       {
-        url: `${BASE_URL}/propiedades-en-alquiler/`,
+        url: `${BASE_URL}/propiedades-en-alquiler`,
         lastModified: new Date(),
         changeFrequency: "daily",
         priority: 0.9,
@@ -98,7 +98,7 @@ export default async function sitemap({
         const count = categoryCountMap.get(`${cat.propertyType}|${cat.businessType}`) ?? 0;
         if (count < 2) return [];
         return [{
-          url: `${BASE_URL}/${cat.slug}/`,
+          url: `${BASE_URL}/${cat.slug}`,
           lastModified: new Date(),
           changeFrequency: "daily" as const,
           priority: 0.85,
@@ -110,7 +110,7 @@ export default async function sitemap({
           const count = geoTypeCountMap.get(`${cat.propertyType}|${cat.businessType}|${nbh.name}`) ?? 0;
           if (count < 2) return [];
           return [{
-            url: `${BASE_URL}/${cat.slug}/${nbh.slug}/`,
+            url: `${BASE_URL}/${cat.slug}/${nbh.slug}`,
             lastModified: new Date(),
             changeFrequency: "daily" as const,
             priority: 0.8,
@@ -133,25 +133,25 @@ export default async function sitemap({
   return [
     // Static content
     {
-      url: `${BASE_URL}/agentes/`,
+      url: `${BASE_URL}/agentes`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.6,
     },
     {
-      url: `${BASE_URL}/guias/`,
+      url: `${BASE_URL}/guias`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.65,
     },
     {
-      url: `${BASE_URL}/sobre-nosotros/`,
+      url: `${BASE_URL}/sobre-nosotros`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },
     {
-      url: `${BASE_URL}/contacto/`,
+      url: `${BASE_URL}/contacto`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
@@ -160,21 +160,21 @@ export default async function sitemap({
     ...NEIGHBORHOODS.filter((nbh) =>
       activeProperties.filter((p) => p.zone === nbh.name).length >= 2
     ).map((nbh) => ({
-      url: `${BASE_URL}/barrios/${nbh.slug}/`,
+      url: `${BASE_URL}/barrios/${nbh.slug}`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),
     // Agent profiles
     ...agents.map((a) => ({
-      url: `${BASE_URL}/agentes/${a.slug}/`,
+      url: `${BASE_URL}/agentes/${a.slug}`,
       lastModified: new Date(a.updatedAt),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     // Guide articles
     ...guides.map((g) => ({
-      url: `${BASE_URL}/guias/${g.slug}/`,
+      url: `${BASE_URL}/guias/${g.slug}`,
       lastModified: new Date(g.updatedAt),
       changeFrequency: "monthly" as const,
       priority: 0.65,

@@ -292,7 +292,7 @@ export function contactPointSchema() {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
     name: "Panamares",
-    url: `${BASE_URL}/contacto/`,
+    url: `${BASE_URL}/contacto`,
     telephone: PANAMARES_PHONE,
     address: {
       "@type": "PostalAddress",

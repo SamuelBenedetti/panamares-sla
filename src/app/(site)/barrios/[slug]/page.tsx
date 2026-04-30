@@ -2,7 +2,8 @@ import NeighborhoodCards, { type NeighborhoodCardData } from "@/components/home/
 import NeighborhoodListingsSection from "@/components/properties/NeighborhoodListingsSection";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import { CATEGORIES } from "@/lib/categories";
-import { BASE_URL, whatsappLink } from "@/lib/config";
+import { canonical } from "@/lib/seo";
+import { whatsappLink } from "@/lib/config";
 import { breadcrumbSchema, neighborhoodSchema } from "@/lib/jsonld";
 import { getNeighborhoodBySlug, NEIGHBORHOOD_IMAGES, NEIGHBORHOOD_HERO_IMAGES, NEIGHBORHOODS, VALID_NEIGHBORHOOD_SLUGS } from "@/lib/neighborhoods";
 import type { Neighborhood, Property } from "@/lib/types";
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description:
       nbhContent?.seoBlock ??
       `Guía completa de ${neighborhood.name}: propiedades disponibles, precios por m², estilo de vida y todo lo que necesitas para vivir o invertir en esta zona de Panama City.`,
-    alternates: { canonical: `${BASE_URL}/barrios/${params.slug}/` },
+    alternates: { canonical: canonical(`/barrios/${params.slug}`) },
     robots: { index: shouldIndex, follow: true },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
