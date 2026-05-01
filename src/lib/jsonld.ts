@@ -1,4 +1,5 @@
-import type { Property, Agent, Neighborhood } from "@/lib/types";
+import type { Property, Agent, Neighborhood, SanityImage } from "@/lib/types";
+import type { PortableTextBlock } from "@portabletext/types";
 import {
   BASE_URL,
   PANAMARES_PHONE,
@@ -10,6 +11,31 @@ import {
   PANAMARES_EMAIL_INFO,
   PANAMARES_EMAIL_VENTAS,
 } from "@/lib/config";
+
+// Resolve a Sanity image ref to a CDN URL without pulling the full image
+// pipeline into this module. Mirrors the inline transform used previously in
+// listingSchema for mainImage.
+function sanityImageUrl(image: SanityImage): string {
+  const filename = image.asset._ref
+    .replace("image-", "")
+    .replace(/-([a-z]+)$/, ".$1");
+  return `https://cdn.sanity.io/images/2hojajwk/production/${filename}`;
+}
+
+// Flatten Sanity Portable Text blocks into a single plain-text description
+// suitable for schema.org. Returns undefined when no usable text is found.
+function flattenPortableText(blocks?: PortableTextBlock[]): string | undefined {
+  if (!blocks?.length) return undefined;
+  const text = blocks
+    .map((b) => {
+      const children = (b as { children?: { text?: string }[] }).children;
+      return children?.map((c) => c.text ?? "").join("") ?? "";
+    })
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+  return text || undefined;
+}
 
 // Homepage + Root layout — RealEstateAgent + Organization (unified)
 export function organizationSchema() {
@@ -67,33 +93,41 @@ export function organizationSchema() {
   };
 }
 
-// Maps Sanity propertyType → schema.org @type
-function propertySchemaType(type: string): string {
-  switch (type.toLowerCase()) {
-    case "apartamento":
-    case "apartaestudio":
-    case "penthouse":
-    case "edificio":
-      return "Apartment";
-    case "casa":
-    case "casa de playa":
-      return "House";
-    case "oficina":
-      return "OfficeSpace";
-    default:
-      return "Residence";
+// Maps Sanity propertyType → [Product, residence-specific schema.org type].
+// Product is included so Google treats the listing as eligible for rich
+// results across both real-estate and shopping-style result formats.
+function propertySchemaTypes(type: string): string[] {
+  const t = type.toLowerCase();
+  if (["apartamento", "apartaestudio", "penthouse", "edificio"].includes(t)) {
+    return ["Product", "Apartment"];
   }
+  if (["casa", "casa de playa"].includes(t)) {
+    return ["Product", "House"];
+  }
+  if (
+    ["oficina", "local", "local comercial", "terreno", "lote comercial", "finca"].includes(t)
+  ) {
+    return ["Product", "Place"];
+  }
+  return ["Product", "Residence"];
 }
 
-// Listing detail page — Apartment / House / OfficeSpace
+// Listing detail page — Apartment / House / Place + Offer
 export function listingSchema(property: Property) {
-  return {
-    "@context": "https://schema.org",
-    "@type": propertySchemaType(property.propertyType),
-    name: property.title,
-    url: `${BASE_URL}/propiedades/${property.slug.current}`,
-    ...(property.price && {
-      offers: {
+  const propertyUrl = `${BASE_URL}/propiedades/${property.slug.current}`;
+  const isRental = property.businessType === "alquiler";
+  const description = flattenPortableText(property.description);
+
+  // Build image array from the gallery, falling back to mainImage. Google
+  // prefers an image array; multiple photos improve rich-result eligibility.
+  const galleryUrls = property.gallery?.length
+    ? property.gallery.map(sanityImageUrl)
+    : property.mainImage
+    ? [sanityImageUrl(property.mainImage)]
+    : undefined;
+
+  const offer = property.price
+    ? {
         "@type": "Offer",
         price: property.price,
         priceCurrency: "USD",
@@ -101,32 +135,39 @@ export function listingSchema(property: Property) {
           property.listingStatus === "activa"
             ? "https://schema.org/InStock"
             : "https://schema.org/SoldOut",
-        ...(property.agent && {
-          seller: {
-            "@type": "RealEstateAgent",
-            name: property.agent.name,
-            url: `${BASE_URL}/agentes/${property.agent.slug?.current ?? ""}`,
+        url: propertyUrl,
+        seller: {
+          "@type": "RealEstateAgent",
+          name: "Panamares",
+          url: BASE_URL,
+        },
+        ...(isRental && {
+          // Monthly unit-price specification distinguishes rentals from sales
+          // for Google's structured-data parser.
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            price: property.price,
+            priceCurrency: "USD",
+            unitCode: "MON",
           },
         }),
-      },
-    }),
-    ...(property.bedrooms != null && { numberOfRooms: property.bedrooms }),
-    ...(property.bathrooms != null && { numberOfBathroomsTotal: property.bathrooms }),
-    ...(property.area != null && {
-      floorSize: {
-        "@type": "QuantitativeValue",
-        value: property.area,
-        unitCode: "MTK",
-      },
-    }),
-    ...(property.zone && {
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: property.zone,
-        addressRegion: property.province ?? "Panamá",
-        addressCountry: "PA",
-      },
-    }),
+      }
+    : undefined;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": propertySchemaTypes(property.propertyType),
+    name: property.title,
+    ...(description && { description }),
+    url: propertyUrl,
+    ...(galleryUrls && { image: galleryUrls }),
+    address: {
+      "@type": "PostalAddress",
+      ...(property.corregimiento && { streetAddress: property.corregimiento }),
+      addressLocality: property.zone ?? "Ciudad de Panamá",
+      addressRegion: property.province ?? "Panamá",
+      addressCountry: "PA",
+    },
     ...(property.location && {
       geo: {
         "@type": "GeoCoordinates",
@@ -134,14 +175,16 @@ export function listingSchema(property: Property) {
         longitude: property.location.lng,
       },
     }),
-    ...(property.mainImage && {
-      image: {
-        "@type": "ImageObject",
-        url: `https://cdn.sanity.io/images/2hojajwk/production/${property.mainImage.asset._ref.replace("image-", "").replace(/-([a-z]+)$/, ".$1")}`,
-        width: 1200,
-        height: 800,
+    ...(property.area != null && {
+      floorSize: {
+        "@type": "QuantitativeValue",
+        value: property.area,
+        unitCode: "MTK",
       },
     }),
+    ...(property.bedrooms != null && { numberOfRooms: property.bedrooms }),
+    ...(property.bathrooms != null && { numberOfBathroomsTotal: property.bathrooms }),
+    ...(offer && { offers: offer }),
   };
 }
 
