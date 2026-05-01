@@ -17,6 +17,8 @@ interface Props {
   params: { category: string };
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return Array.from(VALID_CATEGORY_SLUGS).map((category) => ({ category }));
 }

@@ -40,6 +40,8 @@ interface Props {
   params: { category: string; neighborhood: string };
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const params: { category: string; neighborhood: string }[] = [];
   for (const category of Array.from(VALID_CATEGORY_SLUGS)) {
