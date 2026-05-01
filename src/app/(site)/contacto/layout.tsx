@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { breadcrumbSchema } from "@/lib/jsonld";
-import { canonical } from "@/lib/seo";
+import { canonical, alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Contacto",
@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     "Contáctanos para comprar, vender o alquilar propiedades en Panama City. Nuestros asesores están disponibles de lunes a sábado.",
   alternates: {
     canonical: canonical("/contacto"),
+    languages: alternates("/contacto", null),
   },
 };
 

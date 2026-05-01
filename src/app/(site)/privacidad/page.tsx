@@ -1,11 +1,11 @@
 ﻿import type { Metadata } from "next";
-import { canonical } from "@/lib/seo";
+import { canonical, alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Política de Privacidad",
   description:
     "Consulta la política de privacidad de Panamares. Información sobre el tratamiento de datos personales recabados a través de panamares.com.",
-  alternates: { canonical: canonical("/privacidad") },
+  alternates: { canonical: canonical("/privacidad"), languages: alternates("/privacidad", null) },
 };
 
 export default function PrivacidadPage() {

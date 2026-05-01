@@ -11,7 +11,7 @@ import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import CTA from "@/components/home/CTA";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
-import { canonical } from "@/lib/seo";
+import { canonical, alternates } from "@/lib/seo";
 
 // Generates the Tier 3 header SEO block specific to type × intent × neighborhood combo.
 function buildGeoSeoBlock(
@@ -75,7 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: { canonical: canonical(url) },
+    alternates: { canonical: canonical(url), languages: alternates(url, null) },
     robots: { index: shouldIndex, follow: true },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },

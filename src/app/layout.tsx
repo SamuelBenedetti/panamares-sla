@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en las mejores zonas de la ciudad.",
   openGraph: {
     siteName: "Panamares",
-    locale: "es_PA",
+    locale: "es_419",
     type: "website",
     images: [
       {
@@ -57,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${cormorant.variable} ${dmSans.variable}`}>
+    <html lang="es-419" className={`${cormorant.variable} ${dmSans.variable}`}>
       <body className="font-body antialiased bg-white text-brand-navy">
         <script
           type="application/ld+json"

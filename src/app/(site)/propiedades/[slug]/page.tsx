@@ -6,7 +6,7 @@ import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import ShareButton from "@/components/ui/ShareButton";
 import { CATEGORIES, getCategorySlugFor } from "@/lib/categories";
-import { canonical } from "@/lib/seo";
+import { canonical, alternates } from "@/lib/seo";
 import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
 import { breadcrumbSchema, listingSchema } from "@/lib/jsonld";
 import { getSlugByName } from "@/lib/neighborhoods";
@@ -86,7 +86,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     robots: { index: true, follow: true },
-    alternates: { canonical: canonical(`/propiedades/${property.slug.current}`) },
+    alternates: { canonical: canonical(`/propiedades/${property.slug.current}`), languages: alternates(`/propiedades/${property.slug.current}`, null) },
     openGraph: { title, description, images: ogImage ? [{ url: ogImage }] : [] },
     twitter: { card: "summary_large_image", title, description, images: ogImage ? [ogImage] : [] },
   };

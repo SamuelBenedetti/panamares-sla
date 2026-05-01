@@ -8,14 +8,14 @@ import { urlFor } from "@/sanity/lib/image";
 import { activeZonesQuery, zonePropertyZonesQuery, allNeighborhoodContentQuery } from "@/sanity/lib/queries";
 import type { SanityImage } from "@/lib/types";
 import { breadcrumbSchema } from "@/lib/jsonld";
-import { canonical } from "@/lib/seo";
+import { canonical, alternates } from "@/lib/seo";
 import NeighborhoodSlider from "@/components/barrios/NeighborhoodSlider";
 
 export const metadata: Metadata = {
   title: "Barrios de Panamá | Guía de Zonas",
   description:
     "Explora los mejores barrios de Ciudad de Panamá: Punta Pacífica, Punta Paitilla, Avenida Balboa, Costa del Este y más. Guía completa de propiedades por zona.",
-  alternates: { canonical: canonical("/barrios") },
+  alternates: { canonical: canonical("/barrios"), languages: alternates("/barrios", null) },
 };
 
 // Static avg price/m² fallback (used when Sanity doc has no avgPricePerM2)

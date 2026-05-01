@@ -11,7 +11,7 @@ import ListingPageHeader from "@/components/properties/ListingPageHeader";
 import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import CTA from "@/components/home/CTA";
-import { canonical } from "@/lib/seo";
+import { canonical, alternates } from "@/lib/seo";
 
 interface Props {
   params: { category: string };
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: config.metaTitle,
     description: config.metaDescription,
-    alternates: { canonical: canonical(url) },
+    alternates: { canonical: canonical(url), languages: alternates(url, null) },
     robots: { index: shouldIndex, follow: true },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },

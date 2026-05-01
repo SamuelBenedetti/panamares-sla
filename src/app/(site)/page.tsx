@@ -10,13 +10,13 @@ import Hero from "@/components/home/Hero";
 import NeighborhoodCards from "@/components/home/NeighborhoodCards";
 import PropertyTypeShortcuts from "@/components/home/PropertyTypeShortcuts";
 import TrustStrip from "@/components/home/TrustStrip";
-import { canonical } from "@/lib/seo";
+import { canonical, alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Bienes Raíces en Panama City",
   description:
     "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en Punta Pacífica, Punta Paitilla y las mejores zonas de la ciudad.",
-  alternates: { canonical: canonical("/") },
+  alternates: { canonical: canonical("/"), languages: alternates("/", null) },
 };
 
 

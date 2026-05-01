@@ -1,11 +1,11 @@
 ﻿import type { Metadata } from "next";
-import { canonical } from "@/lib/seo";
+import { canonical, alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description:
     "Lee los términos y condiciones de uso del sitio web de Panamares. Condiciones de servicio para la intermediación inmobiliaria en Panama City.",
-  alternates: { canonical: canonical("/terminos") },
+  alternates: { canonical: canonical("/terminos"), languages: alternates("/terminos", null) },
 };
 
 export default function TerminosPage() {
