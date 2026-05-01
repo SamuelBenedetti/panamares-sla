@@ -58,7 +58,7 @@ export default function ContactoPage() {
             </p>
             <h1 className="flex flex-col gap-[3px] text-[#0c1834]">
               <span className="font-heading font-normal text-[50px] xl:text-[60px] leading-none tracking-[-1.5px] xl:tracking-[-1.8px]">
-                Contacta con
+                Contacta con{" "}
               </span>
               <span className="font-heading font-medium italic text-[60px] xl:text-[70px] leading-none tracking-[-1.8px] xl:tracking-[-2.1px]">
                 Panamares
