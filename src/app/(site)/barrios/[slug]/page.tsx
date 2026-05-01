@@ -21,6 +21,8 @@ interface Props {
   params: { slug: string };
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return Array.from(VALID_NEIGHBORHOOD_SLUGS).map((slug) => ({ slug }));
 }
