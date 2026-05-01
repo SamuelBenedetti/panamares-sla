@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { BASE_URL } from "@/lib/config";
 
 export default function robots(): MetadataRoute.Robots {
-  const isProduction = BASE_URL === "https://panamares.com";
+  const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
   if (!isProduction) {
     return {

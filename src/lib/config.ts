@@ -5,7 +5,10 @@ export const SITE_NAME = "Panamares";
  * Falls back to the Vercel deployment URL so staging links still work.
  */
 export const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL ?? "https://panamares-sla.vercel.app";
+  process.env.NEXT_PUBLIC_BASE_URL ??
+  (process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : "http://localhost:3000");
 
 // ── Contacto ──────────────────────────────────────────────────────────────────
 export const PANAMARES_TEL      = "+50765871849";
