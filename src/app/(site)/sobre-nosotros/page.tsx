@@ -1,7 +1,8 @@
 ﻿import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ChevronRight, ShieldCheck, Star, TrendingUp, MapPin, Award } from "lucide-react";
+import { ArrowRight, ShieldCheck, Star, TrendingUp, MapPin, Award } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import { sanityFetch } from "@/sanity/lib/client";
 import { allAgentsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
@@ -38,15 +39,12 @@ export default async function SobreNosotrosPage() {
         <div className="flex flex-col gap-[20px] max-w-[768px]">
 
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
-              Inicio
-            </Link>
-            <ChevronRight size={13} className="text-[#5a6478]" />
-            <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
-              Sobre Nosotros
-            </span>
-          </nav>
+          <Breadcrumb
+            items={[
+              { label: "Inicio", href: "/" },
+              { label: "Sobre Nosotros" },
+            ]}
+          />
 
           {/* Eyebrow */}
           <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4 pt-4">

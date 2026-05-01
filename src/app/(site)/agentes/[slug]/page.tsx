@@ -8,10 +8,10 @@ import type { Agent } from "@/lib/types";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { agentBySlugQuery } from "@/sanity/lib/queries";
-import { Building2, ChevronRight, Home, Phone } from "lucide-react";
+import { Building2, Home, Phone } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 const PAGE_SIZE = 6;
@@ -77,19 +77,16 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
         <div className="max-w-[1440px] mx-auto">
 
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-[8px] flex-wrap py-[30px]">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-white transition-colors">
-              Inicio
-            </Link>
-            <ChevronRight size={13} className="text-[#737b8c]" />
-            <Link href="/agentes/" className="font-body font-medium text-[16px] text-[#737b8c] tracking-[-0.32px] hover:text-white transition-colors">
-              Agentes
-            </Link>
-            <ChevronRight size={13} className="text-[#737b8c]" />
-            <span className="font-body font-medium text-[16px] text-white tracking-[-0.32px]">
-              {agent.name}
-            </span>
-          </nav>
+          <div className="py-[30px]">
+            <Breadcrumb
+              variant="light"
+              items={[
+                { label: "Inicio", href: "/" },
+                { label: "Agentes", href: "/agentes/" },
+                { label: agent.name },
+              ]}
+            />
+          </div>
 
           {/* Eyebrow + Name + Pills */}
           <div className="flex flex-col gap-[3px] pb-[50px]">

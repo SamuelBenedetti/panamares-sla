@@ -11,7 +11,8 @@ import { formatPrice } from "@/lib/utils";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { allNeighborhoodContentQuery, neighborhoodContentQuery, propertiesByNeighborhoodQuery, zonePropertyZonesQuery } from "@/sanity/lib/queries";
-import { ChevronRight, Home } from "lucide-react";
+import { Home } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -198,19 +199,14 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
           <div className="max-w-[1440px] mx-auto flex flex-col gap-[20px]">
 
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-[8px] flex-wrap">
-              <Link href="/" className="font-body font-normal text-[14px] text-white/70 hover:text-white transition-colors">
-                Inicio
-              </Link>
-              <ChevronRight size={12} className="text-white/40" />
-              <Link href="/barrios/" className="font-body font-normal text-[14px] text-white/70 hover:text-white transition-colors">
-                Barrios
-              </Link>
-              <ChevronRight size={12} className="text-white/40" />
-              <span className="font-body font-medium text-[14px] text-white">
-                {neighborhood.name}
-              </span>
-            </nav>
+            <Breadcrumb
+              variant="light"
+              items={[
+                { label: "Inicio", href: "/" },
+                { label: "Barrios", href: "/barrios/" },
+                { label: neighborhood.name },
+              ]}
+            />
 
             {/* H1 */}
             <h1 className="font-heading font-normal text-[clamp(44px,6vw,80px)] 2xl:text-[68px] text-white leading-none tracking-[-2.5px] md:whitespace-nowrap">

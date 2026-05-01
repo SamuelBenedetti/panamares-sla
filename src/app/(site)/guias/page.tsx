@@ -1,7 +1,6 @@
 ﻿import type { Metadata } from "next";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 import { sanityFetch } from "@/sanity/lib/client";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import { allGuidesQuery } from "@/sanity/lib/queries";
 import type { Guide } from "@/lib/types";
 import GuiasPageClient from "@/components/home/GuiasPageClient";
@@ -35,15 +34,12 @@ export default async function GuiasPage() {
         <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
 
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
-              Inicio
-            </Link>
-            <ChevronRight size={13} className="text-[#5a6478]" />
-            <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
-              Guías
-            </span>
-          </nav>
+          <Breadcrumb
+            items={[
+              { label: "Inicio", href: "/" },
+              { label: "Guías" },
+            ]}
+          />
 
           {/* H1 + contador */}
           <div className="flex flex-col gap-[8px]">
