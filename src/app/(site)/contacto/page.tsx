@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
-import { MapPin, Phone, Mail, Clock, Send, ChevronRight } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import ContactMap from "./ContactMap";
 import { canonical } from "@/lib/seo";
 import { contactPointSchema, breadcrumbSchema } from "@/lib/jsonld";
@@ -44,21 +45,18 @@ export default function ContactoPage() {
         <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col gap-[20px]">
             {/* Breadcrumb */}
-             <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors">
-              Inicio
-            </Link>
-            <ChevronRight size={13} className="text-[#5a6478]" />
-            <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
-              Contacto
-            </span>
-          </nav>
+            <Breadcrumb
+              items={[
+                { label: "Inicio", href: "/" },
+                { label: "Contacto" },
+              ]}
+            />
             <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4 pt-4">
               Contáctenos
             </p>
             <h1 className="flex flex-col gap-[3px] text-[#0c1834]">
               <span className="font-heading font-normal text-[50px] xl:text-[60px] leading-none tracking-[-1.5px] xl:tracking-[-1.8px]">
-                Contacta con
+                Contacta con{" "}
               </span>
               <span className="font-heading font-medium italic text-[60px] xl:text-[70px] leading-none tracking-[-1.8px] xl:tracking-[-2.1px]">
                 Panamares

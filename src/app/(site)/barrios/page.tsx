@@ -1,7 +1,8 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import { getSlugByName, NEIGHBORHOODS, NEIGHBORHOOD_IMAGES } from "@/lib/neighborhoods";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -101,18 +102,12 @@ export default async function BarriosPage() {
         <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
 
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link
-              href="/"
-              className="font-body font-normal text-[16px] text-[#5a6478] tracking-[-0.32px] hover:text-[#0c1834] transition-colors"
-            >
-              Inicio
-            </Link>
-            <ChevronRight size={13} className="text-[#5a6478]" />
-            <span className="font-body font-medium text-[16px] text-[#0c1834] tracking-[-0.32px]">
-              Barrios
-            </span>
-          </nav>
+          <Breadcrumb
+            items={[
+              { label: "Inicio", href: "/" },
+              { label: "Barrios" },
+            ]}
+          />
 
           {/* Title + count */}
           <div className="flex flex-col gap-[40px] pb-[60px] xl:flex-row xl:items-baseline xl:justify-between xl:gap-[16px] xl:pb-0">

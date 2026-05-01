@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Clock, ChevronRight, BadgeCheck } from "lucide-react";
+import { Clock, BadgeCheck } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "@/sanity/lib/client";
 import { guideBySlugQuery } from "@/sanity/lib/queries";
@@ -85,13 +86,14 @@ export default async function GuideDetailPage({ params }: Props) {
       {/* ── Hero ── */}
       <section className="bg-[#0c1834] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[120px] xl:pt-[160px] pb-[60px] xl:pb-[80px]">
         <div className="max-w-[1440px] mx-auto flex flex-col gap-[24px]">
-          <nav className="flex items-center gap-[8px] flex-wrap">
-            <Link href="/" className="font-body text-[13px] text-white/40 hover:text-white/70 transition-colors">Inicio</Link>
-            <ChevronRight size={12} className="text-white/25" />
-            <Link href="/guias/" className="font-body text-[13px] text-white/40 hover:text-white/70 transition-colors">Guías</Link>
-            <ChevronRight size={12} className="text-white/25" />
-            <span className="font-body text-[13px] text-white/70 line-clamp-1">{guide.title}</span>
-          </nav>
+          <Breadcrumb
+            variant="light"
+            items={[
+              { label: "Inicio", href: "/" },
+              { label: "Guías", href: "/guias/" },
+              { label: guide.title },
+            ]}
+          />
 
           <div className="flex items-center gap-[16px]">
             {catLabel && (

@@ -12,14 +12,21 @@ import {
   PANAMARES_EMAIL_VENTAS,
 } from "@/lib/config";
 
-// Resolve a Sanity image ref to a CDN URL without pulling the full image
-// pipeline into this module. Returns undefined if the image is malformed
-// (missing asset or _ref), which can happen for placeholder gallery entries.
-function sanityImageUrl(image: SanityImage | undefined | null): string | undefined {
+// Resolve a Sanity image ref to a CDN URL plus the dimensions encoded in the
+// asset id (`image-{hash}-{width}x{height}-{format}`). Returns undefined if
+// the image is malformed (missing asset or _ref), which can happen for
+// placeholder gallery entries.
+type SanityImageDescriptor = { url: string; width?: number; height?: number };
+function sanityImageDescriptor(
+  image: SanityImage | undefined | null,
+): SanityImageDescriptor | undefined {
   const ref = image?.asset?._ref;
   if (typeof ref !== "string" || ref.length === 0) return undefined;
   const filename = ref.replace("image-", "").replace(/-([a-z]+)$/, ".$1");
-  return `https://cdn.sanity.io/images/2hojajwk/production/${filename}`;
+  const url = `https://cdn.sanity.io/images/2hojajwk/production/${filename}`;
+  const dims = ref.match(/^image-[^-]+-(\d+)x(\d+)-[a-z]+$/);
+  if (!dims) return { url };
+  return { url, width: Number(dims[1]), height: Number(dims[2]) };
 }
 
 // Flatten Sanity Portable Text into a single plain-text description for
@@ -38,6 +45,26 @@ function flattenPortableText(blocks?: PortableTextBlock[]): string | undefined {
     .join(" ")
     .trim();
   return text || undefined;
+}
+
+// Sitewide WebSite schema with SearchAction — declares the site has a
+// /buscar search box so Google may render a sitelinks search box for branded
+// queries. Companion to organizationSchema (which describes the business).
+export function websiteSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Panamares",
+    url: BASE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${BASE_URL}/buscar?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
 }
 
 // Homepage + Root layout — RealEstateAgent + Organization (unified)
@@ -121,14 +148,34 @@ export function listingSchema(property: Property) {
   const isRental = property.businessType === "alquiler";
   const description = flattenPortableText(property.description);
 
-  // Build image array from the gallery, falling back to mainImage. Google
-  // prefers an image array; multiple photos improve rich-result eligibility.
-  // Filter out any malformed entries so the schema stays valid.
-  const galleryUrls = (() => {
-    const fromGallery = property.gallery?.map(sanityImageUrl).filter((u): u is string => Boolean(u)) ?? [];
-    if (fromGallery.length > 0) return fromGallery;
-    const main = sanityImageUrl(property.mainImage);
-    return main ? [main] : undefined;
+  // Build image array as ImageObject entries (with width/height when the
+  // Sanity asset ref encodes them). Falls back to mainImage when no gallery,
+  // and filters malformed entries so the schema stays valid.
+  const imageObjects = (() => {
+    const fromGallery = property.gallery?.map(sanityImageDescriptor).filter(
+      (d): d is SanityImageDescriptor => Boolean(d),
+    ) ?? [];
+    const sources = fromGallery.length > 0
+      ? fromGallery
+      : (() => {
+          const main = sanityImageDescriptor(property.mainImage);
+          return main ? [main] : [];
+        })();
+    if (sources.length === 0) return undefined;
+    return sources.map((s) => ({
+      "@type": "ImageObject" as const,
+      url: s.url,
+      ...(s.width && s.height && { width: s.width, height: s.height }),
+    }));
+  })();
+
+  // Listings without an explicit expiry are treated by Google as "unknown".
+  // Setting priceValidUntil to ~6 months out silences the Rich Results Test
+  // warning without committing to a hard rotation date.
+  const priceValidUntil = (() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 6);
+    return d.toISOString().slice(0, 10);
   })();
 
   const offer = property.price
@@ -136,6 +183,7 @@ export function listingSchema(property: Property) {
         "@type": "Offer",
         price: property.price,
         priceCurrency: "USD",
+        priceValidUntil,
         availability:
           property.listingStatus === "activa"
             ? "https://schema.org/InStock"
@@ -165,11 +213,11 @@ export function listingSchema(property: Property) {
     name: property.title,
     ...(description && { description }),
     url: propertyUrl,
-    ...(galleryUrls && { image: galleryUrls }),
+    ...(imageObjects && { image: imageObjects }),
     address: {
       "@type": "PostalAddress",
       ...(property.corregimiento && { streetAddress: property.corregimiento }),
-      addressLocality: property.zone ?? "Ciudad de Panamá",
+      ...(property.zone && { addressLocality: property.zone }),
       addressRegion: property.province ?? "Panamá",
       addressCountry: "PA",
     },
