@@ -13,23 +13,26 @@ import {
 } from "@/lib/config";
 
 // Resolve a Sanity image ref to a CDN URL without pulling the full image
-// pipeline into this module. Mirrors the inline transform used previously in
-// listingSchema for mainImage.
-function sanityImageUrl(image: SanityImage): string {
-  const filename = image.asset._ref
-    .replace("image-", "")
-    .replace(/-([a-z]+)$/, ".$1");
+// pipeline into this module. Returns undefined if the image is malformed
+// (missing asset or _ref), which can happen for placeholder gallery entries.
+function sanityImageUrl(image: SanityImage | undefined | null): string | undefined {
+  const ref = image?.asset?._ref;
+  if (typeof ref !== "string" || ref.length === 0) return undefined;
+  const filename = ref.replace("image-", "").replace(/-([a-z]+)$/, ".$1");
   return `https://cdn.sanity.io/images/2hojajwk/production/${filename}`;
 }
 
-// Flatten Sanity Portable Text blocks into a single plain-text description
-// suitable for schema.org. Returns undefined when no usable text is found.
+// Flatten Sanity Portable Text into a single plain-text description for
+// schema.org. Only walks blocks of _type "block" — image / embed nodes that
+// can appear in the same array are ignored. Returns undefined when no usable
+// text is found.
 function flattenPortableText(blocks?: PortableTextBlock[]): string | undefined {
-  if (!blocks?.length) return undefined;
+  if (!Array.isArray(blocks) || blocks.length === 0) return undefined;
   const text = blocks
+    .filter((b): b is PortableTextBlock => (b as { _type?: string })?._type === "block")
     .map((b) => {
       const children = (b as { children?: { text?: string }[] }).children;
-      return children?.map((c) => c.text ?? "").join("") ?? "";
+      return Array.isArray(children) ? children.map((c) => c.text ?? "").join("") : "";
     })
     .filter(Boolean)
     .join(" ")
@@ -120,11 +123,13 @@ export function listingSchema(property: Property) {
 
   // Build image array from the gallery, falling back to mainImage. Google
   // prefers an image array; multiple photos improve rich-result eligibility.
-  const galleryUrls = property.gallery?.length
-    ? property.gallery.map(sanityImageUrl)
-    : property.mainImage
-    ? [sanityImageUrl(property.mainImage)]
-    : undefined;
+  // Filter out any malformed entries so the schema stays valid.
+  const galleryUrls = (() => {
+    const fromGallery = property.gallery?.map(sanityImageUrl).filter((u): u is string => Boolean(u)) ?? [];
+    if (fromGallery.length > 0) return fromGallery;
+    const main = sanityImageUrl(property.mainImage);
+    return main ? [main] : undefined;
+  })();
 
   const offer = property.price
     ? {
