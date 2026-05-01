@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
-import { organizationSchema } from "@/lib/jsonld";
+import { organizationSchema, websiteSchema } from "@/lib/jsonld";
 import { canonical } from "@/lib/seo";
 import { BASE_URL } from "@/lib/config";
 import GoogleTranslate from "@/components/layout/GoogleTranslate";
@@ -63,8 +64,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema()) }}
+        />
         {children}
         <GoogleTranslate />
+        <SpeedInsights />
       </body>
     </html>
   );
