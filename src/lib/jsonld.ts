@@ -11,6 +11,26 @@ import {
   PANAMARES_EMAIL_VENTAS,
 } from "@/lib/config";
 
+// Sitewide WebSite schema with SearchAction — declares the site has a
+// /buscar search box so Google may render a sitelinks search box for branded
+// queries. Companion to organizationSchema (which describes the business).
+export function websiteSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Panamares",
+    url: BASE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${BASE_URL}/buscar?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
 // Homepage + Root layout — RealEstateAgent + Organization (unified)
 export function organizationSchema() {
   return {

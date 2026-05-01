@@ -38,6 +38,32 @@ const nextConfig = {
   },
   async headers() {
     return [
+      // P1-01: Sitewide security headers. CSP is shipped Report-Only first
+      // so we can observe violations in production for a couple of weeks
+      // before flipping to enforcing mode.
+      {
+        source: "/:path*",
+        headers: [
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: [
+              "default-src 'self'",
+              "img-src 'self' data: blob: https://cdn.sanity.io https://images.unsplash.com https://*.mapbox.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live https://translate.google.com https://translate.googleapis.com https://*.gstatic.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com",
+              "font-src 'self' data: https://fonts.gstatic.com",
+              "connect-src 'self' https://*.sanity.io https://va.vercel-scripts.com https://vercel.live https://*.mapbox.com https://translate.googleapis.com",
+              "frame-src 'self' https://www.google.com https://translate.google.com",
+              "frame-ancestors 'self'",
+            ].join("; "),
+          },
+        ],
+      },
       // P0-02: Deindex staging (any non-production host)
       {
         source: "/:path*",
