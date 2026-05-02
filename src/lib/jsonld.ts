@@ -1,4 +1,5 @@
-import type { Property, Agent, Neighborhood } from "@/lib/types";
+import type { Property, Agent, Neighborhood, SanityImage } from "@/lib/types";
+import type { PortableTextBlock } from "@portabletext/types";
 import {
   BASE_URL,
   PANAMARES_PHONE,
@@ -10,6 +11,41 @@ import {
   PANAMARES_EMAIL_INFO,
   PANAMARES_EMAIL_VENTAS,
 } from "@/lib/config";
+
+// Resolve a Sanity image ref to a CDN URL plus the dimensions encoded in the
+// asset id (`image-{hash}-{width}x{height}-{format}`). Returns undefined if
+// the image is malformed (missing asset or _ref), which can happen for
+// placeholder gallery entries.
+type SanityImageDescriptor = { url: string; width?: number; height?: number };
+function sanityImageDescriptor(
+  image: SanityImage | undefined | null,
+): SanityImageDescriptor | undefined {
+  const ref = image?.asset?._ref;
+  if (typeof ref !== "string" || ref.length === 0) return undefined;
+  const filename = ref.replace("image-", "").replace(/-([a-z]+)$/, ".$1");
+  const url = `https://cdn.sanity.io/images/2hojajwk/production/${filename}`;
+  const dims = ref.match(/^image-[^-]+-(\d+)x(\d+)-[a-z]+$/);
+  if (!dims) return { url };
+  return { url, width: Number(dims[1]), height: Number(dims[2]) };
+}
+
+// Flatten Sanity Portable Text into a single plain-text description for
+// schema.org. Only walks blocks of _type "block" — image / embed nodes that
+// can appear in the same array are ignored. Returns undefined when no usable
+// text is found.
+function flattenPortableText(blocks?: PortableTextBlock[]): string | undefined {
+  if (!Array.isArray(blocks) || blocks.length === 0) return undefined;
+  const text = blocks
+    .filter((b): b is PortableTextBlock => (b as { _type?: string })?._type === "block")
+    .map((b) => {
+      const children = (b as { children?: { text?: string }[] }).children;
+      return Array.isArray(children) ? children.map((c) => c.text ?? "").join("") : "";
+    })
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+  return text || undefined;
+}
 
 // Sitewide WebSite schema with SearchAction — declares the site has a
 // /buscar search box so Google may render a sitelinks search box for branded
@@ -87,66 +123,104 @@ export function organizationSchema() {
   };
 }
 
-// Maps Sanity propertyType → schema.org @type
-function propertySchemaType(type: string): string {
-  switch (type.toLowerCase()) {
-    case "apartamento":
-    case "apartaestudio":
-    case "penthouse":
-    case "edificio":
-      return "Apartment";
-    case "casa":
-    case "casa de playa":
-      return "House";
-    case "oficina":
-      return "OfficeSpace";
-    default:
-      return "Residence";
+// Maps Sanity propertyType → [Product, residence-specific schema.org type].
+// Product is included so Google treats the listing as eligible for rich
+// results across both real-estate and shopping-style result formats.
+function propertySchemaTypes(type: string): string[] {
+  const t = type.toLowerCase();
+  if (["apartamento", "apartaestudio", "penthouse", "edificio"].includes(t)) {
+    return ["Product", "Apartment"];
   }
+  if (["casa", "casa de playa"].includes(t)) {
+    return ["Product", "House"];
+  }
+  if (
+    ["oficina", "local", "local comercial", "terreno", "lote comercial", "finca"].includes(t)
+  ) {
+    return ["Product", "Place"];
+  }
+  return ["Product", "Residence"];
 }
 
-// Listing detail page — Apartment / House / OfficeSpace
+// Listing detail page — Apartment / House / Place + Offer
 export function listingSchema(property: Property) {
-  return {
-    "@context": "https://schema.org",
-    "@type": propertySchemaType(property.propertyType),
-    name: property.title,
-    url: `${BASE_URL}/propiedades/${property.slug.current}`,
-    ...(property.price && {
-      offers: {
+  const propertyUrl = `${BASE_URL}/propiedades/${property.slug.current}`;
+  const isRental = property.businessType === "alquiler";
+  const description = flattenPortableText(property.description);
+
+  // Build image array as ImageObject entries (with width/height when the
+  // Sanity asset ref encodes them). Falls back to mainImage when no gallery,
+  // and filters malformed entries so the schema stays valid.
+  const imageObjects = (() => {
+    const fromGallery = property.gallery?.map(sanityImageDescriptor).filter(
+      (d): d is SanityImageDescriptor => Boolean(d),
+    ) ?? [];
+    const sources = fromGallery.length > 0
+      ? fromGallery
+      : (() => {
+          const main = sanityImageDescriptor(property.mainImage);
+          return main ? [main] : [];
+        })();
+    if (sources.length === 0) return undefined;
+    return sources.map((s) => ({
+      "@type": "ImageObject" as const,
+      url: s.url,
+      ...(s.width && s.height && { width: s.width, height: s.height }),
+    }));
+  })();
+
+  // Listings without an explicit expiry are treated by Google as "unknown".
+  // Setting priceValidUntil to ~6 months out silences the Rich Results Test
+  // warning without committing to a hard rotation date.
+  const priceValidUntil = (() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 6);
+    return d.toISOString().slice(0, 10);
+  })();
+
+  const offer = property.price
+    ? {
         "@type": "Offer",
         price: property.price,
         priceCurrency: "USD",
+        priceValidUntil,
         availability:
           property.listingStatus === "activa"
             ? "https://schema.org/InStock"
             : "https://schema.org/SoldOut",
-        ...(property.agent && {
-          seller: {
-            "@type": "RealEstateAgent",
-            name: property.agent.name,
-            url: `${BASE_URL}/agentes/${property.agent.slug?.current ?? ""}`,
+        url: propertyUrl,
+        seller: {
+          "@type": "RealEstateAgent",
+          name: "Panamares",
+          url: BASE_URL,
+        },
+        ...(isRental && {
+          // Monthly unit-price specification distinguishes rentals from sales
+          // for Google's structured-data parser.
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            price: property.price,
+            priceCurrency: "USD",
+            unitCode: "MON",
           },
         }),
-      },
-    }),
-    ...(property.bedrooms != null && { numberOfRooms: property.bedrooms }),
-    ...(property.bathrooms != null && { numberOfBathroomsTotal: property.bathrooms }),
-    ...(property.area != null && {
-      floorSize: {
-        "@type": "QuantitativeValue",
-        value: property.area,
-        unitCode: "MTK",
-      },
-    }),
-    ...(property.zone && {
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: property.zone,
-        addressRegion: property.province ?? "Panamá",
-        addressCountry: "PA",
-      },
-    }),
+      }
+    : undefined;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": propertySchemaTypes(property.propertyType),
+    name: property.title,
+    ...(description && { description }),
+    url: propertyUrl,
+    ...(imageObjects && { image: imageObjects }),
+    address: {
+      "@type": "PostalAddress",
+      ...(property.corregimiento && { streetAddress: property.corregimiento }),
+      ...(property.zone && { addressLocality: property.zone }),
+      addressRegion: property.province ?? "Panamá",
+      addressCountry: "PA",
+    },
     ...(property.location && {
       geo: {
         "@type": "GeoCoordinates",
@@ -154,14 +228,16 @@ export function listingSchema(property: Property) {
         longitude: property.location.lng,
       },
     }),
-    ...(property.mainImage && {
-      image: {
-        "@type": "ImageObject",
-        url: `https://cdn.sanity.io/images/2hojajwk/production/${property.mainImage.asset._ref.replace("image-", "").replace(/-([a-z]+)$/, ".$1")}`,
-        width: 1200,
-        height: 800,
+    ...(property.area != null && {
+      floorSize: {
+        "@type": "QuantitativeValue",
+        value: property.area,
+        unitCode: "MTK",
       },
     }),
+    ...(property.bedrooms != null && { numberOfRooms: property.bedrooms }),
+    ...(property.bathrooms != null && { numberOfBathroomsTotal: property.bathrooms }),
+    ...(offer && { offers: offer }),
   };
 }
 
