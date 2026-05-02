@@ -81,14 +81,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = parts.join(" ");
 
   const ogImage = property.mainImage ? urlFor(property.mainImage).width(1200).height(630).url() : undefined;
+  const ogImages = ogImage
+    ? [{ url: ogImage, width: 1200, height: 630, alt: property.title }]
+    : [];
+  const twitterImages = ogImage
+    ? [{ url: ogImage, alt: property.title }]
+    : [];
 
   return {
     title,
     description,
     robots: { index: true, follow: true },
     alternates: { canonical: canonical(`/propiedades/${property.slug.current}`), languages: alternates(`/propiedades/${property.slug.current}`, null) },
-    openGraph: { title, description, images: ogImage ? [{ url: ogImage }] : [] },
-    twitter: { card: "summary_large_image", title, description, images: ogImage ? [ogImage] : [] },
+    openGraph: { title, description, images: ogImages },
+    twitter: { card: "summary_large_image", title, description, images: twitterImages },
   };
 }
 
