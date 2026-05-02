@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   description:
     "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en Punta Pacífica, Punta Paitilla y las mejores zonas de la ciudad.",
   alternates: { canonical: canonical("/"), languages: alternates("/", null) },
+  robots: { index: true, follow: true },
 };
 
 

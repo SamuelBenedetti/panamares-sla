@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description:
     "Busca propiedades en Panama City con nuestro asistente guiado: define intención, tipo, habitaciones y presupuesto en cuatro pasos.",
   alternates: { canonical: canonical("/buscar"), languages: alternates("/buscar", null) },
+  robots: { index: true, follow: true },
 };
 
 interface Props {

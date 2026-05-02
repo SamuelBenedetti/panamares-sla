@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     canonical: canonical("/sobre-nosotros"),
     languages: alternates("/sobre-nosotros", null),
   },
+  robots: { index: true, follow: true },
 };
 
 export default async function SobreNosotrosPage() {

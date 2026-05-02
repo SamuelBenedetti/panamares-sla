@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description:
     "Guías y recursos para comprar, alquilar e invertir en bienes raíces en Panama. Consejos de expertos del mercado panameño.",
   alternates: { canonical: canonical("/guias"), languages: alternates("/guias", null) },
+  robots: { index: true, follow: true },
 };
 
 export default async function GuiasPage() {

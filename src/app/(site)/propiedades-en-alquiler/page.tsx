@@ -23,6 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: "Propiedades en Alquiler en Panama",
     description: DESCRIPTION,
     alternates: { canonical: canonical("/propiedades-en-alquiler"), languages: alternates("/propiedades-en-alquiler", null) },
+    robots: { index: true, follow: true },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
       twitter: { card: "summary_large_image", images: [ogImage] },
