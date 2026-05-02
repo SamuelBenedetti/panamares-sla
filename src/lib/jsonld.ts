@@ -108,14 +108,6 @@ export function organizationSchema() {
       telephone: PANAMARES_PHONE,
       availableLanguage: ["Spanish", "English"],
     },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${BASE_URL}/buscar?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
     sameAs: [
       "https://www.instagram.com/panamares",
       "https://www.facebook.com/panamares",
