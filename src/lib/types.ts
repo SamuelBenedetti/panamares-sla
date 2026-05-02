@@ -76,6 +76,8 @@ export interface Neighborhood {
   photo?: SanityImage;
   avgPricePerM2?: number;
   seoBlock?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface GuideAuthor {

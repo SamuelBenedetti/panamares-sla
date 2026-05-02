@@ -24,6 +24,7 @@ export const metadata: Metadata = {
   description:
     "Contacta con Panamares, inmobiliaria de lujo en Panama City. Llámanos, escríbenos por WhatsApp o visítanos en Punta Pacífica. Asesores disponibles de lunes a sábado.",
   alternates: { canonical: canonical("/contacto") },
+  robots: { index: true, follow: true },
 };
 
 export default function ContactoPage() {

@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   description:
     "Conoce al equipo de agentes de Panamares. Expertos en el mercado inmobiliario de Panamá City con años de experiencia en Punta Pacífica, Punta Paitilla y las mejores zonas de la capital.",
   alternates: { canonical: canonical("/agentes"), languages: alternates("/agentes", null) },
+  robots: { index: true, follow: true },
 };
 
 const PAGE_SIZE = 12;

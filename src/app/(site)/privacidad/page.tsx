@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description:
     "Consulta la política de privacidad de Panamares. Información sobre el tratamiento de datos personales recabados a través de panamares.com.",
   alternates: { canonical: canonical("/privacidad"), languages: alternates("/privacidad", null) },
+  robots: { index: true, follow: true },
 };
 
 export default function PrivacidadPage() {

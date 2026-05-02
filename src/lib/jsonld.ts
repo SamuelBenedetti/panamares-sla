@@ -289,11 +289,23 @@ export function agentSchema(agent: Agent) {
   };
 }
 
-// Neighborhood guide page — Place
+// Neighborhood guide page — Place + AdministrativeArea (dual type) with
+// optional GeoCoordinates + hasMap. Defensive: geo/hasMap only emitted when
+// both lat AND lng are finite numbers, preventing malformed schema for docs
+// where coords are null/undefined/0,0/NaN.
 export function neighborhoodSchema(neighborhood: Neighborhood, imageUrl?: string) {
+  const lat = neighborhood.latitude;
+  const lng = neighborhood.longitude;
+  const hasValidCoords =
+    typeof lat === "number" &&
+    typeof lng === "number" &&
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    !(lat === 0 && lng === 0);
+
   return {
     "@context": "https://schema.org",
-    "@type": "Place",
+    "@type": ["Place", "AdministrativeArea"],
     name: neighborhood.name,
     url: `${BASE_URL}/barrios/${neighborhood.slug?.current ?? ""}`,
     ...(neighborhood.seoBlock && { description: neighborhood.seoBlock }),
@@ -311,6 +323,14 @@ export function neighborhoodSchema(neighborhood: Neighborhood, imageUrl?: string
       name: "Panama City",
       addressCountry: "PA",
     },
+    ...(hasValidCoords && {
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: lat,
+        longitude: lng,
+      },
+      hasMap: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
+    }),
   };
 }
 

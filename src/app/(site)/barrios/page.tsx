@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   description:
     "Explora los mejores barrios de Ciudad de Panamá: Punta Pacífica, Punta Paitilla, Avenida Balboa, Costa del Este y más. Guía completa de propiedades por zona.",
   alternates: { canonical: canonical("/barrios"), languages: alternates("/barrios", null) },
+  robots: { index: true, follow: true },
 };
 
 // Static avg price/m² fallback (used when Sanity doc has no avgPricePerM2)
