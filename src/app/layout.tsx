@@ -8,7 +8,6 @@ import { organizationSchema, websiteSchema } from "@/lib/jsonld";
 import { canonical } from "@/lib/seo";
 import { BASE_URL } from "@/lib/config";
 import { getLocaleFromPath } from "@/lib/i18n";
-import GoogleTranslate from "@/components/layout/GoogleTranslate";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -78,7 +77,6 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema()) }}
         />
         {children}
-        <GoogleTranslate />
         <SpeedInsights />
       </body>
     </html>
