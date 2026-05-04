@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { canonical, alternates } from "@/lib/seo";
+import { getCopy } from "@/lib/copy";
 import Wizard from "./Wizard";
 
+const t = getCopy("es").pages.buscar;
+
 export const metadata: Metadata = {
-  title: "Buscar Propiedades",
-  description:
-    "Busca propiedades en Panama City con nuestro asistente guiado: define intención, tipo, habitaciones y presupuesto en cuatro pasos.",
-  alternates: { canonical: canonical("/buscar"), languages: alternates("/buscar", null) },
+  title: t.meta.title,
+  description: t.meta.description,
+  alternates: {
+    canonical: canonical("/buscar"),
+    languages: alternates("/buscar", "/en/search"),
+  },
   robots: { index: true, follow: true },
 };
 
@@ -24,5 +29,5 @@ export default function BuscarPage({ searchParams }: Props) {
   if (q) {
     redirect(`/propiedades-en-venta/?buscar=${encodeURIComponent(q)}`);
   }
-  return <Wizard />;
+  return <Wizard locale="es" />;
 }

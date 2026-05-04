@@ -1,107 +1,164 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-
-const STEPS = [
-  {
-    paso: "01",
-    heading: ["¿Qué estás", "buscando?"],
-    key: "intencion",
-    options: ["Comprar", "Alquilar"],
-  },
-  {
-    paso: "02",
-    heading: ["¿Qué tipo de", "propiedad?"],
-    key: "tipo",
-    options: ["Residencial", "Comercial", "Terreno"],
-  },
-  {
-    paso: "03",
-    heading: ["¿Cuántas", "habitaciones?"],
-    key: "habitaciones",
-    options: ["1 habitación", "2 habitaciones", "3 habitaciones", "4+ habitaciones"],
-  },
-  {
-    paso: "04",
-    heading: ["¿Cuál es su", "presupuesto?"],
-    key: "presupuesto",
-    options: [] as string[], // dynamic based on intencion
-  },
-] as const;
-
-type StepKey = (typeof STEPS)[number]["key"];
-type Answers = Partial<Record<StepKey, string>>;
-
-const BEDS_MAP: Record<string, string> = {
-  "1 habitación": "1",
-  "2 habitaciones": "2",
-  "3 habitaciones": "3",
-  "4+ habitaciones": "4",
-};
-
-const PRICE_MAP_COMPRA: Record<string, { min?: string; max?: string }> = {
-  "Menos de $150k":    { max: "150000" },
-  "$150k – $350k":     { min: "150000", max: "350000" },
-  "$350k – $700k":     { min: "350000", max: "700000" },
-  "$700k – $1.5M":     { min: "700000", max: "1500000" },
-  "Más de $1.5M":      { min: "1500000" },
-  "Flexible":          {},
-};
-
-const PRICE_MAP_ALQUILER: Record<string, { min?: string; max?: string }> = {
-  "Menos de $800/mes":       { max: "800" },
-  "$800 – $1,500/mes":       { min: "800",  max: "1500" },
-  "$1,500 – $3,000/mes":     { min: "1500", max: "3000" },
-  "$3,000 – $6,000/mes":     { min: "3000", max: "6000" },
-  "Más de $6,000/mes":       { min: "6000" },
-  "Flexible":                {},
-};
+import { getCopy, type Locale } from "@/lib/copy";
 
 const TIPO_MAP: Record<string, string> = {
-  "Residencial": "residencial",
-  "Comercial":   "comercial",
-  "Terreno":     "otro",
+  Residencial: "residencial",
+  Comercial: "comercial",
+  Terreno: "otro",
+  Residential: "residencial",
+  Commercial: "comercial",
+  Land: "otro",
+};
+
+// Bedroom option key → query value
+const BEDS_KEY_MAP: Record<string, string> = {
+  uno: "1",
+  dos: "2",
+  tres: "3",
+  cuatroPlus: "4",
 };
 
 // Comercial y Terreno no tienen habitaciones — saltar paso 3
-const SKIP_BEDS = new Set(["Comercial", "Terreno"]);
+const SKIP_BEDS_TIPO_VALUES = new Set(["comercial", "otro"]);
 
-function buildUrl(answers: Answers): string {
-  const isAlquiler = answers.intencion === "Alquilar";
-  const base = isAlquiler ? "/propiedades-en-alquiler/" : "/propiedades-en-venta/";
-
-  const params = new URLSearchParams();
-
-  const categoria = answers.tipo ? TIPO_MAP[answers.tipo] : undefined;
-  if (categoria) params.set("categoria", categoria);
-
-  const beds = answers.habitaciones ? BEDS_MAP[answers.habitaciones] : undefined;
-  if (beds) params.set("habitaciones", beds);
-
-  const priceMap = isAlquiler ? PRICE_MAP_ALQUILER : PRICE_MAP_COMPRA;
-  const range = answers.presupuesto ? priceMap[answers.presupuesto] : undefined;
-  if (range?.min) params.set("minPrice", range.min);
-  if (range?.max) params.set("maxPrice", range.max);
-
-  const qs = params.toString();
-  return qs ? `${base}?${qs}` : base;
+interface BudgetRange {
+  min?: string;
+  max?: string;
 }
 
-export default function Wizard() {
+const BUDGET_COMPRA_RANGES: Record<string, BudgetRange> = {
+  menos150k: { max: "150000" },
+  r150_350: { min: "150000", max: "350000" },
+  r350_700: { min: "350000", max: "700000" },
+  r700_1500: { min: "700000", max: "1500000" },
+  mas1500: { min: "1500000" },
+  flexible: {},
+};
+
+const BUDGET_ALQUILER_RANGES: Record<string, BudgetRange> = {
+  menos800: { max: "800" },
+  r800_1500: { min: "800", max: "1500" },
+  r1500_3000: { min: "1500", max: "3000" },
+  r3000_6000: { min: "3000", max: "6000" },
+  mas6000: { min: "6000" },
+  flexible: {},
+};
+
+type StepKey = "intencion" | "tipo" | "habitaciones" | "presupuesto";
+type Answers = Partial<Record<StepKey, string>>; // stores option-key, not label
+
+interface OptionItem {
+  key: string;
+  label: string;
+}
+
+export default function Wizard({ locale = "es" }: { locale?: Locale }) {
   const router = useRouter();
+  const t = getCopy(locale).pages.buscar;
 
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [fading, setFading] = useState(false);
 
+  // Build steps from copy bundle dynamically — keep heading + options keyed
+  // so we always know the canonical option key (intent/type), independent of
+  // the displayed label.
+  const STEPS = useMemo(() => {
+    const intencion = {
+      paso: "01",
+      key: "intencion" as StepKey,
+      heading: [t.steps.intencion.line1, t.steps.intencion.line2Italic],
+      options: [
+        { key: "comprar", label: t.steps.intencion.options.comprar },
+        { key: "alquilar", label: t.steps.intencion.options.alquilar },
+      ] as OptionItem[],
+    };
+    const tipo = {
+      paso: "02",
+      key: "tipo" as StepKey,
+      heading: [t.steps.tipo.line1, t.steps.tipo.line2Italic],
+      options: [
+        { key: "residencial", label: t.steps.tipo.options.residencial },
+        { key: "comercial", label: t.steps.tipo.options.comercial },
+        { key: "otro", label: t.steps.tipo.options.terreno },
+      ] as OptionItem[],
+    };
+    const habitaciones = {
+      paso: "03",
+      key: "habitaciones" as StepKey,
+      heading: [t.steps.habitaciones.line1, t.steps.habitaciones.line2Italic],
+      options: [
+        { key: "uno", label: t.steps.habitaciones.options.uno },
+        { key: "dos", label: t.steps.habitaciones.options.dos },
+        { key: "tres", label: t.steps.habitaciones.options.tres },
+        { key: "cuatroPlus", label: t.steps.habitaciones.options.cuatroPlus },
+      ] as OptionItem[],
+    };
+    const presupuesto = {
+      paso: "04",
+      key: "presupuesto" as StepKey,
+      heading: [t.steps.presupuesto.line1, t.steps.presupuesto.line2Italic],
+      // options computed dynamically based on intencion
+      options: [] as OptionItem[],
+    };
+    return [intencion, tipo, habitaciones, presupuesto] as const;
+  }, [t]);
+
   const current = STEPS[step];
   const isLast = step === STEPS.length - 1;
 
-  const currentOptions: readonly string[] =
-    current.key === "presupuesto"
-      ? Object.keys(answers.intencion === "Alquilar" ? PRICE_MAP_ALQUILER : PRICE_MAP_COMPRA)
-      : current.options;
+  const presupuestoOptions: OptionItem[] = useMemo(() => {
+    if (answers.intencion === "alquilar") {
+      const m = t.steps.presupuesto.alquilarOptions;
+      return [
+        { key: "menos800", label: m.menos800 },
+        { key: "r800_1500", label: m.r800_1500 },
+        { key: "r1500_3000", label: m.r1500_3000 },
+        { key: "r3000_6000", label: m.r3000_6000 },
+        { key: "mas6000", label: m.mas6000 },
+        { key: "flexible", label: m.flexible },
+      ];
+    }
+    const m = t.steps.presupuesto.comprarOptions;
+    return [
+      { key: "menos150k", label: m.menos150k },
+      { key: "r150_350", label: m.r150_350 },
+      { key: "r350_700", label: m.r350_700 },
+      { key: "r700_1500", label: m.r700_1500 },
+      { key: "mas1500", label: m.mas1500 },
+      { key: "flexible", label: m.flexible },
+    ];
+  }, [answers.intencion, t]);
+
+  const currentOptions: OptionItem[] = current.key === "presupuesto" ? presupuestoOptions : [...current.options];
+
+  function buildUrl(a: Answers): string {
+    const isAlquiler = a.intencion === "alquilar";
+    const base = isAlquiler
+      ? locale === "en"
+        ? "/en/properties-for-rent/"
+        : "/propiedades-en-alquiler/"
+      : locale === "en"
+        ? "/en/properties-for-sale/"
+        : "/propiedades-en-venta/";
+
+    const params = new URLSearchParams();
+
+    if (a.tipo) params.set("categoria", a.tipo);
+    if (a.habitaciones && BEDS_KEY_MAP[a.habitaciones]) params.set("habitaciones", BEDS_KEY_MAP[a.habitaciones]);
+
+    const range = a.presupuesto
+      ? (isAlquiler ? BUDGET_ALQUILER_RANGES : BUDGET_COMPRA_RANGES)[a.presupuesto]
+      : undefined;
+    if (range?.min) params.set("minPrice", range.min);
+    if (range?.max) params.set("maxPrice", range.max);
+
+    const qs = params.toString();
+    return qs ? `${base}?${qs}` : base;
+  }
 
   function transition(fn: () => void) {
     setFading(true);
@@ -111,39 +168,45 @@ export default function Wizard() {
     }, 180);
   }
 
-  function select(option: string) {
-    const next = { ...answers, [current.key]: option };
+  function shouldSkipBedsAfter(tipoKey: string | undefined): boolean {
+    return SKIP_BEDS_TIPO_VALUES.has(tipoKey ?? "");
+  }
+
+  function select(opt: OptionItem) {
+    // Some legacy ES tipos: "Residencial" → "residencial"; we always store .key
+    const optionKey =
+      current.key === "tipo" ? (TIPO_MAP[opt.label] ?? opt.key) : opt.key;
+    const next = { ...answers, [current.key]: optionKey };
     setAnswers(next);
     if (isLast) {
       router.push(buildUrl(next));
     } else {
-      // Skip habitaciones step if tipo is Comercial or Otro
       const nextStep = step + 1;
-      const shouldSkipBeds =
-        STEPS[nextStep]?.key === "habitaciones" && SKIP_BEDS.has(next.tipo ?? "");
-      transition(() => setStep((s) => s + (shouldSkipBeds ? 2 : 1)));
+      const skip =
+        STEPS[nextStep]?.key === "habitaciones" && shouldSkipBedsAfter(next.tipo);
+      transition(() => setStep((s) => s + (skip ? 2 : 1)));
     }
   }
 
   function goBack() {
     if (step === 0) {
-      router.push("/");
+      router.push(locale === "en" ? "/en" : "/");
     } else {
       const prevStep = step - 1;
-      const shouldSkipBeds =
-        STEPS[prevStep]?.key === "habitaciones" && SKIP_BEDS.has(answers.tipo ?? "");
-      transition(() => setStep((s) => s - (shouldSkipBeds ? 2 : 1)));
+      const skip =
+        STEPS[prevStep]?.key === "habitaciones" && shouldSkipBedsAfter(answers.tipo);
+      transition(() => setStep((s) => s - (skip ? 2 : 1)));
     }
   }
 
-  function skip() {
+  function skipStep() {
     if (isLast) {
       router.push(buildUrl(answers));
     } else {
       const nextStep = step + 1;
-      const shouldSkipBeds =
-        STEPS[nextStep]?.key === "habitaciones" && SKIP_BEDS.has(answers.tipo ?? "");
-      transition(() => setStep((s) => s + (shouldSkipBeds ? 2 : 1)));
+      const skip =
+        STEPS[nextStep]?.key === "habitaciones" && shouldSkipBedsAfter(answers.tipo);
+      transition(() => setStep((s) => s + (skip ? 2 : 1)));
     }
   }
 
@@ -185,10 +248,10 @@ export default function Wizard() {
               {/* Step indicator */}
               <div className="flex items-center justify-center gap-[10px]">
                 <span className="font-body font-medium text-[11px] md:text-[12px] leading-[16px] text-white tracking-[5px] uppercase">
-                  paso {current.paso}
+                  {t.stepLabel} {current.paso}
                 </span>
                 <span className="font-body font-medium text-[11px] md:text-[12px] leading-[16px] text-[#5a6478] tracking-[5px] uppercase">
-                  /04
+                  {t.stepSeparator}
                 </span>
               </div>
 
@@ -217,11 +280,11 @@ export default function Wizard() {
             <div className="flex flex-wrap items-center justify-center gap-[10px] md:gap-[12px] xl:gap-[16px]">
               {currentOptions.map((option) => (
                 <button
-                  key={option}
+                  key={option.key}
                   onClick={() => select(option)}
                   className="border border-[rgba(250,248,245,0.5)] px-[18px] md:px-[21px] py-[12px] md:py-[14px] font-body font-medium text-[15px] md:text-[14px] lg:text-[15px] xl:text-[16px] leading-[20px] text-white hover:bg-[rgba(250,248,245,0.08)] hover:border-[rgba(250,248,245,0.9)] transition-all duration-150 whitespace-nowrap cursor-pointer"
                 >
-                  {option}
+                  {option.label}
                 </button>
               ))}
             </div>
@@ -236,13 +299,13 @@ export default function Wizard() {
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden>
                 <path d="M13 4L7 10L13 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              Retornar
+              {t.retornar}
             </button>
             <button
-              onClick={skip}
+              onClick={skipStep}
               className="flex items-center gap-[8px] md:gap-[10px] px-[16px] md:px-[20px] py-[10px] md:py-[12px] font-body font-medium text-[15px] md:text-[14px] xl:text-[15px] leading-[30px] text-white/40 hover:text-white/70 transition-colors cursor-pointer"
             >
-              Omitir
+              {t.omitir}
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden>
                 <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

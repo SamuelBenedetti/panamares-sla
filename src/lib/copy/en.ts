@@ -288,16 +288,85 @@ export const en: Copy = {
       ctaButton: "Contact us",
     },
     propiedadesEnVenta: {
-      meta: { title: "", description: "" },
-      todoPr2Marker: "",
+      meta: {
+        title: "Properties for Sale in Panama",
+        description:
+          "Panamares brings together the largest selection of properties for sale in Panama City. Apartments, houses, penthouses, offices, retail spaces and land in Punta Pacífica, Punta Paitilla, Costa del Este and other top areas. Every listing comes with full details on price, area, bedrooms and amenities. Filter by property type, neighborhood or budget and find the right option to buy or invest in Central America's most solid real estate market.",
+      },
+      h1: "Properties for Sale in Panama",
+      description:
+        "Panamares brings together the largest selection of properties for sale in Panama City. Apartments, houses, penthouses, offices, retail spaces and land in Punta Pacífica, Punta Paitilla, Costa del Este and other top areas. Every listing comes with full details on price, area, bedrooms and amenities. Filter by property type, neighborhood or budget and find the right option to buy or invest in Central America's most solid real estate market.",
+      breadcrumbLabel: "Properties for Sale in Panama",
+      whatsappMessage: "Hi, I'm looking for properties for sale in Panama",
     },
     propiedadesEnAlquiler: {
-      meta: { title: "", description: "" },
-      todoPr2Marker: "",
+      meta: {
+        title: "Properties for Rent in Panama",
+        description:
+          "Panamares has the most complete selection of properties for rent in Panama City. Furnished and unfurnished apartments, houses, offices and retail spaces in Punta Pacífica, Punta Paitilla, Obarrio, Calle 50 and more areas. Dollar contracts, English-friendly service and specialized agents who walk you through the whole process. Find your next rental in the city with the most dynamic real estate market in the region.",
+      },
+      h1: "Properties for Rent in Panama",
+      description:
+        "Panamares has the most complete selection of properties for rent in Panama City. Furnished and unfurnished apartments, houses, offices and retail spaces in Punta Pacífica, Punta Paitilla, Obarrio, Calle 50 and more areas. Dollar contracts, English-friendly service and specialized agents who walk you through the whole process. Find your next rental in the city with the most dynamic real estate market in the region.",
+      breadcrumbLabel: "Properties for Rent in Panama",
+      whatsappMessage: "Hi, I'm looking for properties for rent in Panama",
     },
     buscar: {
-      meta: { title: "", description: "" },
-      todoPr2Marker: "",
+      meta: {
+        title: "Search Properties",
+        description:
+          "Search properties in Panama City with our guided assistant: define intent, type, bedrooms and budget in four steps.",
+      },
+      stepLabel: "step",
+      stepSeparator: "/04",
+      steps: {
+        intencion: {
+          line1: "What are you",
+          line2Italic: "looking for?",
+          options: { comprar: "Buy", alquilar: "Rent" },
+        },
+        tipo: {
+          line1: "What type of",
+          line2Italic: "property?",
+          options: {
+            residencial: "Residential",
+            comercial: "Commercial",
+            terreno: "Land",
+          },
+        },
+        habitaciones: {
+          line1: "How many",
+          line2Italic: "bedrooms?",
+          options: {
+            uno: "1 bedroom",
+            dos: "2 bedrooms",
+            tres: "3 bedrooms",
+            cuatroPlus: "4+ bedrooms",
+          },
+        },
+        presupuesto: {
+          line1: "What is your",
+          line2Italic: "budget?",
+          comprarOptions: {
+            menos150k: "Under $150k",
+            r150_350: "$150k – $350k",
+            r350_700: "$350k – $700k",
+            r700_1500: "$700k – $1.5M",
+            mas1500: "Over $1.5M",
+            flexible: "Flexible",
+          },
+          alquilarOptions: {
+            menos800: "Under $800/mo",
+            r800_1500: "$800 – $1,500/mo",
+            r1500_3000: "$1,500 – $3,000/mo",
+            r3000_6000: "$3,000 – $6,000/mo",
+            mas6000: "Over $6,000/mo",
+            flexible: "Flexible",
+          },
+        },
+      },
+      retornar: "Back",
+      omitir: "Skip",
     },
   },
 
@@ -436,7 +505,38 @@ export const en: Copy = {
         `${name}${role ? `, ${role}` : ""} at Panamares. Learn about their background and available properties in Panama City.`,
     },
     categoryHub: {
-      todoPr2Marker: "TODO_PR2_components.categoryHub",
+      tipoDeInvestigacion: "Listing type",
+      tabComprar: "Buy",
+      tabAlquilar: "Rent",
+      gamaDePrecios: "Price range",
+      tamano: "Size",
+      tipoDePropiedad: "Property type",
+      todosLosTipos: "All types",
+      barrio: "Neighborhood",
+      todosLosBarrios: "All neighborhoods",
+      habitaciones: "Bedrooms",
+      banos: "Bathrooms",
+      verMas: "More",
+      cerrar: "Close",
+      limpiarFiltros: "Clear filters",
+      todos: "All",
+      filtros: "Filters",
+      propiedadesDisponiblesSuffix: "properties available",
+      ordenarPorAria: "Sort by",
+      sortRelevancia: "Relevance",
+      sortRecientes: "Most recent",
+      sortPrecioAsc: "Price: low to high",
+      sortPrecioDesc: "Price: high to low",
+      sortAreaDesc: "Largest area",
+      noEncontramosTpl: (q: string) => `We couldn't find properties for "${q}".`,
+      noPropiedadesConFiltros: "No properties match these filters.",
+      filtrosDrawerTitle: "Filters",
+      cerrarFiltrosAria: "Close filters",
+      aplicarFiltros: "Apply filters",
+      whatsappMessageVenta: "Hi, I'm looking for properties for sale in Panama",
+      whatsappMessageAlquiler: "Hi, I'm looking for properties for rent in Panama",
+      whatsappMessageCategoryTpl: (h1: string) =>
+        `Hi, I'm looking for properties in ${h1}`,
     },
   },
 

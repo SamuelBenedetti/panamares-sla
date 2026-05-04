@@ -232,15 +232,53 @@ export interface Copy {
     };
     propiedadesEnVenta: {
       meta: { title: string; description: string };
-      todoPr2Marker: string;
+      h1: string;
+      description: string;
+      breadcrumbLabel: string;
+      whatsappMessage: string;
     };
     propiedadesEnAlquiler: {
       meta: { title: string; description: string };
-      todoPr2Marker: string;
+      h1: string;
+      description: string;
+      breadcrumbLabel: string;
+      whatsappMessage: string;
     };
     buscar: {
       meta: { title: string; description: string };
-      todoPr2Marker: string;
+      stepLabel: string; // "paso"
+      stepSeparator: string; // "/04"
+      steps: {
+        intencion: { line1: string; line2Italic: string; options: { comprar: string; alquilar: string } };
+        tipo: { line1: string; line2Italic: string; options: { residencial: string; comercial: string; terreno: string } };
+        habitaciones: {
+          line1: string;
+          line2Italic: string;
+          options: { uno: string; dos: string; tres: string; cuatroPlus: string };
+        };
+        presupuesto: {
+          line1: string;
+          line2Italic: string;
+          comprarOptions: {
+            menos150k: string;
+            r150_350: string;
+            r350_700: string;
+            r700_1500: string;
+            mas1500: string;
+            flexible: string;
+          };
+          alquilarOptions: {
+            menos800: string;
+            r800_1500: string;
+            r1500_3000: string;
+            r3000_6000: string;
+            mas6000: string;
+            flexible: string;
+          };
+        };
+      };
+      retornar: string;
+      omitir: string;
     };
   };
 
@@ -378,7 +416,41 @@ export interface Copy {
       descriptionTpl: (name: string, role: string) => string;
     };
     categoryHub: {
-      todoPr2Marker: string;
+      // FilterPanel
+      tipoDeInvestigacion: string;
+      tabComprar: string;
+      tabAlquilar: string;
+      gamaDePrecios: string;
+      tamano: string;
+      tipoDePropiedad: string;
+      todosLosTipos: string;
+      barrio: string;
+      todosLosBarrios: string;
+      habitaciones: string;
+      banos: string;
+      verMas: string;
+      cerrar: string;
+      limpiarFiltros: string;
+      todos: string; // stepper "0" label
+      // Sort + count row
+      filtros: string;
+      propiedadesDisponiblesSuffix: string; // "propiedades disponibles"
+      ordenarPorAria: string;
+      sortRelevancia: string;
+      sortRecientes: string;
+      sortPrecioAsc: string;
+      sortPrecioDesc: string;
+      sortAreaDesc: string;
+      // Empty / drawer
+      noEncontramosTpl: (q: string) => string;
+      noPropiedadesConFiltros: string;
+      filtrosDrawerTitle: string;
+      cerrarFiltrosAria: string;
+      aplicarFiltros: string;
+      // Floating WA
+      whatsappMessageVenta: string;
+      whatsappMessageAlquiler: string;
+      whatsappMessageCategoryTpl: (h1: string) => string;
     };
   };
 

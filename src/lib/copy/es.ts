@@ -295,24 +295,84 @@ export const es: Copy = {
     },
     propiedadesEnVenta: {
       meta: {
-        title: "TODO_PR2_pages.propiedadesEnVenta.meta.title",
-        description: "TODO_PR2_pages.propiedadesEnVenta.meta.description",
+        title: "Propiedades en Venta en Panama",
+        description:
+          "Panamares reúne la mayor oferta de propiedades en venta en Panama City. Apartamentos, casas, penthouses, oficinas, locales y terrenos en Punta Pacífica, Punta Paitilla, Costa del Este y más zonas exclusivas. Cada inmueble cuenta con información completa de precio, área, habitaciones y amenidades. Filtra por tipo de propiedad, barrio o presupuesto y encuentra la opción ideal para comprar o invertir en el mercado inmobiliario más sólido de Centroamérica.",
       },
-      todoPr2Marker: "TODO_PR2_pages.propiedadesEnVenta",
+      h1: "Propiedades en Venta en Panamá",
+      description:
+        "Panamares reúne la mayor oferta de propiedades en venta en Panama City. Apartamentos, casas, penthouses, oficinas, locales y terrenos en Punta Pacífica, Punta Paitilla, Costa del Este y más zonas exclusivas. Cada inmueble cuenta con información completa de precio, área, habitaciones y amenidades. Filtra por tipo de propiedad, barrio o presupuesto y encuentra la opción ideal para comprar o invertir en el mercado inmobiliario más sólido de Centroamérica.",
+      breadcrumbLabel: "Propiedades en Venta en Panamá",
+      whatsappMessage: "Hola, busco propiedades en venta en Panamá",
     },
     propiedadesEnAlquiler: {
       meta: {
-        title: "TODO_PR2_pages.propiedadesEnAlquiler.meta.title",
-        description: "TODO_PR2_pages.propiedadesEnAlquiler.meta.description",
+        title: "Propiedades en Alquiler en Panama",
+        description:
+          "Panamares tiene la selección más completa de propiedades en alquiler en Panama City. Apartamentos amueblados y sin amueblar, casas, oficinas y locales comerciales en Punta Pacífica, Punta Paitilla, Obarrio, Calle 50 y más zonas. Contratos en dólares, atención en español y agentes especializados que te acompañan en todo el proceso. Encuentra tu próxima propiedad en alquiler en la ciudad con el mercado inmobiliario más dinámico de la región.",
       },
-      todoPr2Marker: "TODO_PR2_pages.propiedadesEnAlquiler",
+      h1: "Propiedades en Alquiler en Panamá",
+      description:
+        "Panamares tiene la selección más completa de propiedades en alquiler en Panama City. Apartamentos amueblados y sin amueblar, casas, oficinas y locales comerciales en Punta Pacífica, Punta Paitilla, Obarrio, Calle 50 y más zonas. Contratos en dólares, atención en español y agentes especializados que te acompañan en todo el proceso. Encuentra tu próxima propiedad en alquiler en la ciudad con el mercado inmobiliario más dinámico de la región.",
+      breadcrumbLabel: "Propiedades en Alquiler en Panamá",
+      whatsappMessage: "Hola, busco propiedades en alquiler en Panamá",
     },
     buscar: {
       meta: {
-        title: "TODO_PR2_pages.buscar.meta.title",
-        description: "TODO_PR2_pages.buscar.meta.description",
+        title: "Buscar Propiedades",
+        description:
+          "Busca propiedades en Panama City con nuestro asistente guiado: define intención, tipo, habitaciones y presupuesto en cuatro pasos.",
       },
-      todoPr2Marker: "TODO_PR2_pages.buscar",
+      stepLabel: "paso",
+      stepSeparator: "/04",
+      steps: {
+        intencion: {
+          line1: "¿Qué estás",
+          line2Italic: "buscando?",
+          options: { comprar: "Comprar", alquilar: "Alquilar" },
+        },
+        tipo: {
+          line1: "¿Qué tipo de",
+          line2Italic: "propiedad?",
+          options: {
+            residencial: "Residencial",
+            comercial: "Comercial",
+            terreno: "Terreno",
+          },
+        },
+        habitaciones: {
+          line1: "¿Cuántas",
+          line2Italic: "habitaciones?",
+          options: {
+            uno: "1 habitación",
+            dos: "2 habitaciones",
+            tres: "3 habitaciones",
+            cuatroPlus: "4+ habitaciones",
+          },
+        },
+        presupuesto: {
+          line1: "¿Cuál es su",
+          line2Italic: "presupuesto?",
+          comprarOptions: {
+            menos150k: "Menos de $150k",
+            r150_350: "$150k – $350k",
+            r350_700: "$350k – $700k",
+            r700_1500: "$700k – $1.5M",
+            mas1500: "Más de $1.5M",
+            flexible: "Flexible",
+          },
+          alquilarOptions: {
+            menos800: "Menos de $800/mes",
+            r800_1500: "$800 – $1,500/mes",
+            r1500_3000: "$1,500 – $3,000/mes",
+            r3000_6000: "$3,000 – $6,000/mes",
+            mas6000: "Más de $6,000/mes",
+            flexible: "Flexible",
+          },
+        },
+      },
+      retornar: "Retornar",
+      omitir: "Omitir",
     },
   },
 
@@ -451,7 +511,38 @@ export const es: Copy = {
         `${name}${role ? `, ${role}` : ""} en Panamares. Conoce su trayectoria y propiedades disponibles en Panama City.`,
     },
     categoryHub: {
-      todoPr2Marker: "TODO_PR2_components.categoryHub",
+      tipoDeInvestigacion: "Tipo de investigación",
+      tabComprar: "Comprar",
+      tabAlquilar: "Alquilar",
+      gamaDePrecios: "Gama de precios",
+      tamano: "Tamaño",
+      tipoDePropiedad: "Tipo de propiedad",
+      todosLosTipos: "Todos los tipos",
+      barrio: "Barrio",
+      todosLosBarrios: "Todos los barrios",
+      habitaciones: "Habitaciones",
+      banos: "Baños",
+      verMas: "Ver más",
+      cerrar: "Cerrar",
+      limpiarFiltros: "Limpiar filtros",
+      todos: "Todos",
+      filtros: "Filtros",
+      propiedadesDisponiblesSuffix: "propiedades disponibles",
+      ordenarPorAria: "Ordenar por",
+      sortRelevancia: "Relevancia",
+      sortRecientes: "Más recientes",
+      sortPrecioAsc: "Precio: menor a mayor",
+      sortPrecioDesc: "Precio: mayor a menor",
+      sortAreaDesc: "Mayor área",
+      noEncontramosTpl: (q: string) => `No encontramos propiedades para "${q}".`,
+      noPropiedadesConFiltros: "No hay propiedades con estos filtros.",
+      filtrosDrawerTitle: "Filtros",
+      cerrarFiltrosAria: "Cerrar filtros",
+      aplicarFiltros: "Aplicar filtros",
+      whatsappMessageVenta: "Hola, busco propiedades en venta en Panamá",
+      whatsappMessageAlquiler: "Hola, busco propiedades en alquiler en Panamá",
+      whatsappMessageCategoryTpl: (h1: string) =>
+        `Hola, busco propiedades en ${h1}`,
     },
   },
 

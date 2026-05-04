@@ -10,19 +10,22 @@ import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import CTA from "@/components/home/CTA";
 import { canonical, alternates } from "@/lib/seo";
+import { getCopy } from "@/lib/copy";
 
-const H1 = "Propiedades en Venta en Panamá";
-const DESCRIPTION =
-  "Panamares reúne la mayor oferta de propiedades en venta en Panama City. Apartamentos, casas, penthouses, oficinas, locales y terrenos en Punta Pacífica, Punta Paitilla, Costa del Este y más zonas exclusivas. Cada inmueble cuenta con información completa de precio, área, habitaciones y amenidades. Filtra por tipo de propiedad, barrio o presupuesto y encuentra la opción ideal para comprar o invertir en el mercado inmobiliario más sólido de Centroamérica.";
+const copy = getCopy("es");
+const t = copy.pages.propiedadesEnVenta;
 
 export async function generateMetadata(): Promise<Metadata> {
   const properties = await sanityFetch<Property[]>(propertiesByIntentQuery, { businessType: "venta" });
   const firstImage = properties.find((p) => p.mainImage)?.mainImage;
   const ogImage = firstImage ? urlFor(firstImage).width(1200).height(630).url() : undefined;
   return {
-    title: "Propiedades en Venta en Panama",
-    description: DESCRIPTION,
-    alternates: { canonical: canonical("/propiedades-en-venta"), languages: alternates("/propiedades-en-venta", null) },
+    title: t.meta.title,
+    description: t.meta.description,
+    alternates: {
+      canonical: canonical("/propiedades-en-venta"),
+      languages: alternates("/propiedades-en-venta", "/en/properties-for-sale"),
+    },
     robots: { index: true, follow: true },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
@@ -54,23 +57,24 @@ export default async function PropiedadesEnVentaPage({
       categorySlug: "propiedades-en-venta",
     }));
 
-  const jsonLdList = itemListSchema("/propiedades-en-venta/", H1, properties);
+  const jsonLdList = itemListSchema("/propiedades-en-venta/", t.h1, properties);
   const jsonLdBreadcrumb = breadcrumbSchema([
-    { name: "Inicio", url: "/" },
-    { name: H1, url: "/propiedades-en-venta/" },
+    { name: copy.layout.breadcrumb.inicio, url: "/" },
+    { name: t.breadcrumbLabel, url: "/propiedades-en-venta/" },
   ]);
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdList) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
-      <WhatsAppButton message="Hola, busco propiedades en venta en Panamá" variant="floating" />
+      <WhatsAppButton message={t.whatsappMessage} variant="floating" />
 
       <ListingPageHeader
-        breadcrumbs={[{ label: "Inicio", href: "/" }, { label: H1 }]}
-        title={H1}
-        description={DESCRIPTION}
+        breadcrumbs={[{ label: copy.layout.breadcrumb.inicio, href: "/" }, { label: t.breadcrumbLabel }]}
+        title={t.h1}
+        description={t.description}
         count={properties.length}
+        locale="es"
       />
 
       <CategoryPageClient
@@ -82,8 +86,9 @@ export default async function PropiedadesEnVentaPage({
         initialMinPrice={searchParams.minPrice ?? ""}
         initialMaxPrice={searchParams.maxPrice ?? ""}
         initialCategoria={searchParams.categoria ?? ""}
+        locale="es"
       />
-      <CTA />
+      <CTA locale="es" />
     </>
   );
 }
