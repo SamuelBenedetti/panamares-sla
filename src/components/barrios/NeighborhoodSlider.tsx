@@ -4,6 +4,8 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { getCopy, type Locale } from "@/lib/copy";
+import { localePath } from "@/lib/i18n";
 
 export interface SliderNeighborhood {
   name: string;
@@ -15,9 +17,14 @@ export interface SliderNeighborhood {
 
 export default function NeighborhoodSlider({
   neighborhoods,
+  locale = "es",
 }: {
   neighborhoods: SliderNeighborhood[];
+  locale?: Locale;
 }) {
+  const t = getCopy(locale).pages.barriosIndex;
+  const ariaPrev = locale === "en" ? "Previous neighborhood" : "Barrio anterior";
+  const ariaNext = locale === "en" ? "Next neighborhood" : "Siguiente barrio";
   const [current, setCurrent] = useState(0);
 
   const prev = () =>
@@ -73,14 +80,14 @@ export default function NeighborhoodSlider({
         <div className="flex items-center justify-between w-full">
           <button
             onClick={prev}
-            aria-label="Barrio anterior"
+            aria-label={ariaPrev}
             className="backdrop-blur-[2px] bg-white/80 p-[12px] rounded-full flex items-center justify-center hover:bg-white transition-colors"
           >
             <ChevronLeft size={18} className="text-[#0c1834]" strokeWidth={2} />
           </button>
           <button
             onClick={next}
-            aria-label="Siguiente barrio"
+            aria-label={ariaNext}
             className="backdrop-blur-[2px] bg-white/80 p-[12px] rounded-full flex items-center justify-center hover:bg-white transition-colors"
           >
             <ChevronRight size={18} className="text-[#0c1834]" strokeWidth={2} />
@@ -104,7 +111,7 @@ export default function NeighborhoodSlider({
             </div>
             <div className="flex items-center w-full">
               <Link
-                href={`/barrios/${nb.slug}/`}
+                href={localePath(`/barrios/${nb.slug}/`, locale)}
                 className={`font-heading font-normal text-[38px] sm:text-[60px] text-white tracking-[-1.2px] sm:tracking-[-1.8px] leading-none sm:leading-normal hover:text-white/90 transition-colors ${i === current ? "pointer-events-auto" : "pointer-events-none"}`}
               >
                 {nb.name}
@@ -118,7 +125,7 @@ export default function NeighborhoodSlider({
               {nb.avgPrice && (
                 <div className="flex flex-col gap-[10px] items-start">
                   <span className="font-body font-normal text-[15px] text-white whitespace-nowrap" style={{ lineHeight: "16px" }}>
-                    Precio promedio
+                    {t.precioPromedio}
                   </span>
                   <div className="bg-white/20 px-[5px] py-[3px]">
                     <span className="font-body font-semibold text-[20px] text-white leading-normal whitespace-nowrap">
@@ -130,7 +137,7 @@ export default function NeighborhoodSlider({
               {nb.propertyCount !== undefined && (
                 <div className="flex flex-col gap-[10px] items-start">
                   <span className="font-body font-normal text-[15px] text-white whitespace-nowrap" style={{ lineHeight: "16px" }}>
-                    Propiedades
+                    {t.propiedades}
                   </span>
                   <div className="bg-white/20 px-[5px] py-[3px]">
                     <span className="font-body font-semibold text-[20px] text-white leading-normal">

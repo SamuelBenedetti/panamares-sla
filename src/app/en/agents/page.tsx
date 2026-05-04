@@ -11,14 +11,14 @@ import { breadcrumbSchema } from "@/lib/jsonld";
 import { canonical, alternates } from "@/lib/seo";
 import { getCopy } from "@/lib/copy";
 
-const copy = getCopy("es");
+const copy = getCopy("en");
 const t = copy.pages.agentesIndex;
 
 export const metadata: Metadata = {
   title: t.meta.title,
   description: t.meta.description,
   alternates: {
-    canonical: canonical("/agentes"),
+    canonical: canonical("/en/agents"),
     languages: alternates("/agentes", "/en/agents"),
   },
   robots: { index: true, follow: true },
@@ -30,7 +30,7 @@ interface Props {
   searchParams: { page?: string };
 }
 
-export default async function AgentesPage({ searchParams }: Props) {
+export default async function AgentsPageEn({ searchParams }: Props) {
   const currentPage = Math.max(1, parseInt(searchParams.page ?? "1", 10));
   const offset = (currentPage - 1) * PAGE_SIZE;
 
@@ -42,8 +42,8 @@ export default async function AgentesPage({ searchParams }: Props) {
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   const jsonLdBreadcrumb = breadcrumbSchema([
-    { name: copy.layout.breadcrumb.inicio, url: "/" },
-    { name: t.breadcrumbLabel, url: "/agentes/" },
+    { name: copy.layout.breadcrumb.inicio, url: "/en/" },
+    { name: t.breadcrumbLabel, url: "/en/agents/" },
   ]);
 
   return (
@@ -59,7 +59,7 @@ export default async function AgentesPage({ searchParams }: Props) {
 
           <Breadcrumb
             items={[
-              { label: copy.layout.breadcrumb.inicio, href: "/" },
+              { label: copy.layout.breadcrumb.inicio, href: "/en" },
               { label: t.breadcrumbLabel },
             ]}
           />
@@ -85,7 +85,7 @@ export default async function AgentesPage({ searchParams }: Props) {
               {t.teamEyebrow}
             </p>
             <Link
-              href="/contacto/"
+              href="/en/contact/"
               className="inline-flex items-center gap-[8px] font-body font-medium text-[12px] text-[#5a6478] tracking-[1.2px] uppercase hover:text-[#0c1834] transition-colors whitespace-nowrap"
             >
               {t.hablarConElEquipo}
@@ -93,13 +93,13 @@ export default async function AgentesPage({ searchParams }: Props) {
             </Link>
           </div>
 
-          <AgentGrid agents={agents} locale="es" />
+          <AgentGrid agents={agents} locale="en" />
 
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            basePath="/agentes/"
-            locale="es"
+            basePath="/en/agents/"
+            locale="en"
           />
         </div>
       </section>
@@ -119,7 +119,7 @@ export default async function AgentesPage({ searchParams }: Props) {
             </p>
           </div>
           <Link
-            href="/contacto/"
+            href="/en/contact/"
             className="inline-flex items-center justify-center gap-[8px] bg-white w-full xl:w-fit px-[32px] py-[15px] font-body font-medium text-[14px] text-[#0c1834] tracking-[1.4px] uppercase hover:bg-[#f9f9f9] transition-colors whitespace-nowrap"
           >
             {t.ctaButton}

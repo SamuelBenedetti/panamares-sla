@@ -14,9 +14,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getCopy } from "@/lib/copy";
-import { agentesEs } from "@/lib/copy/agentes.es";
+import { agentesEn } from "@/lib/copy/agentes.en";
 
-const copy = getCopy("es");
+const copy = getCopy("en");
 const t = copy.components.agentDetail;
 
 const PAGE_SIZE = 6;
@@ -33,12 +33,12 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     ? urlFor(agent.photo).width(1200).height(630).url()
     : undefined;
   const isPaginated = Number(searchParams?.page ?? 1) > 1;
-  const role = agentesEs[params.slug]?.role ?? agent.role ?? "";
+  const role = agentesEn[params.slug]?.role ?? agent.role ?? "";
   return {
     title: `${agent.name}${t.titleSuffix}`,
     description: t.descriptionTpl(agent.name, role),
     alternates: {
-      canonical: canonical(`/agentes/${params.slug}`),
+      canonical: canonical(`/en/agents/${params.slug}`),
       languages: alternates(`/agentes/${params.slug}`, `/en/agents/${params.slug}`),
     },
     robots: isPaginated ? { index: false, follow: true } : { index: true, follow: true },
@@ -49,7 +49,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   };
 }
 
-export default async function AgentProfilePage({ params, searchParams }: Props) {
+export default async function AgentProfilePageEn({ params, searchParams }: Props) {
   const agent = await sanityFetch<Agent | null>(agentBySlugQuery, { slug: params.slug });
   if (!agent) notFound();
 
@@ -57,7 +57,7 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
     ? urlFor(agent.photo).width(520).height(693).url()
     : null;
 
-  const agentCopy = agentesEs[params.slug];
+  const agentCopy = agentesEn[params.slug];
   const role = agentCopy?.role ?? agent.role ?? t.cardRoleFallback;
 
   const waMessage = t.whatsappMessageTpl(agent.name);
@@ -72,9 +72,9 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
 
   const jsonLdAgent = agentSchema(agent);
   const jsonLdBreadcrumb = breadcrumbSchema([
-    { name: copy.layout.breadcrumb.inicio, url: "/" },
-    { name: t.breadcrumbLabel, url: "/agentes/" },
-    { name: agent.name, url: `/agentes/${params.slug}/` },
+    { name: copy.layout.breadcrumb.inicio, url: "/en/" },
+    { name: t.breadcrumbLabel, url: "/en/agents/" },
+    { name: agent.name, url: `/en/agents/${params.slug}/` },
   ]);
 
   return (
@@ -84,39 +84,33 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
 
       <WhatsAppButton message={waMessage} variant="floating" />
 
-      {/* ── Hero ── */}
+      {/* Hero */}
       <section className="bg-[#0d1835] px-[30px] xl:px-[60px] 2xl:px-[160px]">
         <div className="max-w-[1440px] mx-auto">
 
-          {/* Breadcrumb */}
           <div className="py-[30px]">
             <Breadcrumb
               variant="light"
               items={[
-                { label: copy.layout.breadcrumb.inicio, href: "/" },
-                { label: t.breadcrumbLabel, href: "/agentes/" },
+                { label: copy.layout.breadcrumb.inicio, href: "/en" },
+                { label: t.breadcrumbLabel, href: "/en/agents/" },
                 { label: agent.name },
               ]}
             />
           </div>
 
-          {/* Eyebrow + Name + Pills */}
           <div className="flex flex-col gap-[3px] pb-[50px]">
 
-            {/* Eyebrow */}
             <p className="font-body font-normal text-[#737b8c] text-[16px] tracking-[3.2px] uppercase">
               {t.heroEyebrow}
             </p>
 
-            {/* H1 */}
             <h1 className="font-heading font-normal text-[clamp(36px,3.5vw,50px)] text-white leading-normal tracking-[-2px]">
               {agent.name}
             </h1>
 
-            {/* Pills — mobile: stacked, desktop: single row */}
             <div className="flex flex-col lg:flex-row gap-[16px] items-start lg:items-center mt-[8px]">
 
-              {/* Row of small info pills (count + phone + email) — first on mobile */}
               <div className="flex flex-wrap gap-[8px] lg:gap-[16px] items-center lg:order-2">
                 {listingCount > 0 && (
                   <span className="inline-flex items-center gap-[5px] bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.2)] px-[10px] py-[7px]">
@@ -142,7 +136,6 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
                 )}
               </div>
 
-              {/* WhatsApp — full-width button on mobile, small pill on desktop */}
               <a
                 href={waHref}
                 target="_blank"
@@ -160,19 +153,16 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
         </div>
       </section>
 
-      {/* ── Contenido ── */}
+      {/* Content */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[60px] xl:py-[80px]">
         <div className="max-w-[1440px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-[24px] items-start">
 
-            {/* Left: Agent sticker card — below grid on mobile, sticky sidebar on desktop */}
             <div className="order-2 lg:order-1 lg:sticky lg:top-[100px]">
               <div className="bg-white border border-[#dfe5ef] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex flex-col gap-[14px] p-[16px]">
 
-                {/* Inner group: count bar + photo + info */}
                 <div className="flex flex-col gap-[14px]">
 
-                  {/* Properties count bar */}
                   <div className="bg-[#0d1835] flex items-center justify-center gap-[8px] px-[10px] py-[10px] w-full">
                     <Building2 size={16} className="text-white shrink-0" />
                     <p className="font-body text-[13px] text-white tracking-[-0.32px] whitespace-nowrap">
@@ -181,7 +171,6 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
                     </p>
                   </div>
 
-                  {/* Agent photo */}
                   {photoUrl && (
                     <div className="relative w-full overflow-hidden bg-[#dfe5ef]" style={{ aspectRatio: "3/4" }}>
                       <Image
@@ -194,9 +183,7 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
                     </div>
                   )}
 
-                  {/* Info block */}
                   <div className="bg-[#f8f8f9] flex flex-col gap-[8px] p-[12px]">
-                    {/* Avatar + name + role */}
                     <div className="flex items-center gap-[8px]">
                       <div className="bg-[#0c1834] rounded-full w-[36px] h-[36px] flex items-center justify-center shrink-0">
                         <span className="font-heading text-[15px] text-white leading-none">
@@ -208,7 +195,6 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
                         <p className="font-body font-normal text-[13px] text-[#737b8c] leading-none">{role}</p>
                       </div>
                     </div>
-                    {/* Hours */}
                     <p className="font-body font-normal text-[13px] text-[#737b8c] leading-snug">
                       {t.cardHoursLine}
                       <strong className="font-semibold">{t.cardHoursBold}</strong>
@@ -216,7 +202,6 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
                   </div>
                 </div>
 
-                {/* WhatsApp CTA */}
                 <a
                   href={waHref}
                   target="_blank"
@@ -227,7 +212,6 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
                   <span className="font-body font-medium text-[13px] text-white">{t.consultarPorWhatsapp}</span>
                 </a>
 
-                {/* Phone CTA */}
                 {agent.phone && (
                   <a
                     href={`tel:${agent.phone}`}
@@ -240,22 +224,21 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
               </div>
             </div>
 
-            {/* Right: Portfolio — first on mobile */}
             <div id="portfolio" className="order-1 lg:order-2">
               <AgentPortfolioGrid
                 properties={pageProperties}
                 waHref={waHref}
                 currentPage={currentPage}
                 totalPages={totalPages}
-                basePath={`/agentes/${params.slug}/`}
-                locale="es"
+                basePath={`/en/agents/${params.slug}/`}
+                locale="en"
               />
             </div>
           </div>
         </div>
       </section>
 
-      <CTA locale="es" />
+      <CTA locale="en" />
     </>
   );
 }

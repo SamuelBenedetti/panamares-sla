@@ -203,11 +203,32 @@ export interface Copy {
     };
     barriosIndex: {
       meta: { title: string; description: string };
-      todoPr2Marker: string;
+      breadcrumbLabel: string;
+      h1Prefix: string;
+      h1Italic: string;
+      zonesAvailableLabel: string;
+      masZonasEyebrow: string;
+      masZonasTitleLine1: string;
+      masZonasTitleLine2Italic: string;
+      precioPromedio: string;
+      propiedades: string;
+      ctaEyebrow: string;
+      ctaHeading: string;
+      ctaBody: string;
+      ctaButton: string;
     };
     agentesIndex: {
       meta: { title: string; description: string };
-      todoPr2Marker: string;
+      breadcrumbLabel: string;
+      h1: string;
+      agentesDisponiblesSuffix: string;
+      teamEyebrow: string;
+      hablarConElEquipo: string;
+      noAgentsYet: string;
+      ctaEyebrow: string;
+      ctaHeading: string;
+      ctaBody: string;
+      ctaButton: string;
     };
     propiedadesEnVenta: {
       meta: { title: string; description: string };
@@ -294,10 +315,67 @@ export interface Copy {
       buttonContactenos: string;
     };
     neighborhoodDetail: {
-      todoPr2Marker: string;
+      // Hero
+      heroH1Prefix: string;
+      heroH1Italic: string;
+      heroPropActiva: string;
+      heroPropActivasPlural: string;
+      heroVentaSuffix: string;
+      heroAlquilerSuffix: string;
+      heroPromedioSuffix: string;
+      // About / SEO block
+      aboutEyebrow: string;
+      aboutHeadingPrefix: string;
+      currentlyThereAre: string;
+      propiedadDisponible: string;
+      propiedadesDisponibles: string;
+      enConnector: string;
+      ctaWhatsapp: string;
+      ctaContactenos: string;
+      // Sidebar stats
+      statsPrecioPromedio: string;
+      statsPropiedadesActivas: string;
+      statsPropiedadSingular: string;
+      statsPropiedadPlural: string;
+      statsTipoMasDisponible: string;
+      // CTA section
+      ctaEyebrow: string;
+      ctaHeadingPrefix: string;
+      ctaHeadingSuffixItalicTpl: (name: string) => string;
+      ctaBody: string;
+      // Listings section (was hardcoded in NeighborhoodListingsSection)
+      listingsEyebrow: string;
+      listingsHeadingVenta: string;
+      listingsHeadingAlquiler: string;
+      tabComprar: string;
+      tabAlquilar: string;
+      verPorTipoEnTpl: (name: string) => string;
+      noListingsEmpty: string;
+      // Other neighborhoods
+      otrosBarriosEyebrow: string;
+      otrosBarriosHeading: string;
+      // WhatsApp / breadcrumb
+      whatsappMessageTpl: (name: string) => string;
+      breadcrumbLabel: string;
     };
     agentDetail: {
-      todoPr2Marker: string;
+      heroEyebrow: string;
+      heroListingCountTooltip: string;
+      waCtaMobile: string;
+      waCtaDesktop: string;
+      cardPropertiesActivePrefix: string;
+      cardPropertiesActiveLabel: string;
+      cardRoleFallback: string;
+      cardHoursLine: string;
+      cardHoursBold: string;
+      consultarPorWhatsapp: string;
+      llamarAhora: string;
+      noPropertiesEmpty: string;
+      consultarDisponibilidad: string;
+      whatsappMessageTpl: (name: string) => string;
+      breadcrumbLabel: string;
+      titleSuffix: string;
+      descriptionTpl: (name: string, role: string) => string;
     };
     categoryHub: {
       todoPr2Marker: string;
