@@ -91,11 +91,107 @@ export interface Copy {
     };
     sobreNosotros: {
       meta: { title: string; description: string };
-      todoPr2Marker: string;
+      breadcrumbLabel: string;
+      hero: {
+        eyebrow: string;
+        titleLine1: string;
+        titleLine2Italic: string;
+        titleLine3: string;
+        body: { bold: string; light: string };
+      };
+      oficina: {
+        eyebrow: string;
+        locationLine1: string;
+        locationLine2: string;
+        imageAlt: string;
+      };
+      stats: {
+        labelAnos: string;
+        labelPropiedadesVendidas: string;
+        labelTransacciones: string;
+        labelSatisfechos: string;
+      };
+      ubicacion: {
+        eyebrow: string;
+        heading: string;
+      };
+      historia: {
+        eyebrow: string;
+        titleLine1: string;
+        titleLine2Italic: string;
+        p1: string;
+        p2: string;
+        p3Lead: string;
+        p3Cities: string;
+        ctaVerPropiedades: string;
+        cards: {
+          confianza: { title: string; bodyPrefix: string; bodyBold: string; bodySuffix: string };
+          servicio: { title: string; body: string };
+          inversion: { title: string; body: string };
+          conocimiento: { title: string; body: string };
+        };
+      };
+      equipo: {
+        eyebrow: string;
+        heading: string;
+      };
+      reconocimientos: {
+        eyebrow: string;
+        titleLine1: string;
+        titleLine2Italic: string;
+        awards: {
+          excelencia: { title: string; sub: string };
+          topAgencias: { title: string; sub: string };
+          servicio: { title: string; sub: string };
+          remax: { title: string; sub: string };
+        };
+      };
+      ctaContacto: {
+        eyebrow: string;
+        heading: string;
+        bodyLight: string;
+        bodyBold: string;
+        button: string;
+      };
     };
     contacto: {
       meta: { title: string; description: string };
-      todoPr2Marker: string;
+      breadcrumbLabel: string;
+      hero: {
+        eyebrow: string;
+        titleLine1: string;
+        titleLine2Italic: string;
+        bodyBold: string;
+        bodyRegular: string;
+      };
+      whatsappBanner: {
+        heading: string;
+        subtitle: string;
+        button: string;
+      };
+      sidebar: {
+        labelDireccion: string;
+        labelTelefono: string;
+        labelCorreo: string;
+        labelHorario: string;
+        cityLine: (locality: string) => string;
+        horario: {
+          lunVie: { label: string; range: string };
+          sabados: { label: string; range: string };
+        };
+        ubicacionEyebrow: string;
+        mapTitle: (street: string, locality: string) => string;
+      };
+      conoceMejor: {
+        eyebrow: string;
+        body: string;
+        cta: string;
+      };
+      uneteEquipo: {
+        eyebrow: string;
+        heading: string;
+        button: string;
+      };
     };
     terminos: {
       meta: { title: string; description: string };

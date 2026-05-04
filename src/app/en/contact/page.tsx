@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import ContactMap from "./ContactMap";
+import ContactMap from "@/app/(site)/contacto/ContactMap";
 import { canonical, alternates } from "@/lib/seo";
 import { contactPointSchema, breadcrumbSchema } from "@/lib/jsonld";
 import {
@@ -17,23 +17,23 @@ import {
   PANAMARES_LAT,
   PANAMARES_LNG,
 } from "@/lib/config";
-import ContactForm from "./ContactForm";
+import ContactForm from "@/app/(site)/contacto/ContactForm";
 import { getCopy } from "@/lib/copy";
 
-const copy = getCopy("es");
+const copy = getCopy("en");
 const t = copy.pages.contacto;
 
 export const metadata: Metadata = {
   title: t.meta.title,
   description: t.meta.description,
   alternates: {
-    canonical: canonical("/contacto"),
+    canonical: canonical("/en/contact"),
     languages: alternates("/contacto", "/en/contact"),
   },
   robots: { index: true, follow: true },
 };
 
-export default function ContactoPage() {
+export default function ContactPageEn() {
   return (
     <>
       <script
@@ -43,18 +43,18 @@ export default function ContactoPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema([
-          { name: copy.layout.breadcrumb.inicio, url: "/" },
-          { name: t.breadcrumbLabel, url: "/contacto/" },
+          { name: copy.layout.breadcrumb.inicio, url: "/en/" },
+          { name: t.breadcrumbLabel, url: "/en/contact/" },
         ])) }}
       />
+
       {/* ── Hero ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-[80px] xl:pb-[112px]">
         <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col gap-[20px]">
-            {/* Breadcrumb */}
             <Breadcrumb
               items={[
-                { label: copy.layout.breadcrumb.inicio, href: "/" },
+                { label: copy.layout.breadcrumb.inicio, href: "/en" },
                 { label: t.breadcrumbLabel },
               ]}
             />
@@ -82,9 +82,7 @@ export default function ContactoPage() {
         <div className="max-w-[1440px] mx-auto">
           <div className="grid grid-cols-1 xl:grid-cols-[3fr_2fr] gap-[40px] xl:gap-[64px]">
 
-            {/* Left: WhatsApp banner + Form */}
             <div className="flex flex-col gap-[32px]">
-              {/* WhatsApp banner */}
               <div className="bg-[rgba(0,180,36,0.05)] border border-[rgba(0,180,36,0.3)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-[16px] p-[21px]">
                 <div className="flex flex-col gap-[2px]">
                   <p className="font-body font-semibold text-[14px] text-[#0c1935] leading-5">
@@ -108,13 +106,11 @@ export default function ContactoPage() {
                 </a>
               </div>
 
-              <ContactForm locale="es" />
+              <ContactForm locale="en" />
             </div>
 
-            {/* Right: Sidebar */}
             <div className="flex flex-col gap-[32px]">
 
-              {/* Contact items */}
               <div className="flex flex-col">
                 {(
                   [
@@ -183,7 +179,6 @@ export default function ContactoPage() {
 
               <div className="h-px bg-[#dfe5ef]" />
 
-              {/* Map */}
               <div className="flex flex-col gap-[12px]">
                 <p className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
                   {t.sidebar.ubicacionEyebrow}
@@ -195,7 +190,6 @@ export default function ContactoPage() {
 
               <div className="h-px bg-[#dfe5ef]" />
 
-              {/* Conócenos mejor */}
               <div className="bg-white px-[20px] pt-[20px] pb-[23px] flex flex-col gap-[7px]">
                 <p className="font-body font-normal text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
                   {t.conoceMejor.eyebrow}
@@ -204,7 +198,7 @@ export default function ContactoPage() {
                   {t.conoceMejor.body}
                 </p>
                 <Link
-                  href="/sobre-nosotros/"
+                  href="/en/about/"
                   className="inline-flex items-center gap-[6px] pt-[14px] font-body font-semibold text-[12px] text-[#b8891e] tracking-[1.2px] uppercase leading-4 hover:opacity-70 transition-opacity"
                 >
                   {t.conoceMejor.cta}
@@ -216,7 +210,7 @@ export default function ContactoPage() {
         </div>
       </section>
 
-      {/* ── Únete al equipo ── */}
+      {/* ── Join the team ── */}
       <section className="bg-[#121e3e] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[80px] xl:py-[100px]">
         <div className="max-w-[1440px] mx-auto flex flex-col items-center xl:items-start xl:flex-row xl:justify-between gap-[32px] xl:gap-[40px]">
           <div className="flex flex-col gap-[15px] items-center xl:items-start text-center xl:text-left">

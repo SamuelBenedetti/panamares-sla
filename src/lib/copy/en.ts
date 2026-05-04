@@ -94,12 +94,151 @@ export const en: Copy = {
       },
     },
     sobreNosotros: {
-      meta: { title: "", description: "" },
-      todoPr2Marker: "",
+      meta: {
+        title: "About Us",
+        description:
+          "Panamares is a luxury real estate agency in Panama City. Meet our team and learn about our track record in the Panamanian market.",
+      },
+      breadcrumbLabel: "About Us",
+      hero: {
+        eyebrow: "Who we are",
+        titleLine1: "Over 15 years",
+        titleLine2Italic: "connecting dreams",
+        titleLine3: "with properties",
+        body: {
+          bold: "Panamares was born from one conviction: that the luxury real estate market in Panama ",
+          light:
+            "deserved a different kind of representation — more honest, more refined, more human.",
+        },
+      },
+      oficina: {
+        eyebrow: "Our office",
+        locationLine1: "Punta Pacífica,",
+        locationLine2: "Panama City",
+        imageAlt: "Our office in Punta Pacífica, Panama City",
+      },
+      stats: {
+        labelAnos: "Years in the Market",
+        labelPropiedadesVendidas: "Properties Sold",
+        labelTransacciones: "In Transactions",
+        labelSatisfechos: "Satisfied Clients",
+      },
+      ubicacion: {
+        eyebrow: "Find us",
+        heading: "Torre Oceánica, 18th Floor — Punta Pacífica",
+      },
+      historia: {
+        eyebrow: "Our story",
+        titleLine1: "Built on",
+        titleLine2Italic: "trust",
+        p1: "Panamares was founded in 2009 by Valeria Moreno, with the vision of building a firm that put the client — not the commission — at the center of every decision.",
+        p2: "Over more than a decade, we've built a reputation based on transparency, honest wealth advisory and a deep understanding of the Panamanian market.",
+        p3Lead:
+          "Today we are a team of 18 specialized agents, present in the main residential and commercial corridors of ",
+        p3Cities:
+          "Panama City: Punta Pacífica, Punta Paitilla, Avenida Balboa and Costa del Este.",
+        ctaVerPropiedades: "View our properties",
+        cards: {
+          confianza: {
+            title: "Absolute trust",
+            bodyPrefix: "Every transaction is handled with full ",
+            bodyBold: "transparency",
+            bodySuffix: ", ethics and care for our clients.",
+          },
+          servicio: {
+            title: "Premium service",
+            body: "Personalized attention from the first contact through the final signing, with no middlemen.",
+          },
+          inversion: {
+            title: "Investment perspective",
+            body: "We advise with real market data to secure the best wealth decision.",
+          },
+          conocimiento: {
+            title: "Local knowledge",
+            body: "Deep expertise in every Panama City neighborhood and how property values move there.",
+          },
+        },
+      },
+      equipo: {
+        eyebrow: "The team",
+        heading: "Agents you can trust",
+      },
+      reconocimientos: {
+        eyebrow: "Recognitions",
+        titleLine1: "Recognized as the",
+        titleLine2Italic: "top real estate firm",
+        awards: {
+          excelencia: {
+            title: "Real Estate Excellence Award",
+            sub: "Panamá 2023",
+          },
+          topAgencias: {
+            title: "Top 5 Luxury Agencies",
+            sub: "LAMag 2022",
+          },
+          servicio: {
+            title: "Best Customer Service",
+            sub: "ACOBIR 2021",
+          },
+          remax: {
+            title: "RE/MAX Platinum Certification",
+            sub: "2019–2024",
+          },
+        },
+      },
+      ctaContacto: {
+        eyebrow: "Have a question?",
+        heading: "We're here to help",
+        bodyLight: "Reach out directly to one of our agents ",
+        bodyBold: "for personalized guidance with no strings attached.",
+        button: "Contact Us Now",
+      },
     },
     contacto: {
-      meta: { title: "", description: "" },
-      todoPr2Marker: "",
+      meta: {
+        title: "Contact",
+        description:
+          "Contact Panamares, a luxury real estate firm in Panama City. Call us, message us on WhatsApp or visit us in Punta Pacífica. Agents available Monday through Saturday.",
+      },
+      breadcrumbLabel: "Contact",
+      hero: {
+        eyebrow: "Contact us",
+        titleLine1: "Get in touch with ",
+        titleLine2Italic: "Panamares",
+        bodyBold:
+          "Our team of agents is available to answer your questions,",
+        bodyRegular:
+          "schedule tours and guide you through every step of the process.",
+      },
+      whatsappBanner: {
+        heading: "Want an immediate reply?",
+        subtitle: "Message us on WhatsApp — we'll respond in minutes.",
+        button: "Open WhatsApp",
+      },
+      sidebar: {
+        labelDireccion: "Address",
+        labelTelefono: "Phone",
+        labelCorreo: "Email",
+        labelHorario: "Hours",
+        cityLine: (locality: string) => `${locality}, Panama City`,
+        horario: {
+          lunVie: { label: "Mon – Fri:", range: "8:00 – 18:00" },
+          sabados: { label: "Saturday:", range: "9:00 – 13:00" },
+        },
+        ubicacionEyebrow: "Our location",
+        mapTitle: (street: string, locality: string) =>
+          `Panamares — ${street}, ${locality}`,
+      },
+      conoceMejor: {
+        eyebrow: "Get to know us",
+        body: "Over 15 years connecting families and investors with the best properties in Panama.",
+        cta: "About Panamares →",
+      },
+      uneteEquipo: {
+        eyebrow: "Are you an independent agent?",
+        heading: "Join the Panamares team",
+        button: "Message us",
+      },
     },
     terminos: {
       meta: { title: "", description: "" },

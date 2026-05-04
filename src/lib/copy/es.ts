@@ -95,17 +95,150 @@ export const es: Copy = {
     },
     sobreNosotros: {
       meta: {
-        title: "TODO_PR2_pages.sobreNosotros.meta.title",
-        description: "TODO_PR2_pages.sobreNosotros.meta.description",
+        title: "Sobre Nosotros",
+        description:
+          "Panamares es una agencia inmobiliaria de lujo en Panama City. Conoce nuestro equipo y nuestra trayectoria en el mercado panameño.",
       },
-      todoPr2Marker: "TODO_PR2_pages.sobreNosotros",
+      breadcrumbLabel: "Sobre Nosotros",
+      hero: {
+        eyebrow: "Quiénes somos",
+        titleLine1: "Más de 15 años",
+        titleLine2Italic: "conectando sueños",
+        titleLine3: "con propiedades",
+        body: {
+          bold: "Panamares nació con una convicción: que el mercado inmobiliario de lujo en Panamá ",
+          light:
+            "merecía una representación diferente, más honesta, más elegante, más humana.",
+        },
+      },
+      oficina: {
+        eyebrow: "Nuestra oficina",
+        locationLine1: "Punta Pacífica,",
+        locationLine2: "Ciudad de Panamá",
+        imageAlt: "Nuestra oficina en Punta Pacífica, Ciudad de Panamá",
+      },
+      stats: {
+        labelAnos: "Años en el Mercado",
+        labelPropiedadesVendidas: "Propiedades vendidas",
+        labelTransacciones: "En transacciones",
+        labelSatisfechos: "Clientes Satisfechos",
+      },
+      ubicacion: {
+        eyebrow: "Encuéntranos",
+        heading: "Torre Oceánica, Piso 18 — Punta Pacífica",
+      },
+      historia: {
+        eyebrow: "Nuestra historia",
+        titleLine1: "Fundada sobre",
+        titleLine2Italic: "la confianza",
+        p1: "Panamares fue fundada en 2009 por Valeria Moreno, con la visión de crear una firma que pusiera al cliente, no la comisión, en el centro de cada decisión.",
+        p2: "A lo largo de más de una década, hemos construido una reputación basada en la transparencia, el asesoramiento patrimonial honesto y un conocimiento profundo del mercado panameño.",
+        p3Lead:
+          "Hoy somos un equipo de 18 asesores especializados, con presencia en los principales corredores residenciales y comerciales de ",
+        p3Cities:
+          "Ciudad de Panamá: Punta Pacífica, Punta Paitilla, Avenida Balboa y Costa del Este.",
+        ctaVerPropiedades: "Ver nuestras propiedades",
+        cards: {
+          confianza: {
+            title: "Confianza absoluta",
+            bodyPrefix: "Cada transacción se gestiona con total ",
+            bodyBold: "transparencia",
+            bodySuffix: ", ética y cuidado hacia nuestros clientes.",
+          },
+          servicio: {
+            title: "Servicio premium",
+            body: "Atención personalizada desde el primer contacto hasta la firma final, sin intermediarios.",
+          },
+          inversion: {
+            title: "Visión de inversión",
+            body: "Asesoramos con datos de mercado reales para asegurar la mejor decisión patrimonial.",
+          },
+          conocimiento: {
+            title: "Conocimiento local",
+            body: "Profundo expertise en cada barrio de Ciudad de Panamá y sus dinámicas de valorización.",
+          },
+        },
+      },
+      equipo: {
+        eyebrow: "El equipo",
+        heading: "Asesores de confianza",
+      },
+      reconocimientos: {
+        eyebrow: "Reconocimientos",
+        titleLine1: "Reconocida como la",
+        titleLine2Italic: "mejor firma inmobiliaria",
+        awards: {
+          excelencia: {
+            title: "Premio Excelencia Inmobiliaria",
+            sub: "Panamá 2023",
+          },
+          topAgencias: {
+            title: "Top 5 Agencias de Lujo",
+            sub: "LAMag 2022",
+          },
+          servicio: {
+            title: "Mejor Servicio al Cliente",
+            sub: "ACOBIR 2021",
+          },
+          remax: {
+            title: "Certificación RE/MAX Platinum",
+            sub: "2019–2024",
+          },
+        },
+      },
+      ctaContacto: {
+        eyebrow: "¿Tienes alguna consulta?",
+        heading: "Estamos para ayudarte",
+        bodyLight: "Contacta directamente con uno de nuestros asesores ",
+        bodyBold: "y recibe orientación personalizada sin compromisos.",
+        button: "Contáctenos Ahora",
+      },
     },
     contacto: {
       meta: {
-        title: "TODO_PR2_pages.contacto.meta.title",
-        description: "TODO_PR2_pages.contacto.meta.description",
+        title: "Contacto",
+        description:
+          "Contacta con Panamares, inmobiliaria de lujo en Panama City. Llámanos, escríbenos por WhatsApp o visítanos en Punta Pacífica. Asesores disponibles de lunes a sábado.",
       },
-      todoPr2Marker: "TODO_PR2_pages.contacto",
+      breadcrumbLabel: "Contacto",
+      hero: {
+        eyebrow: "Contáctenos",
+        titleLine1: "Contacta con ",
+        titleLine2Italic: "Panamares",
+        bodyBold:
+          "Nuestro equipo de asesores está disponible para responder tus preguntas,",
+        bodyRegular:
+          "agendar visitas y orientarte en cada paso del proceso.",
+      },
+      whatsappBanner: {
+        heading: "¿Prefieres respuesta inmediata?",
+        subtitle: "Escríbenos por WhatsApp y te atendemos en minutos.",
+        button: "Abrir WhatsApp",
+      },
+      sidebar: {
+        labelDireccion: "Dirección",
+        labelTelefono: "Teléfono",
+        labelCorreo: "Correo",
+        labelHorario: "Horario",
+        cityLine: (locality: string) => `${locality}, Ciudad de Panamá`,
+        horario: {
+          lunVie: { label: "Lun – Vie:", range: "8:00 – 18:00" },
+          sabados: { label: "Sábados:", range: "9:00 – 13:00" },
+        },
+        ubicacionEyebrow: "Nuestra ubicación",
+        mapTitle: (street: string, locality: string) =>
+          `Panamares — ${street}, ${locality}`,
+      },
+      conoceMejor: {
+        eyebrow: "Conócenos mejor",
+        body: "Más de 15 años conectando a familias e inversionistas con las mejores propiedades de Panamá.",
+        cta: "Sobre Panamares →",
+      },
+      uneteEquipo: {
+        eyebrow: "¿Eres agente independiente?",
+        heading: "Únete al equipo Panamares",
+        button: "Escríbenos",
+      },
     },
     terminos: {
       meta: {
