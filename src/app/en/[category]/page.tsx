@@ -13,7 +13,7 @@ import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import CTA from "@/components/home/CTA";
 import { canonical, alternates } from "@/lib/seo";
 import { getCopy } from "@/lib/copy";
-import { getEnUrl } from "@/lib/i18n";
+import { getEsUrl, SLUG_MAP_ES_TO_EN } from "@/lib/i18n";
 
 interface Props {
   params: { category: string };
@@ -21,21 +21,42 @@ interface Props {
 
 export const dynamicParams = false;
 
+// EN category slugs are derived from the ES → EN slug map: every entry whose
+// ES key is in VALID_CATEGORY_SLUGS becomes an EN static param. The EN slug is
+// the trailing segment after `/en/`.
+function getEnCategorySlugs(): string[] {
+  const slugs: string[] = [];
+  for (const [esPath, enPath] of Object.entries(SLUG_MAP_ES_TO_EN)) {
+    const esSlug = esPath.replace(/^\//, "");
+    if (!VALID_CATEGORY_SLUGS.has(esSlug)) continue;
+    const enSlug = enPath.replace(/^\/en\//, "");
+    slugs.push(enSlug);
+  }
+  return slugs;
+}
+
 export async function generateStaticParams() {
-  return Array.from(VALID_CATEGORY_SLUGS).map((category) => ({ category }));
+  return getEnCategorySlugs().map((category) => ({ category }));
+}
+
+function resolveEnCategory(enSlug: string) {
+  const esPath = getEsUrl(`/en/${enSlug}`);
+  if (!esPath) return null;
+  const esSlug = esPath.replace(/^\//, "");
+  if (!VALID_CATEGORY_SLUGS.has(esSlug)) return null;
+  const config = getCategoryBySlug(esSlug);
+  if (!config) return null;
+  return { config, esSlug };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const config = getCategoryBySlug(params.category);
-  if (!config) return {};
+  const resolved = resolveEnCategory(params.category);
+  if (!resolved) return {};
+  const { config, esSlug } = resolved;
 
-  const copy = getCopy("es");
-  const cat = copy.categories[params.category] ?? {
-    h1: config.h1,
-    metaTitle: config.metaTitle,
-    metaDescription: config.metaDescription,
-    seoBlock: config.seoBlock ?? "",
-  };
+  const copy = getCopy("en");
+  const cat = copy.categories[esSlug];
+  if (!cat) return {};
 
   const properties = await sanityFetch<Property[]>(
     propertiesByCategoryQuery,
@@ -47,13 +68,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? urlFor(firstImage).width(1200).height(630).url()
     : undefined;
 
-  const url = `/${params.category}`;
-  const enUrl = getEnUrl(url);
+  const enUrl = `/en/${params.category}`;
+  const esUrl = `/${esSlug}`;
   const shouldIndex = properties.length >= 2;
   return {
     title: cat.metaTitle,
     description: cat.metaDescription,
-    alternates: { canonical: canonical(url), languages: alternates(url, enUrl) },
+    alternates: { canonical: canonical(enUrl), languages: alternates(esUrl, enUrl) },
     robots: { index: shouldIndex, follow: true },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
@@ -62,17 +83,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function CategoryPage({ params }: Props) {
-  const config = getCategoryBySlug(params.category);
-  if (!config) notFound();
+export default async function CategoryPageEn({ params }: Props) {
+  const resolved = resolveEnCategory(params.category);
+  if (!resolved) notFound();
+  const { config, esSlug } = resolved;
 
-  const copy = getCopy("es");
-  const cat = copy.categories[params.category] ?? {
-    h1: config.h1,
-    metaTitle: config.metaTitle,
-    metaDescription: config.metaDescription,
-    seoBlock: config.seoBlock ?? "",
-  };
+  const copy = getCopy("en");
+  const cat = copy.categories[esSlug];
+  if (!cat) notFound();
   const tHub = copy.components.categoryHub;
 
   const properties = await sanityFetch<Property[]>(propertiesByCategoryQuery, {
@@ -91,13 +109,16 @@ export default async function CategoryPage({ params }: Props) {
       name,
       slug: getSlugByName(name) ?? name.toLowerCase().replace(/\s+/g, "-"),
       count,
-      categorySlug: params.category,
+      // CategoryPageClient uses this slug only to derive businessType heuristics
+      // and as a stable React key — keep ES slug since the listing detail pages
+      // remain ES (Phase 2).
+      categorySlug: esSlug,
     }));
 
-  const pageUrl = `/${params.category}/`;
+  const pageUrl = `/en/${params.category}/`;
   const jsonLdList = itemListSchema(pageUrl, cat.h1, properties);
   const jsonLdBreadcrumb = breadcrumbSchema([
-    { name: copy.layout.breadcrumb.inicio, url: "/" },
+    { name: copy.layout.breadcrumb.inicio, url: "/en/" },
     { name: cat.h1, url: pageUrl },
   ]);
 
@@ -108,20 +129,20 @@ export default async function CategoryPage({ params }: Props) {
       <WhatsAppButton message={tHub.whatsappMessageCategoryTpl(cat.h1)} variant="floating" />
 
       <ListingPageHeader
-        breadcrumbs={[{ label: copy.layout.breadcrumb.inicio, href: "/" }, { label: cat.h1 }]}
+        breadcrumbs={[{ label: copy.layout.breadcrumb.inicio, href: "/en" }, { label: cat.h1 }]}
         title={cat.h1}
         description={cat.seoBlock}
         count={properties.length}
-        locale="es"
+        locale="en"
       />
 
       <CategoryPageClient
         properties={properties}
-        categorySlug={params.category}
+        categorySlug={esSlug}
         neighborhoodLinks={neighborhoodLinks}
-        locale="es"
+        locale="en"
       />
-      <CTA locale="es" />
+      <CTA locale="en" />
     </>
   );
 }

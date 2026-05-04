@@ -8,6 +8,7 @@ import PropertyGrid from "@/components/properties/PropertyGrid";
 import PaginationClient from "@/components/ui/PaginationClient";
 import type { MapProperty } from "@/components/properties/PropertyMapMulti";
 import type { Property } from "@/lib/types";
+import { getCopy, type Locale } from "@/lib/copy";
 
 const PropertyMapMulti = dynamic(() => import("@/components/properties/PropertyMapMulti"), { ssr: false });
 
@@ -39,6 +40,7 @@ interface Props {
   initialMinPrice?: string;
   initialMaxPrice?: string;
   initialCategoria?: string;
+  locale?: Locale;
 }
 
 interface Filters {
@@ -142,8 +144,8 @@ function DualRangeSlider({ min, max, valueMin, valueMax, onChange, onActiveHandl
 // ── Stepper ────────────────────────────────────────────────────────────────────
 const STEPPER_MAX = 4;
 
-function Stepper({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
-  const display = value === 0 ? "Todos" : value >= STEPPER_MAX ? "4+" : `${value}`;
+function Stepper({ label, value, onChange, allLabel }: { label: string; value: number; onChange: (v: number) => void; allLabel: string }) {
+  const display = value === 0 ? allLabel : value >= STEPPER_MAX ? "4+" : `${value}`;
   return (
     <div className="flex flex-col gap-[8px] flex-1">
       <p className="font-body text-[13px] text-[#5a6478]">{label}</p>
@@ -159,7 +161,7 @@ function Stepper({ label, value, onChange }: { label: string; value: number; onC
 
 
 function FilterPanel({
-  filters, setFilters, onReset, hasActive, businessType, propertyTypes, neighborhoodSlug, neighborhoodLinks,
+  filters, setFilters, onReset, hasActive, businessType, propertyTypes, neighborhoodSlug, neighborhoodLinks, t, ventaHref, alquilerHref,
 }: {
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
@@ -169,6 +171,9 @@ function FilterPanel({
   propertyTypes: string[];
   neighborhoodSlug?: string;
   neighborhoodLinks?: NeighborhoodLink[];
+  t: ReturnType<typeof getCopy>["components"]["categoryHub"];
+  ventaHref: string;
+  alquilerHref: string;
 }) {
   const [showMore, setShowMore] = useState(false);
   const [priceActive, setPriceActive] = useState<"min" | "max" | null>(null);
@@ -195,28 +200,28 @@ function FilterPanel({
       {/* ── 1. Tipo de investigación ── */}
       <div className="flex flex-col gap-[15px] w-full">
         <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px]">
-          Tipo de investigación
+          {t.tipoDeInvestigacion}
         </p>
         <div className="flex gap-[10px] w-full">
           <Link
-            href="/propiedades-en-venta/"
+            href={ventaHref}
             className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
               businessType === "venta"
                 ? "bg-[#0c1834] text-white"
                 : "bg-[rgba(12,25,53,0.1)] text-[#5a6478] hover:bg-[rgba(12,25,53,0.15)]"
             }`}
           >
-            Comprar
+            {t.tabComprar}
           </Link>
           <Link
-            href="/propiedades-en-alquiler/"
+            href={alquilerHref}
             className={`flex flex-1 items-center justify-center px-[20px] py-[8px] font-body font-semibold text-[16px] transition-colors shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] ${
               businessType === "alquiler"
                 ? "bg-[#0c1834] text-white"
                 : "bg-[rgba(12,25,53,0.1)] text-[#5a6478] hover:bg-[rgba(12,25,53,0.15)]"
             }`}
           >
-            Alquilar
+            {t.tabAlquilar}
           </Link>
         </div>
       </div>
@@ -224,7 +229,7 @@ function FilterPanel({
       {/* ── 2. Gama de precios ── */}
       <div className="flex flex-col gap-[15px] w-full">
         <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px]">
-          Gama de precios
+          {t.gamaDePrecios}
         </p>
         <DualRangeSlider
           min={PRICE_MIN} max={PRICE_MAX}
@@ -259,7 +264,7 @@ function FilterPanel({
       {/* ── 3. Tamaño ── */}
       <div className="flex flex-col gap-[15px] w-full">
         <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px]">
-          Tamaño
+          {t.tamano}
         </p>
         <DualRangeSlider
           min={AREA_MIN} max={AREA_MAX}
@@ -294,10 +299,10 @@ function FilterPanel({
       {/* ── 4. Tipo de propiedad ── */}
       <div className="flex flex-col gap-[15px] w-full">
         <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px]">
-          Tipo de propiedad
+          {t.tipoDePropiedad}
         </p>
         <div className="relative">
-          <label htmlFor="filter-type" className="sr-only">Tipo de propiedad</label>
+          <label htmlFor="filter-type" className="sr-only">{t.tipoDePropiedad}</label>
           <select
             id="filter-type"
             value={filters.propertyType}
@@ -305,7 +310,7 @@ function FilterPanel({
             className="appearance-none bg-[#f9f9f9] border border-[#e6e6e6] h-[40px] w-full pl-[17.5px] pr-[40px] font-body text-[14px] text-[#0c1935] focus:outline-none focus:border-[#0c1935] transition-colors cursor-pointer"
             style={{ color: filters.propertyType === "" ? "rgba(12,25,53,0.3)" : "#0c1935" }}
           >
-            <option value="">Todos los tipos</option>
+            <option value="">{t.todosLosTipos}</option>
             {propertyTypes.map((t) => (
               <option key={t} value={t} style={{ color: "#0c1935" }}>
                 {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -320,10 +325,10 @@ function FilterPanel({
       {!neighborhoodSlug && neighborhoodLinks && neighborhoodLinks.length > 0 && (
         <div className="flex flex-col gap-[15px] w-full">
           <p className="font-body font-medium text-[16px] text-[#0c1935] leading-[20px]">
-            Barrio
+            {t.barrio}
           </p>
           <div className="relative">
-            <label htmlFor="filter-barrio" className="sr-only">Barrio</label>
+            <label htmlFor="filter-barrio" className="sr-only">{t.barrio}</label>
             <select
               id="filter-barrio"
               value={filters.neighborhoodFilter}
@@ -331,7 +336,7 @@ function FilterPanel({
               className="appearance-none bg-[#f9f9f9] border border-[#e6e6e6] h-[40px] w-full pl-[17.5px] pr-[40px] font-body text-[14px] text-[#0c1935] focus:outline-none focus:border-[#0c1935] transition-colors cursor-pointer"
               style={{ color: filters.neighborhoodFilter === "" ? "rgba(12,25,53,0.3)" : "#0c1935" }}
             >
-              <option value="">Todos los barrios</option>
+              <option value="">{t.todosLosBarrios}</option>
               {neighborhoodLinks.map((n) => (
                 <option key={n.slug} value={n.name} style={{ color: "#0c1935" }}>
                   {n.name} ({n.count})
@@ -347,8 +352,8 @@ function FilterPanel({
       <div className="flex flex-col gap-[15px] w-full">
         {showMore && (
           <div className="flex gap-[15px]">
-            <Stepper label="Habitaciones" value={filters.bedrooms} onChange={(v) => set("bedrooms", v)} />
-            <Stepper label="Baños" value={filters.bathrooms} onChange={(v) => set("bathrooms", v)} />
+            <Stepper label={t.habitaciones} value={filters.bedrooms} onChange={(v) => set("bedrooms", v)} allLabel={t.todos} />
+            <Stepper label={t.banos} value={filters.bathrooms} onChange={(v) => set("bathrooms", v)} allLabel={t.todos} />
           </div>
         )}
 
@@ -358,14 +363,14 @@ function FilterPanel({
           className="flex items-center justify-center gap-[8px] w-full h-[40px] border border-[#e6e6e6] font-body text-[14px] text-[#0c1935] hover:border-[#0c1935] transition-colors"
         >
           <ChevronDown size={14} className={`transition-transform duration-200 ${showMore ? "rotate-180" : ""}`} />
-          {showMore ? "Cerrar" : "Ver más"}
+          {showMore ? t.cerrar : t.verMas}
         </button>
       </div>
 
       {/* ── 7. Limpiar (solo si hay filtros activos) ── */}
       {hasActive && (
         <button type="button" onClick={onReset} className="flex items-center gap-1.5 font-body text-[14px] text-[rgba(12,25,53,0.4)] hover:text-[#0c1935] transition-colors">
-          <X size={13} /> Limpiar filtros
+          <X size={13} /> {t.limpiarFiltros}
         </button>
       )}
 
@@ -382,8 +387,12 @@ function normalize(s: string) {
 export default function CategoryPageClient({
   properties, categorySlug, neighborhoodLinks, neighborhoodSlug, contextBlock, mapProps,
   initialSearch = "", initialBedrooms = 0, initialMinPrice = "", initialMaxPrice = "", initialCategoria = "",
+  locale = "es",
 }: Props) {
-  const businessType: "venta" | "alquiler" = categorySlug.includes("alquiler") ? "alquiler" : "venta";
+  const businessType: "venta" | "alquiler" = categorySlug.includes("alquiler") || categorySlug.includes("for-rent") ? "alquiler" : "venta";
+  const t = getCopy(locale).components.categoryHub;
+  const ventaHref = locale === "en" ? "/en/properties-for-sale/" : "/propiedades-en-venta/";
+  const alquilerHref = locale === "en" ? "/en/properties-for-rent/" : "/propiedades-en-alquiler/";
 
   const propertyTypes = useMemo(() => {
     const types = new Set<string>();
@@ -477,31 +486,31 @@ const filtered = useMemo(() => {
               className="lg:hidden flex items-center gap-[8px] bg-white border border-[#dfe5ef] px-[14px] py-[8px] font-body text-[13px] text-[#0c1834] hover:border-[#0c1834] transition-colors"
             >
               <SlidersHorizontal size={14} />
-              Filtros
+              {t.filtros}
               {hasActive && <span className="w-[6px] h-[6px] rounded-full bg-[#d4a435]" />}
             </button>
 
             {/* Count tag */}
             <div className="hidden lg:flex items-center bg-white border border-[#dfe5ef] px-[14px] py-[8px] font-body text-[13px] text-[#0c1834]">
-              <span className="font-semibold">{filtered.length}</span>&nbsp;propiedades disponibles
+              <span className="font-semibold">{filtered.length}</span>&nbsp;{t.propiedadesDisponiblesSuffix}
             </div>
 
           </div>
 
           {/* Sort */}
           <div className="relative w-auto">
-            <label htmlFor="sort-select" className="sr-only">Ordenar por</label>
+            <label htmlFor="sort-select" className="sr-only">{t.ordenarPorAria}</label>
             <select
               id="sort-select"
               value={sort}
               onChange={(e) => startTransition(() => setSort(e.target.value as SortOption))}
               className="appearance-none bg-white border border-[#dfe5ef] pl-[14px] pr-[36px] py-[8px] font-body text-[13px] text-[#0c1834] focus:outline-none focus:border-[#0c1834] transition-colors cursor-pointer"
             >
-              <option value="relevancia">Relevancia</option>
-              <option value="recientes">Más recientes</option>
-              <option value="precio-asc">Precio: menor a mayor</option>
-              <option value="precio-desc">Precio: mayor a menor</option>
-              <option value="area-desc">Mayor área</option>
+              <option value="relevancia">{t.sortRelevancia}</option>
+              <option value="recientes">{t.sortRecientes}</option>
+              <option value="precio-asc">{t.sortPrecioAsc}</option>
+              <option value="precio-desc">{t.sortPrecioDesc}</option>
+              <option value="area-desc">{t.sortAreaDesc}</option>
             </select>
             <ChevronDown size={12} className="absolute right-[12px] top-1/2 -translate-y-1/2 text-[#5a6478] pointer-events-none" />
           </div>
@@ -535,6 +544,9 @@ const filtered = useMemo(() => {
               propertyTypes={propertyTypes}
               neighborhoodSlug={neighborhoodSlug}
               neighborhoodLinks={neighborhoodLinks}
+              t={t}
+              ventaHref={ventaHref}
+              alquilerHref={alquilerHref}
             />
           </aside>
 
@@ -545,12 +557,10 @@ const filtered = useMemo(() => {
               {filtered.length === 0 ? (
                 <div className="text-center py-24">
                   <p className="font-body text-[18px] text-[#5a6478]">
-                    {search
-                      ? `No encontramos propiedades para "${search}".`
-                      : "No hay propiedades con estos filtros."}
+                    {search ? t.noEncontramosTpl(search) : t.noPropiedadesConFiltros}
                   </p>
                   <button onClick={reset} className="mt-4 font-body text-[14px] text-[#0c1834] underline hover:no-underline transition-all">
-                    Limpiar filtros
+                    {t.limpiarFiltros}
                   </button>
                 </div>
               ) : (
@@ -589,11 +599,11 @@ const filtered = useMemo(() => {
           <div className="lg:hidden fixed inset-x-0 bottom-0 z-50 bg-white max-h-[88vh] flex flex-col rounded-t-[12px] shadow-2xl">
             {/* Header */}
             <div className="flex items-center justify-between px-[21px] py-[16px] border-b border-[#e9e7e2] shrink-0">
-              <span className="font-body font-semibold text-[16px] text-[#0c1834]">Filtros</span>
+              <span className="font-body font-semibold text-[16px] text-[#0c1834]">{t.filtrosDrawerTitle}</span>
               <button
                 onClick={() => setFilterDrawerOpen(false)}
                 className="text-[#5a6478] hover:text-[#0c1834] transition-colors"
-                aria-label="Cerrar filtros"
+                aria-label={t.cerrarFiltrosAria}
               >
                 <X size={20} />
               </button>
@@ -609,6 +619,9 @@ const filtered = useMemo(() => {
                 propertyTypes={propertyTypes}
                 neighborhoodSlug={neighborhoodSlug}
                 neighborhoodLinks={neighborhoodLinks}
+                t={t}
+                ventaHref={ventaHref}
+                alquilerHref={alquilerHref}
               />
             </div>
             {/* Apply button */}
@@ -617,7 +630,7 @@ const filtered = useMemo(() => {
                 onClick={() => setFilterDrawerOpen(false)}
                 className="w-full bg-[#0c1834] text-white font-body font-medium text-[14px] tracking-[1.2px] uppercase py-[14px] hover:bg-[#1a2d56] transition-colors"
               >
-                Aplicar filtros
+                {t.aplicarFiltros}
               </button>
             </div>
           </div>
