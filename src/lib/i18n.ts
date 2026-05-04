@@ -107,3 +107,23 @@ export function getEsUrl(enPath: string): string | null {
 export function getLocaleFromPath(path: string): Locale {
   return path === "/en" || path.startsWith("/en/") ? "en" : "es";
 }
+
+/**
+ * Returns the locale-aware version of an ES-canonical path.
+ * `localePath("/contacto/", "es")` → `"/contacto/"`
+ * `localePath("/contacto/", "en")` → `"/en/contact/"`
+ *
+ * Used by Navbar, Footer, links inside shared components so the same component
+ * code can render correct hrefs for either locale. Falls back to the original
+ * path when there is no EN equivalent (rare — log if it happens).
+ *
+ * Trailing slashes on the input are preserved on the output.
+ */
+export function localePath(esPath: string, locale: Locale): string {
+  if (locale === "es") return esPath;
+  const hadTrailing = esPath.endsWith("/") && esPath !== "/";
+  const stripped = hadTrailing ? esPath.replace(/\/$/, "") : esPath;
+  const en = getEnUrl(stripped);
+  if (en === null) return esPath;
+  return hadTrailing ? `${en}/` : en;
+}

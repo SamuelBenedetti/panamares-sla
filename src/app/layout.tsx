@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { headers } from "next/headers";
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import { organizationSchema, websiteSchema } from "@/lib/jsonld";
 import { canonical } from "@/lib/seo";
 import { BASE_URL } from "@/lib/config";
+import { getLocaleFromPath } from "@/lib/i18n";
 import GoogleTranslate from "@/components/layout/GoogleTranslate";
 
 const cormorant = Cormorant_Garamond({
@@ -52,13 +54,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Detect locale from the request path so `<html lang>` is correct on /en/*.
+  // The `x-pathname` header is set by middleware (src/middleware.ts).
+  const headerList = await headers();
+  const path = headerList.get("x-pathname") ?? "/";
+  const locale = getLocaleFromPath(path);
+  const htmlLang = locale === "en" ? "en" : "es-419";
+
   return (
-    <html lang="es-419" className={`${cormorant.variable} ${dmSans.variable}`}>
+    <html lang={htmlLang} className={`${cormorant.variable} ${dmSans.variable}`}>
       <body className="font-body antialiased bg-white text-brand-navy">
         <script
           type="application/ld+json"

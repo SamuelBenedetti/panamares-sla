@@ -1,13 +1,20 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import SearchBar from "./SearchBar";
+import { getCopy, type Locale } from "@/lib/copy";
 
-export default function Hero() {
+export default function Hero({ locale = "es" }: { locale?: Locale }) {
+  const t = getCopy(locale).pages.home.hero;
+  const altText =
+    locale === "es"
+      ? "Ciudad de Panamá — Panamares inmobiliaria de lujo"
+      : "Panama City — Panamares luxury real estate";
+
   return (
     <section className="relative flex items-center justify-center min-h-screen md:min-h-[75vh] xl:min-h-screen bg-brand-navy overflow-hidden -mt-20 px-[24px] xl:px-[60px] 2xl:px-[160px]">
       {/* Background image — next only priority for LCP */}
       <Image
         src="/hero-bg.jpg"
-        alt="Ciudad de Panamá — Panamares inmobiliaria de lujo"
+        alt={altText}
         fill
         priority
         className="object-cover object-center scale-105"
@@ -24,19 +31,28 @@ export default function Hero() {
 
         {/* Eyebrow */}
         <p className="text-white text-[12px] font-medium uppercase tracking-[5px] font-body leading-[20px]">
-          Ciudad de Panamá &amp;<br />Propiedades de Lujo
+          {t.eyebrow.split(" & ").map((part, i, arr) => (
+            <span key={i}>
+              {part}
+              {i < arr.length - 1 && (
+                <>
+                  {" "}&amp;<br />
+                </>
+              )}
+            </span>
+          ))}
         </p>
 
         {/* Heading */}
         <h1 className="flex flex-col items-center gap-[5px] font-heading font-light text-white text-[68px] xl:text-[clamp(52px,6vw,78px)] 2xl:text-[74px] leading-[0.875] xl:leading-[1] tracking-[-2.4px] xl:tracking-[-0.03em]">
-          <span className="not-italic">Bienes Raíces </span>
-          <span className="italic">en Panama</span>
+          <span className="not-italic">{t.titleLine1}</span>
+          <span className="italic">{t.titleLine2Italic}</span>
         </h1>
 
         {/* Subtitle */}
         <p className="font-body text-white text-[16px] px-[50px] xl:px-0 pt-[4px] pb-[30px] xl:pb-[16px]">
-          Propiedades exclusivas en{" "}
-          <strong className="font-bold">las mejores zonas de la ciudad.</strong>
+          {t.subtitle.regular}
+          <strong className="font-bold">{t.subtitle.bold}</strong>
         </p>
 
         {/* Search */}

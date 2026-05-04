@@ -1,6 +1,8 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import Image from "next/image";
 import { NEIGHBORHOOD_IMAGES } from "@/lib/neighborhoods";
+import { getCopy, type Locale } from "@/lib/copy";
+import { localePath } from "@/lib/i18n";
 
 export interface NeighborhoodCardData {
   name: string;
@@ -36,6 +38,7 @@ interface Props {
   eyebrow?: string;
   heading?: string;
   sectionClassName?: string;
+  locale?: Locale;
 }
 
 export default function NeighborhoodCards({
@@ -43,10 +46,15 @@ export default function NeighborhoodCards({
   photos,
   prices,
   neighborhoods,
-  eyebrow = "Los mejores barrios",
-  heading = "Explorar por Ubicación",
+  eyebrow,
+  heading,
   sectionClassName = "bg-white",
+  locale = "es",
 }: Props) {
+  const t = getCopy(locale).pages.home.neighborhoodCards;
+  const eyebrowText = eyebrow ?? t.eyebrow;
+  const headingText = heading ?? t.heading;
+
   const items: NeighborhoodCardData[] = neighborhoods
     ?? DEFAULT_NEIGHBORHOODS.map((n) => ({
         ...n,
@@ -62,10 +70,10 @@ export default function NeighborhoodCards({
         {/* Header — centered */}
         <div className="flex flex-col gap-2 items-center text-center">
           <p className="font-body font-medium text-[#737b8c] text-[12px] md:text-[11px] uppercase tracking-[5px]">
-            {eyebrow}
+            {eyebrowText}
           </p>
           <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(28px,2.5vw,36px)] 2xl:text-[34px] tracking-[-1.8px] leading-none">
-            {heading}
+            {headingText}
           </h2>
         </div>
 
@@ -74,12 +82,12 @@ export default function NeighborhoodCards({
           {items.map((n, i) => (
             <Link
               key={n.slug}
-              href={`/barrios/${n.slug}/`}
+              href={localePath(`/barrios/${n.slug}/`, locale)}
               className="group relative overflow-hidden h-[435px] lg:h-auto lg:aspect-[326/435] block"
             >
               <Image
                 src={n.image}
-                alt={`Propiedades en ${n.name}`}
+                alt={t.propiedadesEn(n.name)}
                 fill
                 priority={i === 0}
                 quality={75}
@@ -95,14 +103,14 @@ export default function NeighborhoodCards({
                 <div className="flex gap-2.5 pt-1">
                   {n.avgPrice && (
                     <div className="flex flex-col gap-2 items-start">
-                      <span className="font-body font-normal text-white text-[12px] leading-[16px]">Precio promedio</span>
+                      <span className="font-body font-normal text-white text-[12px] leading-[16px]">{t.precioPromedio}</span>
                       <span className="bg-white/20 font-body font-semibold text-white text-[16px] leading-normal px-[5px] py-[3px] w-fit">
                         {n.avgPrice}
                       </span>
                     </div>
                   )}
                   <div className="flex flex-col gap-2 items-start">
-                    <span className="font-body font-normal text-white text-[12px] leading-[16px]">Propiedades</span>
+                    <span className="font-body font-normal text-white text-[12px] leading-[16px]">{t.propiedades}</span>
                     <span className="bg-white/20 font-body font-semibold text-white text-[16px] leading-normal px-[5px] py-[3px] w-fit">
                       {n.count}
                     </span>

@@ -6,10 +6,21 @@ import { urlFor } from "@/sanity/lib/image";
 import { BASE_URL, whatsappLink } from "@/lib/config";
 import { formatPrice } from "@/lib/utils";
 import { getSlugByName } from "@/lib/neighborhoods";
+import { getCopy, type Locale } from "@/lib/copy";
+import { localePath } from "@/lib/i18n";
 import CompareButton from "./CompareButton";
 
-export default function PropertyCard({ property, priority = false }: { property: Property; priority?: boolean }) {
+export default function PropertyCard({
+  property,
+  priority = false,
+  locale = "es",
+}: {
+  property: Property;
+  priority?: boolean;
+  locale?: Locale;
+}) {
   const { title, slug, price, bedrooms, bathrooms, area, zone, mainImage, recommended, fairPrice, rented } = property;
+  const t = getCopy(locale).components.propertyCard;
 
   const imageUrl = mainImage
     ? urlFor(mainImage).width(800).height(530).fit("crop").url()
@@ -17,14 +28,18 @@ export default function PropertyCard({ property, priority = false }: { property:
 
   const pricePerM2 = area && area > 0 ? Math.round(price / area) : null;
   const zoneSlug = zone ? getSlugByName(zone) : undefined;
-  const waMessage = `Hola, me interesa esta propiedad: ${title} — ${BASE_URL}/propiedades/${slug?.current}`;
+  // Property detail pages remain on the ES path in PR2 — listings dynamic routes
+  // are out of scope (Phase 2). WhatsApp deep-link still points to the canonical URL.
+  const propertyHref = `/propiedades/${slug?.current}`;
+  const zoneHref = zoneSlug ? localePath(`/barrios/${zoneSlug}/`, locale) : undefined;
+  const waMessage = `${t.whatsappPrefix}${title} — ${BASE_URL}${propertyHref}`;
   const waHref = whatsappLink(waMessage);
 
   return (
     <article className="bg-white border border-[rgba(233,231,226,0.5)] shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow">
       {/* Image */}
       <div className="relative aspect-video shrink-0 overflow-hidden">
-        <Link href={`/propiedades/${slug?.current}`} className="block size-full">
+        <Link href={propertyHref} className="block size-full">
           <Image
             src={imageUrl}
             alt={title}
@@ -40,21 +55,21 @@ export default function PropertyCard({ property, priority = false }: { property:
           {recommended && (
             <div className="bg-[#8B00EE] backdrop-blur-[2px] px-[10px] py-[2px]">
               <span className="font-body font-semibold text-white text-[12px] uppercase leading-[16px]">
-                Recomendado
+                {t.tagRecomendado}
               </span>
             </div>
           )}
           {fairPrice && (
             <div className="bg-[#007ECC] backdrop-blur-[2px] px-[10px] py-[2px]">
               <span className="font-body font-semibold text-white text-[12px] uppercase leading-[16px]">
-                Precio Justo
+                {t.tagPrecioJusto}
               </span>
             </div>
           )}
           {rented && (
             <div className="bg-[#0D1835] backdrop-blur-[2px] px-[10px] py-[2px]">
               <span className="font-body font-semibold text-white text-[12px] uppercase leading-[16px]">
-                Alquilado
+                {t.tagAlquilado}
               </span>
             </div>
           )}
@@ -65,15 +80,15 @@ export default function PropertyCard({ property, priority = false }: { property:
       <div className="flex flex-col gap-[6px] p-[8px] md:p-[11px] flex-1">
         {/* Title + description */}
         <div className="flex flex-col gap-[3px]">
-          <Link href={`/propiedades/${slug?.current}`}>
+          <Link href={propertyHref}>
             <h3 className="font-body font-semibold text-[#0c1834] text-[17px] lg:text-[15px] leading-tight tracking-[-0.2px] hover:opacity-70 transition-opacity line-clamp-2">
               {title}
             </h3>
           </Link>
           {zone && (
-            zoneSlug ? (
+            zoneHref ? (
               <Link
-                href={`/barrios/${zoneSlug}/`}
+                href={zoneHref}
                 className="font-body font-normal text-[#5a6478] text-[14px] lg:text-[12px] leading-normal line-clamp-1 hover:text-[#0c1834] transition-colors py-[3px] inline-block"
               >
                 {zone}
@@ -91,26 +106,26 @@ export default function PropertyCard({ property, priority = false }: { property:
           {bedrooms != null && (
             <span className="flex items-center gap-[5px] font-body text-[#5a6478] text-[13px] lg:text-[12px] leading-[16px]">
               <Bed size={13} strokeWidth={1.5} />
-              {bedrooms} hab.
+              {bedrooms} {t.labelHabitacionesShort}
             </span>
           )}
           {bathrooms != null && (
             <span className="flex items-center gap-[5px] font-body text-[#5a6478] text-[13px] lg:text-[12px] leading-[16px]">
               <Bath size={13} strokeWidth={1.5} />
-              {bathrooms} baños
+              {bathrooms} {t.labelBanos}
             </span>
           )}
           {area != null && (
             <span className="flex items-center gap-[5px] font-body text-[#5a6478] text-[13px] lg:text-[12px] leading-[16px]">
               <Maximize size={13} strokeWidth={1.5} />
-              {area} m²
+              {area} {t.labelMetros}
             </span>
           )}
         </div>
 
         {/* Price */}
         <div className="flex flex-col gap-[4px] pt-[6px]">
-          <Link href={`/propiedades/${slug?.current}`}>
+          <Link href={propertyHref}>
             <span className="font-body font-bold text-[#0c1834] text-[18px] lg:text-[16px] leading-normal tracking-[-0.2px]">
               {formatPrice(price)}
             </span>
@@ -139,10 +154,10 @@ export default function PropertyCard({ property, priority = false }: { property:
             WhatsApp
           </a>
           <Link
-            href={`/propiedades/${slug?.current}`}
+            href={propertyHref}
             className="w-full h-[38px] flex items-center justify-center font-body font-medium text-[#0c1834] text-[13px] border border-[#dfe5ef] hover:bg-gray-50 transition-colors"
           >
-            Ver propiedad
+            {t.verPropiedad}
           </Link>
         </div>
       </div>

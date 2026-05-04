@@ -1,19 +1,21 @@
-﻿import { sanityFetch } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { siteStatsQuery } from "@/sanity/lib/queries";
+import { getCopy, type Locale } from "@/lib/copy";
 
 interface Stats {
   activeListings: number;
   agents: number;
 }
 
-export default async function TrustStrip() {
+export default async function TrustStrip({ locale = "es" }: { locale?: Locale }) {
   const stats = await sanityFetch<Stats>(siteStatsQuery);
+  const t = getCopy(locale).pages.home.trustStrip;
 
   const items = [
-    { value: `${stats?.activeListings ?? "261"}`, label: "Propiedades Activas" },
-    { value: `${stats?.agents ?? "18"}`, label: "Agentes Especializados" },
-    { value: "15+", label: "Años en el Mercado" },
-    { value: "98%", label: "Clientes Satisfechos" },
+    { value: `${stats?.activeListings ?? "261"}`, label: t.labelActiveListings },
+    { value: `${stats?.agents ?? "18"}`, label: t.labelAgents },
+    { value: "15+", label: t.labelYears },
+    { value: "98%", label: t.labelClientsSatisfied },
   ];
 
   return (
