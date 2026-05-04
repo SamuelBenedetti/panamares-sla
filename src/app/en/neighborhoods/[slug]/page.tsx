@@ -165,7 +165,9 @@ export default async function NeighborhoodGuidePageEn({ params }: Props) {
       .filter(({ cat }) => cat.businessType === intent)
       .map(({ cat, count }) => ({
         slug: cat.slug,
-        label: cat.h1.split(" en ")[0],
+        label: (copy.categories[cat.slug]?.h1 ?? cat.h1)
+          .replace(/ in Panama$/i, "")
+          .replace(/ for (Sale|Rent)$/i, ""),
         count,
       }));
   const categoryLinks = { venta: toCategoryLinks("venta"), alquiler: toCategoryLinks("alquiler") };
@@ -333,7 +335,7 @@ export default async function NeighborhoodGuidePageEn({ params }: Props) {
                       {mostCommonType.count}
                     </span>
                     <span className="font-heading font-normal text-[clamp(18px,2vw,30px)] text-[#0c1834] tracking-[-0.9px] leading-none">
-                      {mostCommonType.cat.h1.split(" en Panama")[0].split(" en Panamá")[0]}
+                      {(copy.categories[mostCommonType.cat.slug]?.h1 ?? mostCommonType.cat.h1).replace(/ in Panama$/i, "")}
                     </span>
                   </div>
                 </div>
