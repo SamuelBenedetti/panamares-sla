@@ -12,25 +12,25 @@ import { canonical, alternates } from "@/lib/seo";
 import PropertyMap from "@/components/properties/PropertyMap";
 import { getCopy } from "@/lib/copy";
 
-const copy = getCopy("es");
+const copy = getCopy("en");
 const t = copy.pages.sobreNosotros;
 
 export const metadata: Metadata = {
   title: t.meta.title,
   description: t.meta.description,
   alternates: {
-    canonical: canonical("/sobre-nosotros"),
+    canonical: canonical("/en/about"),
     languages: alternates("/sobre-nosotros", "/en/about"),
   },
   robots: { index: true, follow: true },
 };
 
-export default async function SobreNosotrosPage() {
+export default async function AboutPageEn() {
   const agents = await sanityFetch<Agent[]>(allAgentsQuery);
 
   const jsonLdBreadcrumb = breadcrumbSchema([
-    { name: copy.layout.breadcrumb.inicio, url: "/" },
-    { name: t.breadcrumbLabel, url: "/sobre-nosotros/" },
+    { name: copy.layout.breadcrumb.inicio, url: "/en/" },
+    { name: t.breadcrumbLabel, url: "/en/about/" },
   ]);
 
   return (
@@ -42,20 +42,17 @@ export default async function SobreNosotrosPage() {
         <div className="max-w-[1440px] mx-auto">
         <div className="flex flex-col gap-[20px] max-w-[768px]">
 
-          {/* Breadcrumb */}
           <Breadcrumb
             items={[
-              { label: copy.layout.breadcrumb.inicio, href: "/" },
+              { label: copy.layout.breadcrumb.inicio, href: "/en" },
               { label: t.breadcrumbLabel },
             ]}
           />
 
-          {/* Eyebrow */}
           <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4 pt-4">
             {t.hero.eyebrow}
           </p>
 
-          {/* H1 */}
           <h1 className="flex flex-col gap-[3px] text-[#0c1834]">
             <span className="font-heading font-normal text-[clamp(32px,4.2vw,52px)] leading-none tracking-[-1.8px]">
               {t.hero.titleLine1}
@@ -68,7 +65,6 @@ export default async function SobreNosotrosPage() {
             </span>
           </h1>
 
-          {/* Body */}
           <p className="font-body text-[#5a6478] text-[16px] xl:text-[17px] leading-relaxed max-w-[576px] pt-[11px]">
             <span className="font-semibold">{t.hero.body.bold}</span>
             <span className="font-light">{t.hero.body.light}</span>
@@ -78,7 +74,7 @@ export default async function SobreNosotrosPage() {
         </div>
       </section>
 
-      {/* ── Nuestra oficina ── */}
+      {/* ── Our office ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px]">
         <div className="max-w-[1440px] mx-auto">
           <div className="relative aspect-[390/720] xl:aspect-auto xl:h-[720px] overflow-hidden flex flex-col justify-end p-[30px] xl:p-0">
@@ -126,7 +122,7 @@ export default async function SobreNosotrosPage() {
         </div>
       </section>
 
-      {/* ── Nuestra ubicación ── */}
+      {/* ── Location ── */}
       <section className="bg-white px-[30px] xl:px-[60px] 2xl:px-[160px] py-[70px] xl:py-[96px] border-t border-[#dfe5ef]">
         <div className="max-w-[1440px] mx-auto flex flex-col gap-[24px]">
           <div className="flex flex-col gap-[8px]">
@@ -148,22 +144,18 @@ export default async function SobreNosotrosPage() {
         </div>
       </section>
 
-      {/* ── Nuestra Historia ── */}
+      {/* ── Story ── */}
       <section className="bg-white px-[30px] xl:px-[60px] 2xl:px-[160px] py-[70px] xl:py-[112px]">
         <div className="max-w-[1440px] mx-auto flex flex-col gap-[40px] xl:gap-[48px]">
 
-          {/* Eyebrow + Grid grouped close together */}
           <div className="flex flex-col gap-[8px]">
 
-            {/* Eyebrow — above the grid */}
             <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4">
               {t.historia.eyebrow}
             </p>
 
-            {/* Grid: heading + paragraphs left | cards right — bottoms aligned */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[40px] xl:gap-[64px] items-end">
 
-              {/* Left — heading + paragraphs, bottom-aligned with cards */}
               <div className="flex flex-col gap-[20px]">
                 <div className="flex flex-col text-[#0c1834]">
                   <p className="font-heading font-normal text-[clamp(30px,3.5vw,52px)] leading-none tracking-[-1.8px]">{t.historia.titleLine1}</p>
@@ -183,7 +175,6 @@ export default async function SobreNosotrosPage() {
                 </div>
               </div>
 
-              {/* Right — 2×2 grid of fixed-height cards */}
               <div className="flex flex-col gap-[30px] lg:grid lg:grid-cols-2 lg:grid-rows-[210px_210px] lg:gap-[24px]">
                 {[
                   {
@@ -225,12 +216,11 @@ export default async function SobreNosotrosPage() {
 
             </div>
 
-          </div>{/* end eyebrow+grid group */}
+          </div>
 
-          {/* CTA — below grid */}
           <div>
             <Link
-              href="/propiedades-en-venta/"
+              href="/en/for-sale/"
               className="inline-flex items-center gap-[8px] border-b border-[#0c1834] pb-[5px] hover:opacity-60 transition-opacity"
             >
               <span className="font-body font-medium text-[14px] text-[#0c1834] uppercase tracking-[1.4px]">{t.historia.ctaVerPropiedades}</span>
@@ -240,11 +230,11 @@ export default async function SobreNosotrosPage() {
 
         </div>
       </section>
-      {/* ── El equipo ── */}
+
+      {/* ── Team ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[70px] xl:py-[96px]">
         <div className="max-w-[1440px] mx-auto flex flex-col gap-[56px] items-center">
 
-          {/* Header */}
           <div className="flex flex-col gap-[12px] items-center">
             <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4 text-center">
               {t.equipo.eyebrow}
@@ -254,7 +244,6 @@ export default async function SobreNosotrosPage() {
             </p>
           </div>
 
-          {/* Agent cards */}
           <div className="flex flex-wrap justify-center gap-[32px]">
             {agents.map((agent) => {
               const photoUrl = agent.photo
@@ -263,7 +252,7 @@ export default async function SobreNosotrosPage() {
               return (
                 <Link
                   key={agent._id}
-                  href={`/agentes/${agent.slug.current}`}
+                  href={`/en/agents/${agent.slug.current}`}
                   className="flex flex-col gap-[20px] items-start w-[277px] group"
                 >
                   <div className="relative w-full overflow-hidden bg-[#0c1834]" style={{ aspectRatio: "277/370" }}>
@@ -300,11 +289,11 @@ export default async function SobreNosotrosPage() {
 
         </div>
       </section>
-      {/* ── Reconocimientos ── */}
+
+      {/* ── Recognitions ── */}
       <section className="bg-white px-[30px] xl:px-[60px] 2xl:px-[160px] py-[70px] xl:py-[96px]">
         <div className="max-w-[1440px] mx-auto flex flex-col xl:flex-row xl:items-end xl:justify-between gap-[48px] xl:gap-[40px]">
 
-          {/* Left — icon + heading */}
           <div className="flex flex-col gap-[15px]">
             <Award size={52} strokeWidth={1} className="text-[#0c1834]" />
             <div className="flex flex-col text-[#0c1834] tracking-[-1.8px]">
@@ -313,7 +302,6 @@ export default async function SobreNosotrosPage() {
             </div>
           </div>
 
-          {/* Right — 2×2 award items */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-[24px] gap-y-[24px] pb-[10px]">
             {[
               t.reconocimientos.awards.excelencia,
@@ -337,22 +325,20 @@ export default async function SobreNosotrosPage() {
 
         </div>
       </section>
-      {/* ── CTA contacto ── */}
+
+      {/* ── CTA contact ── */}
       <section className="relative bg-[#121e3e] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[80px] xl:py-[130px] overflow-hidden">
 
-        {/* Palm tree — left */}
         <div className="absolute left-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block">
           <Image src="/palm-left.svg" alt="" fill className="object-cover object-right" sizes="300px" />
         </div>
 
-        {/* Palm tree — right (flipped) */}
         <div className="absolute right-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block" style={{ transform: "scaleX(-1)" }}>
           <Image src="/palm-right.svg" alt="" fill className="object-cover object-left" sizes="300px" />
         </div>
 
         <div className="relative z-10 max-w-[1440px] mx-auto flex flex-col gap-[16px] items-center">
 
-          {/* Eyebrow + Heading */}
           <div className="flex flex-col gap-[12px] items-center">
             <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase leading-4 text-center">
               {t.ctaContacto.eyebrow}
@@ -362,15 +348,13 @@ export default async function SobreNosotrosPage() {
             </p>
           </div>
 
-          {/* Body */}
           <p className="font-body text-[16px] text-[#faf8f5] text-center leading-relaxed max-w-[448px] pb-[24px] pt-[8px]">
             <span className="font-light">{t.ctaContacto.bodyLight}</span>
             <span className="font-semibold">{t.ctaContacto.bodyBold}</span>
           </p>
 
-          {/* CTA */}
           <Link
-            href="/contacto/"
+            href="/en/contact/"
             className="bg-white h-[46px] flex items-center justify-center px-[24px] font-body font-medium text-[16px] text-[#0d1835] hover:bg-[#faf8f5] transition-colors whitespace-nowrap"
           >
             {t.ctaContacto.button}
