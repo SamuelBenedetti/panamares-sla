@@ -3,8 +3,18 @@ import Image from "next/image";
 import { Phone, Mail, ArrowRight } from "lucide-react";
 import type { Agent } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
+import { getCopy, type Locale } from "@/lib/copy";
+import { localePath } from "@/lib/i18n";
 
-export default function AgentCard({ agent }: { agent: Agent }) {
+export default function AgentCard({
+  agent,
+  locale = "es",
+}: {
+  agent: Agent;
+  locale?: Locale;
+}) {
+  const t = getCopy(locale).components.agentCard;
+  const profileHref = localePath(`/agentes/${agent.slug.current}/`, locale);
   const imageUrl = agent.photo
     ? urlFor(agent.photo).width(480).height(560).url()
     : null;
@@ -12,7 +22,7 @@ export default function AgentCard({ agent }: { agent: Agent }) {
   return (
     <article className="bg-white border border-[rgba(233,231,226,0.5)] shadow-sm group overflow-hidden flex flex-col">
       {/* Photo */}
-      <Link href={`/agentes/${agent.slug.current}`} className="block relative h-[240px] sm:h-[280px] shrink-0 overflow-hidden bg-[#0c1834]">
+      <Link href={profileHref} className="block relative h-[240px] sm:h-[280px] shrink-0 overflow-hidden bg-[#0c1834]">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -38,7 +48,7 @@ export default function AgentCard({ agent }: { agent: Agent }) {
               {agent.role}
             </p>
           )}
-          <Link href={`/agentes/${agent.slug.current}`}>
+          <Link href={profileHref}>
             <h3 className="font-heading font-normal text-[20px] sm:text-[22px] text-[#0c1834] leading-tight tracking-[-0.5px] hover:opacity-70 transition-opacity">
               {agent.name}
             </h3>
@@ -69,10 +79,10 @@ export default function AgentCard({ agent }: { agent: Agent }) {
         </div>
 
         <Link
-          href={`/agentes/${agent.slug.current}`}
+          href={profileHref}
           className="mt-[4px] w-full h-[40px] flex items-center justify-center gap-[6px] bg-[#0c1834] hover:bg-[#162444] font-body font-medium text-[11px] text-white tracking-[1.2px] uppercase transition-colors"
         >
-          Ver perfil
+          {t.verPerfil}
           <ArrowRight size={11} />
         </Link>
       </div>

@@ -148,7 +148,29 @@ export interface Copy {
       leerMenos: string;
     };
     contactForm: {
-      todoPr2Marker: string;
+      labelNombre: string;
+      placeholderNombre: string;
+      labelCorreo: string;
+      placeholderCorreo: string;
+      labelTelefono: string;
+      placeholderTelefono: string;
+      labelMotivo: string;
+      motivoPlaceholder: string;
+      motivos: {
+        compra: string;
+        alquiler: string;
+        inversion: string;
+        visita: string;
+        otro: string;
+      };
+      labelMensaje: string;
+      placeholderMensaje: string;
+      buttonSend: string;
+      buttonSending: string;
+      successHeading: string;
+      successBody: string;
+      successButtonWhatsapp: string;
+      errorMessage: string;
     };
     faq: {
       defaultTitle: string;

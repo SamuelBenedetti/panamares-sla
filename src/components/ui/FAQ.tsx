@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { getCopy, type Locale } from "@/lib/copy";
 
 export interface FAQItem {
   question: string;
@@ -11,15 +12,17 @@ export interface FAQItem {
 interface Props {
   items: FAQItem[];
   title?: string;
+  locale?: Locale;
 }
 
-export default function FAQ({ items, title = "Preguntas frecuentes" }: Props) {
+export default function FAQ({ items, title, locale = "es" }: Props) {
   const [open, setOpen] = useState<number | null>(null);
+  const resolvedTitle = title ?? getCopy(locale).components.faq.defaultTitle;
 
   return (
     <div className="flex flex-col gap-[16px]">
       <h2 className="font-body font-bold text-[20px] text-[#0c1834] tracking-[-0.6px] leading-7">
-        {title}
+        {resolvedTitle}
       </h2>
       <div className="border border-[#dfe5ef] divide-y divide-[#dfe5ef]">
         {items.map((item, i) => (

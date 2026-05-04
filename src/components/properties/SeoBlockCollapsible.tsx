@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { getCopy, type Locale } from "@/lib/copy";
 
 interface Props {
   text: string;
   className?: string;
+  locale?: Locale;
 }
 
-export default function SeoBlockCollapsible({ text, className = "" }: Props) {
+export default function SeoBlockCollapsible({ text, className = "", locale = "es" }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const t = getCopy(locale).components.seoBlock;
 
   return (
     <div className={`max-w-[600px] xl:max-w-[850px] ${className}`}>
@@ -25,7 +28,7 @@ export default function SeoBlockCollapsible({ text, className = "" }: Props) {
           onClick={() => setExpanded(!expanded)}
           className="mt-[6px] font-body font-semibold text-[13px] text-[#b8891e] hover:underline"
         >
-          {expanded ? "Leer menos" : "Leer más"}
+          {expanded ? t.leerMenos : t.leerMas}
         </button>
       </div>
     </div>
