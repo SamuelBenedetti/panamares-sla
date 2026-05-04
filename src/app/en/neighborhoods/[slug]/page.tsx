@@ -18,9 +18,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCopy } from "@/lib/copy";
-import { neighborhoodsEs } from "@/lib/copy/neighborhoods.es";
+import { neighborhoodsEn } from "@/lib/copy/neighborhoods.en";
 
-const copy = getCopy("es");
+const copy = getCopy("en");
 const t = copy.components.neighborhoodDetail;
 
 interface Props {
@@ -48,16 +48,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   );
   const shouldIndex = properties.length >= 2;
 
-  const seoBlockEs = neighborhoodsEs[params.slug]?.seoBlock;
+  const seoBlockEn = neighborhoodsEn[params.slug]?.seoBlock;
 
   return {
-    title: `Propiedades en ${neighborhood.name}, Panama`,
+    title: `Properties in ${neighborhood.name}, Panama`,
     description:
-      nbhContent?.seoBlock ??
-      seoBlockEs ??
-      `Guía completa de ${neighborhood.name}: propiedades disponibles, precios por m², estilo de vida y todo lo que necesitas para vivir o invertir en esta zona de Panama City.`,
+      seoBlockEn ??
+      `Complete guide to ${neighborhood.name}: available properties, price per m², lifestyle and everything you need to live or invest in this Panama City area.`,
     alternates: {
-      canonical: canonical(`/barrios/${params.slug}`),
+      canonical: canonical(`/en/neighborhoods/${params.slug}`),
       languages: alternates(`/barrios/${params.slug}`, `/en/neighborhoods/${params.slug}`),
     },
     robots: { index: shouldIndex, follow: true },
@@ -68,9 +67,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-
-
-export default async function NeighborhoodGuidePage({ params }: Props) {
+export default async function NeighborhoodGuidePageEn({ params }: Props) {
   const neighborhood = getNeighborhoodBySlug(params.slug);
   if (!neighborhood) notFound();
 
@@ -81,10 +78,9 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
     sanityFetch<Array<{ zone: string }>>(zonePropertyZonesQuery),
   ]);
 
-  // ── seoBlock fallback chain: Sanity → es.ts copy bundle ────────────────────
-  const seoBlockText = nbhContent?.seoBlock ?? neighborhoodsEs[params.slug]?.seoBlock ?? null;
+  // EN seoBlock comes from the EN copy bundle (Sanity stores ES only).
+  const seoBlockText = neighborhoodsEn[params.slug]?.seoBlock ?? null;
 
-  // ── Stats ──────────────────────────────────────────────────────────────────
   const propsWithArea = properties.filter((p) => p.area && p.area > 0);
   const avgPricePerM2 =
     nbhContent?.avgPricePerM2 ??
@@ -95,7 +91,6 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
   const ventaCount    = properties.filter((p) => p.businessType === "venta").length;
   const alquilerCount = properties.filter((p) => p.businessType === "alquiler").length;
 
-  // ── Category cards ─────────────────────────────────────────────────────────
   const comboCounts = new Map<string, number>();
   for (const p of properties) {
     const key = `${p.propertyType}|${p.businessType}`;
@@ -107,7 +102,6 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
     return [{ cat, count }];
   });
 
-  // ── Map data ───────────────────────────────────────────────────────────────
   const mapProps = properties
     .filter((p) => p.location)
     .map((p) => ({
@@ -123,12 +117,10 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
         : undefined,
     }));
 
-  // ── Hero image ─────────────────────────────────────────────────────────────
   const heroImage = nbhContent?.photo
     ? urlFor(nbhContent.photo).width(1600).height(900).url()
     : NEIGHBORHOOD_HERO_IMAGES[params.slug] ?? NEIGHBORHOOD_IMAGES[params.slug] ?? "/hero-bg.jpg";
 
-  // ── JSON-LD ────────────────────────────────────────────────────────────────
   const neighborhoodForSchema = nbhContent ?? {
     _id: params.slug,
     name: neighborhood.name,
@@ -136,15 +128,13 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
   };
   const jsonLdPlace      = neighborhoodSchema(neighborhoodForSchema, heroImage);
   const jsonLdBreadcrumb = breadcrumbSchema([
-    { name: copy.layout.breadcrumb.inicio,     url: "/" },
-    { name: t.breadcrumbLabel,    url: "/barrios/" },
-    { name: neighborhood.name, url: `/barrios/${params.slug}/` },
+    { name: copy.layout.breadcrumb.inicio, url: "/en/" },
+    { name: t.breadcrumbLabel,             url: "/en/neighborhoods/" },
+    { name: neighborhood.name,             url: `/en/neighborhoods/${params.slug}/` },
   ]);
 
-  // ── Nearby ─────────────────────────────────────────────────────────────────
   const nearby = NEIGHBORHOODS.filter((n) => n.slug !== params.slug).slice(0, 4);
 
-  // ── Nearby enriched (for NeighborhoodCards) ────────────────────────────────
   const avgPriceMap = new Map(allNbhContent.map((n) => [n.slug, n.avgPricePerM2]));
   const zoneCounts = new Map<string, number>();
   for (const { zone } of allZones) zoneCounts.set(zone, (zoneCounts.get(zone) ?? 0) + 1);
@@ -166,12 +156,10 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
     };
   });
 
-  // ── Split by intent, sorted by price desc ─────────────────────────────────
   const sortedByPrice = [...properties].sort((a, b) => b.price - a.price);
   const ventaProps    = sortedByPrice.filter((p) => p.businessType === "venta");
   const alquilerProps = sortedByPrice.filter((p) => p.businessType === "alquiler");
 
-  // ── Category links for "Ver por tipo" section ──────────────────────────────
   const toCategoryLinks = (intent: "venta" | "alquiler") =>
     categoryCards
       .filter(({ cat }) => cat.businessType === intent)
@@ -182,7 +170,6 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       }));
   const categoryLinks = { venta: toCategoryLinks("venta"), alquiler: toCategoryLinks("alquiler") };
 
-  // ── Most common property type ──────────────────────────────────────────────
   const mostCommonType = categoryCards.length > 0
     ? categoryCards.reduce((prev, curr) => curr.count > prev.count ? curr : prev)
     : null;
@@ -195,9 +182,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
       <WhatsAppButton message={waMsg} variant="floating" />
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          1. HERO
-      ═══════════════════════════════════════════════════════════════════════ */}
+      {/* HERO */}
       <section className="relative h-[72vh] min-h-[480px] xl:h-[80vh] flex flex-col justify-end overflow-hidden">
         <Image
           src={heroImage}
@@ -212,23 +197,20 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
         <div className="relative z-10 w-full px-[24px] xl:px-[60px] 2xl:px-[160px] pb-[48px] xl:pb-[80px]">
           <div className="max-w-[1440px] mx-auto flex flex-col gap-[20px]">
 
-            {/* Breadcrumb */}
             <Breadcrumb
               variant="light"
               items={[
-                { label: copy.layout.breadcrumb.inicio, href: "/" },
-                { label: t.breadcrumbLabel, href: "/barrios/" },
+                { label: copy.layout.breadcrumb.inicio, href: "/en" },
+                { label: t.breadcrumbLabel, href: "/en/neighborhoods/" },
                 { label: neighborhood.name },
               ]}
             />
 
-            {/* H1 */}
             <h1 className="font-heading font-normal text-[clamp(44px,6vw,80px)] 2xl:text-[68px] text-white leading-none tracking-[-2.5px] md:whitespace-nowrap">
               {t.heroH1Prefix}{neighborhood.name},
               <span className="italic">{t.heroH1Italic}</span>
             </h1>
 
-            {/* Stats — unified pills with | separators */}
             <div className="flex flex-wrap gap-[10px] pt-[4px]">
               <div className="h-[40px] px-[20px] py-[8px] flex flex-col justify-center items-start border border-[#E6E6E6]">
                 <div className="flex items-center gap-[8px]">
@@ -261,15 +243,12 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          2. ABOUT — Editorial block (ranking content)
-      ═══════════════════════════════════════════════════════════════════════ */}
+      {/* ABOUT */}
       {seoBlockText && (
       <section className="bg-[#f9f9f9] px-[24px] xl:px-[60px] 2xl:px-[160px] py-[80px] xl:py-[112px]">
         <div className="max-w-[1440px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-[64px] xl:gap-[100px] 2xl:gap-[200px]">
 
-            {/* Left — text */}
             <div className="flex flex-col">
               <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
                 {t.aboutEyebrow}
@@ -305,7 +284,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
                   {t.ctaWhatsapp}
                 </a>
                 <Link
-                  href="/contacto/"
+                  href="/en/contact/"
                   className="w-full sm:w-auto bg-white text-[#0d1835] font-body font-medium text-[15px] px-5 py-2.5 h-[42px] flex items-center justify-center hover:bg-white/90 transition-colors"
                 >
                   {t.ctaContactenos}
@@ -313,7 +292,6 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
               </div>
             </div>
 
-            {/* Right — stat rows */}
             <aside className="flex flex-col justify-start pt-[4px]">
               {avgPricePerM2 && (
                 <div className="flex flex-col gap-[4px] border-b border-[#dfe5ef] pb-[32px] mb-[32px]">
@@ -366,9 +344,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
       </section>
       )}
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          5. LISTINGS — Cards + mapa (tabs Comprar / Alquilar)
-      ═══════════════════════════════════════════════════════════════════════ */}
+      {/* LISTINGS */}
       {properties.length > 0 && (
         <section className="bg-white border-t border-[#dfe5ef] px-[24px] xl:px-[60px] 2xl:px-[160px] py-[80px] xl:py-[130px]">
           <div className="max-w-[1440px] mx-auto">
@@ -379,27 +355,24 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
               neighborhoodName={neighborhood.name}
               neighborhoodSlug={params.slug}
               categoryLinks={categoryLinks}
-              locale="es"
+              locale="en"
             />
           </div>
         </section>
       )}
 
-      {/* ═══════════════════════════════════════════════════════════════════════
-          8. OTROS BARRIOS
-      ═══════════════════════════════════════════════════════════════════════ */}
+      {/* OTHER NEIGHBORHOODS */}
       {nearbyCards.length > 0 && (
         <NeighborhoodCards
           neighborhoods={nearbyCards}
           eyebrow={t.otrosBarriosEyebrow}
           heading={t.otrosBarriosHeading}
           sectionClassName="bg-[#f9f9f9] border-t border-[#dfe5ef]"
-          locale="es"
+          locale="en"
         />
       )}
-       {/* ═══════════════════════════════════════════════════════════════════════
-          7. CTA — Conversión
-      ═══════════════════════════════════════════════════════════════════════ */}
+
+      {/* CTA */}
       <section className="bg-[#121e3e] px-[24px] xl:px-[60px] 2xl:px-[160px] py-[80px] xl:py-[120px]">
         <div className="max-w-[1440px] mx-auto flex flex-col items-center text-center gap-[24px]">
           <p className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase">
@@ -425,7 +398,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
               {t.ctaWhatsapp}
             </a>
             <Link
-              href="/contacto/"
+              href="/en/contact/"
               className="w-full sm:w-auto bg-white text-[#0d1835] font-body font-medium text-[15px] px-5 py-2.5 h-[42px] flex items-center justify-center hover:bg-white/90 transition-colors"
             >
               {t.ctaContactenos}
@@ -433,7 +406,6 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
           </div>
         </div>
       </section>
-
     </>
   );
 }

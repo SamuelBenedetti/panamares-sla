@@ -6,6 +6,8 @@ import { ArrowRight } from "lucide-react";
 import PropertyCard from "@/components/properties/PropertyCard";
 import PropertyMapMulti from "@/components/properties/PropertyMapMulti";
 import type { Property } from "@/lib/types";
+import { getCopy, type Locale } from "@/lib/copy";
+import { localePath } from "@/lib/i18n";
 
 interface MapMarker {
   lat: number;
@@ -31,6 +33,7 @@ interface Props {
   neighborhoodName: string;
   neighborhoodSlug: string;
   categoryLinks: { venta: CategoryLink[]; alquiler: CategoryLink[] };
+  locale?: Locale;
 }
 
 export default function NeighborhoodListingsSection({
@@ -40,7 +43,9 @@ export default function NeighborhoodListingsSection({
   neighborhoodName,
   neighborhoodSlug,
   categoryLinks,
+  locale = "es",
 }: Props) {
+  const t = getCopy(locale).components.neighborhoodDetail;
   const defaultTab: "venta" | "alquiler" = ventaProps.length > 0 ? "venta" : "alquiler";
   const [tab, setTab] = useState<"venta" | "alquiler">(defaultTab);
 
@@ -59,10 +64,10 @@ export default function NeighborhoodListingsSection({
       <div className="flex flex-col gap-[40px]">
         <div className="flex flex-col gap-[12px]">
           <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
-            Selección destacada
+            {t.listingsEyebrow}
           </p>
           <h2 className="font-heading font-normal text-[clamp(36px,4.5vw,60px)] 2xl:text-[52px] text-[#0c1834] tracking-[-1.8px] leading-none">
-            {tab === "venta" ? "Propiedades en Venta" : "Propiedades en Alquiler"}
+            {tab === "venta" ? t.listingsHeadingVenta : t.listingsHeadingAlquiler}
           </h2>
         </div>
 
@@ -76,7 +81,7 @@ export default function NeighborhoodListingsSection({
                   : "border border-[rgba(12,25,53,0.15)] text-[rgba(12,24,52,0.45)] hover:border-[rgba(12,25,53,0.35)]"
               }`}
             >
-              Comprar
+              {t.tabComprar}
               <span className="font-bold text-[13px]">{ventaProps.length}</span>
             </button>
             <button
@@ -87,7 +92,7 @@ export default function NeighborhoodListingsSection({
                   : "border border-[rgba(12,25,53,0.15)] text-[rgba(12,24,52,0.45)] hover:border-[rgba(12,25,53,0.35)]"
               }`}
             >
-              Alquilar
+              {t.tabAlquilar}
               <span className="font-bold text-[13px]">{alquilerProps.length}</span>
             </button>
           </div>
@@ -98,13 +103,13 @@ export default function NeighborhoodListingsSection({
       {activeCategories.length > 0 && (
         <div className="flex flex-col gap-[24px]">
           <p className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase">
-            Ver por tipo en {neighborhoodName}
+            {t.verPorTipoEnTpl(neighborhoodName)}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-[10px]">
             {activeCategories.map((cat) => (
               <Link
                 key={cat.slug}
-                href={`/${cat.slug}/${neighborhoodSlug}/`}
+                href={localePath(`/${cat.slug}/${neighborhoodSlug}/`, locale)}
                 className="group flex items-center justify-between border border-[#dfe5ef] px-[20px] py-[16px] hover:border-[#0c1834] transition-colors"
               >
                 <div className="flex flex-col gap-[2px]">
@@ -133,7 +138,7 @@ export default function NeighborhoodListingsSection({
       <div className={activeMapMarkers.length > 0 ? "xl:grid xl:grid-cols-2 xl:gap-[48px] flex flex-col gap-[32px] items-start" : "flex gap-[48px] items-start"}>
         <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${activeMapMarkers.length === 0 ? "flex-1 xl:grid-cols-4" : ""}`}>
           {featured.map((p, i) => (
-            <PropertyCard key={p._id} property={p} priority={i === 0} />
+            <PropertyCard key={p._id} property={p} priority={i === 0} locale={locale} />
           ))}
         </div>
 

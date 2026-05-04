@@ -13,20 +13,19 @@ import { canonical, alternates } from "@/lib/seo";
 import NeighborhoodSlider from "@/components/barrios/NeighborhoodSlider";
 import { getCopy } from "@/lib/copy";
 
-const copy = getCopy("es");
+const copy = getCopy("en");
 const t = copy.pages.barriosIndex;
 
 export const metadata: Metadata = {
   title: t.meta.title,
   description: t.meta.description,
   alternates: {
-    canonical: canonical("/barrios"),
+    canonical: canonical("/en/neighborhoods"),
     languages: alternates("/barrios", "/en/neighborhoods"),
   },
   robots: { index: true, follow: true },
 };
 
-// Static avg price/m² fallback (used when Sanity doc has no avgPricePerM2)
 const AVG_PRICE_FALLBACK: Record<string, string> = {
   "punta-pacifica":  "$3,200/m²",
   "punta-paitilla":  "$3,000/m²",
@@ -47,7 +46,7 @@ const FEATURED_SLUGS = [
   "costa-del-este",
 ];
 
-export default async function BarriosPage() {
+export default async function NeighborhoodsPageEn() {
   const [activeZoneNames, allZones, allNbhContent] = await Promise.all([
     sanityFetch<string[]>(activeZonesQuery),
     sanityFetch<{ zone: string }[]>(zonePropertyZonesQuery),
@@ -66,14 +65,12 @@ export default async function BarriosPage() {
       .filter((s): s is string => s !== undefined)
   );
 
-  // Count active properties per slug from all zones
   const countBySlug: Record<string, number> = {};
   for (const { zone } of allZones) {
     const slug = getSlugByName(zone);
     if (slug) countBySlug[slug] = (countBySlug[slug] ?? 0) + 1;
   }
 
-  // Price map: Sanity avgPricePerM2 takes priority over static fallback
   const priceBySlug: Record<string, string> = { ...AVG_PRICE_FALLBACK };
   for (const { slug, avgPricePerM2 } of allNbhContent) {
     if (avgPricePerM2) {
@@ -93,8 +90,8 @@ export default async function BarriosPage() {
   const totalZones = activeSlugs.size;
 
   const jsonLdBreadcrumb = breadcrumbSchema([
-    { name: copy.layout.breadcrumb.inicio, url: "/" },
-    { name: t.breadcrumbLabel, url: "/barrios/" },
+    { name: copy.layout.breadcrumb.inicio, url: "/en/" },
+    { name: t.breadcrumbLabel, url: "/en/neighborhoods/" },
   ]);
 
   return (
@@ -108,15 +105,13 @@ export default async function BarriosPage() {
       <section className="bg-[#f9f9f9] px-[24px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-0 xl:pb-[28px]">
         <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
 
-          {/* Breadcrumb */}
           <Breadcrumb
             items={[
-              { label: copy.layout.breadcrumb.inicio, href: "/" },
+              { label: copy.layout.breadcrumb.inicio, href: "/en" },
               { label: t.breadcrumbLabel },
             ]}
           />
 
-          {/* Title + count */}
           <div className="flex flex-col gap-[40px] pb-[60px] xl:flex-row xl:items-baseline xl:justify-between xl:gap-[16px] xl:pb-0">
             <h1 className="font-heading font-normal text-[60px] text-[#0c1834] leading-[normal] tracking-[-1.8px]">
               {t.h1Prefix}
@@ -133,16 +128,15 @@ export default async function BarriosPage() {
       {/* ── Hero Slider ── */}
       <section className="bg-[#f9f9f9] px-[24px] xl:px-[60px] 2xl:px-[160px] pb-[32px] xl:pb-[64px]">
         <div className="max-w-[1440px] mx-auto">
-          <NeighborhoodSlider neighborhoods={sliderNeighborhoods} locale="es" />
+          <NeighborhoodSlider neighborhoods={sliderNeighborhoods} locale="en" />
         </div>
       </section>
 
-      {/* ── Más barrios ── */}
+      {/* ── More neighborhoods ── */}
       {rest.length > 0 && (
         <section className="bg-[#f9f9f9] px-[24px] xl:px-[60px] 2xl:px-[160px] pt-[100px] pb-[80px] xl:pb-[120px]">
           <div className="max-w-[1440px] mx-auto flex flex-col gap-[30px]">
 
-            {/* Section header */}
             <div className="flex flex-col pb-[20px]">
               <span
                 className="font-body font-medium text-[12px] text-[#737b8c] tracking-[5px] uppercase"
@@ -160,7 +154,6 @@ export default async function BarriosPage() {
               </div>
             </div>
 
-            {/* Cards grid — aspect-[326/434] portrait, 4 cols on xl */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-[16px]">
               {rest.map((n) => {
                 const img = photoMap.get(n.slug) ?? NEIGHBORHOOD_IMAGES[n.slug] ?? "/hero-bg.jpg";
@@ -170,7 +163,7 @@ export default async function BarriosPage() {
                 return (
                   <Link
                     key={n.slug}
-                    href={`/barrios/${n.slug}/`}
+                    href={`/en/neighborhoods/${n.slug}/`}
                     className="group relative overflow-hidden bg-[#0c1935] flex flex-col items-start justify-center"
                     style={{ aspectRatio: "338 / 250" }}
                   >
@@ -240,7 +233,7 @@ export default async function BarriosPage() {
             </p>
           </div>
           <Link
-            href="/contacto/"
+            href="/en/contact/"
             className="inline-flex items-center justify-center gap-[8px] bg-white w-full xl:w-fit px-[32px] py-[15px] font-body font-medium text-[14px] text-[#0c1834] tracking-[1.4px] uppercase hover:bg-[#f9f9f9] transition-colors whitespace-nowrap"
           >
             {t.ctaButton}
