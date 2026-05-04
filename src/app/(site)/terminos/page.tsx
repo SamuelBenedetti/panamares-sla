@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description:
     "Lee los términos y condiciones de uso del sitio web de Panamares. Condiciones de servicio para la intermediación inmobiliaria en Panama City.",
-  alternates: { canonical: canonical("/terminos"), languages: alternates("/terminos", null) },
+  alternates: { canonical: canonical("/terminos"), languages: alternates("/terminos", "/en/terms") },
   robots: { index: true, follow: true },
 };
 
