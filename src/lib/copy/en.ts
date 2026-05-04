@@ -7,84 +7,90 @@ import type { Copy } from "./types";
 export const en: Copy = {
   layout: {
     nav: {
-      comprar: "",
-      alquilar: "",
-      barrios: "",
-      nosotros: "",
-      verTodas: "",
-      verTodos: "",
-      apartamentos: "",
-      apartaestudios: "",
-      casas: "",
-      penthouses: "",
-      oficinas: "",
-      locales: "",
-      terrenos: "",
-      casasDePlaya: "",
-      edificios: "",
-      fincas: "",
-      lotesComerciales: "",
+      comprar: "Buy",
+      alquilar: "Rent",
+      barrios: "Neighborhoods",
+      nosotros: "About",
+      verTodas: "View all",
+      verTodos: "View all",
+      apartamentos: "Apartments",
+      apartaestudios: "Studios",
+      casas: "Houses",
+      penthouses: "Penthouses",
+      oficinas: "Offices",
+      locales: "Retail spaces",
+      terrenos: "Land",
+      casasDePlaya: "Beach houses",
+      edificios: "Buildings",
+      fincas: "Farms",
+      lotesComerciales: "Commercial lots",
     },
     cta: {
-      whatsapp: "",
-      contactenos: "",
-      whatsappDefaultMessage: "",
+      whatsapp: "WhatsApp",
+      contactenos: "Contact us",
+      whatsappDefaultMessage:
+        "Hi, I'd like to learn more about your properties.",
     },
     footer: {
-      tagline: "",
-      sectionPropiedades: "",
-      sectionBarrios: "",
-      sectionContacto: "",
-      copyrightText: () => "",
-      linkPrivacidad: "",
-      linkTerminos: "",
+      tagline:
+        "Luxury real estate specialists in Panama City. Over 15 years connecting clients with exceptional properties.",
+      sectionPropiedades: "Properties",
+      sectionBarrios: "Neighborhoods",
+      sectionContacto: "Contact",
+      copyrightText: (year: number) =>
+        `© ${year} Panamares. All rights reserved.`,
+      linkPrivacidad: "Privacy",
+      linkTerminos: "Terms",
     },
     breadcrumb: {
-      inicio: "",
-      barrios: "",
-      agentes: "",
+      inicio: "Home",
+      barrios: "Neighborhoods",
+      agentes: "Agents",
     },
   },
 
   pages: {
     home: {
       hero: {
-        eyebrow: "",
-        titleLine1: "",
-        titleLine2Italic: "",
-        subtitle: { regular: "", bold: "" },
+        eyebrow: "Panama City & Luxury Properties",
+        titleLine1: "Real Estate ",
+        titleLine2Italic: "in Panama",
+        subtitle: {
+          regular: "Exclusive properties in ",
+          bold: "the city's most desirable areas.",
+        },
       },
       propertyTypeShortcuts: {
-        eyebrow: "",
-        heading: "",
+        eyebrow: "Browse by type",
+        heading: "What kind of property are you looking for?",
         labels: {
-          apartamentos: "",
-          casas: "",
-          penthouses: "",
-          oficinas: "",
-          locales: "",
-          terrenos: "",
+          apartamentos: "Apartments",
+          casas: "Houses",
+          penthouses: "Penthouses",
+          oficinas: "Offices",
+          locales: "Retail",
+          terrenos: "Land",
         },
-        countSuffix: () => "",
+        countSuffix: (n: number) => (n > 0 ? `${n} prop.` : "—"),
       },
       featured: {
-        eyebrow: "",
-        heading: "",
-        emptyState: "",
-        verMas: "",
+        eyebrow: "Featured selection",
+        heading: "Properties for Sale",
+        emptyState: "Featured properties coming soon.",
+        verMas: "View more properties",
       },
       neighborhoodCards: {
-        eyebrow: "",
-        heading: "",
-        precioPromedio: "",
-        propiedades: "",
-        propiedadesEn: () => "",
+        eyebrow: "Top neighborhoods",
+        heading: "Browse by Location",
+        precioPromedio: "Average price",
+        propiedades: "Properties",
+        propiedadesEn: (name: string) => `Properties in ${name}`,
       },
       trustStrip: {
-        labelActiveListings: "",
-        labelAgents: "",
-        labelYears: "",
-        labelClientsSatisfied: "",
+        labelActiveListings: "Active Listings",
+        labelAgents: "Specialized Agents",
+        labelYears: "Years in the Market",
+        labelClientsSatisfied: "Satisfied Clients",
       },
     },
     sobreNosotros: {
@@ -127,224 +133,330 @@ export const en: Copy = {
 
   components: {
     propertyCard: {
-      tagRecomendado: "",
-      tagPrecioJusto: "",
-      tagAlquilado: "",
-      verPropiedad: "",
-      labelHabitacionesShort: "",
-      labelBanos: "",
-      labelMetros: "",
-      whatsappPrefix: "",
+      tagRecomendado: "Recommended",
+      tagPrecioJusto: "Fair Price",
+      tagAlquilado: "Rented",
+      verPropiedad: "View property",
+      labelHabitacionesShort: "bd.",
+      labelBanos: "ba.",
+      labelMetros: "m²",
+      whatsappPrefix: "Hi, I'm interested in this property: ",
     },
     agentCard: {
-      verPerfil: "",
-      defaultRole: "",
+      verPerfil: "View profile",
+      defaultRole: "Agent",
     },
     seoBlock: {
-      leerMas: "",
-      leerMenos: "",
+      leerMas: "Read more",
+      leerMenos: "Read less",
     },
     contactForm: {
-      todoPr2Marker: "",
+      todoPr2Marker: "TODO_PR2_components.contactForm",
     },
     faq: {
-      defaultTitle: "",
+      defaultTitle: "Frequently asked questions",
     },
     faqSection: {
-      eyebrow: "",
-      heading: "",
+      eyebrow: "FAQ",
+      heading: "Frequently asked questions",
     },
     pagination: {
-      previous: "",
-      next: "",
-      ariaLabel: "",
+      previous: "← Previous",
+      next: "Next →",
+      ariaLabel: "Pagination",
     },
     breadcrumb: {
-      inicio: "",
-      barrios: "",
-      agentes: "",
+      inicio: "Home",
+      barrios: "Neighborhoods",
+      agentes: "Agents",
     },
     ctaSection: {
-      eyebrow: "",
-      titleLine1: "",
-      titleLine2Italic: "",
-      subtitle: "",
-      whatsappMessage: "",
-      buttonContactenos: "",
+      eyebrow: "Contact us",
+      titleLine1: "Ready to find your",
+      titleLine2Italic: "ideal property?",
+      subtitle:
+        "Our agents are available to help you find the perfect property in Panama.",
+      whatsappMessage:
+        "Hi, I'd like to learn more about your Panamares properties.",
+      buttonContactenos: "Contact Us Now",
     },
     neighborhoodDetail: {
-      todoPr2Marker: "",
+      todoPr2Marker: "TODO_PR2_components.neighborhoodDetail",
     },
     agentDetail: {
-      todoPr2Marker: "",
+      todoPr2Marker: "TODO_PR2_components.agentDetail",
     },
     categoryHub: {
-      todoPr2Marker: "",
+      todoPr2Marker: "TODO_PR2_components.categoryHub",
     },
   },
 
   categories: {
     "apartamentos-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Apartments for Sale in Panama",
+      metaTitle: "Apartments for Sale in Panama City",
+      metaDescription:
+        "Find apartments for sale in Panama City. The best options in Punta Pacífica, Punta Paitilla, Obarrio and other exclusive areas.",
+      seoBlock:
+        "Panamares offers the largest selection of apartments for sale in Panama City. From studios to penthouses, you'll find options in the most exclusive areas: Punta Pacífica, Punta Paitilla, Avenida Balboa and Obarrio. All listings are verified and include full details on price, square meters, bedrooms, bathrooms, parking and building amenities. Whether for a primary residence, second home or rental investment, we have the right property for every profile. Our specialized agents guide you through every step of the buying process, from the property tour to contract signing.",
     },
     "apartamentos-en-alquiler": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Apartments for Rent in Panama",
+      metaTitle: "Apartments for Rent in Panama City",
+      metaDescription:
+        "Rent an apartment in Panama City. Wide selection in Punta Pacífica, Punta Paitilla, Avenida Balboa and more.",
+      seoBlock:
+        "Find the right apartment for rent in Panama City with Panamares. We have options in Punta Pacífica, Punta Paitilla, Avenida Balboa, Obarrio and other high-demand residential areas. Furnished and unfurnished apartments, with one or several bedrooms, in buildings with full amenities: pool, gym, 24/7 security and social areas. Competitive prices in dollars, transparent contracts in Spanish and personalized service from our agents. Filter by area, number of bedrooms or budget and book a tour the same day. Finding your next home in Panama has never been easier.",
     },
     "casas-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Houses for Sale in Panama",
+      metaTitle: "Houses for Sale in Panama City",
+      metaDescription:
+        "Buy a house in Panama City. Selection of family homes in the best gated communities.",
+      seoBlock:
+        "Panamares has a wide selection of houses for sale in Panama City and surrounding areas. From family residences in Clayton and Altos del Golf to exclusive properties in Costa del Este, Santa María and Las Cumbres. Each house includes detailed information on total area, bedrooms, bathrooms, finishes and community. Our properties include options with private gardens, pools and staff quarters in gated communities with private security. Our agents help you find the right property based on your budget, household size and lifestyle in Panama City.",
     },
     "casas-en-alquiler": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Houses for Rent in Panama",
+      metaTitle: "Houses for Rent in Panama City",
+      metaDescription:
+        "Rent a house in Panama City. Find the right option for your family.",
+      seoBlock:
+        "Find the perfect house for rent for your family in Panama City with Panamares. We offer houses in Clayton, Altos del Golf, Costa del Este, Las Cumbres and other residential communities. Furnished and unfurnished options, with garden, pool, staff quarters and play areas for kids. Our properties are in gated communities with private security, offering comfort and peace of mind for the whole family. Flexible contracts in dollars, negotiable deposits and our agents' support throughout the rental process.",
     },
     "penthouses-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Penthouses for Sale in Panama",
+      metaTitle: "Penthouses for Sale in Panama City",
+      metaDescription:
+        "Luxury penthouses for sale in Panama City. Panoramic views, premium finishes in Punta Pacífica and Punta Paitilla.",
+      seoBlock:
+        "Penthouses for sale in Panama City represent the most exclusive segment of the Panamanian real estate market. Panamares offers a curated selection in Punta Pacífica, Punta Paitilla and Avenida Balboa, with panoramic views of the Pacific Ocean, private terraces and top-tier finishes. Each property includes full details on price, terrace square meters, bedrooms and building amenities. The most sought-after penthouses in the city offer double-height ceilings, private pools and exclusive elevator access. Talk to our agents who specialize in luxury properties for personalized advice and access to the best market opportunities.",
     },
     "penthouses-en-alquiler": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Penthouses for Rent in Panama",
+      metaTitle: "Penthouses for Rent in Panama City",
+      metaDescription:
+        "Luxury penthouses for rent in Panama City. Panoramic views, premium finishes in Punta Pacífica and Punta Paitilla.",
+      seoBlock:
+        "Rent a luxury penthouse in Panama City with Panamares. We have an exclusive selection in Punta Pacífica, Punta Paitilla and Avenida Balboa, with panoramic views of the Pacific Ocean, private terraces and top-tier finishes. Ideal for executives, diplomats and families who want the best of Panamanian living without the long-term commitment. Our penthouses for rent include furnished options, exclusive elevator access and premium building amenities. Our agents who specialize in luxury properties help you find the right penthouse based on your needs and budget.",
     },
     "apartaestudios-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Studios for Sale in Panama",
+      metaTitle: "Studios for Sale in Panama City",
+      metaDescription:
+        "Studios for sale in Panama City. Ideal for investment or first-time buyers.",
+      seoBlock:
+        "Studios for sale in Panama City are the right choice for investment, first-time buyers or central residence. Panamares offers studios in Obarrio, El Cangrejo, Marbella and central areas with high rental demand, ensuring returns from day one. Compact and well-designed properties in modern buildings with full amenities: gym, pool and professional lobby. A solid investment in one of Latin America's most active real estate markets, with accessible entry prices and high liquidity. Our agents advise you on the best options based on your investment profile and budget.",
     },
     "oficinas-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Offices for Sale in Panama",
+      metaTitle: "Offices for Sale in Panama City",
+      metaDescription:
+        "Offices for sale in Panama City. Corporate spaces in Calle 50, Punta Pacífica and business areas.",
+      seoBlock:
+        "Panamares offers offices for sale in the main corporate areas of Panama City. From small units in Obarrio and Marbella to full floors in Calle 50, Punta Pacífica and the Vía España financial corridor. Modern spaces with professional finishes, included parking and access to top-tier services. Buying your own office in Panama City is a strategic move: dollar-denominated contracts, a growing corporate market and high rental demand. Invest in Latin America's financial hub with the support of our agents who specialize in commercial and corporate real estate.",
     },
     "oficinas-en-alquiler": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Offices for Rent in Panama",
+      metaTitle: "Offices for Rent in Panama City",
+      metaDescription:
+        "Rent an office in Panama City. Spaces in the main commercial and financial areas.",
+      seoBlock:
+        "Rent an office in Panama City with Panamares and set up your business in the region's financial hub. We have options in Calle 50, Obarrio, Marbella and Punta Pacífica for companies of any size, from individual units to full floors. Move-in-ready spaces with parking, security, meeting rooms and telecom services included. We also offer coworking spaces and offices for startups and independent consultants. Flexible contracts in dollars and personalized advice to find the space that best fits your company's needs.",
     },
     "locales-comerciales-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Retail Spaces for Sale in Panama",
+      metaTitle: "Retail Spaces for Sale in Panama",
+      metaDescription:
+        "Retail spaces for sale in Panama City. Invest in the Panamanian commercial sector.",
+      seoBlock:
+        "Invest in retail spaces for sale in Panama City with Panamares. You'll find options in high-traffic areas like San Francisco, Obarrio and Vía España — ideal for retail stores, restaurants, medical offices and professional services. Each property includes full details on total area, linear meters of frontage and price per square meter, making it easier to assess your business's viability. Panama City is one of Central America's most active commercial markets, with high demand for well-located retail spaces. Our agents help you evaluate each space's return potential.",
     },
     "locales-comerciales-en-alquiler": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Retail Spaces for Rent in Panama",
+      metaTitle: "Retail Spaces for Rent in Panama",
+      metaDescription:
+        "Rent a retail space in Panama City. Options in Obarrio, San Francisco and other areas.",
+      seoBlock:
+        "Panamares has retail spaces for rent in Panama City's busiest areas. From small spaces in Vía España and El Dorado to large units in shopping centers in Obarrio, San Francisco and Marbella. Ideal to start or expand your business in one of Latin America's most active consumer markets. Our retail spaces for rent include options with street-front access, loading and unloading zones and accessibility for people with reduced mobility. Flexible contracts in dollars and our agents' guidance to choose the location that maximizes your brand's visibility.",
     },
     "terrenos-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Land for Sale in Panama",
+      metaTitle: "Land for Sale in Panama",
+      metaDescription:
+        "Land for sale in Panama City and provinces. For residential or commercial construction.",
+      seoBlock:
+        "Find land for sale in Panama for your next residential or commercial project with Panamares. We offer lots in Panama City, Panamá Oeste, La Chorrera and the provinces, with access to basic services and main roads. Each lot includes details on square meters, permitted zoning, topography and price per square meter. Ideal for construction firms, developers and private investors looking for development opportunities in a market with strong appreciation. We also have lots with approved plans ready to build. Our agents support you through the analysis and negotiation of each opportunity.",
     },
     "terrenos-en-alquiler": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Land for Rent in Panama",
+      metaTitle: "Land for Rent in Panama",
+      metaDescription:
+        "Land for rent in Panama City and provinces. For commercial, industrial or agricultural use.",
+      seoBlock:
+        "Find land for rent in Panama for your commercial, industrial or agricultural project with Panamares. We offer lots in Panama City, Panamá Oeste and the provinces, with access to main roads and basic services. Each lot includes details on square meters, permitted zoning and monthly price. Ideal for companies that need temporary space for operations, storage or project development without committing to a purchase. Our agents help you find the rental land that best fits your business needs.",
     },
     "casas-de-playa-en-alquiler": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Beach Houses for Rent in Panama",
+      metaTitle: "Beach Houses for Rent in Panama",
+      metaDescription:
+        "Beach houses for rent in Panama. Properties in Coclé, Farallón and the best Panamanian coastlines.",
+      seoBlock:
+        "Rent a beach house in Panama with Panamares. Oceanfront properties in Farallón, Coronado, Santa Clara and the best beaches in Coclé, less than two hours from Panama City. From private cabins to villas with pool and direct beach access. Ideal for vacations, weekends or temporary stays in one of Central America's most sought-after coastal destinations. We also have options for short-term tourist rentals. Our agents know each coastal community to help you find the right beach house.",
     },
     "casas-de-playa-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Beach Houses for Sale in Panama",
+      metaTitle: "Beach Houses for Sale in Panama",
+      metaDescription:
+        "Beach houses for sale in Panama. Properties in Coclé, Farallón and the best Panamanian coastlines.",
+      seoBlock:
+        "Discover beach houses for sale in Panama with Panamares. Oceanfront properties in Farallón, Coronado, Santa Clara and the best beaches in Coclé, less than two hours from Panama City via the Pan-American Highway. From private cabins and single-level villas to luxury residences with pool, direct beach access and Pacific views. The best investment for a second home, vacation residence or short-term rental project in one of Central America's most sought-after coastal destinations. Our agents know every project and coastal community to guide you to the right decision.",
     },
     "edificios-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Buildings for Sale in Panama",
+      metaTitle: "Buildings for Sale in Panama City",
+      metaDescription:
+        "Buildings for sale in Panama City. Large-scale real estate investment.",
+      seoBlock:
+        "Panamares presents buildings for sale in Panama City for institutional and private investors looking for large-scale returns. From residential buildings with rented units and immediate cash flow to office towers in prime areas of the city. Each property includes details on total built area, number of units or floors, current occupancy, rental income and total price. The Panamanian market offers legal certainty, dollar-denominated contracts and high rental demand. A unique opportunity to scale your real estate portfolio in the region's most stable market.",
     },
     "fincas-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Farms for Sale in Panama",
+      metaTitle: "Farms for Sale in Panama",
+      metaDescription:
+        "Farms for sale in Panama. Rural and agricultural properties in Coclé and other provinces.",
+      seoBlock:
+        "Find farms for sale in Panama with Panamares. Rural properties in Coclé, Chiriquí, Veraguas and other provinces, with hectares for agricultural, livestock, ecotourism or country residential use. Each farm includes detailed information on total area, road access, water sources, soil type and permitted use. We also have farms with existing infrastructure: corrals, irrigation systems and support housing. A solid and diversified investment for those looking for opportunities outside the city, with appreciation potential in areas of growing tourism and agricultural interest in Panama.",
     },
     "lotes-comerciales-en-venta": {
-      h1: "",
-      metaTitle: "",
-      metaDescription: "",
-      seoBlock: "",
+      h1: "Commercial Lots for Sale in Panama",
+      metaTitle: "Commercial Lots for Sale in Panama",
+      metaDescription:
+        "Commercial lots and land for sale in Panama City. Development opportunities.",
+      seoBlock:
+        "Panamares offers commercial lots for sale in Panama City and urban expansion areas for long-term developers and investors. Ideal for mixed-use projects, shopping centers, hotels, office buildings or high-rise residential developments. Strategic locations in high-growth corridors with access to main roads, utility networks and current commercial zoning approvals. Panama City is one of the most actively developing cities in Latin America, with growing demand for well-located developable land. Our agents provide zoning analysis and full advice to maximize each lot's potential.",
     },
   },
 
   faqs: {
     answers: {
-      processCompra: "",
-      extranjeroCompra: "",
-      extranjeroAlquiler: "",
-      preciosDolares: "",
-      mejoresBarriosCompra: () => "",
-      mejoresBarriosAlquiler: () => "",
-      documentosAlquilerCategory: () => "",
-      documentosAlquilerGeo: () => "",
-      porQueComprarBarrio: () => "",
-      porQueAlquilarBarrio: () => "",
+      processCompra:
+        "The buying process in Panama has four stages: property selection, signing the promise of purchase, notarial procedures and registration in the Public Registry. Contracts are signed in Spanish and prices are in US dollars. Panamares walks you through every step, coordinating with attorneys and procedural agents so the process is fast and secure.",
+      extranjeroCompra:
+        "Yes. Foreigners have the same property rights as Panamanian citizens. No residency or special permit is required to buy real estate. Panama offers legal certainty backed by the Public Registry and dollar-denominated contracts, making it one of the most attractive markets for international investors in Latin America.",
+      extranjeroAlquiler:
+        "Yes. Foreigners can rent freely in Panama without needing a special permit. Rental contracts are signed in Spanish and payments are made in US dollars. A valid passport, references and one or two months' deposit are usually required. Panamares advises you so the process is straightforward from the first contact.",
+      preciosDolares:
+        "Yes. Panama uses the US dollar as its official currency, which removes exchange rate risk for international investors and tenants. All rental contracts and listing prices are quoted in USD.",
+      mejoresBarriosCompra: (typeLabel: string, zones: string) =>
+        `The most sought-after areas for ${typeLabel} are ${zones}. Each neighborhood has its own price profile, lifestyle and appreciation potential. Panamares has active listings in all these areas and can advise you on which one best fits your budget and goals.`,
+      mejoresBarriosAlquiler: (typeLabel: string, zones: string) =>
+        `The areas with the most ${typeLabel} for rent are ${zones}. Choosing a neighborhood depends on your budget, transportation needs, proximity to work and lifestyle. Our agents help you find the option that best fits your priorities.`,
+      documentosAlquilerCategory: (typeLabel: string) =>
+        `A valid ID (passport or national ID), personal or work references, proof of income and one or two months' deposit are usually required. For foreigners, a passport is enough. Panamares coordinates with the owner to speed up document review and contract signing.${typeLabel ? "" : ""}`,
+      documentosAlquilerGeo: (typeLabel: string) =>
+        `A valid ID (passport or national ID), references and one or two months' deposit are usually required. For foreigners, a passport is enough. Panamares coordinates with the owner to speed up document review and contract signing.${typeLabel ? "" : ""}`,
+      porQueComprarBarrio: (typeLabel: string, neighborhoodName: string) =>
+        `${neighborhoodName} is one of Panama City's most valued areas thanks to its strategic location, quality of life and appreciation potential. Sustained demand for properties in this neighborhood makes it a solid choice for both a primary residence and long-term investment.${typeLabel ? "" : ""}`,
+      porQueAlquilarBarrio: (typeLabel: string, neighborhoodName: string) =>
+        `${neighborhoodName} combines access to services, transportation and an established community that makes it ideal for families, professionals and expatriates. The supply of ${typeLabel} for rent in this neighborhood is varied, with furnished and unfurnished options that fit different budgets and lifestyles.`,
     },
     questions: {
-      cuantoCuestaComprar: () => "",
-      cuantoCuestaAlquilar: () => "",
-      cuantoCuestaComprarBarrio: () => "",
-      cuantoCuestaAlquilarBarrio: () => "",
-      mejoresBarriosCompra: () => "",
-      mejoresBarriosAlquiler: () => "",
-      procesoCompra: () => "",
-      procesoCompraSimple: "",
-      extranjeroCompraCategory: () => "",
-      extranjeroCompraGeo: () => "",
-      documentosAlquiler: () => "",
-      preciosEnDolares: "",
-      porQueComprarBarrio: () => "",
-      porQueAlquilarBarrio: () => "",
-      extranjeroAlquilar: "",
+      cuantoCuestaComprar: (typeLabel: string) =>
+        `How much does it cost to buy ${typeLabel} in Panama City?`,
+      cuantoCuestaAlquilar: (typeLabel: string) =>
+        `How much does it cost to rent ${typeLabel} in Panama City?`,
+      cuantoCuestaComprarBarrio: (typeLabel: string, neighborhoodName: string) =>
+        `How much does it cost to buy ${typeLabel} in ${neighborhoodName}?`,
+      cuantoCuestaAlquilarBarrio: (
+        typeLabel: string,
+        neighborhoodName: string,
+      ) => `How much does it cost to rent ${typeLabel} in ${neighborhoodName}?`,
+      mejoresBarriosCompra: (typeLabel: string) =>
+        `What are the best neighborhoods to buy ${typeLabel} in Panama?`,
+      mejoresBarriosAlquiler: (typeLabel: string) =>
+        `What are the best neighborhoods to rent ${typeLabel} in Panama?`,
+      procesoCompra: (typeLabel: string) =>
+        `How does the buying process for ${typeLabel} work in Panama?`,
+      procesoCompraSimple: "How does the buying process work in Panama?",
+      extranjeroCompraCategory: (typeLabel: string) =>
+        `Can a foreigner buy ${typeLabel} in Panama?`,
+      extranjeroCompraGeo: (typeLabel: string, neighborhoodName: string) =>
+        `Can a foreigner buy ${typeLabel} in ${neighborhoodName}?`,
+      documentosAlquiler: (typeLabel: string) =>
+        `What documents do I need to rent ${typeLabel} in Panama?`,
+      preciosEnDolares: "Are rental prices in dollars in Panama?",
+      porQueComprarBarrio: (typeLabel: string, neighborhoodName: string) =>
+        `Why buy ${typeLabel} in ${neighborhoodName}, Panama?`,
+      porQueAlquilarBarrio: (typeLabel: string, neighborhoodName: string) =>
+        `Why rent ${typeLabel} in ${neighborhoodName}, Panama?`,
+      extranjeroAlquilar: "Can a foreigner rent in Panama?",
     },
     priceRefs: {
-      apartamento: { venta: "", alquiler: "" },
-      penthouse: { venta: "", alquiler: "" },
-      casa: { venta: "", alquiler: "" },
-      oficina: { venta: "", alquiler: "" },
-      local: { venta: "", alquiler: "" },
-      apartaestudio: { venta: "", alquiler: "" },
-      terreno: { venta: "", alquiler: "" },
-      "casa de playa": { venta: "", alquiler: "" },
-      default: { venta: "", alquiler: "" },
+      apartamento: {
+        venta:
+          "Apartments for sale in Panama City range from $120,000 for studios to $1,500,000+ for penthouses in oceanfront towers. Standard 2-3 bedroom apartments in Punta Pacífica or Punta Paitilla typically list between $280,000 and $600,000, with price per square meter varying by building and view.",
+        alquiler:
+          "Apartment rentals in Panama City start at $700/month for studios and go up to $5,000+/month for luxury units on the waterfront. A 2-bedroom apartment in an exclusive area like Punta Pacífica or Avenida Balboa runs $1,200–$2,500/month depending on building and amenities.",
+      },
+      penthouse: {
+        venta:
+          "Penthouses for sale in Panama City start at $500,000 and can exceed $3,000,000 in waterfront towers with Pacific views. The price difference compared to a standard apartment reflects the private terrace, premium finishes and the exclusivity of the building's top floor.",
+        alquiler:
+          "Penthouse rentals in Panama City range from $3,000 to $10,000/month depending on the tower, neighborhood and amenities. They are the preferred choice for executives and families who want space, privacy and panoramic views without giving up a central location.",
+      },
+      casa: {
+        venta:
+          "Houses for sale in Panama City range from $250,000 for basic residences to $3,000,000+ for villas in luxury gated communities. Clayton, Altos del Golf and Costa del Este offer options between $400,000 and $1,200,000 with garden, pool and private security.",
+        alquiler:
+          "House rentals in Panama City start at $1,200/month and can reach $8,000/month for luxury villas. The most in-demand communities like Clayton, Santa María and Costa del Este have prices between $2,000 and $5,000/month, including green areas and access to a private club.",
+      },
+      oficina: {
+        venta:
+          "Offices for sale in Panama City range from $80,000 for small units to $2,000,000+ for full floors in corporate towers on Calle 50. Price per square meter in prime areas runs between $2,000 and $4,500 USD depending on finishes, floor and proximity to the financial center.",
+        alquiler:
+          "Office rentals in Panama City start at $500/month for small spaces and go up to $15,000+/month for full floors in Calle 50 or Marbella. The average price per square meter in the corporate area is $18–$35 USD/month, generally not including parking.",
+      },
+      local: {
+        venta:
+          "Retail spaces for sale in Panama City range from $60,000 for small units to $1,500,000+ for spaces in high-traffic areas. Price per square meter depends on street frontage, the area and foot traffic.",
+        alquiler:
+          "Retail space rentals in Panama City range from $400 to $15,000/month. In high-traffic areas like Obarrio and San Francisco, the average price runs $20–$45 USD/m² per month, while secondary areas can be between $10 and $20 USD/m².",
+      },
+      apartaestudio: {
+        venta:
+          "Studios for sale in Panama City range from $80,000 to $250,000. Their main appeal is the rental return, which can exceed 6% annually in areas with high demand from corporate tenants like El Cangrejo or Obarrio.",
+        alquiler:
+          "Studio rentals in Panama City start at $600/month. Their high demand among executives and students makes them one of the market's most active segments, especially in central neighborhoods with access to services.",
+      },
+      terreno: {
+        venta:
+          "Land for sale in Panama varies widely by area: from $50/m² in rural areas to $2,000+/m² in prime areas of Panama City. Lots in gated communities in Costa del Este or Santa María typically cost between $300 and $800/m².",
+        alquiler: "—",
+      },
+      "casa de playa": {
+        venta:
+          "Beach houses for sale in Panama range from $150,000 for basic cabins to $2,000,000+ for oceanfront villas in Farallón or Coronado. Value per square meter keeps rising thanks to tourism growth and demand for vacation rentals.",
+        alquiler: "—",
+      },
+      default: {
+        venta:
+          "Prices vary based on area, finishes and property features. Talk to our agents for an updated range and to compare the options available in the market.",
+        alquiler:
+          "Rental prices vary based on the area and property features. Contact our agents for updated prices and to compare the options available.",
+      },
     },
     zonesByType: {
-      apartamento: "",
-      penthouse: "",
-      casa: "",
-      oficina: "",
-      local: "",
-      apartaestudio: "",
-      terreno: "",
-      "casa de playa": "",
-      default: "",
+      apartamento: "Punta Pacífica, Punta Paitilla, Avenida Balboa and Obarrio",
+      penthouse: "Punta Pacífica, Punta Paitilla and Avenida Balboa",
+      casa: "Clayton, Altos del Golf, Costa del Este and Santa María",
+      oficina: "Calle 50, Obarrio and Marbella",
+      local: "Obarrio, San Francisco and Vía España",
+      apartaestudio:
+        "El Cangrejo, Obarrio and the historic center of Panama City",
+      terreno: "expansion areas of Panama City, Panamá Oeste and Coclé",
+      "casa de playa": "Farallón, Coronado and the Coclé coastlines",
+      default: "the main areas of Panama City",
     },
   },
 };
