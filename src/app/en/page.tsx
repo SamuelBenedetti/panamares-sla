@@ -1,4 +1,4 @@
-﻿import type { Property, SanityImage } from "@/lib/types";
+import type { Property, SanityImage } from "@/lib/types";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { allNeighborhoodContentQuery, featuredPropertiesQuery, neighborhoodCountsQuery, propertyTypeCountsQuery } from "@/sanity/lib/queries";
@@ -13,15 +13,15 @@ import TrustStrip from "@/components/home/TrustStrip";
 import { canonical, alternates } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Bienes Raíces en Panama City",
+  title: "Real Estate in Panama City",
   description:
-    "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en Punta Pacífica, Punta Paitilla y las mejores zonas de la ciudad.",
-  alternates: { canonical: canonical("/"), languages: alternates("/", "/en") },
+    "Panamares — luxury real estate in Panama City. Apartments, houses, penthouses, offices and more in Punta Pacífica, Punta Paitilla and the city's most desirable areas.",
+  alternates: { canonical: canonical("/en"), languages: alternates("/", "/en") },
   robots: { index: true, follow: true },
 };
 
 
-export default async function HomePage() {
+export default async function HomePageEn() {
   const [featured, typeCounts, neighborhoodCounts, allNbhContent] = await Promise.all([
     sanityFetch<Property[]>(featuredPropertiesQuery),
     sanityFetch<Record<string, number>>(propertyTypeCountsQuery),
@@ -43,18 +43,18 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero locale="es" />
-      <PropertyTypeShortcuts counts={typeCounts} locale="es" />
-      <FeaturedProperties properties={featured} locale="es" />
+      <Hero locale="en" />
+      <PropertyTypeShortcuts counts={typeCounts} locale="en" />
+      <FeaturedProperties properties={featured} locale="en" />
 
       <NeighborhoodCards
         counts={neighborhoodCounts}
         photos={neighborhoodPhotos}
         prices={neighborhoodPrices}
-        locale="es"
+        locale="en"
       />
-      <TrustStrip locale="es" />
-      <CTA locale="es" />
+      <TrustStrip locale="en" />
+      <CTA locale="en" />
     </>
   );
 }

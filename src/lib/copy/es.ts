@@ -178,7 +178,31 @@ export const es: Copy = {
       leerMenos: "Leer menos",
     },
     contactForm: {
-      todoPr2Marker: "TODO_PR2_components.contactForm",
+      labelNombre: "Nombre completo *",
+      placeholderNombre: "Ej. María González",
+      labelCorreo: "Correo electrónico *",
+      placeholderCorreo: "correo@ejemplo.com",
+      labelTelefono: "Teléfono / WhatsApp",
+      placeholderTelefono: "+507 6587-1849",
+      labelMotivo: "Motivo de contacto",
+      motivoPlaceholder: "Seleccionar…",
+      motivos: {
+        compra: "Compra de propiedad",
+        alquiler: "Alquiler de propiedad",
+        inversion: "Inversión",
+        visita: "Agendar visita",
+        otro: "Otro",
+      },
+      labelMensaje: "Mensaje",
+      placeholderMensaje:
+        "Cuéntanos qué estás buscando, presupuesto aproximado, zona de interés…",
+      buttonSend: "Enviar mensaje",
+      buttonSending: "Enviando...",
+      successHeading: "¡Mensaje enviado!",
+      successBody: "Nos pondremos en contacto contigo a la brevedad.",
+      successButtonWhatsapp: "Abrir WhatsApp",
+      errorMessage:
+        "Error al enviar. Intenta de nuevo o escríbenos por WhatsApp.",
     },
     faq: {
       defaultTitle: "Preguntas frecuentes",

@@ -1,8 +1,12 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import Image from "next/image";
 import { whatsappLink } from "@/lib/config";
+import { getCopy, type Locale } from "@/lib/copy";
+import { localePath } from "@/lib/i18n";
 
-export default function CTA() {
+export default function CTA({ locale = "es" }: { locale?: Locale }) {
+  const t = getCopy(locale).components.ctaSection;
+
   return (
     <section className="relative bg-[#121e3e] py-14 md:py-[80px] px-6 xl:px-[60px] 2xl:px-[160px] overflow-hidden">
 
@@ -32,28 +36,28 @@ export default function CTA() {
 
         {/* Eyebrow */}
         <p className="font-body font-medium text-white/50 text-[12px] md:text-[11px] uppercase tracking-[5px]">
-          Contáctenos
+          {t.eyebrow}
         </p>
 
         {/* Heading */}
         <div className="flex flex-col items-center text-white text-[clamp(42px,4vw,60px)] tracking-[-1.8px]">
           <span className="font-heading font-normal not-italic leading-tight">
-            ¿Listo para encontrar tu
+            {t.titleLine1}
           </span>
           <span className="font-heading italic leading-tight">
-            propiedad ideal?
+            {t.titleLine2Italic}
           </span>
         </div>
 
         {/* Subtitle */}
         <p className="font-body font-light text-[#faf8f5] text-[14px] leading-[22px] text-center max-w-[400px] pb-4">
-          Nuestros asesores están disponibles para ayudarte a encontrar la propiedad perfecta en Panamá.
+          {t.subtitle}
         </p>
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <a
-            href={whatsappLink("Hola, me interesa conocer más sobre sus propiedades en Panamares.")}
+            href={whatsappLink(t.whatsappMessage)}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto bg-[#00b424] text-white font-body font-medium text-[15px] px-5 py-2.5 h-[42px] flex items-center justify-center gap-[8px] hover:bg-[#009e1f] transition-colors shadow-[0px_1px_2px_rgba(0,0,0,0.05)]"
@@ -64,10 +68,10 @@ export default function CTA() {
             WhatsApp
           </a>
           <Link
-            href="/contacto/"
+            href={localePath("/contacto/", locale)}
             className="w-full sm:w-auto bg-white text-[#0d1835] font-body font-medium text-[15px] px-5 py-2.5 h-[42px] flex items-center justify-center hover:bg-white/90 transition-colors"
           >
-            Contáctenos Ahora
+            {t.buttonContactenos}
           </Link>
         </div>
       </div>

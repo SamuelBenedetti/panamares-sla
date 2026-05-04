@@ -1,9 +1,10 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import type { BreadcrumbItem } from "@/components/ui/Breadcrumb";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import SeoBlockCollapsible from "@/components/properties/SeoBlockCollapsible";
+import type { Locale } from "@/lib/copy";
 
 interface Props {
   breadcrumbs: BreadcrumbItem[];
@@ -12,9 +13,17 @@ interface Props {
   subtitle?: React.ReactNode;
   eyebrow?: string;
   count?: number;
+  locale?: Locale;
 }
 
-export default function ListingPageHeader({ breadcrumbs, title, description, subtitle, eyebrow }: Props) {
+export default function ListingPageHeader({
+  breadcrumbs,
+  title,
+  description,
+  subtitle,
+  eyebrow,
+  locale = "es",
+}: Props) {
   return (
     <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px] pt-[32px] xl:pt-[40px] pb-[20px] xl:pb-[28px]">
       <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
@@ -38,7 +47,7 @@ export default function ListingPageHeader({ breadcrumbs, title, description, sub
         {subtitle}
 
         {/* SEO block — visible en desktop, colapsable en móvil */}
-        {description && <SeoBlockCollapsible text={description} />}
+        {description && <SeoBlockCollapsible text={description} locale={locale} />}
 
 
       </div>

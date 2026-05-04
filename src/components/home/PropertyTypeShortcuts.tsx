@@ -1,34 +1,44 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Building2, Home, Layers, Briefcase, ShoppingBag, MapPin } from "lucide-react";
 import PropertyTypeShortcutsScroll from "./PropertyTypeShortcutsScroll";
+import { getCopy, type Locale } from "@/lib/copy";
+import { localePath } from "@/lib/i18n";
 
-const SHORTCUTS = [
-  { label: "Apartamentos", typeKey: "apartamento", href: "/apartamentos-en-venta/", Icon: Building2 },
-  { label: "Casas",        typeKey: "casa",         href: "/casas-en-venta/",        Icon: Home },
-  { label: "Penthouses",   typeKey: "penthouse",    href: "/penthouses-en-venta/",   Icon: Layers },
-  { label: "Oficinas",     typeKey: "oficina",      href: "/oficinas-en-venta/",     Icon: Briefcase },
-  { label: "Locales",      typeKey: "local",        href: "/locales-comerciales-en-venta/", Icon: ShoppingBag },
-  { label: "Terrenos",     typeKey: "terreno",      href: "/terrenos-en-venta/",     Icon: MapPin },
-];
+export default function PropertyTypeShortcuts({
+  counts = {},
+  locale = "es",
+}: {
+  counts?: Record<string, number>;
+  locale?: Locale;
+}) {
+  const t = getCopy(locale).pages.home.propertyTypeShortcuts;
 
-export default function PropertyTypeShortcuts({ counts = {} }: { counts?: Record<string, number> }) {
+  const SHORTCUTS = [
+    { label: t.labels.apartamentos, typeKey: "apartamento", href: localePath("/apartamentos-en-venta/", locale), Icon: Building2 },
+    { label: t.labels.casas,        typeKey: "casa",         href: localePath("/casas-en-venta/", locale),        Icon: Home },
+    { label: t.labels.penthouses,   typeKey: "penthouse",    href: localePath("/penthouses-en-venta/", locale),   Icon: Layers },
+    { label: t.labels.oficinas,     typeKey: "oficina",      href: localePath("/oficinas-en-venta/", locale),     Icon: Briefcase },
+    { label: t.labels.locales,      typeKey: "local",        href: localePath("/locales-comerciales-en-venta/", locale), Icon: ShoppingBag },
+    { label: t.labels.terrenos,     typeKey: "terreno",      href: localePath("/terrenos-en-venta/", locale),     Icon: MapPin },
+  ];
+
   return (
     <section className="bg-white py-[80px] md:pt-[32px] md:pb-[80px] xl:pt-[80px] px-[30px] xl:px-[60px] 2xl:px-[160px]">
       <div className="flex flex-col gap-8 max-w-[1440px] mx-auto">
 
         <div className="flex flex-col gap-2 items-center text-center">
           <p className="font-body font-medium text-[#5a6478] text-[12px] md:text-[11px] uppercase tracking-[5px]">
-            Explorar por tipo
+            {t.eyebrow}
           </p>
           <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(34px,2.5vw,38px)] 2xl:text-[38px] tracking-[-0.03em] leading-[1.1]">
-            ¿Qué tipo de propiedad buscas?
+            {t.heading}
           </h2>
         </div>
 
         <PropertyTypeShortcutsScroll>
           {SHORTCUTS.map((s) => {
             const n = counts[s.typeKey] ?? 0;
-            const countLabel = n > 0 ? `${n} prop.` : "—";
+            const countLabel = t.countSuffix(n);
             return (
               <Link
                 key={s.href}

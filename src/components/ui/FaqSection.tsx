@@ -1,7 +1,9 @@
-﻿import type { Faq } from "@/lib/faqs";
+import type { Faq } from "@/lib/faqs";
+import { getCopy, type Locale } from "@/lib/copy";
 
 interface Props {
   faqs: Faq[];
+  locale?: Locale;
 }
 
 /**
@@ -9,8 +11,9 @@ interface Props {
  * all answer text without JavaScript execution.
  * Used on Tier 2 (category) and Tier 3 (geo-type) pages.
  */
-export default function FaqSection({ faqs }: Props) {
+export default function FaqSection({ faqs, locale = "es" }: Props) {
   if (!faqs.length) return null;
+  const t = getCopy(locale).components.faqSection;
 
   return (
     <section className="bg-white border-t border-[#dfe5ef] px-[30px] xl:px-[60px] 2xl:px-[160px] py-[60px] xl:py-[80px]">
@@ -18,10 +21,10 @@ export default function FaqSection({ faqs }: Props) {
         {/* Header */}
         <div className="mb-[40px] xl:mb-[48px]">
           <p className="font-body font-medium text-[12px] text-[#5a6478] tracking-[5px] uppercase leading-4 mb-[10px]">
-            FAQ
+            {t.eyebrow}
           </p>
           <h2 className="font-heading font-normal text-[36px] xl:text-[38px] text-[#0c1834] tracking-[-1px] xl:tracking-[-1.3px] leading-none">
-            Preguntas frecuentes
+            {t.heading}
           </h2>
         </div>
 

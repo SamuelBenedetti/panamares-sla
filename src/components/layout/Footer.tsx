@@ -1,29 +1,44 @@
-﻿import Link from "next/link";
+import Link from "next/link";
+import { getCopy, type Locale } from "@/lib/copy";
+import { localePath } from "@/lib/i18n";
 
-const PROPIEDADES = [
-  { label: "Apartamentos en Venta", href: "/apartamentos-en-venta/" },
-  { label: "Casas en Venta", href: "/casas-en-venta/" },
-  { label: "Penthouses", href: "/penthouses-en-venta/" },
-  { label: "Alquiler", href: "/propiedades-en-alquiler/" },
-  { label: "Oficinas", href: "/oficinas-en-venta/" },
+const PROPIEDADES_HREFS = [
+  "/apartamentos-en-venta/",
+  "/casas-en-venta/",
+  "/penthouses-en-venta/",
+  "/propiedades-en-alquiler/",
+  "/oficinas-en-venta/",
 ];
 
 const BARRIOS = [
-  { label: "Punta Pacífica", href: "/barrios/punta-pacifica/" },
-  { label: "Punta Paitilla", href: "/barrios/punta-paitilla/" },
-  { label: "Avenida Balboa", href: "/barrios/avenida-balboa/" },
-  { label: "Costa del Este", href: "/barrios/costa-del-este/" },
-  { label: "Obarrio",        href: "/barrios/obarrio/" },
-  { label: "Calle 50",       href: "/barrios/calle-50/" },
-  { label: "Albrook",        href: "/barrios/albrook/" },
-  { label: "Coco del Mar",   href: "/barrios/coco-del-mar/" },
-  { label: "Santa María",    href: "/barrios/santa-maria/" },
-  { label: "Marbella",       href: "/barrios/marbella/" },
-  { label: "El Cangrejo",    href: "/barrios/el-cangrejo/" },
+  { name: "Punta Pacífica", slug: "punta-pacifica" },
+  { name: "Punta Paitilla", slug: "punta-paitilla" },
+  { name: "Avenida Balboa", slug: "avenida-balboa" },
+  { name: "Costa del Este", slug: "costa-del-este" },
+  { name: "Obarrio",        slug: "obarrio" },
+  { name: "Calle 50",       slug: "calle-50" },
+  { name: "Albrook",        slug: "albrook" },
+  { name: "Coco del Mar",   slug: "coco-del-mar" },
+  { name: "Santa María",    slug: "santa-maria" },
+  { name: "Marbella",       slug: "marbella" },
+  { name: "El Cangrejo",    slug: "el-cangrejo" },
 ];
 
-export default function Footer() {
+export default function Footer({ locale = "es" }: { locale?: Locale }) {
+  const copy = getCopy(locale);
+  const t = copy.layout.footer;
   const year = new Date().getFullYear();
+
+  // Property type labels — pull from nav copy so footer matches navbar.
+  const PROPIEDADES = [
+    { label: copy.layout.nav.apartamentos + (locale === "es" ? " en Venta" : " for Sale"), href: localePath("/apartamentos-en-venta/", locale) },
+    { label: copy.layout.nav.casas + (locale === "es" ? " en Venta" : " for Sale"), href: localePath("/casas-en-venta/", locale) },
+    { label: copy.layout.nav.penthouses, href: localePath("/penthouses-en-venta/", locale) },
+    { label: locale === "es" ? "Alquiler" : "Rent", href: localePath("/propiedades-en-alquiler/", locale) },
+    { label: copy.layout.nav.oficinas, href: localePath("/oficinas-en-venta/", locale) },
+  ];
+
+  void PROPIEDADES_HREFS; // referenced for grep traceability
 
   return (
     <footer className="bg-[#0c1834] px-[30px] xl:px-[60px] 2xl:px-[160px]">
@@ -35,20 +50,20 @@ export default function Footer() {
           {/* Brand */}
           <div className="flex flex-col gap-4">
             <Link
-              href="/"
+              href={locale === "en" ? "/en" : "/"}
               className="font-heading font-medium text-[#faf8f5] text-[45px] sm:text-[32px] md:text-[20px] uppercase tracking-[2.4px] leading-normal"
             >
               Panamares
             </Link>
             <p className="font-body font-normal text-white/50 text-[14px] md:text-[13px] leading-[20px] max-w-[242px]">
-              Especialistas en bienes raíces de lujo en Ciudad de Panamá. Más de 15 años conectando clientes con propiedades excepcionales.
+              {t.tagline}
             </p>
           </div>
 
           {/* Propiedades */}
           <div className="flex flex-col gap-5">
             <h4 className="font-body font-semibold text-white text-[12px] uppercase tracking-[5px] leading-[16px]">
-              Propiedades
+              {t.sectionPropiedades}
             </h4>
             <ul className="flex flex-col gap-[5px]">
               {PROPIEDADES.map((item) => (
@@ -67,16 +82,16 @@ export default function Footer() {
           {/* Barrios */}
           <div className="flex flex-col gap-5">
             <h4 className="font-body font-semibold text-white text-[12px] uppercase tracking-[5px] leading-[16px]">
-              Barrios
+              {t.sectionBarrios}
             </h4>
             <ul className="flex flex-col gap-[5px]">
               {BARRIOS.map((item) => (
-                <li key={item.href}>
+                <li key={item.slug}>
                   <Link
-                    href={item.href}
+                    href={localePath(`/barrios/${item.slug}/`, locale)}
                     className="font-body font-normal text-[rgba(250,248,245,0.6)] text-[16px] md:text-[14px] leading-[20px] hover:text-white/80 transition-colors py-[2px] block"
                   >
-                    {item.label}
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -86,7 +101,7 @@ export default function Footer() {
           {/* Contacto */}
           <div className="flex flex-col gap-5">
             <h4 className="font-body font-semibold text-white text-[12px] uppercase tracking-[5px] leading-[16px]">
-              Contacto
+              {t.sectionContacto}
             </h4>
             <ul className="flex flex-col gap-[5px]">
               <li>
@@ -107,7 +122,7 @@ export default function Footer() {
               </li>
               <li>
                 <span className="font-body font-normal text-white/50 text-[16px] md:text-[14px] leading-[20px] py-[2px] block">
-                  Ciudad de Panamá, Panamá
+                  {locale === "es" ? "Ciudad de Panamá, Panamá" : "Panama City, Panama"}
                 </span>
               </li>
             </ul>
@@ -117,20 +132,20 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8 flex items-center justify-between">
           <p className="font-body font-normal text-white/50 text-[12px] leading-[16px]">
-            © {year} Panamares. Todos los derechos reservados.
+            {t.copyrightText(year)}
           </p>
           <div className="flex gap-6">
             <Link
-              href="/privacidad/"
+              href={localePath("/privacidad/", locale)}
               className="font-body font-normal text-white/50 text-[12px] leading-[16px] hover:text-white/80 transition-colors"
             >
-              Privacidad
+              {t.linkPrivacidad}
             </Link>
             <Link
-              href="/terminos/"
+              href={localePath("/terminos/", locale)}
               className="font-body font-normal text-white/50 text-[12px] leading-[16px] hover:text-white/80 transition-colors"
             >
-              Términos
+              {t.linkTerminos}
             </Link>
           </div>
         </div>

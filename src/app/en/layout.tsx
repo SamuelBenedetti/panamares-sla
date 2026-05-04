@@ -6,14 +6,19 @@ import { navCountsQuery } from "@/sanity/lib/queries";
 
 const CompareBar = dynamic(() => import("@/components/properties/CompareBar"), { ssr: false });
 
-export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+/**
+ * EN site layout. Wraps every `/en/*` route with the locale-aware nav,
+ * footer and compare bar. The `<html lang="en">` is set in the root layout
+ * (src/app/layout.tsx) based on the `x-pathname` header from middleware.
+ */
+export default async function EnSiteLayout({ children }: { children: React.ReactNode }) {
   const navCounts = await sanityFetch<{ venta: Record<string, number>; alquiler: Record<string, number> }>(navCountsQuery);
 
   return (
     <LayoutShell
       navCounts={navCounts}
-      locale="es"
-      footer={<Footer locale="es" />}
+      locale="en"
+      footer={<Footer locale="en" />}
       compareBar={<CompareBar />}
     >
       {children}
