@@ -74,8 +74,12 @@ export function getEnUrl(esPath: string): string | null {
   }
 
   // Dynamic routes
+  // Property leaf: ES slug → EN-derived slug for the EN URL (PR-F).
+  // Without this, the LangToggle would emit `/en/properties/<es-form-slug>`
+  // which then 308s to the EN-derived form — extra hop. Emit the canonical
+  // EN form directly.
   const propiedad = path.match(/^\/propiedades\/([^/]+)$/);
-  if (propiedad) return `/en/properties/${propiedad[1]}`;
+  if (propiedad) return `/en/properties/${deriveEnSlug(propiedad[1])}`;
 
   const barrio = path.match(/^\/barrios\/([^/]+)$/);
   if (barrio) return `/en/neighborhoods/${barrio[1]}`;
@@ -108,8 +112,11 @@ export function getEsUrl(enPath: string): string | null {
     return SLUG_MAP_EN_TO_ES[path];
   }
 
+  // Property leaf: EN-derived slug → canonical ES slug. Without this, the
+  // LangToggle emits `/propiedades/<en-form-slug>` which 404s because the ES
+  // route doesn't know the EN-formatted slug.
   const property = path.match(/^\/en\/properties\/([^/]+)$/);
-  if (property) return `/propiedades/${property[1]}`;
+  if (property) return `/propiedades/${deriveEsSlugFromEn(property[1])}`;
 
   const neighborhood = path.match(/^\/en\/neighborhoods\/([^/]+)$/);
   if (neighborhood) return `/barrios/${neighborhood[1]}`;
