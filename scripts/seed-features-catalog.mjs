@@ -100,7 +100,13 @@ function parseCatalogFile(filePath, exportName) {
   if (start === -1) {
     throw new Error(`[seed-features] Could not find export ${exportName} in ${filePath}`);
   }
-  const bracketStart = src.indexOf("[", start);
+  // Skip past the `=` so we don't catch `[]` from a TS type annotation
+  // (e.g. `export const X: WasiFeatureEntry[] = [...]`).
+  const eqIdx = src.indexOf("=", start);
+  if (eqIdx === -1) {
+    throw new Error(`[seed-features] Could not find '=' after export ${exportName}`);
+  }
+  const bracketStart = src.indexOf("[", eqIdx);
   let depth = 0;
   let i = bracketStart;
   for (; i < src.length; i++) {

@@ -132,7 +132,7 @@ export const en: Copy = {
         titleLine1: "Built on ",
         titleLine2Italic: "trust",
         p1: "Panamares was founded in 2009 by Valeria Moreno, with the vision of building a firm that put the client — not the commission — at the center of every decision.",
-        p2: "Over more than a decade, we've built a reputation based on transparency, honest wealth advisory and a deep understanding of the Panamanian market.",
+        p2: "Over more than a decade, we've built a reputation based on transparency, honest investment advice and a deep understanding of the Panamanian market.",
         p3Lead:
           "Today we are a team of 18 specialized agents, present in the main residential and commercial corridors of ",
         p3Cities:
@@ -190,7 +190,7 @@ export const en: Copy = {
         eyebrow: "Have a question?",
         heading: "We're here to help",
         bodyLight: "Reach out directly to one of our agents ",
-        bodyBold: "for personalized guidance with no strings attached.",
+        bodyBold: "for personalized guidance with no commitment required.",
         button: "Contact Us Now",
       },
     },
@@ -214,6 +214,7 @@ export const en: Copy = {
         heading: "Want an immediate reply?",
         subtitle: "Message us on WhatsApp — we'll respond in minutes.",
         button: "Open WhatsApp",
+        message: "Hi, I'm interested in a property at Panamares.",
       },
       sidebar: {
         labelDireccion: "Address",
@@ -238,6 +239,7 @@ export const en: Copy = {
         eyebrow: "Are you an independent agent?",
         heading: "Join the Panamares team",
         button: "Message us",
+        message: "Hi, I'm a real estate agent and I'd like to join the Panamares team.",
       },
     },
     terminos: {
@@ -258,7 +260,7 @@ export const en: Copy = {
       h1Prefix: "Neighborhoods of ",
       h1Italic: "Panama City",
       zonesAvailableLabel: "Areas with available properties",
-      masZonasEyebrow: "more areas",
+      masZonasEyebrow: "MORE AREAS",
       masZonasTitleLine1: "Other",
       masZonasTitleLine2Italic: "neighborhoods",
       precioPromedio: "Average price",
@@ -388,6 +390,9 @@ export const en: Copy = {
     seoBlock: {
       leerMas: "Read more",
       leerMenos: "Read less",
+    },
+    neighborhoodSlider: {
+      eyebrow: "FEATURED",
     },
     contactForm: {
       labelNombre: "Full name *",

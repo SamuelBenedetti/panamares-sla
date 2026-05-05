@@ -168,6 +168,7 @@ export interface Copy {
         heading: string;
         subtitle: string;
         button: string;
+        message: string;
       };
       sidebar: {
         labelDireccion: string;
@@ -191,6 +192,7 @@ export interface Copy {
         eyebrow: string;
         heading: string;
         button: string;
+        message: string;
       };
     };
     terminos: {
@@ -301,6 +303,9 @@ export interface Copy {
     seoBlock: {
       leerMas: string;
       leerMenos: string;
+    };
+    neighborhoodSlider: {
+      eyebrow: string;
     };
     contactForm: {
       labelNombre: string;
