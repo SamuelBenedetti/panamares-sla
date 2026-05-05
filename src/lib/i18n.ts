@@ -10,6 +10,7 @@
 // (`/apartamentos-en-venta/punta-pacifica` ↔ `/en/apartments-for-sale/punta-pacifica`).
 
 import type { Locale } from "./copy/types";
+import { FEATURE_TRANSLATIONS_ES_TO_EN } from "./feature-translations";
 
 export const DEFAULT_LOCALE: Locale = "es";
 
@@ -266,6 +267,32 @@ export function localizeConditionLabel(
   const entry = CONDITION_LABEL_MAP[condition.toLowerCase()];
   if (!entry) return condition; // unknown value — let CSS uppercase handle it
   return entry[locale];
+}
+
+/**
+ * Localize a free-form legacy feature string for display.
+ *
+ * Property docs carry three Spanish `string[]` fields (`featuresInterior`,
+ * `featuresBuilding`, `featuresLocation`) populated by Wasi. Until those
+ * properties migrate to the catalog-based `featuresInternal[]` /
+ * `featuresExternal[]` reference system (post-launch task), EN routes need a
+ * read-time translation pass so Igor's English content review doesn't show
+ * Spanish features mixed in with translated copy.
+ *
+ * The translation map lives in `src/lib/feature-translations.ts` and is
+ * generated/extended from `tasks/feature-audit-output.json` — re-run
+ * `scripts/audit-property-features.mjs` after content changes to pick up new
+ * strings.
+ *
+ * Behavior:
+ *   - `locale === "es"`: identity (no lookup, no allocation).
+ *   - `locale === "en"` and string is in the map: returns the EN translation.
+ *   - `locale === "en"` and string is NOT in the map: returns the ES string
+ *     (graceful degradation — better to leak ES than show empty/null).
+ */
+export function localizeFeature(es: string, locale: Locale): string {
+  if (locale === "es") return es;
+  return FEATURE_TRANSLATIONS_ES_TO_EN[es] ?? es;
 }
 
 /** Detect locale from a pathname. Anything starting with `/en` is EN, else ES. */
