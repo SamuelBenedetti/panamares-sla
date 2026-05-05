@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/client";
 import { propertiesByGeoTypeQuery, propertiesByCategoryQuery, neighborhoodContentQuery } from "@/sanity/lib/queries";
@@ -101,8 +101,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }),
   ]);
 
-  // EN-side gate: page 404s (and is excluded from sitemap) until an editor
-  // approves the neighborhood translation. Don't emit indexable metadata.
+  // EN-side gate: page 308s to the ES counterpart (and is excluded from sitemap)
+  // until an editor approves the neighborhood translation. Belt-and-suspenders
+  // noindex here defends against any momentary 200 leak during deploy.
   if (nbhContent?.humanReviewed !== true) {
     return { robots: { index: false, follow: false } };
   }
@@ -160,9 +161,13 @@ export default async function GeoTypePageEn({ params }: Props) {
     }),
   ]);
 
-  // EN-side gate: 404 for neighborhoods that haven't been reviewed for EN yet.
+  // EN-side gate: until an editor approves the neighborhood translation, redirect
+  // (308) to the ES counterpart instead of 404. Preserves user intent + link
+  // equity. The redirect disappears automatically when humanReviewed flips true.
   // ES route at /<es-cat>/<nbh> is unaffected.
-  if (nbhContent?.humanReviewed !== true) notFound();
+  if (nbhContent?.humanReviewed !== true) {
+    permanentRedirect(`/${esSlug}/${params.neighborhood}/`);
+  }
 
   const typeLabel = cat.h1.replace(/ in Panama$/i, "");
   const h1 = `${typeLabel} in ${neighborhood.name}, Panama`;

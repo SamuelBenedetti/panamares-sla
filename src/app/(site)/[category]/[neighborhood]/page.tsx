@@ -82,8 +82,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // Hreflang reciprocity to /en/<en-cat>/<nbh> only when:
   //   (a) the EN counterpart route resolves (category in the slug map), AND
-  //   (b) the neighborhood is humanReviewed (the EN page 404s otherwise — we
-  //       must not point hreflang at a 404).
+  //   (b) the neighborhood is humanReviewed (otherwise the EN page 308s back
+  //       here — we must not advertise an EN URL that just redirects to ES).
   const enUrl =
     nbhContent?.humanReviewed === true ? getEnUrl(url) : null;
 
