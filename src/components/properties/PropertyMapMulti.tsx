@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import type { MapProperty } from "./PropertyMapMultiCore";
+import type { Locale } from "@/lib/copy";
 
 export type { MapProperty };
 
@@ -13,9 +14,10 @@ const PropertyMapMultiCore = dynamic(() => import("./PropertyMapMultiCore"), { s
 interface Props {
   properties: MapProperty[];
   height?: string;
+  locale?: Locale;
 }
 
-export default function PropertyMapMulti({ properties, height = "h-[420px]" }: Props) {
+export default function PropertyMapMulti({ properties, height = "h-[420px]", locale = "es" }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
 
@@ -40,7 +42,7 @@ export default function PropertyMapMulti({ properties, height = "h-[420px]" }: P
 
   return (
     <div ref={wrapperRef} className={`w-full ${height} overflow-hidden`}>
-      {shouldLoad && <PropertyMapMultiCore properties={properties} height="h-full" />}
+      {shouldLoad && <PropertyMapMultiCore properties={properties} height="h-full" locale={locale} />}
     </div>
   );
 }
