@@ -4,14 +4,14 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { featuredPropertiesQuery } from "@/sanity/lib/queries";
 import type { Property } from "@/lib/types";
 import PropertyGrid from "@/components/properties/PropertyGrid";
-import { WHATSAPP_URL } from "@/lib/config";
+import { whatsappLink } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "Página no encontrada",
+  title: "Page not found",
   robots: { index: false, follow: false },
 };
 
-export default async function NotFound() {
+export default async function NotFoundEn() {
   let featured: Property[] = [];
   try {
     const all = await sanityFetch<Property[]>(featuredPropertiesQuery);
@@ -19,6 +19,8 @@ export default async function NotFound() {
   } catch {
     featured = [];
   }
+
+  const waUrl = whatsappLink("Hi, I am interested in a property listed on Panamares.");
 
   return (
     <>
@@ -31,29 +33,29 @@ export default async function NotFound() {
             404
           </h1>
           <p className="font-body font-light text-white/70 text-[18px] leading-relaxed max-w-[520px]">
-            La página que buscas no existe o fue movida. Te dejamos algunas propiedades
-            destacadas que podrían interesarte, o vuelve al inicio para seguir explorando.
+            The page you&rsquo;re looking for doesn&rsquo;t exist or has been moved. Here are some
+            featured properties you might like, or head back home to keep exploring.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <Link
-              href="/"
+              href="/en"
               className="inline-flex items-center justify-center bg-white text-[#0c1834] font-body font-medium text-[14px] uppercase tracking-[1.4px] px-[32px] py-[14px] hover:bg-[#f9f9f9] transition-colors"
             >
-              Volver al inicio
+              Back to home
             </Link>
             <Link
-              href="/propiedades-en-venta/"
+              href="/en/properties-for-sale/"
               className="inline-flex items-center justify-center border border-white/30 text-white font-body font-medium text-[14px] uppercase tracking-[1.4px] px-[32px] py-[14px] hover:bg-white/10 transition-colors"
             >
-              Ver propiedades
+              Browse properties
             </Link>
             <a
-              href={WHATSAPP_URL}
+              href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center bg-[#25D366] text-white font-body font-medium text-[14px] uppercase tracking-[1.4px] px-[32px] py-[14px] hover:bg-[#1faa55] transition-colors"
             >
-              Habla con un agente
+              Talk to an agent
             </a>
           </div>
         </div>
@@ -64,13 +66,13 @@ export default async function NotFound() {
           <div className="max-w-[1400px] mx-auto px-[30px]">
             <div className="mb-10">
               <p className="font-body font-medium text-[#0c1834]/40 text-[12px] uppercase tracking-[3px]">
-                Te puede interesar
+                You might like
               </p>
               <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(28px,4vw,42px)] leading-tight tracking-[-0.02em] mt-2">
-                Propiedades destacadas
+                Featured properties
               </h2>
             </div>
-            <PropertyGrid properties={featured} cols={3} locale="es" />
+            <PropertyGrid properties={featured} cols={3} locale="en" />
           </div>
         </section>
       )}
