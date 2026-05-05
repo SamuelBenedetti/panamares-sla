@@ -102,8 +102,8 @@ export const es: Copy = {
       breadcrumbLabel: "Sobre Nosotros",
       hero: {
         eyebrow: "Quiénes somos",
-        titleLine1: "Más de 15 años",
-        titleLine2Italic: "conectando sueños",
+        titleLine1: "Más de 15 años ",
+        titleLine2Italic: "conectando sueños ",
         titleLine3: "con propiedades",
         body: {
           bold: "Panamares nació con una convicción: que el mercado inmobiliario de lujo en Panamá ",
@@ -129,7 +129,7 @@ export const es: Copy = {
       },
       historia: {
         eyebrow: "Nuestra historia",
-        titleLine1: "Fundada sobre",
+        titleLine1: "Fundada sobre ",
         titleLine2Italic: "la confianza",
         p1: "Panamares fue fundada en 2009 por Valeria Moreno, con la visión de crear una firma que pusiera al cliente, no la comisión, en el centro de cada decisión.",
         p2: "A lo largo de más de una década, hemos construido una reputación basada en la transparencia, el asesoramiento patrimonial honesto y un conocimiento profundo del mercado panameño.",
@@ -165,7 +165,7 @@ export const es: Copy = {
       },
       reconocimientos: {
         eyebrow: "Reconocimientos",
-        titleLine1: "Reconocida como la",
+        titleLine1: "Reconocida como la ",
         titleLine2Italic: "mejor firma inmobiliaria",
         awards: {
           excelencia: {
@@ -441,7 +441,7 @@ export const es: Copy = {
     },
     ctaSection: {
       eyebrow: "Contáctenos",
-      titleLine1: "¿Listo para encontrar tu",
+      titleLine1: "¿Listo para encontrar tu ",
       titleLine2Italic: "propiedad ideal?",
       subtitle:
         "Nuestros asesores están disponibles para ayudarte a encontrar la propiedad perfecta en Panamá.",
