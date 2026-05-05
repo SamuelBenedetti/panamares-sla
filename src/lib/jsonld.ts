@@ -1,7 +1,7 @@
 import type { Property, Agent, Neighborhood, SanityImage } from "@/lib/types";
 import type { PortableTextBlock } from "@portabletext/types";
 import type { Locale } from "@/lib/copy";
-import { resolveI18nString, resolveI18nPortableText } from "@/lib/i18n/resolveI18n";
+import { resolveI18nString, resolveI18nPortableText, resolveI18nText } from "@/lib/i18n/resolveI18n";
 import {
   BASE_URL,
   PANAMARES_PHONE,
@@ -313,7 +313,16 @@ export function agentSchema(agent: Agent) {
 // optional GeoCoordinates + hasMap. Defensive: geo/hasMap only emitted when
 // both lat AND lng are finite numbers, preventing malformed schema for docs
 // where coords are null/undefined/0,0/NaN.
-export function neighborhoodSchema(neighborhood: Neighborhood, imageUrl?: string) {
+//
+// `locale` selects which translation to emit for `description`, falling back
+// through the `resolveI18nText` chain to the legacy `seoBlock` field when no
+// i18n entry is available. Defaults to `"es"` so existing callers keep their
+// previous behavior unchanged.
+export function neighborhoodSchema(
+  neighborhood: Neighborhood,
+  imageUrl?: string,
+  locale: Locale = "es",
+) {
   const lat = neighborhood.latitude;
   const lng = neighborhood.longitude;
   const hasValidCoords =
@@ -323,12 +332,20 @@ export function neighborhoodSchema(neighborhood: Neighborhood, imageUrl?: string
     Number.isFinite(lng) &&
     !(lat === 0 && lng === 0);
 
+  // Localized description with graceful fallback. `resolveI18nText` walks
+  // requested locale → ES → fallback. Empty string means "no description".
+  const description = resolveI18nText(
+    neighborhood.seoBlockI18n,
+    locale,
+    neighborhood.seoBlock,
+  );
+
   return {
     "@context": "https://schema.org",
     "@type": ["Place", "AdministrativeArea"],
     name: neighborhood.name,
     url: `${BASE_URL}/barrios/${neighborhood.slug?.current ?? ""}`,
-    ...(neighborhood.seoBlock && { description: neighborhood.seoBlock }),
+    ...(description && { description }),
     ...(imageUrl && {
       image: { "@type": "ImageObject", url: imageUrl, width: 1200, height: 630 },
     }),

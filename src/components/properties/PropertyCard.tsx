@@ -8,6 +8,7 @@ import { formatPrice } from "@/lib/utils";
 import { getSlugByName } from "@/lib/neighborhoods";
 import { getCopy, type Locale } from "@/lib/copy";
 import { localePath } from "@/lib/i18n";
+import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 import CompareButton from "./CompareButton";
 
 export default function PropertyCard({
@@ -19,8 +20,12 @@ export default function PropertyCard({
   priority?: boolean;
   locale?: Locale;
 }) {
-  const { title, slug, price, bedrooms, bathrooms, area, zone, mainImage, recommended, fairPrice, rented } = property;
+  const { slug, price, bedrooms, bathrooms, area, zone, mainImage, recommended, fairPrice, rented } = property;
   const t = getCopy(locale).components.propertyCard;
+  // Localized title with graceful fallback to the legacy `title` field —
+  // EN cards render the EN translation when authored, otherwise the resolver
+  // walks ES then the legacy `title` (Wasi-imported) so cards keep rendering.
+  const title = resolveI18nString(property.titleI18n, locale, property.title);
 
   const imageUrl = mainImage
     ? urlFor(mainImage).width(800).height(530).fit("crop").url()

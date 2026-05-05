@@ -4,6 +4,10 @@
 // Dynamic routes (`/propiedades/[slug]`, `/barrios/[slug]`, `/agentes/[slug]`,
 // `/guias/[slug]`) keep their slug across locales; only the route prefix
 // changes (e.g. `/propiedades/abc` → `/en/properties/abc`).
+//
+// Geo-type pages (`/<category>/<neighborhood>`) keep the neighborhood slug
+// across locales and translate the category segment via the static slug map
+// (`/apartamentos-en-venta/punta-pacifica` ↔ `/en/apartments-for-sale/punta-pacifica`).
 
 import type { Locale } from "./copy/types";
 
@@ -82,6 +86,14 @@ export function getEnUrl(esPath: string): string | null {
   const guia = path.match(/^\/guias\/([^/]+)$/);
   if (guia) return `/en/guides/${guia[1]}`;
 
+  // Geo-type: /<es-cat>/<nbh> → /en/<en-cat>/<nbh> when the category has an
+  // EN counterpart in the static slug map. Neighborhood slug carries over.
+  const geo = path.match(/^\/([^/]+)\/([^/]+)$/);
+  if (geo) {
+    const enCat = SLUG_MAP_ES_TO_EN[`/${geo[1]}`];
+    if (enCat) return `${enCat}/${geo[2]}`;
+  }
+
   return null;
 }
 
@@ -107,6 +119,13 @@ export function getEsUrl(enPath: string): string | null {
 
   const guide = path.match(/^\/en\/guides\/([^/]+)$/);
   if (guide) return `/guias/${guide[1]}`;
+
+  // Geo-type: /en/<en-cat>/<nbh> → /<es-cat>/<nbh> via the reverse slug map.
+  const geo = path.match(/^\/en\/([^/]+)\/([^/]+)$/);
+  if (geo) {
+    const esCat = SLUG_MAP_EN_TO_ES[`/en/${geo[1]}`];
+    if (esCat) return `${esCat}/${geo[2]}`;
+  }
 
   return null;
 }

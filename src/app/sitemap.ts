@@ -141,12 +141,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
 
     // ── Tier 3: Geo-type pages (≥2 listings) ────────────────────────────────
-    // Phase 2 EN counterpart — no alternates emitted.
+    // Hreflang reciprocity to EN counterpart only when the neighborhood is
+    // humanReviewed AND the category has an EN slug (PR-D delivers the EN page).
+    // ES URL itself ships regardless of EN reviewed state.
     ...CATEGORIES.flatMap((cat) =>
       NEIGHBORHOODS.flatMap((nbh) => {
         const count = geoTypeCountMap.get(`${cat.propertyType}|${cat.businessType}|${nbh.name}`) ?? 0;
         if (count < 2) return [];
-        return [{ url: `${BASE_URL}/${cat.slug}/${nbh.slug}`, changeFrequency: "daily" as const, priority: 0.8 }];
+        const esGeoPath = `/${cat.slug}/${nbh.slug}`;
+        const enExists =
+          reviewedNeighborhoodSlugs.has(nbh.slug) && getEnUrl(esGeoPath) !== null;
+        return [{
+          url: `${BASE_URL}${esGeoPath}`,
+          ...(enExists && { alternates: altsFromEs(esGeoPath) }),
+          changeFrequency: "daily" as const,
+          priority: 0.8,
+        }];
       })
     ),
 
@@ -222,6 +232,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.85,
       }];
     }),
+
+    // ── EN Tier 3: Geo-type pages (≥2 listings AND humanReviewed) ───────────
+    // The EN /en/<en-cat>/<nbh> route is gated on neighborhood humanReviewed
+    // in the page handler (404 otherwise). Mirror that gate here so the
+    // sitemap doesn't promote 404s.
+    ...CATEGORIES.flatMap((cat) =>
+      NEIGHBORHOODS.flatMap((nbh) => {
+        const count = geoTypeCountMap.get(`${cat.propertyType}|${cat.businessType}|${nbh.name}`) ?? 0;
+        if (count < 2) return [];
+        if (!reviewedNeighborhoodSlugs.has(nbh.slug)) return [];
+        const enCatPath = SLUG_MAP_ES_TO_EN[`/${cat.slug}`];
+        if (!enCatPath) return [];
+        const enGeoPath = `${enCatPath}/${nbh.slug}`;
+        return [{
+          url: `${BASE_URL}${enGeoPath}`,
+          alternates: altsFromEn(enGeoPath),
+          changeFrequency: "daily" as const,
+          priority: 0.8,
+        }];
+      })
+    ),
 
     // EN neighborhood guides (≥2 listings AND humanReviewed in Sanity).
     // /en/neighborhoods/[slug] route exists for any slug, but we only sitemap

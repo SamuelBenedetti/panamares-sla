@@ -12,6 +12,7 @@ import CategoryPageClient from "@/components/properties/CategoryPageClient";
 import CTA from "@/components/home/CTA";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import { canonical, alternates } from "@/lib/seo";
+import { getEnUrl } from "@/lib/i18n";
 
 // Generates the Tier 3 header SEO block specific to type × intent × neighborhood combo.
 function buildGeoSeoBlock(
@@ -57,11 +58,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const neighborhood = getNeighborhoodBySlug(params.neighborhood);
   if (!category || !neighborhood) return {};
 
-  const properties = await sanityFetch<Property[]>(propertiesByGeoTypeQuery, {
-    propertyType: category.propertyType,
-    businessType: category.businessType,
-    neighborhood: neighborhood.name,
-  });
+  const [properties, nbhContent] = await Promise.all([
+    sanityFetch<Property[]>(propertiesByGeoTypeQuery, {
+      propertyType: category.propertyType,
+      businessType: category.businessType,
+      neighborhood: neighborhood.name,
+    }),
+    sanityFetch<Neighborhood | null>(neighborhoodContentQuery, {
+      slug: params.neighborhood,
+    }),
+  ]);
 
   const typeLabel = category.h1.split(" en Panama")[0];
   const title = `${typeLabel} en ${neighborhood.name}, Panama`;
@@ -74,10 +80,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? urlFor(firstImage).width(1200).height(630).url()
     : undefined;
 
+  // Hreflang reciprocity to /en/<en-cat>/<nbh> only when:
+  //   (a) the EN counterpart route resolves (category in the slug map), AND
+  //   (b) the neighborhood is humanReviewed (the EN page 404s otherwise — we
+  //       must not point hreflang at a 404).
+  const enUrl =
+    nbhContent?.humanReviewed === true ? getEnUrl(url) : null;
+
   return {
     title,
     description,
-    alternates: { canonical: canonical(url), languages: alternates(url, null) },
+    alternates: { canonical: canonical(url), languages: alternates(url, enUrl) },
     robots: { index: shouldIndex, follow: true },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
