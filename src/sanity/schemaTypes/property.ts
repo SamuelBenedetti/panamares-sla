@@ -112,10 +112,19 @@ export default defineType({
   fields: [
     // ─── Información básica ───────────────────────────────────────────────────
     defineField({
+      name: "titleI18n",
+      title: "Título de la propiedad",
+      type: "internationalizedArrayString",
+      group: "basic",
+      description:
+        'Título de la propiedad en cada idioma. Ejemplo: ES "Apartamento de lujo en Punta Pacífica" / EN "Luxury apartment in Punta Pacífica".',
+    }),
+    defineField({
       name: "title",
-      title: "Título",
+      title: "Título anterior (oculto)",
       type: "string",
       group: "basic",
+      hidden: true,
       validation: (r) => r.required(),
     }),
     defineField({
@@ -332,11 +341,20 @@ export default defineType({
       validation: (r) => r.positive(),
     }),
     defineField({
+      name: "descriptionI18n",
+      title: "Descripción larga",
+      type: "internationalizedArrayPortableText",
+      group: "details",
+      description:
+        "Descripción detallada de la propiedad en cada idioma. Aparece en la página de la propiedad.",
+    }),
+    defineField({
       name: "description",
-      title: "Descripción",
+      title: "Descripción anterior (oculto)",
       type: "array",
       group: "details",
       of: [{ type: "block" }],
+      hidden: true,
     }),
 
     // ─── Características ──────────────────────────────────────────────────────
@@ -503,6 +521,24 @@ export default defineType({
         ],
       },
     }),
+    defineField({
+      name: "featuresInternal",
+      title: "Características internas",
+      type: "array",
+      group: "features",
+      of: [{ type: "reference", to: [{ type: "feature" }] }],
+      description:
+        "Características del inmueble que provienen del catálogo (piscina, cocina equipada, etc.). Se muestran traducidas según el idioma de la página.",
+    }),
+    defineField({
+      name: "featuresExternal",
+      title: "Características externas",
+      type: "array",
+      group: "features",
+      of: [{ type: "reference", to: [{ type: "feature" }] }],
+      description:
+        "Características del entorno que provienen del catálogo (vista al mar, estacionamiento de visitas, etc.). Se muestran traducidas según el idioma de la página.",
+    }),
 
     // ─── Fotos y ubicación ────────────────────────────────────────────────────
     defineField({
@@ -591,6 +627,15 @@ export default defineType({
       group: "management",
       initialValue: false,
       description: "Muestra el badge rojo 'ALQUILADO' sobre la foto de la propiedad.",
+    }),
+    defineField({
+      name: "humanReviewed",
+      title: "Traducción al inglés revisada",
+      type: "boolean",
+      group: "management",
+      initialValue: false,
+      description:
+        "Activa esta casilla cuando hayas revisado y aprobado la traducción al inglés. Hasta que esté activa, la versión en inglés de la propiedad no se muestra al público ni a buscadores.",
     }),
   ],
   preview: {

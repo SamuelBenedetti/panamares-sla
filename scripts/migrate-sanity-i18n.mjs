@@ -1,10 +1,13 @@
 /**
- * P0-05 Phase 2 PR-A — Sanity i18n migration script.
+ * P0-05 Phase 2 — Sanity i18n migration script.
  *
  * Run:
- *   node scripts/migrate-sanity-i18n.mjs           # dry-run (default, no writes)
- *   node scripts/migrate-sanity-i18n.mjs --write   # commit changes to dataset
+ *   node scripts/migrate-sanity-i18n.mjs                            # dry-run (default, no writes)
+ *   node scripts/migrate-sanity-i18n.mjs --write                    # commit changes to dataset
  *   node scripts/migrate-sanity-i18n.mjs --write --only=neighborhood
+ *   node scripts/migrate-sanity-i18n.mjs --write --only=property
+ *   node scripts/migrate-sanity-i18n.mjs --write --only=guide
+ *   node scripts/migrate-sanity-i18n.mjs --write --only=author
  *   node scripts/migrate-sanity-i18n.mjs --write --slug=punta-pacifica
  *
  * What it does
@@ -25,9 +28,22 @@
  *     when empty).
  *   - Set `humanReviewed: false`.
  *
- * The legacy `seoBlock`, `role`, `bio` fields are NOT removed in this PR (PR-B
- * switches the queries; PR-D removes legacy fields). The field is `hidden`
- * in the schema so editors don't see it.
+ * For every published `property` document (PR-C):
+ *   - Copy legacy `title` → `titleI18n.es` (EN entry left empty)
+ *   - Copy legacy `description` blocks → `descriptionI18n.es` (EN empty)
+ *   - Set `humanReviewed: false`
+ *
+ * For every published `guide` document (PR-C):
+ *   - Copy legacy `title` → `titleI18n.es` (EN empty)
+ *   - Copy legacy `body` blocks → `bodyI18n.es` (EN empty)
+ *   - Set `humanReviewed: false`
+ *
+ * For every published `author` document (PR-C):
+ *   - Copy legacy `role` → `roleI18n.es` (EN empty)
+ *
+ * The legacy fields (`seoBlock`, `role`, `bio`, `title`, `description`,
+ * `body`) are NOT removed in this PR (PR-D removes legacy fields). They are
+ * marked `hidden` in the schema so editors don't see them.
  *
  * Auth
  * ────
@@ -335,11 +351,168 @@ async function migrateAgents() {
   );
 }
 
+// ── Migrate properties (PR-C) ────────────────────────────────────────────────
+async function migrateProperties() {
+  console.log("\n[migrate] === properties ===");
+  const docs = await client.fetch(
+    `*[_type == "property" && !(_id in path("drafts.**"))]{ _id, _rev, "slug": slug.current, title, titleI18n, description, descriptionI18n, humanReviewed }`
+  );
+  console.log(`[migrate] Found ${docs.length} property docs in dataset.`);
+
+  let patched = 0;
+  let skipped = 0;
+  for (const doc of docs) {
+    if (slugFilter && doc.slug !== slugFilter) continue;
+    const esTitle = typeof doc.title === "string" ? doc.title : "";
+    const esDescription = Array.isArray(doc.description) ? doc.description : [];
+
+    if (!esTitle && esDescription.length === 0) {
+      console.log(`  - ${doc.slug ?? doc._id}: empty title + description → skip`);
+      skipped++;
+      continue;
+    }
+
+    const titleI18n = intlString([
+      ["es", esTitle],
+      ["en", ""],
+    ]);
+    const descriptionI18n = intlPortableText([
+      ["es", esDescription],
+      ["en", []],
+    ]);
+
+    console.log(
+      `  ✓ ${doc.slug ?? doc._id} → title ES "${esTitle.slice(0, 60)}${esTitle.length > 60 ? "…" : ""}" · description ES ${esDescription.length} blocks${
+        doc.titleI18n?.length ? " (overwriting existing title i18n)" : ""
+      }${doc.descriptionI18n?.length ? " (overwriting existing description i18n)" : ""}`
+    );
+
+    if (isWrite) {
+      const patch = client.patch(doc._id).set({
+        titleI18n,
+        humanReviewed:
+          typeof doc.humanReviewed === "boolean" ? doc.humanReviewed : false,
+      });
+      // Only set descriptionI18n when there is ES content to preserve — empty
+      // arrays for both languages produce a noisy empty field with no value.
+      if (descriptionI18n.length > 0) {
+        patch.set({ descriptionI18n });
+      }
+      await patch.commit({ autoGenerateArrayKeys: false });
+    }
+    patched++;
+  }
+  console.log(
+    `[migrate] properties: patched=${patched}, skipped=${skipped}, total=${docs.length}`
+  );
+}
+
+// ── Migrate guides (PR-C) ────────────────────────────────────────────────────
+async function migrateGuides() {
+  console.log("\n[migrate] === guides ===");
+  const docs = await client.fetch(
+    `*[_type == "guide" && !(_id in path("drafts.**"))]{ _id, _rev, "slug": slug.current, title, titleI18n, body, bodyI18n, humanReviewed }`
+  );
+  console.log(`[migrate] Found ${docs.length} guide docs in dataset.`);
+
+  let patched = 0;
+  let skipped = 0;
+  for (const doc of docs) {
+    if (slugFilter && doc.slug !== slugFilter) continue;
+    const esTitle = typeof doc.title === "string" ? doc.title : "";
+    const esBody = Array.isArray(doc.body) ? doc.body : [];
+
+    if (!esTitle && esBody.length === 0) {
+      console.log(`  - ${doc.slug ?? doc._id}: empty title + body → skip`);
+      skipped++;
+      continue;
+    }
+
+    const titleI18n = intlString([
+      ["es", esTitle],
+      ["en", ""],
+    ]);
+    const bodyI18n = intlPortableText([
+      ["es", esBody],
+      ["en", []],
+    ]);
+
+    console.log(
+      `  ✓ ${doc.slug ?? doc._id} → title ES "${esTitle.slice(0, 60)}${esTitle.length > 60 ? "…" : ""}" · body ES ${esBody.length} blocks${
+        doc.titleI18n?.length ? " (overwriting existing title i18n)" : ""
+      }${doc.bodyI18n?.length ? " (overwriting existing body i18n)" : ""}`
+    );
+
+    if (isWrite) {
+      const patch = client.patch(doc._id).set({
+        titleI18n,
+        humanReviewed:
+          typeof doc.humanReviewed === "boolean" ? doc.humanReviewed : false,
+      });
+      if (bodyI18n.length > 0) {
+        patch.set({ bodyI18n });
+      }
+      await patch.commit({ autoGenerateArrayKeys: false });
+    }
+    patched++;
+  }
+  console.log(
+    `[migrate] guides: patched=${patched}, skipped=${skipped}, total=${docs.length}`
+  );
+}
+
+// ── Migrate authors (PR-C) ───────────────────────────────────────────────────
+async function migrateAuthors() {
+  console.log("\n[migrate] === authors ===");
+  const docs = await client.fetch(
+    `*[_type == "author" && !(_id in path("drafts.**"))]{ _id, _rev, "slug": slug.current, name, role, roleI18n }`
+  );
+  console.log(`[migrate] Found ${docs.length} author docs in dataset.`);
+
+  let patched = 0;
+  let skipped = 0;
+  for (const doc of docs) {
+    if (slugFilter && doc.slug !== slugFilter) continue;
+    const esRole = typeof doc.role === "string" ? doc.role : "";
+
+    if (!esRole) {
+      console.log(`  - ${doc.slug ?? doc._id}: empty role → skip`);
+      skipped++;
+      continue;
+    }
+
+    const roleI18n = intlString([
+      ["es", esRole],
+      ["en", ""],
+    ]);
+
+    console.log(
+      `  ✓ ${doc.slug ?? doc._id} → role ES "${esRole}"${
+        doc.roleI18n?.length ? " (overwriting existing role i18n)" : ""
+      }`
+    );
+
+    if (isWrite) {
+      await client
+        .patch(doc._id)
+        .set({ roleI18n })
+        .commit({ autoGenerateArrayKeys: false });
+    }
+    patched++;
+  }
+  console.log(
+    `[migrate] authors: patched=${patched}, skipped=${skipped}, total=${docs.length}`
+  );
+}
+
 // ── Run ──────────────────────────────────────────────────────────────────────
 async function main() {
   try {
     if (!only || only === "neighborhood") await migrateNeighborhoods();
     if (!only || only === "agent") await migrateAgents();
+    if (!only || only === "property") await migrateProperties();
+    if (!only || only === "guide") await migrateGuides();
+    if (!only || only === "author") await migrateAuthors();
     console.log(
       `\n[migrate] Done${isWrite ? " (writes committed)" : " (dry-run; rerun with --write to commit)"}.`
     );

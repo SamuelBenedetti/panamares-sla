@@ -10,8 +10,12 @@ import { canonical, alternates } from "@/lib/seo";
 import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
 import { breadcrumbSchema, listingSchema } from "@/lib/jsonld";
 import { getSlugByName } from "@/lib/neighborhoods";
+import { SLUG_MAP_ES_TO_EN } from "@/lib/i18n";
 import type { Property } from "@/lib/types";
-import { resolveI18nString } from "@/lib/i18n/resolveI18n";
+import {
+  resolveI18nString,
+  resolveI18nPortableText,
+} from "@/lib/i18n/resolveI18n";
 import { formatPrice } from "@/lib/utils";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -37,7 +41,6 @@ interface Props {
   params: { slug: string };
 }
 
-
 function BulletCheck() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0 mt-[3px]">
@@ -50,9 +53,34 @@ function BulletCheck() {
   );
 }
 
+// Map ES propertyType labels (Sanity) → English labels for meta + breadcrumbs.
+const PROPERTY_TYPE_EN: Record<string, string> = {
+  apartamento: "Apartment",
+  apartaestudio: "Studio",
+  casa: "House",
+  "casa de playa": "Beach House",
+  penthouse: "Penthouse",
+  oficina: "Office",
+  local: "Commercial Space",
+  "lote comercial": "Commercial Lot",
+  terreno: "Land",
+  edificio: "Building",
+  finca: "Farm",
+};
+
+function getEnCategoryHref(esCategorySlug: string): string {
+  const mapped = SLUG_MAP_ES_TO_EN[`/${esCategorySlug}`];
+  return mapped ? `${mapped}/` : "/en/properties-for-sale/";
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const property = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
   if (!property) return {};
+  // EN-only gate — properties without a reviewed translation do not render on
+  // the EN side. Search engines must not index half-translated pages.
+  if (!property.humanReviewed) {
+    return { robots: { index: false, follow: false } };
+  }
   // Sold/retired listings 301-redirect at the page handler below; keep their
   // metadata minimal so the pre-redirect response is not indexable.
   if (property.listingStatus !== "activa") {
@@ -63,50 +91,66 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: property.title, robots: { index: false, follow: false } };
   }
 
+  const localizedTitle = resolveI18nString(property.titleI18n, "en", property.title);
   const zone = property.zone ?? "Panama";
-  const intent = property.businessType === "venta" ? "Venta" : "Alquiler";
-  const ptLabel = property.propertyType.charAt(0).toUpperCase() + property.propertyType.slice(1);
+  const intent = property.businessType === "venta" ? "Sale" : "Rent";
+  const ptLabel =
+    PROPERTY_TYPE_EN[property.propertyType] ??
+    property.propertyType.charAt(0).toUpperCase() + property.propertyType.slice(1);
   const statsParts: string[] = [];
-  if (property.bedrooms != null) statsParts.push(`${property.bedrooms} Hab`);
-  if (property.area != null) statsParts.push(`${property.area}m²`);
+  if (property.bedrooms != null) statsParts.push(`${property.bedrooms} BR`);
+  if (property.area != null) statsParts.push(`${property.area} m²`);
   const statsStr = statsParts.length ? ` │ ${statsParts.join(", ")}` : "";
-  const title = `${ptLabel} en ${intent} en ${zone}${statsStr}`;
+  const title = `${ptLabel} for ${intent} in ${zone}${statsStr}`;
 
-  const intentLabel = property.businessType === "venta" ? "en venta" : "en alquiler";
-  const parts: string[] = [`${property.propertyType} ${intentLabel} en ${zone}, Panama City.`];
-  if (property.bedrooms != null) parts.push(`${property.bedrooms} hab.`);
-  if (property.bathrooms != null) parts.push(`${property.bathrooms} baños.`);
+  const intentLabel = property.businessType === "venta" ? "for sale" : "for rent";
+  const parts: string[] = [`${ptLabel} ${intentLabel} in ${zone}, Panama City.`];
+  if (property.bedrooms != null) parts.push(`${property.bedrooms} BR.`);
+  if (property.bathrooms != null) parts.push(`${property.bathrooms} bathrooms.`);
   if (property.area != null) parts.push(`${property.area} m².`);
-  parts.push(`Precio: ${formatPrice(property.price)}${property.businessType === "alquiler" ? "/mes" : ""}.`);
-  parts.push("Contáctanos hoy.");
+  parts.push(`Price: ${formatPrice(property.price)}${property.businessType === "alquiler" ? "/mo" : ""}.`);
+  parts.push("Contact us today.");
   const description = parts.join(" ");
 
   const ogImage = property.mainImage ? urlFor(property.mainImage).width(1200).height(630).url() : undefined;
   const ogImages = ogImage
-    ? [{ url: ogImage, width: 1200, height: 630, alt: property.title }]
+    ? [{ url: ogImage, width: 1200, height: 630, alt: localizedTitle }]
     : [];
   const twitterImages = ogImage
-    ? [{ url: ogImage, alt: property.title }]
+    ? [{ url: ogImage, alt: localizedTitle }]
     : [];
 
   return {
     title,
     description,
     robots: { index: true, follow: true },
-    alternates: { canonical: canonical(`/propiedades/${property.slug.current}`), languages: alternates(`/propiedades/${property.slug.current}`, null) },
+    alternates: {
+      canonical: canonical(`/en/properties/${property.slug.current}`),
+      languages: alternates(
+        `/propiedades/${property.slug.current}`,
+        `/en/properties/${property.slug.current}`
+      ),
+    },
     openGraph: { title, description, images: ogImages },
     twitter: { card: "summary_large_image", title, description, images: twitterImages },
   };
 }
 
-export default async function PropertyDetailPage({ params }: Props) {
+export default async function PropertyDetailPageEn({ params }: Props) {
   const fetched = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
   if (!fetched) notFound();
   const property = fetched;
 
-  // Sold/retired listings → 301 to best-fit category page (SEO doc §4.4).
+  // EN-side gate: until an editor approves the EN translation, the EN URL
+  // returns a real 404 so search engines cannot index half-translated pages.
+  // The ES route at /propiedades/[slug] is unaffected.
+  if (!property.humanReviewed) notFound();
+
+  // Sold/retired listings → 301 to best-fit category page on the EN side.
   if (property.listingStatus !== "activa") {
-    redirect(`/${getCategorySlugFor(property.propertyType, property.businessType)}/`);
+    const esCategorySlug = getCategorySlugFor(property.propertyType, property.businessType);
+    const enCategoryHref = getEnCategoryHref(esCategorySlug);
+    redirect(enCategoryHref);
   }
 
   const related = await sanityFetch<Property[]>(relatedPropertiesQuery, {
@@ -115,60 +159,72 @@ export default async function PropertyDetailPage({ params }: Props) {
     currentSlug: params.slug,
   });
 
+  const localizedTitle = resolveI18nString(property.titleI18n, "en", property.title);
+  const localizedDescription = resolveI18nPortableText(
+    property.descriptionI18n,
+    "en",
+    property.description
+  );
+
   const galleryImages: { url: string; alt: string }[] = (property.gallery ?? []).map((img) => ({
     url: urlFor(img).width(1200).height(800).url(),
-    alt: img.alt ?? property.title,
+    alt: img.alt ?? localizedTitle,
   }));
   if (galleryImages.length === 0 && property.mainImage) {
-    galleryImages.push({ url: urlFor(property.mainImage).width(1200).height(800).url(), alt: property.title });
+    galleryImages.push({ url: urlFor(property.mainImage).width(1200).height(800).url(), alt: localizedTitle });
   }
   if (galleryImages.length === 0) {
-    galleryImages.push({ url: "/hero-bg.jpg", alt: property.title });
+    galleryImages.push({ url: "/hero-bg.jpg", alt: localizedTitle });
   }
 
-  // Derive category slug (e.g. "apartamentos-en-venta") — single source of truth.
   const categorySlug = getCategorySlugFor(property.propertyType, property.businessType);
   const categoryConfig = CATEGORIES.find((c) => c.slug === categorySlug);
 
   if (!categoryConfig) {
-    // Only hit if Sanity contains a propertyType outside our taxonomy — indicates a data issue.
     console.error(
-      `[propiedades/${params.slug}] No CategoryConfig matched propertyType="${property.propertyType}" businessType="${property.businessType}" (resolved slug="${categorySlug}").`
+      `[en/properties/${params.slug}] No CategoryConfig matched propertyType="${property.propertyType}" businessType="${property.businessType}" (resolved slug="${categorySlug}").`
     );
   }
 
-  // Short label without " en Panama" — e.g. "Apartamentos en Venta"
-  const categoryLabel = categoryConfig
-    ? categoryConfig.h1.replace(/ en Panama$/, "")
-    : property.businessType === "venta" ? "Propiedades en Venta" : "Propiedades en Alquiler";
+  const ptLabelEn =
+    PROPERTY_TYPE_EN[property.propertyType] ??
+    property.propertyType.charAt(0).toUpperCase() + property.propertyType.slice(1);
+  const intentLabelEn = property.businessType === "venta" ? "for Sale" : "for Rent";
+  const categoryLabel = `${ptLabelEn}s ${intentLabelEn}`;
+  const enCategoryHref = getEnCategoryHref(categorySlug);
 
   const neighborhoodSlug = property.zone ? getSlugByName(property.zone) : undefined;
 
-  const waMessage = `Hola, me interesa la propiedad ID ${property._id}${property.zone ? ` en ${property.zone}` : ""}: ${property.title} — ${BASE_URL}/propiedades/${property.slug.current}`;
+  const waMessage = `Hi, I'm interested in property ID ${property._id}${property.zone ? ` in ${property.zone}` : ""}: ${localizedTitle} — ${BASE_URL}/en/properties/${property.slug.current}`;
 
-  // Build breadcrumb items — Inicio → Categoría → Barrio → Título limpio
-  // El geo-nivel usa solo el nombre del barrio (no repite la categoría).
-  // El título elimina sufijos de intent que Wasi añade (ej. "- Casa en venta en X").
-  const cleanTitle = property.title
+  // Strip ES intent suffix that Wasi appends to titles (best-effort cleanup).
+  const cleanTitle = localizedTitle
+    .replace(/\s*[-–]\s*(apartment|house|penthouse|office|commercial|land)\s+(for sale|for rent).*/i, "")
     .replace(/\s*[-–]\s*(apartamento|casa|penthouse|oficina|local|terreno)\s+en\s+(venta|alquiler).*/i, "")
     .trim();
 
   const breadcrumbItems = [
-    { label: "Inicio", href: "/" },
-    { label: categoryLabel, href: `/${categorySlug}/` },
+    { label: "Home", href: "/en" },
+    { label: categoryLabel, href: enCategoryHref },
     ...(neighborhoodSlug && property.zone
-      ? [{ label: property.zone, href: `/${categorySlug}/${neighborhoodSlug}/` }]
+      ? [{ label: property.zone, href: `/en/neighborhoods/${neighborhoodSlug}/` }]
       : []),
     { label: cleanTitle },
   ];
 
-  const jsonLdListing = listingSchema(property);
+  const jsonLdListing = listingSchema(property, "en");
   const jsonLdBreadcrumb = breadcrumbSchema(
     breadcrumbItems.map((item) => ({
       name: item.label,
-      url: item.href ?? `/propiedades/${params.slug}/`,
+      url: item.href ?? `/en/properties/${params.slug}/`,
     }))
   );
+
+  // Localized agent role for the side panel — falls back to ES, then to the
+  // legacy `role` field per resolver behavior.
+  const agentRole = property.agent
+    ? resolveI18nString(property.agent.roleI18n, "en", property.agent.role)
+    : "";
 
   return (
     <>
@@ -186,18 +242,14 @@ export default async function PropertyDetailPage({ params }: Props) {
         <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] max-w-[1920px] mx-auto pt-[16px] pb-[32px]">
           <div className="max-w-[1440px] mx-auto flex flex-col gap-[16px]">
 
-            {/* Breadcrumb */}
             <Breadcrumb items={breadcrumbItems} />
 
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-[28px] items-start">
 
-              {/* LEFT: Gallery */}
-              <PropertyGallery images={galleryImages} propertyTitle={property.title} contained />
+              <PropertyGallery images={galleryImages} propertyTitle={localizedTitle} contained />
 
-              {/* RIGHT: Sticky panel — zone, title, stats, price card */}
               <div className="lg:sticky lg:top-[100px] flex flex-col gap-[12px]">
 
-                {/* Zone + condition */}
                 <div className="flex items-center gap-[8px] flex-wrap">
                   {property.zone && (
                     <div className="flex items-center gap-[6px]">
@@ -214,52 +266,47 @@ export default async function PropertyDetailPage({ params }: Props) {
                   )}
                 </div>
 
-                {/* H1 */}
                 <h1 className="font-body font-semibold text-[clamp(20px,2.2vw,28px)] text-[#0c1834] tracking-[-0.3px] leading-tight">
-                  {property.title}
+                  {localizedTitle}
                 </h1>
 
-
-              {/* Main card — price, stats, CTAs */}
               <div className="bg-white border border-[#dfe5ef] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] p-[26px] flex flex-col gap-[25px]">
 
-                {/* Badges */}
                 {(property.featured || property.recommended || property.fairPrice || property.rented) && (
                   <div className="flex flex-wrap gap-[6px]">
                     {property.featured && (
                       <span className="inline-flex items-center gap-[4px] bg-[#fef3c7] text-[#92400e] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <Star size={10} className="shrink-0" /> Destacado
+                        <Star size={10} className="shrink-0" /> Featured
                       </span>
                     )}
                     {property.recommended && (
                       <span className="inline-flex items-center gap-[4px] bg-[#dbeafe] text-[#1e40af] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <BadgeCheck size={10} className="shrink-0" /> Recomendado
+                        <BadgeCheck size={10} className="shrink-0" /> Recommended
                       </span>
                     )}
                     {property.fairPrice && (
                       <span className="inline-flex items-center gap-[4px] bg-[#dcfce7] text-[#166534] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <Banknote size={10} className="shrink-0" /> Buen precio
+                        <Banknote size={10} className="shrink-0" /> Fair Price
                       </span>
                     )}
                     {property.rented && property.businessType === "venta" && (
                       <span className="inline-flex items-center gap-[4px] bg-[#f0fdf4] text-[#15803d] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <KeyRound size={10} className="shrink-0" /> Rentado
+                        <KeyRound size={10} className="shrink-0" /> Rented
                       </span>
                     )}
                   </div>
                 )}
 
-                {/* Price */}
                 <div className="flex flex-col gap-[6px]">
                   <p className="font-body font-medium text-[11px] lg:text-[14px] text-[#566070] tracking-[4px] uppercase leading-4">
-                    {property.businessType === "venta" ? "Precio de venta" : "Precio de alquiler"}
+                    {property.businessType === "venta" ? "Sale price" : "Rental price"}
                   </p>
                   <div className="flex items-end gap-[8px] flex-wrap">
                     <span className="font-body font-bold text-[40px] lg:text-[46px] text-[#0c1834] tracking-[-0.6px] leading-[1.1]">
                       {formatPrice(property.price)}
                     </span>
                     {property.businessType === "alquiler" && (
-                      <span className="font-body font-normal text-[16px] lg:text-[20px] text-[#566070] pb-[4px]">/mes</span>
+                      <span className="font-body font-normal text-[16px] lg:text-[20px] text-[#566070] pb-[4px]">/mo</span>
                     )}
                   </div>
                   {property.businessType === "venta" && property.area && property.area > 0 && (
@@ -269,19 +316,18 @@ export default async function PropertyDetailPage({ params }: Props) {
                   )}
                   {property.adminFee != null && property.adminFee > 0 && (
                     <p className="font-body font-normal text-[12px] lg:text-[14px] text-[#8a95a3] leading-4">
-                      + ${property.adminFee}/mes mantenimiento
+                      + ${property.adminFee}/mo maintenance
                     </p>
                   )}
                 </div>
 
-                {/* Stats row — centered columns, icon above label */}
                 {(property.bedrooms != null || property.bathrooms != null || property.area != null || property.parking != null) && (
                   <div className="flex border-y border-[#dfe5ef] py-[14px] gap-[8px]">
                     {property.bedrooms != null && (
                       <div className="flex-1 flex flex-col items-center gap-[2px]">
                         <Bed size={15} className="text-[#0c1935]" />
                         <span className="font-body font-medium text-[13px] lg:text-[15px] text-[#0d1835] leading-none whitespace-nowrap">
-                          {property.bedrooms === 0 ? "Estudio" : `${property.bedrooms} hab.`}
+                          {property.bedrooms === 0 ? "Studio" : `${property.bedrooms} BR`}
                         </span>
                       </div>
                     )}
@@ -289,7 +335,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                       <div className="flex-1 flex flex-col items-center gap-[2px]">
                         <Bath size={15} className="text-[#0c1935]" />
                         <span className="font-body font-medium text-[13px] lg:text-[15px] text-[#0d1835] leading-none whitespace-nowrap">
-                          {property.bathrooms}{property.halfBathrooms ? ".5" : ""} {property.bathrooms === 1 ? "baño" : "baños"}
+                          {property.bathrooms}{property.halfBathrooms ? ".5" : ""} {property.bathrooms === 1 ? "bath" : "baths"}
                         </span>
                       </div>
                     )}
@@ -312,7 +358,6 @@ export default async function PropertyDetailPage({ params }: Props) {
                   </div>
                 )}
 
-                {/* Agent strip */}
                 <div className="bg-[#f8f8f9] p-[15px] flex flex-col sm:flex-row sm:items-center gap-[10px] sm:gap-[12px]">
                   {property.agent ? (
                     <div className="flex-1 flex items-center gap-[10px] min-w-0">
@@ -333,21 +378,14 @@ export default async function PropertyDetailPage({ params }: Props) {
                       )}
                       <div className="min-w-0">
                         <a
-                          href={"/agentes/" + (property.agent.slug?.current ?? "")}
+                          href={"/en/agents/" + (property.agent.slug?.current ?? "")}
                           className="font-body font-medium text-[16px] text-[#0c1935] tracking-[-0.16px] hover:opacity-70 transition-opacity block truncate leading-5"
                         >
                           {property.agent.name}
                         </a>
-                        {(() => {
-                          const agentRole = resolveI18nString(
-                            property.agent.roleI18n,
-                            "es",
-                            property.agent.role
-                          );
-                          return agentRole ? (
-                            <p className="font-body text-[12px] text-[#5a6478] leading-4">{agentRole}</p>
-                          ) : null;
-                        })()}
+                        {agentRole ? (
+                          <p className="font-body text-[12px] text-[#5a6478] leading-4">{agentRole}</p>
+                        ) : null}
                       </div>
                     </div>
                   ) : (
@@ -356,20 +394,19 @@ export default async function PropertyDetailPage({ params }: Props) {
                         <span className="font-heading font-medium text-[16px] text-white leading-[20px]">PM</span>
                       </div>
                       <div>
-                        <p className="font-body font-medium text-[16px] text-[#0c1935] tracking-[-0.16px] leading-5">Equipo Panamares</p>
-                        <p className="font-body text-[12px] text-[#5a6478] leading-4">Asesor inmobiliario</p>
+                        <p className="font-body font-medium text-[16px] text-[#0c1935] tracking-[-0.16px] leading-5">Panamares team</p>
+                        <p className="font-body text-[12px] text-[#5a6478] leading-4">Real estate advisor</p>
                       </div>
                     </div>
                   )}
                   <div className="shrink-0 flex flex-col items-start sm:items-end">
-                    <p className="font-body text-[12px] text-[#5a6478] leading-normal">Atención disponible de lunes</p>
+                    <p className="font-body text-[12px] text-[#5a6478] leading-normal">Available Monday</p>
                     <p className="font-body text-[12px] text-[#5a6478] leading-normal">
-                      a sábado <span className="font-semibold">8am – 7pm</span>
+                      to Saturday <span className="font-semibold">8am – 7pm</span>
                     </p>
                   </div>
                 </div>
 
-                {/* CTAs */}
                 <div className="flex flex-col gap-[10px]">
                   <WhatsAppButton message={waMessage} />
                   <a
@@ -377,27 +414,19 @@ export default async function PropertyDetailPage({ params }: Props) {
                     className="flex items-center justify-center gap-[8px] border border-[#dfe5ef] px-[21px] py-[13px] hover:bg-[#f9f9f9] transition-colors"
                   >
                     <Phone size={18} className="text-[#0d1835] shrink-0" />
-                    <span className="font-body font-medium text-[14px] text-[#0d1835] leading-5">Llamar ahora</span>
+                    <span className="font-body font-medium text-[14px] text-[#0d1835] leading-5">Call now</span>
                   </a>
                   <ShareButton
-                    url={`${BASE_URL}/propiedades/${property.slug.current}`}
-                    title={property.title}
+                    url={`${BASE_URL}/en/properties/${property.slug.current}`}
+                    title={localizedTitle}
                   />
                 </div>
               </div>
 
-              {/* Rental estimate */}
               {property.businessType === "venta" && property.rentalEstimate && (
                 <div className="bg-white border border-[#dfe5ef] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] p-[26px] flex items-center gap-[10px]">
-                  <div className="flex-1 min-w-0 font-body font-medium uppercase text-[#737B8C] text-[12px] tracking-[5px] leading-4">Estimación de alquiler</div>
+                  <div className="flex-1 min-w-0 font-body font-medium uppercase text-[#737B8C] text-[12px] tracking-[5px] leading-4">Rental estimate</div>
                   <div className="flex-1 min-w-0 text-[#0C1834] text-[40px] font-bold tracking-[-0.4px] leading-[40px] flex items-center gap-[10px]">
-                    <div className="shrink-0">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="34" height="27" viewBox="0 0 34 27" fill="none">
-  <path d="M4.94903 25.122L2.31148 26.6681C2.05292 26.8189 1.7255 26.8176 1.56569 26.52L0.054622 23.7071C-0.0818029 23.4537 0.054622 23.1471 0.272902 23.0262L1.14472 22.5442C1.04987 22.0804 0.288493 21.2397 0.853682 20.8681L1.81905 20.2328L1.32272 19.1323C1.21488 18.8932 1.31363 18.6334 1.52151 18.4904L2.49468 17.8213L1.93729 16.522L2.98971 12.4773C1.56829 11.1378 0.935537 9.23953 1.1798 7.31659C1.60207 3.97483 4.65019 1.63352 8.03093 2.15453C9.22757 0.540818 11.1739 -0.299819 13.2034 0.0977624C15.0068 0.451168 16.5854 1.80372 17.1441 3.68639L22.7921 4.21909C23.2144 4.25937 23.6107 4.53222 23.916 4.83755L33.0578 13.9637C33.3098 14.2158 33.289 14.5419 33.0422 14.7888L25.1854 22.6689C24.9697 22.8859 24.6436 22.8599 24.4292 22.6455L15.2731 13.4869C14.9444 13.1582 14.6963 12.7528 14.6534 12.3071L14.4039 9.77094C13.8491 10.0425 13.2787 10.2023 12.6265 10.2569C11.8651 12.1421 10.3034 13.6844 8.25831 14.1365L5.22448 24.727C5.1764 24.8933 5.11274 25.0271 4.95033 25.122H4.94903ZM14.3013 8.58729L14.0817 6.42138C13.9518 5.14289 14.682 3.96963 15.9878 3.6669C15.5018 2.36891 14.3455 1.42043 13.0864 1.15798C11.6261 0.852647 10.2033 1.3035 9.1808 2.44427C11.8781 3.49279 13.4477 6.2005 12.9604 9.07842C13.4801 9.01346 13.866 8.83675 14.3013 8.58599V8.58729ZM2.24652 25.4715L4.22663 24.2995L7.30203 13.5571C7.48913 12.9022 8.23232 13.3752 9.59397 12.4228C10.3839 11.8706 11.0284 11.1352 11.4221 10.2257C10.484 10.0373 9.69662 9.71117 9.02099 9.14338C8.80661 8.96278 8.84299 8.62757 8.97421 8.44827C9.12493 8.24298 9.44845 8.14813 9.67972 8.31184C10.3112 8.7588 11.005 9.09141 11.817 9.14079C12.3666 6.67864 10.9699 4.21779 8.56104 3.44602C8.36875 3.71497 8.32067 4.01511 8.24401 4.34902C9.03008 4.65955 9.52251 5.34687 9.50952 6.12514C9.49523 6.95539 8.98201 7.64921 8.2765 7.90906C7.48003 8.2014 6.65629 7.93505 6.12098 7.3036C5.69092 6.79688 5.59997 6.10825 5.84424 5.46511C6.04303 4.9428 6.51597 4.48675 7.14222 4.32174C7.20329 3.93975 7.32282 3.61493 7.42676 3.23034C4.50857 3.00946 2.12698 5.35337 2.20234 8.23258C2.24002 9.6631 2.86368 10.9572 3.96027 11.868C4.0954 11.9797 4.18245 12.1941 4.13697 12.376L3.09235 16.4441L3.70431 17.8148C3.81735 18.0682 3.70821 18.3488 3.48343 18.4969L2.53496 19.1232L3.01569 20.1288C3.12743 20.3614 3.09235 20.6641 2.87407 20.8097L1.89441 21.4593L2.39204 22.5013C2.51287 22.756 2.43231 23.0353 2.19454 23.1796L1.27595 23.7382L2.24652 25.4767V25.4715ZM24.8502 21.5113L31.9339 14.3964L23.2118 5.67689C23.013 5.4859 22.8428 5.37156 22.5829 5.27281L16.3567 4.72711C15.7305 4.67254 15.1042 5.40274 15.1601 6.01211L15.724 12.2084C15.8162 12.4384 15.9306 12.5878 16.1034 12.7788L24.8515 21.5126L24.8502 21.5113ZM8.42072 6.14333C8.42072 5.70028 8.06211 5.34168 7.61906 5.34168C7.176 5.34168 6.8174 5.70028 6.8174 6.14333C6.8174 6.58639 7.176 6.94499 7.61906 6.94499C8.06211 6.94499 8.42072 6.58639 8.42072 6.14333Z" fill="#0C1834"/>
-  <path d="M24.2242 16.2363C23.9721 16.4884 23.6564 16.4975 23.4381 16.2935C23.2198 16.0895 23.1809 15.7608 23.4134 15.5282L26.0029 12.9348C26.2264 12.7113 26.546 12.7087 26.763 12.9062C26.98 13.1037 27.0072 13.4558 26.7669 13.6949L24.2255 16.2363H24.2242Z" fill="#0C1834"/>
-  <path d="M21.1969 13.2078C20.9461 13.4598 20.6265 13.4767 20.3913 13.2467C20.2042 13.0648 20.1575 12.7231 20.3874 12.4932L22.973 9.90628C23.2017 9.67761 23.52 9.66981 23.7461 9.88939C23.9306 10.0687 23.9865 10.4104 23.7617 10.6365L21.1969 13.2078Z" fill="#0C1834"/>
-</svg>
-                    </div>
                     <span>${property.rentalEstimate}</span>
                   </div>
                 </div>
@@ -414,18 +443,54 @@ export default async function PropertyDetailPage({ params }: Props) {
         <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] max-w-[1920px] mx-auto py-[36px]">
           <div className="max-w-[1440px] mx-auto flex flex-col gap-[32px]">
 
-              {/* Description */}
-              {property.description && (
+              {localizedDescription.length > 0 && (
                 <div className="flex flex-col gap-[12px]">
-                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Descripción</h2>
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Description</h2>
                   <div className="font-body font-normal text-[14px] text-[#5a6478] leading-[21px] [&_p]:mb-3 [&_p:last-child]:mb-0 max-w-[760px]">
-                    <PortableText value={property.description} />
+                    <PortableText value={localizedDescription} />
                   </div>
                 </div>
               )}
 
-              {/* Características — 3 categorías */}
-              {(property.featuresInterior ?? []).length > 0 && (
+              {/* Catalog-driven internal features (translated via labelI18n). */}
+              {(property.featuresInternal ?? []).length > 0 && (
+                <div className="flex flex-col gap-[16px]">
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Interior features</h2>
+                  <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-[12px] gap-y-[10px]">
+                    {(property.featuresInternal ?? []).map((f) => (
+                      <li key={f._id} className="flex items-start gap-[7px]">
+                        <BulletCheck />
+                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">
+                          {resolveI18nString(f.labelI18n, "en", f.name)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {(property.featuresExternal ?? []).length > 0 && (
+                <div className="flex flex-col gap-[16px]">
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">External features</h2>
+                  <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-[12px] gap-y-[10px]">
+                    {(property.featuresExternal ?? []).map((f) => (
+                      <li key={f._id} className="flex items-start gap-[7px]">
+                        <BulletCheck />
+                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">
+                          {resolveI18nString(f.labelI18n, "en", f.name)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Legacy string-array features (Wasi). Render if catalog refs are
+                  empty — the translation pass for these strings is the
+                  responsibility of the translator, not this PR. */}
+              {(property.featuresInternal ?? []).length === 0 &&
+               (property.featuresExternal ?? []).length === 0 &&
+               (property.featuresInterior ?? []).length > 0 && (
                 <div className="flex flex-col gap-[16px]">
                   <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Interior</h2>
                   <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-[12px] gap-y-[10px]">
@@ -439,9 +504,11 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </div>
               )}
 
-              {(property.featuresBuilding ?? []).length > 0 && (
+              {(property.featuresInternal ?? []).length === 0 &&
+               (property.featuresExternal ?? []).length === 0 &&
+               (property.featuresBuilding ?? []).length > 0 && (
                 <div className="flex flex-col gap-[16px]">
-                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Amenidades del edificio</h2>
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Building amenities</h2>
                   <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-[12px] gap-y-[10px]">
                     {(property.featuresBuilding ?? []).map((f, i) => (
                       <li key={i} className="flex items-start gap-[7px]">
@@ -453,9 +520,11 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </div>
               )}
 
-              {(property.featuresLocation ?? []).length > 0 && (
+              {(property.featuresInternal ?? []).length === 0 &&
+               (property.featuresExternal ?? []).length === 0 &&
+               (property.featuresLocation ?? []).length > 0 && (
                 <div className="flex flex-col gap-[16px]">
-                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Zona y ubicación</h2>
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Area &amp; location</h2>
                   <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-[12px] gap-y-[10px]">
                     {(property.featuresLocation ?? []).map((f, i) => (
                       <li key={i} className="flex items-start gap-[7px]">
@@ -467,40 +536,22 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </div>
               )}
 
-              {/* Fallback: legacy flat array */}
-              {(property.featuresInterior ?? []).length === 0 &&
-               (property.featuresBuilding ?? []).length === 0 &&
-               (property.featuresLocation ?? []).length === 0 &&
-               (property.features ?? []).length > 0 && (
-                <div className="flex flex-col gap-[16px]">
-                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Características</h2>
-                  <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-[12px] gap-y-[10px]">
-                    {(property.features ?? []).map((f, i) => (
-                      <li key={i} className="flex items-start gap-[7px]">
-                        <BulletCheck />
-                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Mapa */}
+              {/* Map */}
               {property.location && (
                 <div className="flex flex-col gap-[12px]">
-                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Ubicación</h2>
+                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Location</h2>
                   <div className="relative bg-white border border-[#dfe5ef] overflow-hidden h-[256px]">
                     <PropertyMap
                       lat={property.location.lat}
                       lng={property.location.lng}
-                      title={property.title}
+                      title={localizedTitle}
                       className="w-full h-[256px]"
                     />
                     {property.zone && (
                       <div className="absolute bottom-0 left-0 z-10 pointer-events-none">
                         {neighborhoodSlug ? (
                           <Link
-                            href={`/barrios/${neighborhoodSlug}/`}
+                            href={`/en/neighborhoods/${neighborhoodSlug}/`}
                             className="pointer-events-auto inline-flex items-center gap-[6px] bg-white/90 backdrop-blur-sm border border-[#dfe5ef] px-[12px] py-[7px] hover:bg-white transition-colors"
                           >
                             <MapPin size={12} className="text-[#b8891e] shrink-0" />
@@ -528,16 +579,16 @@ export default async function PropertyDetailPage({ params }: Props) {
           <div className="max-w-[1440px] mx-auto flex flex-col gap-[24px]">
 
             <h2 className="font-heading font-normal text-[clamp(24px,2.5vw,36px)] text-[#0c1834] tracking-[-1px] leading-none">
-              Propiedades relacionadas
+              Related properties
             </h2>
 
-            <PropertyGrid properties={related.slice(0, 4)} cols={4} gap="tight" locale="es" />
+            <PropertyGrid properties={related.slice(0, 4)} cols={4} gap="tight" locale="en" />
 
           </div>
         </section>
       )}
 
-      <CTA />
+      <CTA locale="en" />
     </>
   );
 }

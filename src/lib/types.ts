@@ -19,6 +19,7 @@ export interface Property {
   _id: string;
   wasiId?: number;
   title: string;
+  titleI18n?: import("./i18n/resolveI18n").I18nString[];
   slug: { current: string };
   businessType: "venta" | "alquiler";
   propertyType: string;
@@ -40,10 +41,14 @@ export interface Property {
   rentalEstimate?: number;
   publishedAt?: string;
   noindex?: boolean;
+  humanReviewed?: boolean;
   description?: PortableTextBlock[];
+  descriptionI18n?: import("./i18n/resolveI18n").I18nPortableText[];
   featuresInterior?: string[];
   featuresBuilding?: string[];
   featuresLocation?: string[];
+  featuresInternal?: Feature[];
+  featuresExternal?: Feature[];
   /** @deprecated use featuresInterior / featuresBuilding / featuresLocation */
   features?: string[];
   gallery?: (SanityImage & { alt?: string })[];
@@ -54,6 +59,15 @@ export interface Property {
   recommended?: boolean;
   fairPrice?: boolean;
   rented?: boolean;
+}
+
+export interface Feature {
+  _id: string;
+  slug?: { current: string } | string;
+  wasiId?: number;
+  category: "interna" | "externa";
+  labelI18n?: import("./i18n/resolveI18n").I18nString[];
+  name: string;
 }
 
 export interface Agent {
@@ -91,6 +105,7 @@ export interface GuideAuthor {
   slug?: { current: string };
   photo?: SanityImage;
   role?: string;
+  roleI18n?: import("./i18n/resolveI18n").I18nString[];
   credentials?: string;
   bio?: PortableTextBlock[];
   linkedin?: string;
@@ -103,14 +118,17 @@ export interface Guide {
   /** ISO 8601 date — set by Sanity automatically on every save. */
   _updatedAt?: string;
   title: string;
+  titleI18n?: import("./i18n/resolveI18n").I18nString[];
   slug: { current: string };
   category: "comprar" | "alquilar" | "invertir" | "vivir";
   excerpt: string;
   readTime: number;
   coverImage?: SanityImage;
   body?: PortableTextBlock[];
+  bodyI18n?: import("./i18n/resolveI18n").I18nPortableText[];
   faqs?: { question: string; answer: string }[];
   author?: GuideAuthor;
+  humanReviewed?: boolean;
 }
 
 export interface Lead {

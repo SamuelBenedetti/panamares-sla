@@ -1,10 +1,15 @@
 import { groq } from "next-sanity";
 
-// Shared field set for listing cards
+// Shared field set for listing cards. Includes legacy `title` plus the i18n
+// title array so both card render sites and SEO helpers can resolve a localized
+// title with graceful fallback to the legacy field while EN translations are
+// still being authored.
 const CARD_FIELDS = groq`
   _id,
   wasiId,
   title,
+  titleI18n[]{_key, value},
+  humanReviewed,
   slug,
   businessType,
   propertyType,
@@ -50,6 +55,8 @@ export const propertyBySlugQuery = groq`
   *[_type == "property" && slug.current == $slug][0] {
     _id,
     title,
+    titleI18n[]{_key, value},
+    humanReviewed,
     slug,
     businessType,
     propertyType,
@@ -68,10 +75,27 @@ export const propertyBySlugQuery = groq`
     floor,
     yearBuilt,
     description,
+    descriptionI18n[]{_key, value},
     featuresInterior,
     featuresBuilding,
     featuresLocation,
     features,
+    "featuresInternal": featuresInternal[]->{
+      _id,
+      "slug": slug.current,
+      wasiId,
+      category,
+      labelI18n[]{_key, value},
+      name
+    },
+    "featuresExternal": featuresExternal[]->{
+      _id,
+      "slug": slug.current,
+      wasiId,
+      category,
+      labelI18n[]{_key, value},
+      name
+    },
     floorSize,
     rentalEstimate,
     publishedAt,
@@ -231,12 +255,14 @@ export const allGuidesQuery = groq`
   *[_type == "guide"] | order(_createdAt desc) {
     _id,
     title,
+    titleI18n[]{_key, value},
+    humanReviewed,
     slug,
     category,
     excerpt,
     readTime,
     coverImage,
-    "author": author->{ name, slug, photo, role, credentials }
+    "author": author->{ name, slug, photo, role, roleI18n[]{_key, value}, credentials }
   }
 `;
 
@@ -245,6 +271,8 @@ export const guideBySlugQuery = groq`
   *[_type == "guide" && slug.current == $slug][0] {
     _id,
     title,
+    titleI18n[]{_key, value},
+    humanReviewed,
     slug,
     category,
     excerpt,
@@ -253,8 +281,9 @@ export const guideBySlugQuery = groq`
     _updatedAt,
     coverImage,
     body,
+    bodyI18n[]{_key, value},
     faqs[] { question, answer },
-    "author": author->{ _id, name, slug, photo, role, credentials, bio, linkedin }
+    "author": author->{ _id, name, slug, photo, role, roleI18n[]{_key, value}, credentials, bio, linkedin }
   }
 `;
 
@@ -308,5 +337,19 @@ export const agentBySlugQuery = groq`
     "properties": *[_type == "property" && listingStatus == "activa" && references(^._id)] | order(_createdAt desc) {
       ${CARD_FIELDS}
     }
+  }
+`;
+
+// Feature catalog — light projection for admin listings or population scripts.
+// Not currently consumed by any frontend page (features render through the
+// referenced docs on the property detail page).
+export const allFeaturesQuery = groq`
+  *[_type == "feature"] | order(category asc, name asc) {
+    _id,
+    "slug": slug.current,
+    wasiId,
+    category,
+    labelI18n[]{_key, value},
+    name
   }
 `;

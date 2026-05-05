@@ -564,7 +564,7 @@ const filtered = useMemo(() => {
                   </button>
                 </div>
               ) : (
-                <PropertyGrid properties={shown} cols={mapProps && mapProps.length > 0 ? 2 : 3} gap="tight" pageSize={PAGE_SIZE} />
+                <PropertyGrid properties={shown} cols={mapProps && mapProps.length > 0 ? 2 : 3} gap="tight" pageSize={PAGE_SIZE} locale={locale} />
               )}
             </div>
 

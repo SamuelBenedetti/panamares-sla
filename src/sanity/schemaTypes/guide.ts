@@ -6,9 +6,17 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
+      name: "titleI18n",
+      title: "Título de la guía",
+      type: "internationalizedArrayString",
+      description:
+        "Título de la guía en cada idioma. Aparece como H1 de la página y en los listados.",
+    }),
+    defineField({
       name: "title",
-      title: "Título",
+      title: "Título anterior (oculto)",
       type: "string",
+      hidden: true,
       validation: (r) => r.required(),
     }),
     defineField({
@@ -77,8 +85,15 @@ export default defineType({
       ],
     }),
     defineField({
-      name: "body",
+      name: "bodyI18n",
       title: "Contenido",
+      type: "internationalizedArrayPortableText",
+      description:
+        "Cuerpo del artículo en cada idioma. Se muestra al lector según el idioma de la página.",
+    }),
+    defineField({
+      name: "body",
+      title: "Contenido anterior (oculto)",
       type: "array",
       of: [
         { type: "block" },
@@ -88,6 +103,15 @@ export default defineType({
           fields: [{ name: "alt", title: "Alt text", type: "string" }],
         },
       ],
+      hidden: true,
+    }),
+    defineField({
+      name: "humanReviewed",
+      title: "Traducción al inglés revisada",
+      type: "boolean",
+      initialValue: false,
+      description:
+        "Activa esta casilla cuando hayas revisado y aprobado la traducción al inglés. Hasta que esté activa, la versión en inglés de la guía no se muestra al público ni a buscadores.",
     }),
   ],
   preview: {
