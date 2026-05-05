@@ -92,7 +92,7 @@ export default function PropertyGallery({ images, contained = false, propertyTit
       {/* ── Lightbox ── */}
       {lightboxOpen && (
         <div
-          className="fixed inset-0 z-50 backdrop-blur-md bg-black/70 flex items-center justify-center"
+          className="fixed inset-0 z-[100] backdrop-blur-md bg-black/70 flex items-center justify-center"
           onClick={closeLightbox}
         >
           {/* Top bar */}
