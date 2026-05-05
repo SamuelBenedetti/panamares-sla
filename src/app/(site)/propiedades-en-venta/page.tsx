@@ -67,7 +67,7 @@ export default async function PropiedadesEnVentaPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdList) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
-      <WhatsAppButton message={t.whatsappMessage} variant="floating" />
+      <WhatsAppButton message={t.whatsappMessage} variant="floating" locale="es" />
 
       <ListingPageHeader
         breadcrumbs={[{ label: copy.layout.breadcrumb.inicio, href: "/" }, { label: t.breadcrumbLabel }]}

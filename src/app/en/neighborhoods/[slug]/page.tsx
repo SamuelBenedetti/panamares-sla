@@ -201,7 +201,7 @@ export default async function NeighborhoodGuidePageEn({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdPlace) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
-      <WhatsAppButton message={waMsg} variant="floating" />
+      <WhatsAppButton message={waMsg} variant="floating" locale="en" />
 
       {/* HERO */}
       <section className="relative h-[72vh] min-h-[480px] xl:h-[80vh] flex flex-col justify-end overflow-hidden">

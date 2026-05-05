@@ -234,6 +234,33 @@ export function deriveEsSlugFromEn(enSlug: string): string {
   return applyTokenMap(enSlug, PROPERTY_SLUG_TOKEN_MAP_REVERSE);
 }
 
+/**
+ * Localize a property `condition` field for display.
+ *
+ * Sanity stores `condition` as a Spanish enum (`"nuevo" | "usado"`). The
+ * detail page renders it in an `uppercase` span, so unmapped values fall
+ * through unchanged (uppercased by CSS). PR-H added EN mappings so the
+ * EN side renders "NEW" / "USED" instead of "NUEVO" / "USADO".
+ *
+ * Lives here (not in the copy bundle) because the mapping is data-side
+ * normalization, not user-text translation. Keep both arms aligned with
+ * the Sanity enum if it grows (`schemas/property.ts`).
+ */
+const CONDITION_LABEL_MAP: Record<string, { es: string; en: string }> = {
+  nuevo: { es: "NUEVO", en: "NEW" },
+  usado: { es: "USADO", en: "USED" },
+};
+
+export function localizeConditionLabel(
+  condition: string | undefined | null,
+  locale: Locale,
+): string {
+  if (!condition) return "";
+  const entry = CONDITION_LABEL_MAP[condition.toLowerCase()];
+  if (!entry) return condition; // unknown value — let CSS uppercase handle it
+  return entry[locale];
+}
+
 /** Detect locale from a pathname. Anything starting with `/en` is EN, else ES. */
 export function getLocaleFromPath(path: string): Locale {
   return path === "/en" || path.startsWith("/en/") ? "en" : "es";
