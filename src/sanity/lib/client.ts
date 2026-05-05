@@ -15,7 +15,7 @@ export const client = createClient({
   // only for local dev without .env.local — production will always have the real ID.
   projectId: projectId ?? "unconfigured",
   dataset,
-  apiVersion: "2026-05-06",
+  apiVersion: "2026-05-07",
   useCdn: true,
 });
 
