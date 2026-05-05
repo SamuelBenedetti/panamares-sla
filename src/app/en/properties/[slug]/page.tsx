@@ -10,7 +10,7 @@ import { canonical, alternates } from "@/lib/seo";
 import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
 import { breadcrumbSchema, listingSchema } from "@/lib/jsonld";
 import { getSlugByName } from "@/lib/neighborhoods";
-import { SLUG_MAP_ES_TO_EN } from "@/lib/i18n";
+import { SLUG_MAP_ES_TO_EN, deriveEnSlug, deriveEsSlugFromEn } from "@/lib/i18n";
 import type { Property } from "@/lib/types";
 import {
   resolveI18nString,
@@ -74,7 +74,11 @@ function getEnCategoryHref(esCategorySlug: string): string {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const property = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
+  // PR-F: `params.slug` may be either form — ES (e.g. `penthouses-en-venta-...`)
+  // or EN-derived (e.g. `penthouses-for-sale-...`). Sanity stores the ES slug
+  // (Wasi pushes it as canonical), so reverse-derive when needed for the lookup.
+  const esSlugFromParams = deriveEsSlugFromEn(params.slug);
+  const property = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: esSlugFromParams });
   if (!property) return {};
   // EN-only gate — properties without a reviewed translation do not render on
   // the EN side. Search engines must not index half-translated pages.
@@ -120,15 +124,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? [{ url: ogImage, alt: localizedTitle }]
     : [];
 
+  // PR-F: canonical + hreflang always point to the EN-derived slug, regardless
+  // of which slug form the user landed on. Sanity stores the ES form, so we
+  // derive the EN form from the canonical ES slug on the property doc.
+  const derivedEnSlug = deriveEnSlug(property.slug.current);
+
   return {
     title,
     description,
     robots: { index: true, follow: true },
     alternates: {
-      canonical: canonical(`/en/properties/${property.slug.current}`),
+      canonical: canonical(`/en/properties/${derivedEnSlug}`),
       languages: alternates(
         `/propiedades/${property.slug.current}`,
-        `/en/properties/${property.slug.current}`
+        `/en/properties/${derivedEnSlug}`
       ),
     },
     openGraph: { title, description, images: ogImages },
@@ -137,19 +146,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PropertyDetailPageEn({ params }: Props) {
-  const fetched = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: params.slug });
+  // PR-F: accept both slug forms on the EN route. Sanity stores the ES form
+  // (Wasi sync), so reverse-derive whatever the user hit to query Sanity.
+  const esSlug = deriveEsSlugFromEn(params.slug);
+  const fetched = await sanityFetch<Property | null>(propertyBySlugQuery, { slug: esSlug });
   if (!fetched) notFound();
   const property = fetched;
 
-  // EN-side gate: until an editor approves the EN translation, redirect (308)
-  // to the ES counterpart. ~80% of EN URLs at launch are unreviewed; 308
+  // ── Redirect order (per senior-seo amendment #2 — DO NOT REORDER) ──────────
+  // 1. humanReviewed gate FIRST. Avoids a double-hop when an unreviewed
+  //    listing is hit on the EN-form URL (single 308 directly to ES).
+  // 2. ES-form-on-EN-route → EN-form 308 to consolidate equity on the
+  //    EN-derived URL.
+  // 3. Sold/retired status → category-page 301.
+  // 4. Render.
+
+  // 1. EN-side gate: until an editor approves the EN translation, redirect
+  // (308) to the ES counterpart. ~80% of EN URLs at launch are unreviewed; 308
   // preserves user intent and consolidates link equity to the canonical ES
   // URL. Hreflang on the ES page does NOT emit `en` for unreviewed docs, so
   // there is no signal contradiction. generateMetadata above still returns
   // robots: noindex/nofollow for unreviewed docs as belt-and-suspenders.
-  if (!property.humanReviewed) permanentRedirect(`/propiedades/${params.slug}`);
+  if (!property.humanReviewed) permanentRedirect(`/propiedades/${esSlug}`);
 
-  // Sold/retired listings → 301 to best-fit category page on the EN side.
+  // 2. Slug-form normalization: if the user hit the ES-form URL on the EN
+  // route AND a derived EN form exists, 308 to the EN-derived URL. When
+  // params.slug already equals the derived form, this is a no-op. When the
+  // slug has no mappable tokens (proper-noun-only), derived === es, also no-op.
+  const derivedEnSlug = deriveEnSlug(esSlug);
+  if (params.slug === esSlug && derivedEnSlug !== esSlug) {
+    permanentRedirect(`/en/properties/${derivedEnSlug}`);
+  }
+
+  // 3. Sold/retired listings → 301 to best-fit category page on the EN side.
   if (property.listingStatus !== "activa") {
     const esCategorySlug = getCategorySlugFor(property.propertyType, property.businessType);
     const enCategoryHref = getEnCategoryHref(esCategorySlug);
@@ -159,7 +188,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
   const related = await sanityFetch<Property[]>(relatedPropertiesQuery, {
     zone: property.zone ?? "",
     propertyType: property.propertyType,
-    currentSlug: params.slug,
+    currentSlug: esSlug,
   });
 
   const localizedTitle = resolveI18nString(property.titleI18n, "en", property.title);
@@ -198,7 +227,10 @@ export default async function PropertyDetailPageEn({ params }: Props) {
 
   const neighborhoodSlug = property.zone ? getSlugByName(property.zone) : undefined;
 
-  const waMessage = `Hi, I'm interested in property ID ${property._id}${property.zone ? ` in ${property.zone}` : ""}: ${localizedTitle} — ${BASE_URL}/en/properties/${property.slug.current}`;
+  // PR-F: WhatsApp + share URLs always use the EN-derived slug so the link
+  // recipient lands directly on the canonical EN URL (no client-side 308).
+  const enUrlPath = `/en/properties/${derivedEnSlug}`;
+  const waMessage = `Hi, I'm interested in property ID ${property._id}${property.zone ? ` in ${property.zone}` : ""}: ${localizedTitle} — ${BASE_URL}${enUrlPath}`;
 
   // Strip ES intent suffix that Wasi appends to titles (best-effort cleanup).
   const cleanTitle = localizedTitle
@@ -219,7 +251,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
   const jsonLdBreadcrumb = breadcrumbSchema(
     breadcrumbItems.map((item) => ({
       name: item.label,
-      url: item.href ?? `/en/properties/${params.slug}/`,
+      url: item.href ?? `${enUrlPath}/`,
     }))
   );
 
@@ -420,7 +452,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
                     <span className="font-body font-medium text-[14px] text-[#0d1835] leading-5">Call now</span>
                   </a>
                   <ShareButton
-                    url={`${BASE_URL}/en/properties/${property.slug.current}`}
+                    url={`${BASE_URL}${enUrlPath}`}
                     title={localizedTitle}
                   />
                 </div>

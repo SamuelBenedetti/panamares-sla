@@ -4,7 +4,7 @@ import { groq } from "next-sanity";
 import { CATEGORIES } from "@/lib/categories";
 import { NEIGHBORHOODS } from "@/lib/neighborhoods";
 import { BASE_URL } from "@/lib/config";
-import { SLUG_MAP_ES_TO_EN, getEnUrl, getEsUrl } from "@/lib/i18n";
+import { SLUG_MAP_ES_TO_EN, getEnUrl, getEsUrl, deriveEnSlug } from "@/lib/i18n";
 
 interface PropertySlim {
   slug: string;
@@ -57,6 +57,25 @@ function altsFromEn(enPath: string): Languages | undefined {
   const esPath = getEsUrl(enPath);
   if (!esPath) return undefined;
   return altsFromEs(esPath);
+}
+
+/**
+ * PR-F: build hreflang `languages` for a property entry. Property leaf slugs
+ * are localized at read time via `deriveEnSlug` (Wasi pushes ES as canonical),
+ * so the generic `altsFromEs` helper — which copies the slug verbatim through
+ * the `/propiedades/[slug]` → `/en/properties/[slug]` regex — would emit the
+ * wrong EN URL. Use this builder for property + property-derived entries.
+ */
+function altsFromEsProperty(esSlug: string): Languages {
+  const esUrl = `${BASE_URL}/propiedades/${esSlug}`;
+  const enUrl = `${BASE_URL}/en/properties/${deriveEnSlug(esSlug)}`;
+  return {
+    languages: {
+      "es-419": esUrl,
+      en: enUrl,
+      "x-default": esUrl,
+    },
+  };
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -167,8 +186,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...activeProperties.map((p) => ({
       url: `${BASE_URL}/propiedades/${p.slug}`,
       lastModified: new Date(p.updatedAt),
+      // PR-F: hreflang reciprocity uses the EN-derived leaf slug so the EN URL
+      // emitted here matches the canonical we serve at runtime.
       ...(reviewedPropertySlugs.has(p.slug) && {
-        alternates: altsFromEs(`/propiedades/${p.slug}`),
+        alternates: altsFromEsProperty(p.slug),
       }),
       changeFrequency: "weekly" as const,
       priority: 0.8,
@@ -294,9 +315,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...activeProperties
       .filter((p) => reviewedPropertySlugs.has(p.slug))
       .map((p) => ({
-        url: `${BASE_URL}/en/properties/${p.slug}`,
+        // PR-F: EN property URL uses the derived leaf slug.
+        url: `${BASE_URL}/en/properties/${deriveEnSlug(p.slug)}`,
         lastModified: new Date(p.updatedAt),
-        alternates: altsFromEn(`/en/properties/${p.slug}`),
+        alternates: altsFromEsProperty(p.slug),
         changeFrequency: "weekly" as const,
         priority: 0.8,
       })),

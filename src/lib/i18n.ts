@@ -130,6 +130,110 @@ export function getEsUrl(enPath: string): string | null {
   return null;
 }
 
+/**
+ * Per-token map for Spanish ↔ English property leaf slugs.
+ *
+ * Used by `deriveEnSlug()` / `deriveEsSlugFromEn()` to translate the
+ * type-and-transaction prefix of a property slug (e.g. `penthouses-en-venta` →
+ * `penthouses-for-sale`) without touching the proper-noun tail (the
+ * neighborhood + Wasi numeric ID).
+ *
+ * Source of truth: this file. The runtime test (`scripts/test-derive-en-slug.mjs`)
+ * and the production-slug audit (`scripts/audit-derived-slugs.mjs`) read the
+ * literal below from this file as text and re-parse it — DO NOT duplicate the
+ * map in the scripts. Add a token here and the scripts pick it up.
+ *
+ * Token boundary rules (enforced in `deriveEnSlug`):
+ *   - A token matches when it is at the start of the slug or preceded by `-`,
+ *     AND at the end of the slug or followed by `-`.
+ *   - Multi-word tokens (containing `-`) are matched first because they are
+ *     more specific. The replacement loop sorts keys longest-first.
+ *   - `en-venta` is a token; bare `en` is NOT — we must not rewrite "Coronado"
+ *     URLs that contain `-en-` as a connector.
+ */
+const PROPERTY_SLUG_TOKEN_MAP: Record<string, string> = {
+  // Multi-word tokens (must match before single-word ones).
+  "locales-comerciales": "commercial-spaces",
+  "casas-de-playa": "beach-houses",
+  // Type tokens.
+  apartamentos: "apartments",
+  apartaestudios: "studios",
+  casas: "houses",
+  penthouses: "penthouses",
+  oficinas: "offices",
+  terrenos: "land",
+  fincas: "farms",
+  // Transaction tokens.
+  "en-venta": "for-sale",
+  "en-alquiler": "for-rent",
+};
+
+/** Reverse map for `deriveEsSlugFromEn`. Built once at module load. */
+const PROPERTY_SLUG_TOKEN_MAP_REVERSE: Record<string, string> = Object.fromEntries(
+  Object.entries(PROPERTY_SLUG_TOKEN_MAP).map(([es, en]) => [en, es]),
+);
+
+/**
+ * Apply a token map to a hyphen-separated slug using boundary-anchored,
+ * longest-first replacement. Pure function — no Sanity reads, no side effects.
+ *
+ * Algorithm:
+ *   1. Sort the token-map keys longest-first.
+ *   2. For each key, build a regex that matches the token only at a slug
+ *      boundary: `(^|-)<token>(-|$)`. The capture groups are restored in the
+ *      replacement to avoid eating adjacent hyphens.
+ *   3. Apply replacements sequentially. A key matches at most once per pass
+ *      (with /g) but consumes its boundary, so subsequent keys can still match
+ *      the rest of the slug.
+ *
+ * Idempotent: applying the same map twice produces the same result, because
+ * the source tokens (e.g. `en-venta`) are not present after the first pass.
+ */
+function applyTokenMap(slug: string, map: Record<string, string>): string {
+  let result = slug;
+  const sortedKeys = Object.keys(map).sort((a, b) => b.length - a.length);
+  for (const fromToken of sortedKeys) {
+    const toToken = map[fromToken];
+    // Escape hyphens defensively even though they have no regex meaning here —
+    // future-proofs the function against tokens with regex metacharacters.
+    const escaped = fromToken.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(`(^|-)${escaped}(-|$)`, "g");
+    result = result.replace(re, `$1${toToken}$2`);
+  }
+  return result;
+}
+
+/**
+ * Derive an English property leaf slug from a Spanish one.
+ *
+ * Examples:
+ *   "penthouses-en-venta-punta-pacifica-9917253"    → "penthouses-for-sale-punta-pacifica-9917253"
+ *   "apartamentos-en-alquiler-coco-del-mar-7190716" → "apartments-for-rent-coco-del-mar-7190716"
+ *   "locales-comerciales-en-venta-albrook-9285570"  → "commercial-spaces-for-sale-albrook-9285570"
+ *   "casa-vista-mar-9999999"                        → "casa-vista-mar-9999999"  (identity — no mappable tokens)
+ *
+ * Notes:
+ *   - Read-time only. Does NOT write to Sanity. The Wasi sync still pushes ES
+ *     slugs as canonical; this helper renders the EN form on the EN side at
+ *     request time.
+ *   - Idempotent: `deriveEnSlug(deriveEnSlug(x)) === deriveEnSlug(x)`.
+ *   - Slugs with no mappable tokens pass through unchanged (identity). Track
+ *     these via `scripts/audit-derived-slugs.mjs`; if the unmappable rate
+ *     exceeds 5 % we will add a `slugEnOverride` field on the property doc.
+ */
+export function deriveEnSlug(esSlug: string): string {
+  return applyTokenMap(esSlug, PROPERTY_SLUG_TOKEN_MAP);
+}
+
+/**
+ * Reverse of `deriveEnSlug`. Used by the EN route handler to look up the
+ * canonical Sanity document (Sanity stores the ES slug) when the user hit an
+ * EN-form URL. For slugs with no mappable EN tokens, this is identity.
+ */
+export function deriveEsSlugFromEn(enSlug: string): string {
+  return applyTokenMap(enSlug, PROPERTY_SLUG_TOKEN_MAP_REVERSE);
+}
+
 /** Detect locale from a pathname. Anything starting with `/en` is EN, else ES. */
 export function getLocaleFromPath(path: string): Locale {
   return path === "/en" || path.startsWith("/en/") ? "en" : "es";
