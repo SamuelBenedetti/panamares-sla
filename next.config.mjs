@@ -65,16 +65,13 @@ const nextConfig = {
         ],
       },
       // P0-02: Deindex staging (any non-production host)
-      // ⚠️ TEMPORALMENTE DESHABILITADO para permitir SF crawl pre-launch.
-      // Este bloque DEBE restaurarse antes de mergear o de cualquier launch.
-      // Branch efímero — no mergear: seo/temp-disable-noindex-for-sf-crawl
-      // {
-      //   source: "/:path*",
-      //   has: [{ type: "host", value: "(?!panamares\\.com$).*" }],
-      //   headers: [
-      //     { key: "X-Robots-Tag", value: "noindex, nofollow" },
-      //   ],
-      // },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "(?!panamares\\.com$).*" }],
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
       {
         source: "/(apartamentos|apartaestudios|casas|casas-de-playa|penthouses|oficinas|locales|locales-comerciales|terrenos|lotes-comerciales|edificios|fincas|propiedades-en-venta|propiedades-en-alquiler|barrios)/:path*",
         headers: [
