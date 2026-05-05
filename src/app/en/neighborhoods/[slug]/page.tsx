@@ -19,6 +19,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCopy } from "@/lib/copy";
 import { neighborhoodsEn } from "@/lib/copy/neighborhoods.en";
+import { neighborhoodsEs } from "@/lib/copy/neighborhoods.es";
+import { resolveI18nText } from "@/lib/i18n/resolveI18n";
 
 const copy = getCopy("en");
 const t = copy.components.neighborhoodDetail;
@@ -49,11 +51,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const shouldIndex = properties.length >= 2;
 
   const seoBlockEn = neighborhoodsEn[params.slug]?.seoBlock;
+  // EN page: prefer i18n EN entry, then fall back to ES (so meta description
+  // still has neighborhood-specific content while EN translations are pending).
+  const seoBlockText = resolveI18nText(
+    nbhContent?.seoBlockI18n,
+    "en",
+    seoBlockEn ?? nbhContent?.seoBlock ?? neighborhoodsEs[params.slug]?.seoBlock
+  );
 
   return {
     title: `Properties in ${neighborhood.name}, Panama`,
     description:
-      seoBlockEn ??
+      seoBlockText ||
       `Complete guide to ${neighborhood.name}: available properties, price per m², lifestyle and everything you need to live or invest in this Panama City area.`,
     alternates: {
       canonical: canonical(`/en/neighborhoods/${params.slug}`),
@@ -78,8 +87,18 @@ export default async function NeighborhoodGuidePageEn({ params }: Props) {
     sanityFetch<Array<{ zone: string }>>(zonePropertyZonesQuery),
   ]);
 
-  // EN seoBlock comes from the EN copy bundle (Sanity stores ES only).
-  const seoBlockText = neighborhoodsEn[params.slug]?.seoBlock ?? null;
+  // EN seoBlock fallback chain: Sanity i18n (en) → en.ts copy bundle →
+  // legacy Sanity seoBlock (ES) → es.ts copy bundle. The last two keep the
+  // section visible with ES content during the i18n migration; once an editor
+  // fills the EN entry, it takes over automatically.
+  const seoBlockText =
+    resolveI18nText(
+      nbhContent?.seoBlockI18n,
+      "en",
+      neighborhoodsEn[params.slug]?.seoBlock ??
+        nbhContent?.seoBlock ??
+        neighborhoodsEs[params.slug]?.seoBlock
+    ) || null;
 
   const propsWithArea = properties.filter((p) => p.area && p.area > 0);
   const avgPricePerM2 =

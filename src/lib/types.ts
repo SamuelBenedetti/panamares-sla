@@ -62,10 +62,13 @@ export interface Agent {
   slug: { current: string };
   photo?: SanityImage;
   role?: string;
+  roleI18n?: import("./i18n/resolveI18n").I18nString[];
   phone?: string;
   whatsapp?: string;
   email?: string;
   bio?: PortableTextBlock[];
+  bioI18n?: import("./i18n/resolveI18n").I18nPortableText[];
+  humanReviewed?: boolean;
   properties?: Property[];
 }
 
@@ -76,6 +79,8 @@ export interface Neighborhood {
   photo?: SanityImage;
   avgPricePerM2?: number;
   seoBlock?: string;
+  seoBlockI18n?: import("./i18n/resolveI18n").I18nText[];
+  humanReviewed?: boolean;
   latitude?: number;
   longitude?: number;
 }

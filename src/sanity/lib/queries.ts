@@ -80,7 +80,18 @@ export const propertyBySlugQuery = groq`
     mainImage,
     location,
     featured,
-    "agent": agent->{_id, name, slug, photo, phone, whatsapp, email, role}
+    "agent": agent->{
+      _id,
+      name,
+      slug,
+      photo,
+      phone,
+      whatsapp,
+      email,
+      role,
+      roleI18n[]{_key, value},
+      humanReviewed
+    }
   }
 `;
 
@@ -208,6 +219,8 @@ export const neighborhoodContentQuery = groq`
     photo,
     avgPricePerM2,
     seoBlock,
+    seoBlockI18n[]{_key, value},
+    humanReviewed,
     latitude,
     longitude
   }
@@ -253,6 +266,8 @@ export const allAgentsQuery = groq`
     slug,
     photo,
     role,
+    roleI18n[]{_key, value},
+    humanReviewed,
     phone,
     whatsapp,
     email
@@ -266,6 +281,8 @@ export const agentsPageQuery = groq`
     slug,
     photo,
     role,
+    roleI18n[]{_key, value},
+    humanReviewed,
     phone,
     whatsapp,
     email
@@ -281,10 +298,13 @@ export const agentBySlugQuery = groq`
     slug,
     photo,
     role,
+    roleI18n[]{_key, value},
+    humanReviewed,
     phone,
     whatsapp,
     email,
     bio,
+    bioI18n[]{_key, value},
     "properties": *[_type == "property" && listingStatus == "activa" && references(^._id)] | order(_createdAt desc) {
       ${CARD_FIELDS}
     }

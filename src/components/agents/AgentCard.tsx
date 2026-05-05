@@ -5,6 +5,7 @@ import type { Agent } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import { getCopy, type Locale } from "@/lib/copy";
 import { localePath } from "@/lib/i18n";
+import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 
 export default function AgentCard({
   agent,
@@ -18,6 +19,7 @@ export default function AgentCard({
   const imageUrl = agent.photo
     ? urlFor(agent.photo).width(480).height(560).url()
     : null;
+  const role = resolveI18nString(agent.roleI18n, locale, agent.role);
 
   return (
     <article className="bg-white border border-[rgba(233,231,226,0.5)] shadow-sm group overflow-hidden flex flex-col">
@@ -43,9 +45,9 @@ export default function AgentCard({
       {/* Content */}
       <div className="flex flex-col gap-[12px] p-[16px] sm:p-[20px] flex-1">
         <div className="flex flex-col gap-[4px]">
-          {agent.role && (
+          {role && (
             <p className="font-body font-medium text-[10px] text-[#b8891e] tracking-[3px] uppercase leading-4">
-              {agent.role}
+              {role}
             </p>
           )}
           <Link href={profileHref}>

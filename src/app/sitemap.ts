@@ -17,6 +17,12 @@ interface PropertySlim {
 interface AgentSlim {
   slug: string;
   updatedAt: string;
+  humanReviewed?: boolean;
+}
+
+interface NeighborhoodSlim {
+  slug: string;
+  humanReviewed?: boolean;
 }
 
 interface GuideSlim {
@@ -62,14 +68,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   `);
 
-  const [agents, guides] = await Promise.all([
+  const [agents, guides, reviewedNeighborhoods] = await Promise.all([
     sanityFetch<AgentSlim[]>(groq`
-      *[_type == "agent"] { "slug": slug.current, "updatedAt": _updatedAt }
+      *[_type == "agent"] {
+        "slug": slug.current,
+        "updatedAt": _updatedAt,
+        humanReviewed
+      }
     `),
     sanityFetch<GuideSlim[]>(groq`
       *[_type == "guide"] { "slug": slug.current, "updatedAt": _updatedAt }
     `),
+    sanityFetch<NeighborhoodSlim[]>(groq`
+      *[_type == "neighborhood" && humanReviewed == true] {
+        "slug": slug.current,
+        humanReviewed
+      }
+    `),
   ]);
+
+  // EN-only docs ship in the sitemap once an editor marks the translation
+  // reviewed. Until then, the EN URL is still served by Next.js but kept out
+  // of the sitemap to avoid promoting un-reviewed translations to crawlers.
+  const reviewedAgentSlugs = new Set(
+    agents.filter((a) => a.humanReviewed === true).map((a) => a.slug)
+  );
+  const reviewedNeighborhoodSlugs = new Set(reviewedNeighborhoods.map((n) => n.slug));
 
   // Build lookup maps for category/geo filtering
   const categoryCountMap = new Map<string, number>();
@@ -179,9 +203,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }];
     }),
 
-    // EN neighborhood guides (≥2 listings) — /en/neighborhoods/[slug] route exists
-    ...NEIGHBORHOODS.filter((nbh) =>
-      activeProperties.filter((p) => p.zone === nbh.name).length >= 2
+    // EN neighborhood guides (≥2 listings AND humanReviewed in Sanity).
+    // /en/neighborhoods/[slug] route exists for any slug, but we only sitemap
+    // those an editor has approved for English consumption.
+    ...NEIGHBORHOODS.filter(
+      (nbh) =>
+        activeProperties.filter((p) => p.zone === nbh.name).length >= 2 &&
+        reviewedNeighborhoodSlugs.has(nbh.slug)
     ).map((nbh) => ({
       url: `${BASE_URL}/en/neighborhoods/${nbh.slug}`,
       alternates: altsFromEn(`/en/neighborhoods/${nbh.slug}`),
@@ -197,13 +225,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/en/terms`,         alternates: altsFromEn("/en/terms"),         changeFrequency: "yearly",  priority: 0.3 },
     { url: `${BASE_URL}/en/privacy`,       alternates: altsFromEn("/en/privacy"),       changeFrequency: "yearly",  priority: 0.3 },
 
-    // EN agent profiles — /en/agents/[slug] route exists, slug shared with ES
-    ...agents.map((a) => ({
-      url: `${BASE_URL}/en/agents/${a.slug}`,
-      lastModified: new Date(a.updatedAt),
-      alternates: altsFromEn(`/en/agents/${a.slug}`),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
+    // EN agent profiles — /en/agents/[slug] route exists for every agent, but
+    // only humanReviewed agents are listed in the sitemap (same gate as EN
+    // neighborhoods). The ES sitemap entries above are unaffected.
+    ...agents
+      .filter((a) => reviewedAgentSlugs.has(a.slug))
+      .map((a) => ({
+        url: `${BASE_URL}/en/agents/${a.slug}`,
+        lastModified: new Date(a.updatedAt),
+        alternates: altsFromEn(`/en/agents/${a.slug}`),
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
   ];
 }
