@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { formatPrice } from "@/lib/utils";
+import type { Locale } from "@/lib/copy";
+import { deriveEnSlug } from "@/lib/i18n";
 
 export interface MapProperty {
   lat: number;
@@ -19,16 +21,25 @@ export interface MapProperty {
 interface Props {
   properties: MapProperty[];
   height?: string;
+  locale?: Locale;
 }
 
-function buildPopupHtml(p: MapProperty): string {
+function buildPopupHtml(p: MapProperty, locale: Locale): string {
   const imgHtml = p.imageUrl
     ? `<img src="${p.imageUrl}" alt="" style="width:100%;height:110px;object-fit:cover;display:block">`
     : "";
 
+  const isEn = locale === "en";
+  const habLabel = isEn ? "bd" : "hab";
+  const banosLabel = isEn ? "ba" : "baños";
+  const verMasLabel = isEn ? "View more →" : "Ver más →";
+  const propertyHref = isEn
+    ? `/en/properties/${deriveEnSlug(p.slug)}`
+    : `/propiedades/${p.slug}`;
+
   const meta = [
-    p.bedrooms !== undefined ? `${p.bedrooms} hab` : "",
-    p.bathrooms !== undefined ? `${p.bathrooms} baños` : "",
+    p.bedrooms !== undefined ? `${p.bedrooms} ${habLabel}` : "",
+    p.bathrooms !== undefined ? `${p.bathrooms} ${banosLabel}` : "",
   ]
     .filter(Boolean)
     .join(" · ");
@@ -40,13 +51,13 @@ function buildPopupHtml(p: MapProperty): string {
         <p style="font-weight:700;font-size:14px;color:#0c1834;margin:0 0 3px;line-height:1.2">${formatPrice(p.price)}</p>
         ${meta ? `<p style="font-size:12px;color:#737b8c;margin:0 0 5px">${meta}</p>` : ""}
         <p style="font-size:12px;color:#3B4F6B;margin:0 0 8px;line-height:1.3">${p.title}</p>
-        <a href="/propiedades/${p.slug}" style="font-size:12px;color:#C9A84C;font-weight:600;text-decoration:none">Ver más →</a>
+        <a href="${propertyHref}" style="font-size:12px;color:#C9A84C;font-weight:600;text-decoration:none">${verMasLabel}</a>
       </div>
     </div>
   `;
 }
 
-export default function PropertyMapMultiCore({ properties, height = "h-full" }: Props) {
+export default function PropertyMapMultiCore({ properties, height = "h-full", locale = "es" }: Props) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
 
@@ -90,7 +101,7 @@ export default function PropertyMapMultiCore({ properties, height = "h-full" }: 
     // Add pins
     withCoords.forEach((p) => {
       const popup = new mapboxgl.Popup({ offset: 25, maxWidth: "260px", anchor: "bottom" }).setHTML(
-        buildPopupHtml(p)
+        buildPopupHtml(p, locale)
       );
       new mapboxgl.Marker({ color: "#C9A84C" })
         .setLngLat([p.lng, p.lat])

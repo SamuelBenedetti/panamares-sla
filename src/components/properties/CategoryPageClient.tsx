@@ -529,7 +529,7 @@ const filtered = useMemo(() => {
           {/* Mobile map — full-width row above grid, hidden on desktop */}
           {mapProps && mapProps.length > 0 && (
             <div className="col-span-full lg:hidden">
-              <PropertyMapMulti properties={mapProps} height="h-[280px] sm:h-[360px]" />
+              <PropertyMapMulti properties={mapProps} height="h-[280px] sm:h-[360px]" locale={locale} />
             </div>
           )}
 
@@ -581,7 +581,7 @@ const filtered = useMemo(() => {
           {/* Map — desktop right sidebar, hidden on mobile */}
           {mapProps && mapProps.length > 0 && (
             <div className="hidden lg:block lg:sticky lg:top-[110px]">
-              <PropertyMapMulti properties={mapProps} height="h-[590px]" />
+              <PropertyMapMulti properties={mapProps} height="h-[590px]" locale={locale} />
             </div>
           )}
         </div>

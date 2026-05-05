@@ -130,7 +130,7 @@ export default function NeighborhoodListingsSection({
       {/* Map — mobile/tablet: above cards, desktop: side by side */}
       {activeMapMarkers.length > 0 && (
         <div className="xl:hidden">
-          <PropertyMapMulti properties={activeMapMarkers} height="h-[280px] sm:h-[360px]" />
+          <PropertyMapMulti properties={activeMapMarkers} height="h-[280px] sm:h-[360px]" locale={locale} />
         </div>
       )}
 
@@ -144,7 +144,7 @@ export default function NeighborhoodListingsSection({
 
         {activeMapMarkers.length > 0 && (
           <div className="hidden xl:block sticky top-[110px]">
-            <PropertyMapMulti properties={activeMapMarkers} height="h-[590px]" />
+            <PropertyMapMulti properties={activeMapMarkers} height="h-[590px]" locale={locale} />
           </div>
         )}
       </div>
