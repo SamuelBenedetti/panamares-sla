@@ -266,9 +266,9 @@ export const es: Copy = {
       h1Prefix: "Barrios de ",
       h1Italic: "Panama City",
       zonesAvailableLabel: "Zonas con propiedades disponibles",
-      masZonasEyebrow: "BARRIOS DESTACADOS",
-      masZonasTitleLine1: "Barrios",
-      masZonasTitleLine2Italic: "destacados",
+      masZonasEyebrow: "MÁS ZONAS",
+      masZonasTitleLine1: "Otros",
+      masZonasTitleLine2Italic: "barrios",
       precioPromedio: "Precio promedio",
       propiedades: "Propiedades",
       ctaEyebrow: "¿No sabes por dónde empezar?",
@@ -398,7 +398,7 @@ export const es: Copy = {
       leerMenos: "Leer menos",
     },
     neighborhoodSlider: {
-      eyebrow: "FAVORITOS",
+      eyebrow: "DESTACADOS",
     },
     contactForm: {
       labelNombre: "Nombre completo *",

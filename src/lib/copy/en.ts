@@ -260,8 +260,8 @@ export const en: Copy = {
       h1Prefix: "Neighborhoods of ",
       h1Italic: "Panama City",
       zonesAvailableLabel: "Areas with available properties",
-      masZonasEyebrow: "FEATURED NEIGHBORHOODS",
-      masZonasTitleLine1: "Featured",
+      masZonasEyebrow: "MORE AREAS",
+      masZonasTitleLine1: "Other",
       masZonasTitleLine2Italic: "neighborhoods",
       precioPromedio: "Average price",
       propiedades: "Properties",
@@ -392,7 +392,7 @@ export const en: Copy = {
       leerMenos: "Read less",
     },
     neighborhoodSlider: {
-      eyebrow: "FAVORITES",
+      eyebrow: "FEATURED",
     },
     contactForm: {
       labelNombre: "Full name *",
