@@ -214,6 +214,7 @@ export const es: Copy = {
         heading: "¿Prefieres respuesta inmediata?",
         subtitle: "Escríbenos por WhatsApp y te atendemos en minutos.",
         button: "Abrir WhatsApp",
+        message: "Hola, me interesa una propiedad en Panamares.",
       },
       sidebar: {
         labelDireccion: "Dirección",
@@ -238,6 +239,7 @@ export const es: Copy = {
         eyebrow: "¿Eres agente independiente?",
         heading: "Únete al equipo Panamares",
         button: "Escríbenos",
+        message: "Hola, soy agente inmobiliario y me gustaría unirme al equipo de Panamares.",
       },
     },
     terminos: {
@@ -264,9 +266,9 @@ export const es: Copy = {
       h1Prefix: "Barrios de ",
       h1Italic: "Panama City",
       zonesAvailableLabel: "Zonas con propiedades disponibles",
-      masZonasEyebrow: "más zonas",
-      masZonasTitleLine1: "Otro",
-      masZonasTitleLine2Italic: "barrios",
+      masZonasEyebrow: "BARRIOS DESTACADOS",
+      masZonasTitleLine1: "Barrios",
+      masZonasTitleLine2Italic: "destacados",
       precioPromedio: "Precio promedio",
       propiedades: "Propiedades",
       ctaEyebrow: "¿No sabes por dónde empezar?",
@@ -394,6 +396,9 @@ export const es: Copy = {
     seoBlock: {
       leerMas: "Leer más",
       leerMenos: "Leer menos",
+    },
+    neighborhoodSlider: {
+      eyebrow: "FAVORITOS",
     },
     contactForm: {
       labelNombre: "Nombre completo *",

@@ -150,7 +150,7 @@ export default async function BarriosPage() {
               >
                 {t.masZonasEyebrow}
               </span>
-              <div className="flex gap-[10px] items-start leading-normal text-[#0c1834] text-[60px] tracking-[-1.8px]">
+              <div className="flex gap-[20px] items-start leading-normal text-[#0c1834] text-[60px] tracking-[-1.8px]">
                 <span className="font-heading font-normal not-italic whitespace-nowrap">
                   {t.masZonasTitleLine1}
                 </span>

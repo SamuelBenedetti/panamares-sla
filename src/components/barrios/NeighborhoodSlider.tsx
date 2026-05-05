@@ -22,7 +22,9 @@ export default function NeighborhoodSlider({
   neighborhoods: SliderNeighborhood[];
   locale?: Locale;
 }) {
-  const t = getCopy(locale).pages.barriosIndex;
+  const copy = getCopy(locale);
+  const t = copy.pages.barriosIndex;
+  const sliderCopy = copy.components.neighborhoodSlider;
   const ariaPrev = locale === "en" ? "Previous neighborhood" : "Barrio anterior";
   const ariaNext = locale === "en" ? "Next neighborhood" : "Siguiente barrio";
   const [current, setCurrent] = useState(0);
@@ -106,7 +108,7 @@ export default function NeighborhoodSlider({
             <div className="flex gap-[10px] items-start">
               <Star size={15} className="text-white/50 shrink-0" style={{ marginTop: "0.5px" }} />
               <span className="font-body font-medium text-[12px] text-white/50 tracking-[5px] uppercase" style={{ lineHeight: "16px" }}>
-                favorites
+                {sliderCopy.eyebrow}
               </span>
             </div>
             <div className="flex items-center w-full">

@@ -6,8 +6,8 @@ import ContactMap from "@/app/(site)/contacto/ContactMap";
 import { canonical, alternates } from "@/lib/seo";
 import { contactPointSchema, breadcrumbSchema } from "@/lib/jsonld";
 import {
-  WHATSAPP_URL,
-  WHATSAPP_EQUIPO_URL,
+  WHATSAPP_NUMBER,
+  WHATSAPP_EQUIPO_NUMBER,
   PANAMARES_PHONE,
   PANAMARES_PHONE_2,
   PANAMARES_EMAIL_INFO,
@@ -93,7 +93,7 @@ export default function ContactPageEn() {
                   </p>
                 </div>
                 <a
-                  href={WHATSAPP_URL}
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(t.whatsappBanner.message)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#00b424] inline-flex items-center gap-[8px] px-[20px] py-[10px] font-body font-medium text-[14px] text-white shrink-0 hover:opacity-90 transition-opacity"
@@ -222,7 +222,7 @@ export default function ContactPageEn() {
             </p>
           </div>
           <a
-            href={WHATSAPP_EQUIPO_URL}
+            href={`https://wa.me/${WHATSAPP_EQUIPO_NUMBER}?text=${encodeURIComponent(t.uneteEquipo.message)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-[8px] border border-white/50 px-[33px] py-[15px] font-body font-medium text-[16px] text-white tracking-[1.4px] uppercase hover:bg-white/10 transition-colors whitespace-nowrap w-fit"
