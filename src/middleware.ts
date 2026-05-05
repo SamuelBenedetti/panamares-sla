@@ -40,15 +40,24 @@ const DYNAMIC_ES_PREFIXES = new Set([
  */
 
 /**
+ * Slug used as the rewrite target when a path needs to return HTTP 404.
+ * /barrios/[slug] uses dynamicParams=false and serves a real 404 status code
+ * for slugs not in generateStaticParams — we exploit that to bypass the
+ * status-code bug that affects /[category] and /[category]/[neighborhood].
+ */
+const FORCE_404_REWRITE = "/barrios/__force-404__";
+
+/**
  * Returns true when the path should NOT be served and middleware should
- * rewrite to /_force-not-found (which serves the global not-found.tsx with
- * the correct HTTP 404 status).
+ * rewrite to FORCE_404_REWRITE (which routes to /barrios/[slug] with an
+ * unknown slug, returning a real HTTP 404).
  *
  * Rationale: Next.js 14.2.x emits HTTP 200 when notFound() is called from a
  * page that uses dynamicParams=false combined with a (site) route group whose
  * layout fetches data. The page renders not-found.tsx visually, but the
  * status header stays 200 — Googlebot reads it as a soft 404. Pre-validating
- * the slug at the edge bypasses the broken status path entirely.
+ * the slug at the edge and rewriting to a path where notFound() does emit a
+ * real 404 bypasses the bug.
  */
 function isInvalidEsPath(pathname: string): boolean {
   // Strip leading slash
@@ -104,7 +113,7 @@ export function middleware(req: NextRequest) {
 
   if (isInvalidEsPath(pathname)) {
     const url = req.nextUrl.clone();
-    url.pathname = "/_force-not-found";
+    url.pathname = FORCE_404_REWRITE;
     return NextResponse.rewrite(url);
   }
 
