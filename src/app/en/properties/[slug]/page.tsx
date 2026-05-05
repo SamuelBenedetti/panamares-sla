@@ -10,7 +10,7 @@ import { canonical, alternates } from "@/lib/seo";
 import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
 import { breadcrumbSchema, listingSchema } from "@/lib/jsonld";
 import { getSlugByName } from "@/lib/neighborhoods";
-import { SLUG_MAP_ES_TO_EN, deriveEnSlug, deriveEsSlugFromEn, localizeConditionLabel } from "@/lib/i18n";
+import { SLUG_MAP_ES_TO_EN, deriveEnSlug, deriveEsSlugFromEn, localizeConditionLabel, localizeFeature } from "@/lib/i18n";
 import { getCopy } from "@/lib/copy";
 import type { Property } from "@/lib/types";
 import {
@@ -535,7 +535,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
                     {(property.featuresInterior ?? []).map((f, i) => (
                       <li key={i} className="flex items-start gap-[7px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{f}</span>
+                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{localizeFeature(f, "en")}</span>
                       </li>
                     ))}
                   </ul>
@@ -551,7 +551,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
                     {(property.featuresBuilding ?? []).map((f, i) => (
                       <li key={i} className="flex items-start gap-[7px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{f}</span>
+                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{localizeFeature(f, "en")}</span>
                       </li>
                     ))}
                   </ul>
@@ -567,7 +567,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
                     {(property.featuresLocation ?? []).map((f, i) => (
                       <li key={i} className="flex items-start gap-[7px]">
                         <BulletCheck />
-                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{f}</span>
+                        <span className="font-body font-normal text-[13px] text-[#5a6478] leading-[18px]">{localizeFeature(f, "en")}</span>
                       </li>
                     ))}
                   </ul>
