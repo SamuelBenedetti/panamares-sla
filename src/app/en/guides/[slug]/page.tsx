@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -65,9 +65,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function GuideDetailPageEn({ params }: Props) {
   const guide = await sanityFetch<Guide | null>(guideBySlugQuery, { slug: params.slug });
   if (!guide) notFound();
-  // EN-side gate. Until an editor approves the translation, the EN URL returns
-  // a real 404 so search engines do not index half-translated content.
-  if (!guide.humanReviewed) notFound();
+  // EN-side gate: until an editor approves the translation, redirect (308) to
+  // the ES counterpart at /guias/[slug]. Preserves user intent + link equity
+  // for the ~80% of guides unreviewed at launch. generateMetadata above still
+  // emits robots: noindex/nofollow as belt-and-suspenders.
+  if (!guide.humanReviewed) permanentRedirect(`/guias/${params.slug}`);
 
   const imgUrl = guide.coverImage
     ? urlFor(guide.coverImage).width(1400).height(700).url()

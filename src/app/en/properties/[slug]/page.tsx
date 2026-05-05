@@ -35,7 +35,7 @@ import {
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 
 interface Props {
   params: { slug: string };
@@ -141,10 +141,13 @@ export default async function PropertyDetailPageEn({ params }: Props) {
   if (!fetched) notFound();
   const property = fetched;
 
-  // EN-side gate: until an editor approves the EN translation, the EN URL
-  // returns a real 404 so search engines cannot index half-translated pages.
-  // The ES route at /propiedades/[slug] is unaffected.
-  if (!property.humanReviewed) notFound();
+  // EN-side gate: until an editor approves the EN translation, redirect (308)
+  // to the ES counterpart. ~80% of EN URLs at launch are unreviewed; 308
+  // preserves user intent and consolidates link equity to the canonical ES
+  // URL. Hreflang on the ES page does NOT emit `en` for unreviewed docs, so
+  // there is no signal contradiction. generateMetadata above still returns
+  // robots: noindex/nofollow for unreviewed docs as belt-and-suspenders.
+  if (!property.humanReviewed) permanentRedirect(`/propiedades/${params.slug}`);
 
   // Sold/retired listings → 301 to best-fit category page on the EN side.
   if (property.listingStatus !== "activa") {
