@@ -102,8 +102,8 @@ export const en: Copy = {
       breadcrumbLabel: "About Us",
       hero: {
         eyebrow: "Who we are",
-        titleLine1: "Over 15 years",
-        titleLine2Italic: "connecting dreams",
+        titleLine1: "Over 15 years ",
+        titleLine2Italic: "connecting dreams ",
         titleLine3: "with properties",
         body: {
           bold: "Panamares was born from one conviction: that the luxury real estate market in Panama ",
@@ -129,7 +129,7 @@ export const en: Copy = {
       },
       historia: {
         eyebrow: "Our story",
-        titleLine1: "Built on",
+        titleLine1: "Built on ",
         titleLine2Italic: "trust",
         p1: "Panamares was founded in 2009 by Valeria Moreno, with the vision of building a firm that put the client — not the commission — at the center of every decision.",
         p2: "Over more than a decade, we've built a reputation based on transparency, honest wealth advisory and a deep understanding of the Panamanian market.",
@@ -165,7 +165,7 @@ export const en: Copy = {
       },
       reconocimientos: {
         eyebrow: "Recognitions",
-        titleLine1: "Recognized as the",
+        titleLine1: "Recognized as the ",
         titleLine2Italic: "top real estate firm",
         awards: {
           excelencia: {
@@ -435,7 +435,7 @@ export const en: Copy = {
     },
     ctaSection: {
       eyebrow: "Contact us",
-      titleLine1: "Ready to find your",
+      titleLine1: "Ready to find your ",
       titleLine2Italic: "ideal property?",
       subtitle:
         "Our agents are available to help you find the perfect property in Panama.",
