@@ -68,7 +68,7 @@ loadEnv();
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production";
-const token = process.env.SANITY_TOKEN;
+const token = process.env.SANITY_TOKEN ?? process.env.SANITY_WRITE_TOKEN;
 
 if (!projectId) {
   console.error("[migrate] Missing NEXT_PUBLIC_SANITY_PROJECT_ID in .env.local");
@@ -85,7 +85,7 @@ const slugFilter = slugArg ? slugArg.split("=")[1] : null;
 
 if (isWrite && !token) {
   console.error(
-    "[migrate] --write requires SANITY_TOKEN in .env.local (write access)."
+    "[migrate] --write requires SANITY_TOKEN or SANITY_WRITE_TOKEN in .env.local (write access)."
   );
   process.exit(1);
 }
@@ -107,13 +107,15 @@ const client = createClient({
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const newKey = () => randomBytes(6).toString("hex");
 
+// `sanity-plugin-internationalized-array` requires `_key === language code`
+// (e.g. "es", "en"). The Studio editor enforces this; queries and our
+// `resolveI18n` helper rely on it. Do NOT use random keys here.
 function intlString(entries) {
   return entries
     .filter(([, v]) => typeof v === "string" && v.length > 0)
     .map(([language, value]) => ({
-      _key: newKey(),
+      _key: language,
       _type: "internationalizedArrayStringValue",
-      language,
       value,
     }));
 }
@@ -122,9 +124,8 @@ function intlText(entries) {
   return entries
     .filter(([, v]) => typeof v === "string" && v.length > 0)
     .map(([language, value]) => ({
-      _key: newKey(),
+      _key: language,
       _type: "internationalizedArrayTextValue",
-      language,
       value,
     }));
 }
@@ -136,9 +137,8 @@ function intlPortableText(entries) {
   return entries
     .filter(([, blocks]) => Array.isArray(blocks) && blocks.length > 0)
     .map(([language, blocks]) => ({
-      _key: newKey(),
+      _key: language,
       _type: "internationalizedArrayPortableTextValue",
-      language,
       value: blocks,
     }));
 }
