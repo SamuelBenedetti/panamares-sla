@@ -1,8 +1,48 @@
 import bundleAnalyzer from "@next/bundle-analyzer";
+import { readFileSync, existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Load redirect map for the panamares.com legacy → new-site migration.
+ *
+ * P0-10: Search Leads Agency owns redirect-map.csv. The file maps every
+ * inbound URL the old (Wasi-driven) panamares.com served to its closest
+ * equivalent on the new site. 301 (permanent: true) preserves ~90% of link
+ * equity from inbound backlinks + Google's index of the old URLs.
+ *
+ * Schema: 2 columns, comma-separated, header row "old_url,new_url".
+ *   old_url: full URL (https://panamares.com/...) or path-relative (/...)
+ *   new_url: path-relative (/propiedades/...) or full URL.
+ *
+ * Empty/missing file → returns []. Build does NOT fail if the CSV is
+ * absent — keeps preview/staging deploys working until Chris delivers.
+ */
+function loadLegacyRedirectMap() {
+  const csvPath = join(__dirname, "redirect-map.csv");
+  if (!existsSync(csvPath)) return [];
+
+  const csv = readFileSync(csvPath, "utf-8");
+  const rows = csv.split(/\r?\n/).slice(1).filter(Boolean);
+
+  const redirects = [];
+  for (const row of rows) {
+    // Naive split — assumes URLs do not contain unescaped commas.
+    const [rawOld, rawNew] = row.split(",").map((s) => s.trim());
+    if (!rawOld || !rawNew) continue;
+
+    // Convert old_url to a path source. Strip protocol + host if present.
+    const source = rawOld.replace(/^https?:\/\/(www\.)?panamares\.com/, "") || "/";
+    redirects.push({ source, destination: rawNew, permanent: true });
+  }
+  return redirects;
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -24,6 +64,7 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // Internal: legacy listing-hub deep links → new neighborhood detail
       {
         source: "/propiedades-en-venta/:neighborhood",
         destination: "/barrios/:neighborhood",
@@ -34,6 +75,9 @@ const nextConfig = {
         destination: "/barrios/:neighborhood",
         permanent: true,
       },
+      // P0-10: Legacy panamares.com URL map (loaded from redirect-map.csv).
+      // Empty array when the CSV does not exist (pre-cutover state).
+      ...loadLegacyRedirectMap(),
     ];
   },
   async headers() {
