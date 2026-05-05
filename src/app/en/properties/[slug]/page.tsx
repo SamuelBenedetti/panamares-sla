@@ -10,7 +10,8 @@ import { canonical, alternates } from "@/lib/seo";
 import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
 import { breadcrumbSchema, listingSchema } from "@/lib/jsonld";
 import { getSlugByName } from "@/lib/neighborhoods";
-import { SLUG_MAP_ES_TO_EN, deriveEnSlug, deriveEsSlugFromEn } from "@/lib/i18n";
+import { SLUG_MAP_ES_TO_EN, deriveEnSlug, deriveEsSlugFromEn, localizeConditionLabel } from "@/lib/i18n";
+import { getCopy } from "@/lib/copy";
 import type { Property } from "@/lib/types";
 import {
   resolveI18nString,
@@ -197,6 +198,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
     "en",
     property.description
   );
+  const tagsCopy = getCopy("en").components.propertyCard;
 
   const galleryImages: { url: string; alt: string }[] = (property.gallery ?? []).map((img) => ({
     url: urlFor(img).width(1200).height(800).url(),
@@ -270,7 +272,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
       <link rel="preload" as="image" href={galleryImages[0].url} fetchPriority="high" />
 
       {/* Floating WhatsApp — mobile */}
-      <WhatsAppButton message={waMessage} variant="floating" />
+      <WhatsAppButton message={waMessage} variant="floating" locale="en" />
 
       {/* ── ABOVE THE FOLD: Gallery + Info ── */}
       <section className="bg-white">
@@ -296,7 +298,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
                   )}
                   {property.condition && (
                     <span className="font-body font-medium text-[11px] text-[#566070] bg-[#f0f2f5] px-[8px] py-[3px] uppercase tracking-[1px]">
-                      {property.condition}
+                      {localizeConditionLabel(property.condition, "en")}
                     </span>
                   )}
                 </div>
@@ -311,22 +313,22 @@ export default async function PropertyDetailPageEn({ params }: Props) {
                   <div className="flex flex-wrap gap-[6px]">
                     {property.featured && (
                       <span className="inline-flex items-center gap-[4px] bg-[#fef3c7] text-[#92400e] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <Star size={10} className="shrink-0" /> Featured
+                        <Star size={10} className="shrink-0" /> {tagsCopy.tagFeatured}
                       </span>
                     )}
                     {property.recommended && (
                       <span className="inline-flex items-center gap-[4px] bg-[#dbeafe] text-[#1e40af] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <BadgeCheck size={10} className="shrink-0" /> Recommended
+                        <BadgeCheck size={10} className="shrink-0" /> {tagsCopy.tagRecomendado}
                       </span>
                     )}
                     {property.fairPrice && (
                       <span className="inline-flex items-center gap-[4px] bg-[#dcfce7] text-[#166534] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <Banknote size={10} className="shrink-0" /> Fair Price
+                        <Banknote size={10} className="shrink-0" /> {tagsCopy.tagPrecioJusto}
                       </span>
                     )}
                     {property.rented && property.businessType === "venta" && (
                       <span className="inline-flex items-center gap-[4px] bg-[#f0fdf4] text-[#15803d] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <KeyRound size={10} className="shrink-0" /> Rented
+                        <KeyRound size={10} className="shrink-0" /> {tagsCopy.tagAlquilado}
                       </span>
                     )}
                   </div>
@@ -443,7 +445,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
                 </div>
 
                 <div className="flex flex-col gap-[10px]">
-                  <WhatsAppButton message={waMessage} />
+                  <WhatsAppButton message={waMessage} locale="en" />
                   <a
                     href={"tel:" + (property.agent?.phone ?? PANAMARES_TEL)}
                     className="flex items-center justify-center gap-[8px] border border-[#dfe5ef] px-[21px] py-[13px] hover:bg-[#f9f9f9] transition-colors"
@@ -454,6 +456,7 @@ export default async function PropertyDetailPageEn({ params }: Props) {
                   <ShareButton
                     url={`${BASE_URL}${enUrlPath}`}
                     title={localizedTitle}
+                    locale="en"
                   />
                 </div>
               </div>

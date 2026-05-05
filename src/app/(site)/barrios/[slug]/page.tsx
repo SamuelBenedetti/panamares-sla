@@ -203,7 +203,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdPlace) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
-      <WhatsAppButton message={waMsg} variant="floating" />
+      <WhatsAppButton message={waMsg} variant="floating" locale="es" />
 
       {/* ═══════════════════════════════════════════════════════════════════════
           1. HERO

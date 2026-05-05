@@ -231,7 +231,7 @@ export default async function GeoTypePageEn({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdList) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
-      <WhatsAppButton message={tHub.whatsappMessageCategoryTpl(h1)} variant="floating" />
+      <WhatsAppButton message={tHub.whatsappMessageCategoryTpl(h1)} variant="floating" locale="en" />
 
       <ListingPageHeader
         breadcrumbs={[

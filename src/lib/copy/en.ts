@@ -377,11 +377,21 @@ export const en: Copy = {
       tagRecomendado: "Recommended",
       tagPrecioJusto: "Fair Price",
       tagAlquilado: "Rented",
+      tagFeatured: "Featured",
       verPropiedad: "View property",
       labelHabitacionesShort: "bd.",
       labelBanos: "ba.",
       labelMetros: "m²",
       whatsappPrefix: "Hi, I'm interested in this property: ",
+    },
+    whatsappButton: {
+      cta: "Inquire via WhatsApp",
+      ariaFloating: "Contact via WhatsApp",
+    },
+    shareButton: {
+      label: "Share",
+      copied: "Copied!",
+      aria: "Share property",
     },
     agentCard: {
       verPerfil: "View profile",

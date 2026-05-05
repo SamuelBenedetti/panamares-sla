@@ -290,11 +290,21 @@ export interface Copy {
       tagRecomendado: string;
       tagPrecioJusto: string;
       tagAlquilado: string;
+      tagFeatured: string;
       verPropiedad: string;
       labelHabitacionesShort: string; // "hab."
       labelBanos: string; // "baños"
       labelMetros: string; // "m²"
       whatsappPrefix: string;
+    };
+    whatsappButton: {
+      cta: string;
+      ariaFloating: string;
+    };
+    shareButton: {
+      label: string;
+      copied: string;
+      aria: string;
     };
     agentCard: {
       verPerfil: string;

@@ -105,7 +105,7 @@ export default async function CategoryPage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdList) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
-      <WhatsAppButton message={tHub.whatsappMessageCategoryTpl(cat.h1)} variant="floating" />
+      <WhatsAppButton message={tHub.whatsappMessageCategoryTpl(cat.h1)} variant="floating" locale="es" />
 
       <ListingPageHeader
         breadcrumbs={[{ label: copy.layout.breadcrumb.inicio, href: "/" }, { label: cat.h1 }]}

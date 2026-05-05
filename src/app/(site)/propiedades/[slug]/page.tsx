@@ -11,6 +11,8 @@ import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
 import { breadcrumbSchema, listingSchema } from "@/lib/jsonld";
 import { getSlugByName } from "@/lib/neighborhoods";
 import type { Property } from "@/lib/types";
+import { localizeConditionLabel } from "@/lib/i18n";
+import { getCopy } from "@/lib/copy";
 import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 import { formatPrice } from "@/lib/utils";
 import { sanityFetch } from "@/sanity/lib/client";
@@ -145,6 +147,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   const neighborhoodSlug = property.zone ? getSlugByName(property.zone) : undefined;
 
   const waMessage = `Hola, me interesa la propiedad ID ${property._id}${property.zone ? ` en ${property.zone}` : ""}: ${property.title} — ${BASE_URL}/propiedades/${property.slug.current}`;
+  const tagsCopy = getCopy("es").components.propertyCard;
 
   // Build breadcrumb items — Inicio → Categoría → Barrio → Título limpio
   // El geo-nivel usa solo el nombre del barrio (no repite la categoría).
@@ -179,7 +182,7 @@ export default async function PropertyDetailPage({ params }: Props) {
       <link rel="preload" as="image" href={galleryImages[0].url} fetchPriority="high" />
 
       {/* Floating WhatsApp — mobile */}
-      <WhatsAppButton message={waMessage} variant="floating" />
+      <WhatsAppButton message={waMessage} variant="floating" locale="es" />
 
       {/* ── ABOVE THE FOLD: Gallery + Info ── */}
       <section className="bg-white">
@@ -209,7 +212,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   )}
                   {property.condition && (
                     <span className="font-body font-medium text-[11px] text-[#566070] bg-[#f0f2f5] px-[8px] py-[3px] uppercase tracking-[1px]">
-                      {property.condition}
+                      {localizeConditionLabel(property.condition, "es")}
                     </span>
                   )}
                 </div>
@@ -228,22 +231,22 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <div className="flex flex-wrap gap-[6px]">
                     {property.featured && (
                       <span className="inline-flex items-center gap-[4px] bg-[#fef3c7] text-[#92400e] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <Star size={10} className="shrink-0" /> Destacado
+                        <Star size={10} className="shrink-0" /> {tagsCopy.tagFeatured}
                       </span>
                     )}
                     {property.recommended && (
                       <span className="inline-flex items-center gap-[4px] bg-[#dbeafe] text-[#1e40af] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <BadgeCheck size={10} className="shrink-0" /> Recomendado
+                        <BadgeCheck size={10} className="shrink-0" /> {tagsCopy.tagRecomendado}
                       </span>
                     )}
                     {property.fairPrice && (
                       <span className="inline-flex items-center gap-[4px] bg-[#dcfce7] text-[#166534] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <Banknote size={10} className="shrink-0" /> Buen precio
+                        <Banknote size={10} className="shrink-0" /> {tagsCopy.tagPrecioJusto}
                       </span>
                     )}
                     {property.rented && property.businessType === "venta" && (
                       <span className="inline-flex items-center gap-[4px] bg-[#f0fdf4] text-[#15803d] px-[8px] py-[3px] font-body font-medium text-[11px] uppercase tracking-[0.8px]">
-                        <KeyRound size={10} className="shrink-0" /> Rentado
+                        <KeyRound size={10} className="shrink-0" /> {tagsCopy.tagAlquilado}
                       </span>
                     )}
                   </div>
@@ -371,7 +374,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                 {/* CTAs */}
                 <div className="flex flex-col gap-[10px]">
-                  <WhatsAppButton message={waMessage} />
+                  <WhatsAppButton message={waMessage} locale="es" />
                   <a
                     href={"tel:" + (property.agent?.phone ?? PANAMARES_TEL)}
                     className="flex items-center justify-center gap-[8px] border border-[#dfe5ef] px-[21px] py-[13px] hover:bg-[#f9f9f9] transition-colors"
@@ -382,6 +385,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <ShareButton
                     url={`${BASE_URL}/propiedades/${property.slug.current}`}
                     title={property.title}
+                    locale="es"
                   />
                 </div>
               </div>

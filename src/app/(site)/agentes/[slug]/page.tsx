@@ -91,7 +91,7 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdAgent) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
-      <WhatsAppButton message={waMessage} variant="floating" />
+      <WhatsAppButton message={waMessage} variant="floating" locale="es" />
 
       {/* ── Hero ── */}
       <section className="bg-[#0d1835] px-[30px] xl:px-[60px] 2xl:px-[160px]">

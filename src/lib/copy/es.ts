@@ -383,11 +383,21 @@ export const es: Copy = {
       tagRecomendado: "Recomendado",
       tagPrecioJusto: "Precio Justo",
       tagAlquilado: "Alquilado",
+      tagFeatured: "Destacado",
       verPropiedad: "Ver propiedad",
       labelHabitacionesShort: "hab.",
       labelBanos: "baños",
       labelMetros: "m²",
       whatsappPrefix: "Hola, me interesa esta propiedad: ",
+    },
+    whatsappButton: {
+      cta: "Consultar por WhatsApp",
+      ariaFloating: "Contactar por WhatsApp",
+    },
+    shareButton: {
+      label: "Compartir",
+      copied: "¡Copiado!",
+      aria: "Compartir propiedad",
     },
     agentCard: {
       verPerfil: "Ver perfil",

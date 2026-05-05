@@ -1,6 +1,8 @@
 "use client";
 
 import { whatsappLink } from "@/lib/config";
+import { getCopy } from "@/lib/copy";
+import type { Locale } from "@/lib/copy/types";
 
 function WhatsAppIcon({ size = 22 }: { size?: number }) {
   return (
@@ -13,10 +15,12 @@ function WhatsAppIcon({ size = 22 }: { size?: number }) {
 interface Props {
   message: string;
   variant?: "floating" | "sidebar";
+  locale?: Locale;
 }
 
-export default function WhatsAppButton({ message, variant = "sidebar" }: Props) {
+export default function WhatsAppButton({ message, variant = "sidebar", locale = "es" }: Props) {
   const href = whatsappLink(message);
+  const t = getCopy(locale).components.whatsappButton;
 
   if (variant === "floating") {
     return (
@@ -24,7 +28,7 @@ export default function WhatsAppButton({ message, variant = "sidebar" }: Props) 
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Contactar por WhatsApp"
+        aria-label={t.ariaFloating}
         className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-[#00b424] shadow-lg hover:bg-[#009e1f] transition-colors md:hidden"
       >
         <WhatsAppIcon size={26} />
@@ -40,7 +44,7 @@ export default function WhatsAppButton({ message, variant = "sidebar" }: Props) 
       className="flex items-center justify-center gap-[8px] bg-[#00b424] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] px-[20px] py-[12px] hover:bg-[#009e1f] transition-colors"
     >
       <WhatsAppIcon size={22} />
-      <span className="font-body font-medium text-[14px] text-white leading-5">Consultar por WhatsApp</span>
+      <span className="font-body font-medium text-[14px] text-white leading-5">{t.cta}</span>
     </a>
   );
 }
