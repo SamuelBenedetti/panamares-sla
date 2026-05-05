@@ -1,6 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
+/**
+ * Root-level not-found fallback. Used only for errors that fall outside the
+ * (site) and en/ route groups (rare). The richer 404 with navbar/footer +
+ * featured listings + WhatsApp CTA lives in:
+ *   - src/app/(site)/not-found.tsx  (ES)
+ *   - src/app/en/not-found.tsx      (EN)
+ */
 export const metadata: Metadata = {
   title: "Página no encontrada",
   robots: { index: false, follow: false },
@@ -25,12 +32,6 @@ export default function NotFound() {
             className="inline-flex items-center justify-center bg-white text-[#0c1834] font-body font-medium text-[14px] uppercase tracking-[1.4px] px-[32px] py-[14px] hover:bg-[#f9f9f9] transition-colors"
           >
             Volver al inicio
-          </Link>
-          <Link
-            href="/propiedades-en-venta/"
-            className="inline-flex items-center justify-center border border-white/30 text-white font-body font-medium text-[14px] uppercase tracking-[1.4px] px-[32px] py-[14px] hover:bg-white/10 transition-colors"
-          >
-            Ver propiedades
           </Link>
         </div>
       </div>
