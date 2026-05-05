@@ -12,6 +12,7 @@ interface PropertySlim {
   businessType: string;
   zone: string | null;
   updatedAt: string;
+  humanReviewed?: boolean;
 }
 
 interface AgentSlim {
@@ -28,6 +29,7 @@ interface NeighborhoodSlim {
 interface GuideSlim {
   slug: string;
   updatedAt: string;
+  humanReviewed?: boolean;
 }
 
 type Languages = { languages: Record<string, string> };
@@ -64,7 +66,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       propertyType,
       businessType,
       "zone": zone,
-      "updatedAt": _updatedAt
+      "updatedAt": _updatedAt,
+      humanReviewed
     }
   `);
 
@@ -77,7 +80,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     `),
     sanityFetch<GuideSlim[]>(groq`
-      *[_type == "guide"] { "slug": slug.current, "updatedAt": _updatedAt }
+      *[_type == "guide"] {
+        "slug": slug.current,
+        "updatedAt": _updatedAt,
+        humanReviewed
+      }
     `),
     sanityFetch<NeighborhoodSlim[]>(groq`
       *[_type == "neighborhood" && humanReviewed == true] {
@@ -94,6 +101,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     agents.filter((a) => a.humanReviewed === true).map((a) => a.slug)
   );
   const reviewedNeighborhoodSlugs = new Set(reviewedNeighborhoods.map((n) => n.slug));
+  const reviewedGuideSlugs = new Set(
+    guides.filter((g) => g.humanReviewed === true).map((g) => g.slug)
+  );
+  const reviewedPropertySlugs = new Set(
+    activeProperties.filter((p) => p.humanReviewed === true).map((p) => p.slug)
+  );
 
   // Build lookup maps for category/geo filtering
   const categoryCountMap = new Map<string, number>();
@@ -138,10 +151,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ),
 
     // ── Tier 4: Property listings ────────────────────────────────────────────
-    // Phase 2 EN counterpart — no alternates emitted.
+    // ES side always indexes. Hreflang reciprocity to /en/properties/[slug]
+    // is only emitted when the EN translation is reviewed (otherwise the EN
+    // URL would 404, which would be invalid hreflang).
     ...activeProperties.map((p) => ({
       url: `${BASE_URL}/propiedades/${p.slug}`,
       lastModified: new Date(p.updatedAt),
+      ...(reviewedPropertySlugs.has(p.slug) && {
+        alternates: altsFromEs(`/propiedades/${p.slug}`),
+      }),
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
@@ -173,18 +191,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
 
     // ── Guide articles ───────────────────────────────────────────────────────
-    // Guides do not have an EN route yet — no alternates emitted.
+    // Hreflang reciprocity emitted only when the EN translation is reviewed.
     ...guides.map((g) => ({
       url: `${BASE_URL}/guias/${g.slug}`,
       lastModified: new Date(g.updatedAt),
+      ...(reviewedGuideSlugs.has(g.slug) && {
+        alternates: altsFromEs(`/guias/${g.slug}`),
+      }),
       changeFrequency: "monthly" as const,
       priority: 0.65,
     })),
 
     // ── EN locale URLs ───────────────────────────────────────────────────────
     // Only emit EN URLs for routes that actually exist under src/app/en/**.
-    // /en/property/[slug] and /en/[category]/[neighborhood] are Phase 2.
-    // Guides do not have an EN route yet, so /en/guides/* is omitted.
+    // /en/[category]/[neighborhood] is Phase 2 (PR-D).
     { url: `${BASE_URL}/en`,                                                                         alternates: altsFromEn("/en"),                                            changeFrequency: "daily", priority: 1.0 },
     { url: `${BASE_URL}${SLUG_MAP_ES_TO_EN["/propiedades-en-venta"]}`,    alternates: altsFromEn(SLUG_MAP_ES_TO_EN["/propiedades-en-venta"]),    changeFrequency: "daily", priority: 0.9 },
     { url: `${BASE_URL}${SLUG_MAP_ES_TO_EN["/propiedades-en-alquiler"]}`, alternates: altsFromEn(SLUG_MAP_ES_TO_EN["/propiedades-en-alquiler"]), changeFrequency: "daily", priority: 0.9 },
@@ -236,6 +256,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         alternates: altsFromEn(`/en/agents/${a.slug}`),
         changeFrequency: "monthly" as const,
         priority: 0.6,
+      })),
+
+    // EN property listings — same humanReviewed gate as agents/neighborhoods.
+    // ES sitemap entries are unaffected; only EN promotion is gated.
+    ...activeProperties
+      .filter((p) => reviewedPropertySlugs.has(p.slug))
+      .map((p) => ({
+        url: `${BASE_URL}/en/properties/${p.slug}`,
+        lastModified: new Date(p.updatedAt),
+        alternates: altsFromEn(`/en/properties/${p.slug}`),
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+      })),
+
+    // EN guide articles — same humanReviewed gate.
+    ...guides
+      .filter((g) => reviewedGuideSlugs.has(g.slug))
+      .map((g) => ({
+        url: `${BASE_URL}/en/guides/${g.slug}`,
+        lastModified: new Date(g.updatedAt),
+        alternates: altsFromEn(`/en/guides/${g.slug}`),
+        changeFrequency: "monthly" as const,
+        priority: 0.65,
       })),
   ];
 }

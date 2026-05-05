@@ -44,7 +44,7 @@ export default function AgentPortfolioGrid({
 
   return (
     <div className="flex flex-col gap-[32px]">
-      <PropertyGrid properties={properties} cols={3} gap="tight" />
+      <PropertyGrid properties={properties} cols={3} gap="tight" locale={locale} />
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

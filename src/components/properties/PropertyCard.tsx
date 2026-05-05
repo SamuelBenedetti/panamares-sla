@@ -28,9 +28,12 @@ export default function PropertyCard({
 
   const pricePerM2 = area && area > 0 ? Math.round(price / area) : null;
   const zoneSlug = zone ? getSlugByName(zone) : undefined;
-  // Property detail pages remain on the ES path in PR2 — listings dynamic routes
-  // are out of scope (Phase 2). WhatsApp deep-link still points to the canonical URL.
-  const propertyHref = `/propiedades/${slug?.current}`;
+  // Property detail route is locale-prefixed: `/propiedades/[slug]` for ES and
+  // `/en/properties/[slug]` for EN (Phase 2 PR-C delivers the EN route).
+  const propertyHref =
+    locale === "en"
+      ? `/en/properties/${slug?.current}`
+      : `/propiedades/${slug?.current}`;
   const zoneHref = zoneSlug ? localePath(`/barrios/${zoneSlug}/`, locale) : undefined;
   const waMessage = `${t.whatsappPrefix}${title} — ${BASE_URL}${propertyHref}`;
   const waHref = whatsappLink(waMessage);

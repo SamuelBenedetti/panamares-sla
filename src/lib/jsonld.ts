@@ -1,5 +1,7 @@
 import type { Property, Agent, Neighborhood, SanityImage } from "@/lib/types";
 import type { PortableTextBlock } from "@portabletext/types";
+import type { Locale } from "@/lib/copy";
+import { resolveI18nString, resolveI18nPortableText } from "@/lib/i18n/resolveI18n";
 import {
   BASE_URL,
   PANAMARES_PHONE,
@@ -134,11 +136,29 @@ function propertySchemaTypes(type: string): string[] {
   return ["Product", "Residence"];
 }
 
-// Listing detail page — Apartment / House / Place + Offer
-export function listingSchema(property: Property) {
-  const propertyUrl = `${BASE_URL}/propiedades/${property.slug.current}`;
+// Listing detail page — Apartment / House / Place + Offer.
+// `locale` selects which translation to emit for `name` and `description`,
+// and which canonical URL the schema points at. Defaults to `"es"` so existing
+// callers continue to render the ES variant unchanged.
+export function listingSchema(property: Property, locale: Locale = "es") {
+  const propertyPath =
+    locale === "en"
+      ? `/en/properties/${property.slug.current}`
+      : `/propiedades/${property.slug.current}`;
+  const propertyUrl = `${BASE_URL}${propertyPath}`;
   const isRental = property.businessType === "alquiler";
-  const description = flattenPortableText(property.description);
+
+  // Localized title/description with graceful fallback to the legacy field via
+  // the i18n resolver — keeps the schema valid even when EN translations are
+  // empty (resolver picks ES, then the legacy field).
+  const localizedTitle = resolveI18nString(property.titleI18n, locale, property.title);
+  const localizedDescriptionBlocks = resolveI18nPortableText(
+    property.descriptionI18n,
+    locale,
+    property.description
+  );
+  const description =
+    flattenPortableText(localizedDescriptionBlocks) ?? flattenPortableText(property.description);
 
   // Build image array as ImageObject entries (with width/height when the
   // Sanity asset ref encodes them). Falls back to mainImage when no gallery,
@@ -202,7 +222,7 @@ export function listingSchema(property: Property) {
   return {
     "@context": "https://schema.org",
     "@type": propertySchemaTypes(property.propertyType),
-    name: property.title,
+    name: localizedTitle,
     ...(description && { description }),
     url: propertyUrl,
     ...(imageObjects && { image: imageObjects }),

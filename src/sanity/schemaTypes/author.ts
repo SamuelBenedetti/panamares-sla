@@ -25,10 +25,17 @@ export default defineType({
       options: { hotspot: true },
     }),
     defineField({
-      name: "role",
+      name: "roleI18n",
       title: "Cargo / Especialidad",
+      type: "internationalizedArrayString",
+      description:
+        'Cargo o especialidad del autor en cada idioma. Ejemplo: ES "Abogado de Bienes Raíces · Panamá" / EN "Real Estate Attorney · Panama".',
+    }),
+    defineField({
+      name: "role",
+      title: "Cargo anterior (oculto)",
       type: "string",
-      placeholder: "Abogado de Bienes Raíces · Panamá",
+      hidden: true,
     }),
     defineField({
       name: "credentials",

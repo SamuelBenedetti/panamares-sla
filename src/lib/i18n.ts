@@ -1,8 +1,9 @@
 // URL helpers for ES ↔ EN. Used by hreflang generation and the language switcher
 // in PR3. The slug map below pairs every static ES path with its EN counterpart.
 //
-// Dynamic routes (`/propiedad/[slug]`, `/barrios/[slug]`, `/agentes/[slug]`) are
-// expected to keep their slug across locales; only the route prefix changes.
+// Dynamic routes (`/propiedades/[slug]`, `/barrios/[slug]`, `/agentes/[slug]`,
+// `/guias/[slug]`) keep their slug across locales; only the route prefix
+// changes (e.g. `/propiedades/abc` → `/en/properties/abc`).
 
 import type { Locale } from "./copy/types";
 
@@ -56,9 +57,10 @@ function stripTrailingSlash(p: string): string {
  * isn't in the static slug map and isn't a recognised dynamic route.
  *
  * Dynamic routes:
- *   /propiedad/<slug>   → /en/property/<slug>
+ *   /propiedades/<slug> → /en/properties/<slug>
  *   /barrios/<slug>     → /en/neighborhoods/<slug>
  *   /agentes/<slug>     → /en/agents/<slug>
+ *   /guias/<slug>       → /en/guides/<slug>
  */
 export function getEnUrl(esPath: string): string | null {
   const path = stripTrailingSlash(esPath);
@@ -68,14 +70,17 @@ export function getEnUrl(esPath: string): string | null {
   }
 
   // Dynamic routes
-  const propiedad = path.match(/^\/propiedad\/([^/]+)$/);
-  if (propiedad) return `/en/property/${propiedad[1]}`;
+  const propiedad = path.match(/^\/propiedades\/([^/]+)$/);
+  if (propiedad) return `/en/properties/${propiedad[1]}`;
 
   const barrio = path.match(/^\/barrios\/([^/]+)$/);
   if (barrio) return `/en/neighborhoods/${barrio[1]}`;
 
   const agente = path.match(/^\/agentes\/([^/]+)$/);
   if (agente) return `/en/agents/${agente[1]}`;
+
+  const guia = path.match(/^\/guias\/([^/]+)$/);
+  if (guia) return `/en/guides/${guia[1]}`;
 
   return null;
 }
@@ -91,14 +96,17 @@ export function getEsUrl(enPath: string): string | null {
     return SLUG_MAP_EN_TO_ES[path];
   }
 
-  const property = path.match(/^\/en\/property\/([^/]+)$/);
-  if (property) return `/propiedad/${property[1]}`;
+  const property = path.match(/^\/en\/properties\/([^/]+)$/);
+  if (property) return `/propiedades/${property[1]}`;
 
   const neighborhood = path.match(/^\/en\/neighborhoods\/([^/]+)$/);
   if (neighborhood) return `/barrios/${neighborhood[1]}`;
 
   const agent = path.match(/^\/en\/agents\/([^/]+)$/);
   if (agent) return `/agentes/${agent[1]}`;
+
+  const guide = path.match(/^\/en\/guides\/([^/]+)$/);
+  if (guide) return `/guias/${guide[1]}`;
 
   return null;
 }
