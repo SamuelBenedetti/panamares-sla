@@ -145,7 +145,7 @@ export default async function NeighborhoodGuidePageEn({ params }: Props) {
     name: neighborhood.name,
     slug: { current: params.slug },
   };
-  const jsonLdPlace      = neighborhoodSchema(neighborhoodForSchema, heroImage);
+  const jsonLdPlace      = neighborhoodSchema(neighborhoodForSchema, heroImage, "en");
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: copy.layout.breadcrumb.inicio, url: "/en/" },
     { name: t.breadcrumbLabel,             url: "/en/neighborhoods/" },
