@@ -7,7 +7,7 @@ import { BASE_URL, whatsappLink } from "@/lib/config";
 import { formatPrice } from "@/lib/utils";
 import { getSlugByName } from "@/lib/neighborhoods";
 import { getCopy, type Locale } from "@/lib/copy";
-import { localePath } from "@/lib/i18n";
+import { deriveEnSlug, localePath } from "@/lib/i18n";
 import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 import CompareButton from "./CompareButton";
 
@@ -35,9 +35,12 @@ export default function PropertyCard({
   const zoneSlug = zone ? getSlugByName(zone) : undefined;
   // Property detail route is locale-prefixed: `/propiedades/[slug]` for ES and
   // `/en/properties/[slug]` for EN (Phase 2 PR-C delivers the EN route).
+  // PR-F: on EN we localize the leaf slug at read time via `deriveEnSlug`
+  // (e.g. `penthouses-en-venta-...` → `penthouses-for-sale-...`). The EN route
+  // handler accepts both ES-form and EN-form slugs and 308s ES-form to EN-form.
   const propertyHref =
     locale === "en"
-      ? `/en/properties/${slug?.current}`
+      ? `/en/properties/${deriveEnSlug(slug?.current ?? "")}`
       : `/propiedades/${slug?.current}`;
   const zoneHref = zoneSlug ? localePath(`/barrios/${zoneSlug}/`, locale) : undefined;
   const waMessage = `${t.whatsappPrefix}${title} — ${BASE_URL}${propertyHref}`;
