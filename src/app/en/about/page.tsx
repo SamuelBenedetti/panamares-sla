@@ -221,7 +221,7 @@ export default async function AboutPageEn() {
 
           <div>
             <Link
-              href="/en/for-sale/"
+              href="/en/properties-for-sale/"
               className="inline-flex items-center gap-[8px] border-b border-[#0c1834] pb-[5px] hover:opacity-60 transition-opacity"
             >
               <span className="font-body font-medium text-[14px] text-[#0c1834] uppercase tracking-[1.4px]">{t.historia.ctaVerPropiedades}</span>
