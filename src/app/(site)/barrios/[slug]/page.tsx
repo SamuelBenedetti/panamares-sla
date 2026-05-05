@@ -19,6 +19,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCopy } from "@/lib/copy";
 import { neighborhoodsEs } from "@/lib/copy/neighborhoods.es";
+import { resolveI18nText } from "@/lib/i18n/resolveI18n";
 
 const copy = getCopy("es");
 const t = copy.components.neighborhoodDetail;
@@ -49,12 +50,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const shouldIndex = properties.length >= 2;
 
   const seoBlockEs = neighborhoodsEs[params.slug]?.seoBlock;
+  const seoBlockText = resolveI18nText(
+    nbhContent?.seoBlockI18n,
+    "es",
+    nbhContent?.seoBlock ?? seoBlockEs
+  );
 
   return {
     title: `Propiedades en ${neighborhood.name}, Panama`,
     description:
-      nbhContent?.seoBlock ??
-      seoBlockEs ??
+      seoBlockText ||
       `Guía completa de ${neighborhood.name}: propiedades disponibles, precios por m², estilo de vida y todo lo que necesitas para vivir o invertir en esta zona de Panama City.`,
     alternates: {
       canonical: canonical(`/barrios/${params.slug}`),
@@ -81,8 +86,13 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
     sanityFetch<Array<{ zone: string }>>(zonePropertyZonesQuery),
   ]);
 
-  // ── seoBlock fallback chain: Sanity → es.ts copy bundle ────────────────────
-  const seoBlockText = nbhContent?.seoBlock ?? neighborhoodsEs[params.slug]?.seoBlock ?? null;
+  // ── seoBlock fallback chain: Sanity i18n (es) → legacy Sanity → es.ts copy ─
+  const seoBlockText =
+    resolveI18nText(
+      nbhContent?.seoBlockI18n,
+      "es",
+      nbhContent?.seoBlock ?? neighborhoodsEs[params.slug]?.seoBlock
+    ) || null;
 
   // ── Stats ──────────────────────────────────────────────────────────────────
   const propsWithArea = properties.filter((p) => p.area && p.area > 0);

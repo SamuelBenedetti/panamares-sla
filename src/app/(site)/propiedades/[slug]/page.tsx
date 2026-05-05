@@ -11,6 +11,7 @@ import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
 import { breadcrumbSchema, listingSchema } from "@/lib/jsonld";
 import { getSlugByName } from "@/lib/neighborhoods";
 import type { Property } from "@/lib/types";
+import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 import { formatPrice } from "@/lib/utils";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -337,9 +338,16 @@ export default async function PropertyDetailPage({ params }: Props) {
                         >
                           {property.agent.name}
                         </a>
-                        {property.agent.role && (
-                          <p className="font-body text-[12px] text-[#5a6478] leading-4">{property.agent.role}</p>
-                        )}
+                        {(() => {
+                          const agentRole = resolveI18nString(
+                            property.agent.roleI18n,
+                            "es",
+                            property.agent.role
+                          );
+                          return agentRole ? (
+                            <p className="font-body text-[12px] text-[#5a6478] leading-4">{agentRole}</p>
+                          ) : null;
+                        })()}
                       </div>
                     </div>
                   ) : (

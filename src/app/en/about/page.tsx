@@ -11,6 +11,7 @@ import { breadcrumbSchema } from "@/lib/jsonld";
 import { canonical, alternates } from "@/lib/seo";
 import PropertyMap from "@/components/properties/PropertyMap";
 import { getCopy } from "@/lib/copy";
+import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 
 const copy = getCopy("en");
 const t = copy.pages.sobreNosotros;
@@ -249,6 +250,7 @@ export default async function AboutPageEn() {
               const photoUrl = agent.photo
                 ? urlFor(agent.photo).width(560).height(740).fit("crop").url()
                 : null;
+              const role = resolveI18nString(agent.roleI18n, "en", agent.role);
               return (
                 <Link
                   key={agent._id}
@@ -276,9 +278,9 @@ export default async function AboutPageEn() {
                     <p className="font-heading font-normal text-[30px] md:text-[25px] text-[#0d1835] tracking-[-0.9px] leading-7 text-center w-full">
                       {agent.name}
                     </p>
-                    {agent.role && (
+                    {role && (
                       <p className="font-body font-semibold text-[12px] text-[#5a6478] tracking-[1.2px] uppercase leading-4 text-center w-full">
-                        {agent.role}
+                        {role}
                       </p>
                     )}
                   </div>

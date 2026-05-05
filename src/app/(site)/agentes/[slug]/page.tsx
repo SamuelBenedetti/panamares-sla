@@ -15,6 +15,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getCopy } from "@/lib/copy";
 import { agentesEs } from "@/lib/copy/agentes.es";
+import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 
 const copy = getCopy("es");
 const t = copy.components.agentDetail;
@@ -33,7 +34,11 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     ? urlFor(agent.photo).width(1200).height(630).url()
     : undefined;
   const isPaginated = Number(searchParams?.page ?? 1) > 1;
-  const role = agentesEs[params.slug]?.role ?? agent.role ?? "";
+  const role = resolveI18nString(
+    agent.roleI18n,
+    "es",
+    agentesEs[params.slug]?.role ?? agent.role ?? ""
+  );
   return {
     title: `${agent.name}${t.titleSuffix}`,
     description: t.descriptionTpl(agent.name, role),
@@ -58,7 +63,11 @@ export default async function AgentProfilePage({ params, searchParams }: Props) 
     : null;
 
   const agentCopy = agentesEs[params.slug];
-  const role = agentCopy?.role ?? agent.role ?? t.cardRoleFallback;
+  const role = resolveI18nString(
+    agent.roleI18n,
+    "es",
+    agentCopy?.role ?? agent.role ?? t.cardRoleFallback
+  );
 
   const waMessage = t.whatsappMessageTpl(agent.name);
   const waHref = whatsappLink(waMessage);
