@@ -31,6 +31,9 @@ export const NEIGHBORHOODS: NeighborhoodConfig[] = [
   { slug: "rio-mar",         name: "Río Mar",         priority: "LOW" },
   { slug: "panama-pacifico", name: "Panamá Pacífico", priority: "MEDIUM" },
   { slug: "farallon",        name: "Farallón",        priority: "MEDIUM" },
+  { slug: "david",           name: "David",           priority: "MEDIUM" },
+  { slug: "anton",            name: "Antón",          priority: "MEDIUM" },
+  { slug: "arraijan",        name: "Arraiján",        priority: "MEDIUM" },
 ];
 
 /** Card images for homepage neighborhood cards */
