@@ -13,6 +13,13 @@ export interface SanityImage {
     height: number;
     width: number;
   };
+  /**
+   * Low-Quality Image Placeholder. ~22-char base64 string Sanity computes
+   * for every uploaded asset. Populated when the GROQ projection includes
+   * `"lqip": asset->metadata.lqip`. Pass to <Image placeholder="blur"
+   * blurDataURL={lqip}> for smooth fade-in UX.
+   */
+  lqip?: string;
 }
 
 export interface Property {

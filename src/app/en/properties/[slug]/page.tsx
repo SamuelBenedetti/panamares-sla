@@ -203,12 +203,17 @@ export default async function PropertyDetailPageEn({ params }: Props) {
   );
   const tagsCopy = getCopy("en").components.propertyCard;
 
-  const galleryImages: { url: string; alt: string }[] = (property.gallery ?? []).map((img) => ({
-    url: urlFor(img).width(1200).height(800).url(),
-    alt: img.alt ?? localizedTitle,
+  const galleryImages: { url: string; alt: string; lqip?: string }[] = (property.gallery ?? []).map((img) => ({
+    url:  urlFor(img).width(1200).height(800).url(),
+    alt:  img.alt ?? localizedTitle,
+    lqip: img.lqip,
   }));
   if (galleryImages.length === 0 && property.mainImage) {
-    galleryImages.push({ url: urlFor(property.mainImage).width(1200).height(800).url(), alt: localizedTitle });
+    galleryImages.push({
+      url:  urlFor(property.mainImage).width(1200).height(800).url(),
+      alt:  localizedTitle,
+      lqip: property.mainImage.lqip,
+    });
   }
   if (galleryImages.length === 0) {
     galleryImages.push({ url: "/hero-bg.jpg", alt: localizedTitle });

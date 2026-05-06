@@ -11,6 +11,8 @@ export interface SliderNeighborhood {
   name: string;
   slug: string;
   image: string;
+  /** Sanity LQIP base64 — passed to next/image as blurDataURL when present. */
+  lqip?: string;
   avgPrice?: string;
   propertyCount?: number;
 }
@@ -65,6 +67,7 @@ export default function NeighborhoodSlider({
           quality={70}
           className={`object-cover object-[center_65%] transition-opacity duration-500 ease-in-out ${i === current ? "opacity-100" : "opacity-0"}`}
           sizes="(max-width: 1280px) 100vw, 1320px"
+          {...(nb.lqip ? { placeholder: "blur" as const, blurDataURL: nb.lqip } : {})}
         />
       ))}
 

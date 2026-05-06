@@ -137,6 +137,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
   const heroImage = nbhContent?.photo
     ? urlFor(nbhContent.photo).width(1600).height(900).url()
     : NEIGHBORHOOD_HERO_IMAGES[params.slug] ?? NEIGHBORHOOD_IMAGES[params.slug] ?? "/hero-bg.jpg";
+  const heroLqip = nbhContent?.photo?.lqip;
 
   // ── JSON-LD ────────────────────────────────────────────────────────────────
   const neighborhoodForSchema = nbhContent ?? {
@@ -159,18 +160,26 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
   const zoneCounts = new Map<string, number>();
   for (const { zone } of allZones) zoneCounts.set(zone, (zoneCounts.get(zone) ?? 0) + 1);
 
-  const nearbyPhotoMap = new Map(
+  const nearbyPhotoMap = new Map<string, { url: string; lqip?: string }>(
     allNbhContent
       .filter((n) => n.photo)
-      .map((n) => [n.slug, urlFor(n.photo!).width(700).height(930).fit("crop").url()])
+      .map((n) => [
+        n.slug,
+        {
+          url:  urlFor(n.photo!).width(700).height(930).fit("crop").url(),
+          lqip: n.photo!.lqip,
+        },
+      ])
   );
 
   const nearbyCards: NeighborhoodCardData[] = nearby.map((n) => {
-    const avg = avgPriceMap.get(n.slug);
+    const avg   = avgPriceMap.get(n.slug);
+    const photo = nearbyPhotoMap.get(n.slug);
     return {
       name:     n.name,
       slug:     n.slug,
-      image:    nearbyPhotoMap.get(n.slug) ?? "/hero-bg.jpg",
+      image:    photo?.url ?? "/hero-bg.jpg",
+      lqip:     photo?.lqip,
       avgPrice: avg ? `$${avg.toLocaleString("en-US")}/m²` : "",
       count:    zoneCounts.get(n.name) ?? 0,
     };
@@ -214,6 +223,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
           alt={`${neighborhood.name}, Panama`}
           fill
           className="object-cover"
+          {...(heroLqip ? { placeholder: "blur" as const, blurDataURL: heroLqip } : {})}
           priority
           sizes="100vw"
         />

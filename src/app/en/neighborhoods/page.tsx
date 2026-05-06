@@ -53,10 +53,16 @@ export default async function NeighborhoodsPageEn() {
     sanityFetch<Array<{ slug: string; avgPricePerM2: number | null; photo?: SanityImage }>>(allNeighborhoodContentQuery),
   ]);
 
-  const photoMap = new Map(
+  const photoMap = new Map<string, { url: string; lqip?: string }>(
     allNbhContent
       .filter((n) => n.photo)
-      .map((n) => [n.slug, urlFor(n.photo!).width(1920).height(900).fit("crop").url()])
+      .map((n) => [
+        n.slug,
+        {
+          url:  urlFor(n.photo!).width(1920).height(900).fit("crop").url(),
+          lqip: n.photo!.lqip,
+        },
+      ])
   );
 
   const activeSlugs = new Set(
@@ -81,7 +87,8 @@ export default async function NeighborhoodsPageEn() {
   const sliderNeighborhoods = FEATURED_SLUGS.map((slug) => ({
     slug,
     name: NEIGHBORHOODS.find((n) => n.slug === slug)?.name ?? slug,
-    image: photoMap.get(slug) ?? NEIGHBORHOOD_IMAGES[slug] ?? "/hero-bg.jpg",
+    image: photoMap.get(slug)?.url ?? NEIGHBORHOOD_IMAGES[slug] ?? "/hero-bg.jpg",
+    lqip: photoMap.get(slug)?.lqip,
     avgPrice: priceBySlug[slug],
     propertyCount: countBySlug[slug] ?? undefined,
   }));
@@ -156,7 +163,9 @@ export default async function NeighborhoodsPageEn() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-[16px]">
               {rest.map((n) => {
-                const img = photoMap.get(n.slug) ?? NEIGHBORHOOD_IMAGES[n.slug] ?? "/hero-bg.jpg";
+                const photo = photoMap.get(n.slug);
+                const img = photo?.url ?? NEIGHBORHOOD_IMAGES[n.slug] ?? "/hero-bg.jpg";
+                const lqip = photo?.lqip;
                 const price = priceBySlug[n.slug];
                 const count = countBySlug[n.slug] ?? 0;
 
@@ -173,6 +182,7 @@ export default async function NeighborhoodsPageEn() {
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
                       sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                      {...(lqip ? { placeholder: "blur" as const, blurDataURL: lqip } : {})}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#1d212b] via-[rgba(29,33,43,0.2)] via-[50%] to-[rgba(29,33,43,0)] mix-blend-multiply" />
 

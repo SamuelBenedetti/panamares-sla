@@ -58,6 +58,7 @@ export default function PropertyCard({
             priority={priority}
             className="object-cover scale-[1.6] hover:scale-[1.65] transition-transform duration-500"
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 50vw, 33vw"
+            {...(mainImage?.lqip ? { placeholder: "blur" as const, blurDataURL: mainImage.lqip } : {})}
           />
         </Link>
         {property.wasiId != null && <CompareButton id={String(property.wasiId)} />}
