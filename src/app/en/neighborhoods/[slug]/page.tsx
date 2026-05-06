@@ -139,6 +139,7 @@ export default async function NeighborhoodGuidePageEn({ params }: Props) {
   const heroImage = nbhContent?.photo
     ? urlFor(nbhContent.photo).width(1600).height(900).url()
     : NEIGHBORHOOD_HERO_IMAGES[params.slug] ?? NEIGHBORHOOD_IMAGES[params.slug] ?? "/hero-bg.jpg";
+  const heroLqip = nbhContent?.photo?.lqip;
 
   const neighborhoodForSchema = nbhContent ?? {
     _id: params.slug,
@@ -210,6 +211,7 @@ export default async function NeighborhoodGuidePageEn({ params }: Props) {
           alt={`${neighborhood.name}, Panama`}
           fill
           className="object-cover"
+          {...(heroLqip ? { placeholder: "blur" as const, blurDataURL: heroLqip } : {})}
           priority
           sizes="100vw"
         />

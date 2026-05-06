@@ -20,7 +20,7 @@ const CARD_FIELDS = groq`
   area,
   zone,
   publishedAt,
-  mainImage,
+  mainImage{ ..., "lqip": asset->metadata.lqip },
   location,
   featured,
   recommended,
@@ -100,15 +100,15 @@ export const propertyBySlugQuery = groq`
     rentalEstimate,
     publishedAt,
     noindex,
-    gallery[] { asset->, alt },
-    mainImage,
+    gallery[] { asset->, alt, "lqip": asset->metadata.lqip },
+    mainImage{ ..., "lqip": asset->metadata.lqip },
     location,
     featured,
     "agent": agent->{
       _id,
       name,
       slug,
-      photo,
+      photo{ ..., "lqip": asset->metadata.lqip },
       phone,
       whatsapp,
       email,
@@ -206,7 +206,7 @@ export const allNeighborhoodContentQuery = groq`
   *[_type == "neighborhood"] {
     "slug": slug.current,
     avgPricePerM2,
-    photo
+    photo{ ..., "lqip": asset->metadata.lqip }
   }
 `;
 
@@ -240,7 +240,7 @@ export const neighborhoodContentQuery = groq`
     _id,
     name,
     slug,
-    photo,
+    photo{ ..., "lqip": asset->metadata.lqip },
     avgPricePerM2,
     seoBlock,
     seoBlockI18n[]{_key, value},
