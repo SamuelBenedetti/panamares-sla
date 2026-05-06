@@ -57,6 +57,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     nbhContent?.seoBlock ?? seoBlockEs
   );
 
+  // Hreflang: only emit `en` link when the neighborhood doc is humanReviewed.
+  // While humanReviewed:false the EN counterpart 308s to ES — emitting an
+  // alternate would be an asymmetric signal that Google ignores. Per
+  // senior-seo P1 audit.
+  const enPath = nbhContent?.humanReviewed
+    ? `/en/neighborhoods/${params.slug}`
+    : null;
+
   return {
     title: `Propiedades en ${neighborhood.name}, Panama`,
     description:
@@ -64,7 +72,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       `Guía completa de ${neighborhood.name}: propiedades disponibles, precios por m², estilo de vida y todo lo que necesitas para vivir o invertir en esta zona de Panama City.`,
     alternates: {
       canonical: canonical(`/barrios/${params.slug}`),
-      languages: alternates(`/barrios/${params.slug}`, `/en/neighborhoods/${params.slug}`),
+      languages: alternates(`/barrios/${params.slug}`, enPath),
     },
     robots: { index: shouldIndex, follow: true },
     ...(ogImage && {

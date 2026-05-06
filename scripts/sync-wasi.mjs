@@ -941,9 +941,22 @@ async function fetchWasiDetail(id) {
 
 async function fetchSanityWasiMap() {
   const rows = await sanity.fetch(
-    `*[_type == "property" && string::startsWith(_id, "wasi-")]{ _id, listingStatus }`
+    `*[_type == "property" && string::startsWith(_id, "wasi-")]{ _id, listingStatus, wasiSyncHash }`
   );
-  return new Map(rows.map(r => [r._id, r.listingStatus]));
+  return new Map(rows.map(r => [r._id, { listingStatus: r.listingStatus, wasiSyncHash: r.wasiSyncHash }]));
+}
+
+// Stable JSON hash — keys ordered deterministically so the same payload
+// always produces the same hash. Used for skip-if-unchanged short-circuit.
+function stableHash(obj) {
+  const sortKeys = (o) => {
+    if (Array.isArray(o)) return o.map(sortKeys);
+    if (o && typeof o === "object" && o.constructor === Object) {
+      return Object.keys(o).sort().reduce((acc, k) => { acc[k] = sortKeys(o[k]); return acc; }, {});
+    }
+    return o;
+  };
+  return createHash("sha256").update(JSON.stringify(sortKeys(obj))).digest("hex").slice(0, 16);
 }
 
 // ── Build Sanity doc from WASI property ───────────────────────────────────────
@@ -1123,7 +1136,7 @@ async function main() {
     console.log("");
   }
 
-  let created = 0, updated = 0, skipped = 0, failed = 0, deactivated = 0;
+  let created = 0, updated = 0, skipped = 0, unchanged = 0, failed = 0, deactivated = 0;
   const unmappedTypes = new Set();
   const zonesFound = new Map(); // raw zone → normalized (or null if not in ZONE_MAP)
 
@@ -1131,7 +1144,8 @@ async function main() {
   for (let i = 0; i < wasiIds.length; i++) {
     const id    = wasiIds[i];
     const docId = `wasi-${id}`;
-    const isNew = !sanityMap.has(docId);
+    const existing = sanityMap.get(docId);
+    const isNew = !existing;
     const label = `[${String(i + 1).padStart(3)}/${wasiIds.length}] ${docId}`;
 
     process.stdout.write(`${label.padEnd(35)} `);
@@ -1207,7 +1221,27 @@ async function main() {
         // would silently linger in Sanity.
         const missingFields = OPTIONAL_WASI_FIELDS.filter(f => !(f in fields));
 
-        const patch = sanity.patch(_id).set(wasiOnlyFields);
+        // Skip-if-unchanged: hash the Wasi-only payload + the unset list and
+        // compare against the doc's stored wasiSyncHash. Identical → no patch
+        // needed, ~95% reduction in writes on stable runs. The hash skip is
+        // bypassed for the create path (we always commit a patch right after
+        // createIfNotExists to seed all fields).
+        const newHash = stableHash({ fields: wasiOnlyFields, unset: missingFields });
+        const isUnchanged = !isNew && existing?.wasiSyncHash === newHash;
+
+        if (isUnchanged) {
+          // Don't bump wasiSyncedAt either — the doc is already in sync, the
+          // last successful run is the truth. Keeps Sanity history clean.
+          console.log("≡  unchanged");
+          unchanged++;
+          continue;
+        }
+
+        const patch = sanity.patch(_id).set({
+          ...wasiOnlyFields,
+          wasiSyncHash: newHash,
+          wasiSyncedAt: new Date().toISOString(),
+        });
         if (missingFields.length > 0) patch.unset(missingFields);
         await withRetry(`patch ${_id}`, () => patch.commit());
       }
@@ -1225,8 +1259,8 @@ async function main() {
   // Skipped on --id and --limit (those represent a slice, not a full catalog).
   if (!SINGLE_ID && !isFinite(LIMIT)) {
     const candidates = [];
-    for (const [sanityId, status] of sanityMap.entries()) {
-      if (!wasiIdSet.has(sanityId) && status === "activa") candidates.push(sanityId);
+    for (const [sanityId, info] of sanityMap.entries()) {
+      if (!wasiIdSet.has(sanityId) && info.listingStatus === "activa") candidates.push(sanityId);
     }
 
     const limit = Math.max(DEACTIVATION_FLOOR_ABS, Math.floor(sanityMap.size * DEACTIVATION_FLOOR_PCT));
@@ -1258,7 +1292,7 @@ async function main() {
     writeRunState({
       idCount: wasiIds.length,
       ts: new Date().toISOString(),
-      created, updated, skipped, deactivated,
+      created, updated, unchanged, skipped, deactivated,
     });
   }
 
@@ -1267,6 +1301,7 @@ async function main() {
   if (DRY_RUN) console.log("  (DRY RUN — nothing was written)");
   console.log(`  ✨ Created:     ${created}`);
   console.log(`  ✓  Updated:     ${updated}`);
+  console.log(`  ≡  Unchanged:   ${unchanged}`);
   console.log(`  ⏭  Skipped:     ${skipped}`);
   console.log(`  🔴 Deactivated: ${deactivated}`);
   console.log(`  ❌ Failed:      ${failed}`);
@@ -1290,7 +1325,7 @@ async function main() {
       ts:        new Date().toISOString(),
       duration_s: Math.round((Date.now() - startTime) / 1000),
       catalog:   wasiIds.length,
-      created, updated, skipped, deactivated, failed,
+      created, updated, unchanged, skipped, deactivated, failed,
       force:     FORCE || undefined,
     });
   }

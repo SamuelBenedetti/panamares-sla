@@ -11,7 +11,7 @@ import { BASE_URL, PANAMARES_TEL } from "@/lib/config";
 import { breadcrumbSchema, listingSchema } from "@/lib/jsonld";
 import { getSlugByName } from "@/lib/neighborhoods";
 import type { Property } from "@/lib/types";
-import { localizeConditionLabel } from "@/lib/i18n";
+import { localizeConditionLabel, deriveEnSlug } from "@/lib/i18n";
 import { getCopy } from "@/lib/copy";
 import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 import { SetTranslationBlocked } from "@/lib/translation-gate";
@@ -92,11 +92,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? [{ url: ogImage, alt: property.title }]
     : [];
 
+  // Hreflang: only emit `en` link when the EN counterpart is reviewable.
+  // While humanReviewed:false the EN URL 308s to ES, so emitting an alternate
+  // would be an asymmetric signal that Google ignores (or worse, treats as
+  // a soft-soft-404). senior-seo flagged this as a P1.
+  const enPath = property.humanReviewed
+    ? `/en/properties/${deriveEnSlug(property.slug.current)}`
+    : null;
+
   return {
     title,
     description,
     robots: { index: true, follow: true },
-    alternates: { canonical: canonical(`/propiedades/${property.slug.current}`), languages: alternates(`/propiedades/${property.slug.current}`, null) },
+    alternates: { canonical: canonical(`/propiedades/${property.slug.current}`), languages: alternates(`/propiedades/${property.slug.current}`, enPath) },
     openGraph: { title, description, images: ogImages },
     twitter: { card: "summary_large_image", title, description, images: twitterImages },
   };

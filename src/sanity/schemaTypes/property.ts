@@ -643,6 +643,24 @@ export default defineType({
       description:
         "Activa esta casilla cuando hayas revisado y aprobado la traducción al inglés. Hasta que esté activa, la versión en inglés de la propiedad no se muestra al público ni a buscadores.",
     }),
+    // ─── Sync metadata (sync-wasi.mjs writes these — read-only for editors) ──
+    defineField({
+      name: "wasiSyncedAt",
+      title: "Última sincronización con Wasi",
+      type: "datetime",
+      group: "management",
+      readOnly: true,
+      description: "Marca de tiempo del último sync exitoso desde Wasi. Solo escritura del cron — informativo.",
+    }),
+    defineField({
+      name: "wasiSyncHash",
+      title: "Wasi sync hash",
+      type: "string",
+      group: "management",
+      readOnly: true,
+      hidden: true,
+      description: "Hash del último payload Wasi sincronizado. Permite skip-if-unchanged en runs subsecuentes.",
+    }),
   ],
   preview: {
     select: {
