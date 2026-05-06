@@ -88,6 +88,7 @@ export default async function NeighborhoodsPageEn() {
     slug,
     name: NEIGHBORHOODS.find((n) => n.slug === slug)?.name ?? slug,
     image: photoMap.get(slug)?.url ?? NEIGHBORHOOD_IMAGES[slug] ?? "/hero-bg.jpg",
+    lqip: photoMap.get(slug)?.lqip,
     avgPrice: priceBySlug[slug],
     propertyCount: countBySlug[slug] ?? undefined,
   }));

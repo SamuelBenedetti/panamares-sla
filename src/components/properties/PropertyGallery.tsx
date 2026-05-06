@@ -6,6 +6,8 @@ import Image from "next/image";
 interface GalleryImage {
   url: string;
   alt?: string;
+  /** Sanity LQIP base64 — passed to next/image as blurDataURL when present. */
+  lqip?: string;
 }
 
 interface Props {
@@ -131,6 +133,7 @@ export default function PropertyGallery({ images, contained = false, propertyTit
                 priority={i === 0}
                 className={`object-contain transition-opacity duration-500 ease-in-out ${i === lightboxIdx ? "opacity-100" : "opacity-0"}`}
                 sizes="100vw"
+                {...(img.lqip ? { placeholder: "blur" as const, blurDataURL: img.lqip } : {})}
               />
             ))}
           </div>
@@ -211,6 +214,7 @@ export default function PropertyGallery({ images, contained = false, propertyTit
                 priority={i === 0}
                 className={`object-cover transition-opacity duration-500 ease-in-out ${i === active ? "opacity-100" : "opacity-0"}`}
                 sizes="(max-width: 1024px) 100vw, 60vw"
+                {...(img.lqip ? { placeholder: "blur" as const, blurDataURL: img.lqip } : {})}
               />
             ))}
 
@@ -265,6 +269,7 @@ export default function PropertyGallery({ images, contained = false, propertyTit
                     fill
                     className="object-cover"
                     sizes="52px"
+                    {...(img.lqip ? { placeholder: "blur" as const, blurDataURL: img.lqip } : {})}
                   />
                 </button>
               ))}
@@ -289,6 +294,7 @@ export default function PropertyGallery({ images, contained = false, propertyTit
                 priority={i === 0}
                 className={`object-cover transition-opacity duration-500 ease-in-out ${i === active ? "opacity-100" : "opacity-0"}`}
                 sizes="100vw"
+                {...(img.lqip ? { placeholder: "blur" as const, blurDataURL: img.lqip } : {})}
               />
             ))}
 
@@ -344,6 +350,7 @@ export default function PropertyGallery({ images, contained = false, propertyTit
                         fill
                         className="object-cover"
                         sizes="72px"
+                        {...(img.lqip ? { placeholder: "blur" as const, blurDataURL: img.lqip } : {})}
                       />
                     </button>
                   ))}
