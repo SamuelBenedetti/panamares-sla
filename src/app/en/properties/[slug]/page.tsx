@@ -93,7 +93,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   // CMS-level noindex toggle (demo, duplicates, unpublished).
   if (property.noindex) {
-    return { title: property.title, robots: { index: false, follow: false } };
+    return {
+      title: resolveI18nString(property.titleI18n, "en", property.title),
+      robots: { index: false, follow: false },
+    };
   }
 
   const localizedTitle = resolveI18nString(property.titleI18n, "en", property.title);

@@ -116,7 +116,7 @@ export default async function CategoryPageEn({ params }: Props) {
     }));
 
   const pageUrl = `/en/${params.category}/`;
-  const jsonLdList = itemListSchema(pageUrl, cat.h1, properties);
+  const jsonLdList = itemListSchema(pageUrl, cat.h1, properties, "en");
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: copy.layout.breadcrumb.inicio, url: "/en/" },
     { name: cat.h1, url: pageUrl },

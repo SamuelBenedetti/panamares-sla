@@ -19,7 +19,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCopy } from "@/lib/copy";
 import { neighborhoodsEs } from "@/lib/copy/neighborhoods.es";
-import { resolveI18nText } from "@/lib/i18n/resolveI18n";
+import { resolveI18nString, resolveI18nText } from "@/lib/i18n/resolveI18n";
 
 const copy = getCopy("es");
 const t = copy.components.neighborhoodDetail;
@@ -123,7 +123,7 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
     .map((p) => ({
       lat:      p.location!.lat,
       lng:      p.location!.lng,
-      title:    p.title,
+      title:    resolveI18nString(p.titleI18n, "es", p.title),
       slug:     p.slug.current,
       price:    p.price,
       bedrooms: p.bedrooms,

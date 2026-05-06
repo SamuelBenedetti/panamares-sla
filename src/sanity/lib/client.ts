@@ -19,12 +19,26 @@ export const client = createClient({
   useCdn: true,
 });
 
-// Revalidates every 60 s — Sanity content changes propagate within one minute.
+/**
+ * Two-layer freshness model:
+ *   1. Tag every query with "sanity" so /api/revalidate can call
+ *      revalidateTag("sanity") on a Sanity webhook publish — clears the
+ *      cache instantly across the whole catalog.
+ *   2. Fallback `revalidate: 60` so even without the webhook (local dev,
+ *      misconfigured Sanity webhook, etc.) content goes stale within a
+ *      minute. Previously this was 3600 — the comment lied — which made
+ *      humanReviewed gate flips invisible for up to an hour.
+ */
 export async function sanityFetch<T>(query: string, params?: Record<string, unknown>): Promise<T> {
   if (!isSanityConfigured) {
     // Return an empty result rather than crashing during local dev or CI preview
     // builds where NEXT_PUBLIC_SANITY_PROJECT_ID is not set.
     return [] as unknown as T;
   }
-  return client.fetch<T>(query, params ?? {}, { next: { revalidate: 3600 } });
+  return client.fetch<T>(query, params ?? {}, {
+    next: {
+      tags: ["sanity"],
+      revalidate: 60,
+    },
+  });
 }

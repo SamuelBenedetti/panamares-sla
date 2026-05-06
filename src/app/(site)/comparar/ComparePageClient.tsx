@@ -7,6 +7,7 @@ import type { Property } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import { BASE_URL, whatsappLink } from "@/lib/config";
 import { formatPrice } from "@/lib/utils";
+import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 
 type Tag = "oferta" | "economico" | "ubicacion" | "espacio";
@@ -154,7 +155,8 @@ export default function ComparePageClient({ properties }: Props) {
               const imgSrc = p.mainImage
                 ? urlFor(p.mainImage).width(700).height(IMG_H).url()
                 : PLACEHOLDERS[placeholderIdx];
-              const waMsg = `Hola, me interesa esta propiedad: ${p.title} — ${BASE_URL}/propiedades/${p.slug?.current}`;
+              const localizedTitle = resolveI18nString(p.titleI18n, "es", p.title);
+              const waMsg = `Hola, me interesa esta propiedad: ${localizedTitle} — ${BASE_URL}/propiedades/${p.slug?.current}`;
 
               return (
                 <article
@@ -166,7 +168,7 @@ export default function ComparePageClient({ properties }: Props) {
                   <div className="relative shrink-0" style={{ height: IMG_H }}>
                     <Image
                       src={imgSrc}
-                      alt={p.title}
+                      alt={localizedTitle}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"

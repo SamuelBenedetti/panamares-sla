@@ -1,6 +1,23 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { getCategorySlugFor } from "@/lib/categories";
+import { SLUG_MAP_ES_TO_EN, deriveEnSlug } from "@/lib/i18n";
+
+// Tier-2 category EN slugs (e.g. "apartments-for-sale"). Derived once at module
+// load from the canonical ES → EN map. Used to revalidate every
+// /en/{category}/{neighborhood}/ that could surface a given neighborhood when
+// its humanReviewed flag flips.
+const EN_CATEGORY_SLUGS: string[] = Object.entries(SLUG_MAP_ES_TO_EN)
+  .filter(([es]) => /^\/[a-z-]+-en-(venta|alquiler)$/.test(es))
+  .map(([, en]) => en.replace(/^\/en\//, ""));
+
+function slugifyZone(raw: string): string {
+  return raw
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/\s+/g, "-");
+}
 
 export async function POST(req: NextRequest) {
   const secret = req.nextUrl.searchParams.get("secret");
@@ -21,51 +38,84 @@ export async function POST(req: NextRequest) {
 
   try {
     if (docType === "property") {
-      // Revalida listing individual
+      // ── ES paths ───────────────────────────────────────────────────────────
       if (slug) revalidatePath(`/propiedades/${slug}/`);
-
-      // Revalida todas las páginas de listado que podrían mostrar esta propiedad
       revalidatePath("/");
       revalidatePath("/propiedades-en-venta/");
       revalidatePath("/propiedades-en-alquiler/");
 
-      // Revalida categoría específica si tenemos los datos
       if (body.businessType && body.propertyType) {
         const categorySlug = getCategorySlugFor(
           body.propertyType,
           body.businessType as "venta" | "alquiler"
         );
         revalidatePath(`/${categorySlug}/`);
+
+        const enCategoryPath = SLUG_MAP_ES_TO_EN[`/${categorySlug}`];
+        if (enCategoryPath) revalidatePath(`${enCategoryPath}/`);
+
         if (body.zone) {
-          const zoneSlug = body.zone
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/\s+/g, "-");
+          const zoneSlug = slugifyZone(body.zone);
           revalidatePath(`/${categorySlug}/${zoneSlug}/`);
+          if (enCategoryPath) {
+            revalidatePath(`${enCategoryPath}/${zoneSlug}/`);
+          }
         }
       }
+
+      // ── EN paths ───────────────────────────────────────────────────────────
+      if (slug) revalidatePath(`/en/properties/${deriveEnSlug(slug)}/`);
+      revalidatePath("/en");
+      revalidatePath("/en/properties-for-sale/");
+      revalidatePath("/en/properties-for-rent/");
 
       revalidateTag("properties");
     }
 
     if (docType === "neighborhood") {
+      // ── ES paths ───────────────────────────────────────────────────────────
       if (slug) revalidatePath(`/barrios/${slug}/`);
       revalidatePath("/barrios/");
+
+      // ── EN paths ───────────────────────────────────────────────────────────
+      if (slug) {
+        revalidatePath(`/en/neighborhoods/${slug}/`);
+        // Every /en/{category}/{neighborhood} that could surface or hide the
+        // neighborhood when its humanReviewed gate flips.
+        for (const enCat of EN_CATEGORY_SLUGS) {
+          revalidatePath(`/en/${enCat}/${slug}/`);
+        }
+      }
+      revalidatePath("/en/neighborhoods/");
+
       revalidateTag("neighborhoods");
     }
 
     if (docType === "guide") {
-      if (slug) revalidatePath(`/guias/${slug}/`);
+      if (slug) {
+        revalidatePath(`/guias/${slug}/`);
+        revalidatePath(`/en/guides/${slug}/`);
+      }
       revalidatePath("/guias/");
+      revalidatePath("/en/guides/");
       revalidateTag("guides");
     }
 
     if (docType === "agent") {
-      if (slug) revalidatePath(`/agentes/${slug}/`);
+      if (slug) {
+        revalidatePath(`/agentes/${slug}/`);
+        revalidatePath(`/en/agents/${slug}/`);
+      }
       revalidatePath("/agentes/");
+      revalidatePath("/en/agents/");
       revalidateTag("agents");
     }
+
+    // Blanket Sanity-query cache invalidation — every sanityFetch call is
+    // tagged with "sanity" (see src/sanity/lib/client.ts). Without this, path
+    // revalidation regenerates the page but reads stale doc data from the
+    // 60s-cached fetch layer, which masks humanReviewed gate flips.
+    revalidateTag("sanity");
 
     return NextResponse.json({
       revalidated: true,
