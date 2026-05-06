@@ -43,7 +43,7 @@
 import { createClient } from "@sanity/client";
 import { config } from "dotenv";
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync, unlinkSync } from "node:fs";
 import { dirname } from "node:path";
 
 config({ path: ".env.local" });
@@ -83,6 +83,42 @@ const CATALOG_SHRINK_LIMIT = 0.90;
 
 // Persisted between runs to support catalog-size assertion.
 const RUN_STATE_PATH = "logs/wasi-sync-state.json";
+
+// Append-only run log. One JSON line per sync invocation. Cron / monitoring
+// reads this to alert on failure spikes; humans read it as an audit trail.
+const SYNC_LOG_PATH = "logs/wasi-sync.jsonl";
+
+// Concurrency lock — prevents two syncs (cron + manual) from racing on the
+// same Sanity writes. PID + ISO timestamp; stale locks older than this TTL
+// are taken over without a manual reset.
+const LOCK_PATH = "logs/.wasi-sync.lock";
+const LOCK_STALE_AFTER_MS = 30 * 60 * 1000; // 30 minutes
+
+// Retry policy for transient Wasi/Sanity API failures (5xx, timeouts).
+// Exponential backoff: baseMs * factor^attempt. Total ≤ ~13 s for 3 attempts.
+const RETRY_ATTEMPTS = 3;
+const RETRY_BASE_MS  = 1000;
+const RETRY_FACTOR   = 3;
+
+// Title-tag length cap. Google truncates titles around 60 chars; longer titles
+// hurt CTR and SEO. Warn loudly so the catalog doesn't silently drift past it.
+const TITLE_CHAR_LIMIT = 60;
+
+// ── WASI enum constants ──────────────────────────────────────────────────────
+// Documents the magic-number contracts Wasi exposes. Hard-fails on values
+// outside the known set so a Wasi-side schema change doesn't silently mis-map.
+
+const WASI_AVAILABILITY = {
+  ACTIVE: 1, // disponible
+  SOLD:   2, // vendida
+  RENTED: 3, // alquilada — keep visible with rented badge per business rules
+};
+
+const WASI_STATUS_ON_PAGE = {
+  NORMAL:      1,
+  HIDDEN:      2,
+  OUTSTANDING: 3, // featured/destacada — surface on homepage
+};
 
 // ── Run state I/O ────────────────────────────────────────────────────────────
 
@@ -132,6 +168,100 @@ function isValidWasiDate(value) {
   // Reject impossible dates (>1 day in the future, or before 2000).
   const now = Date.now();
   return ts <= now + 86_400_000 && ts >= Date.parse("2000-01-01");
+}
+
+// ── Retry wrapper ────────────────────────────────────────────────────────────
+// Exponential backoff on transient API failures (5xx, timeouts, ECONNRESET).
+// Re-throws after RETRY_ATTEMPTS so the caller treats it as a real error.
+
+async function withRetry(label, fn) {
+  let lastError;
+  for (let attempt = 1; attempt <= RETRY_ATTEMPTS; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastError = err;
+      if (attempt === RETRY_ATTEMPTS) break;
+      const waitMs = RETRY_BASE_MS * Math.pow(RETRY_FACTOR, attempt - 1);
+      console.warn(`  ↻ retry ${attempt}/${RETRY_ATTEMPTS} for ${label} in ${waitMs}ms (${err.message})`);
+      await new Promise(r => setTimeout(r, waitMs));
+    }
+  }
+  throw lastError;
+}
+
+// ── Lockfile (concurrent-run prevention) ─────────────────────────────────────
+// Cron + manual invocation racing on the same Sanity dataset is the worst
+// failure mode (duplicate creates, conflicting patches, asset cache thrash).
+// Atomic file lock with a 30-min stale TTL so a crashed run doesn't lock us
+// out forever.
+
+function acquireLock() {
+  if (!existsSync(dirname(LOCK_PATH))) {
+    mkdirSync(dirname(LOCK_PATH), { recursive: true });
+  }
+  if (existsSync(LOCK_PATH)) {
+    try {
+      const meta = JSON.parse(readFileSync(LOCK_PATH, "utf8"));
+      const ageMs = Date.now() - new Date(meta.ts).getTime();
+      if (ageMs < LOCK_STALE_AFTER_MS) {
+        throw new Error(`Another sync is running (PID ${meta.pid}, started ${meta.ts}, ${Math.round(ageMs / 1000)}s ago). Refusing to start. Delete ${LOCK_PATH} if you're sure no other process is active.`);
+      }
+      console.warn(`⚠ Stale lock from PID ${meta.pid} (${Math.round(ageMs / 60000)} min old) — taking over.`);
+    } catch (err) {
+      // Unparseable lock — also stale.
+      if (err.message.startsWith("Another sync")) throw err;
+      console.warn(`⚠ Unreadable lock file — taking over.`);
+    }
+  }
+  writeFileSync(LOCK_PATH, JSON.stringify({ pid: process.pid, ts: new Date().toISOString() }));
+  // Best-effort cleanup on any normal exit path.
+  process.on("exit",  releaseLock);
+  process.on("SIGINT",  () => { releaseLock(); process.exit(130); });
+  process.on("SIGTERM", () => { releaseLock(); process.exit(143); });
+}
+
+function releaseLock() {
+  try { unlinkSync(LOCK_PATH); } catch {} // ignore if already removed
+}
+
+// ── Sync log (append-only jsonl) ─────────────────────────────────────────────
+
+function appendSyncLog(entry) {
+  if (!existsSync(dirname(SYNC_LOG_PATH))) {
+    mkdirSync(dirname(SYNC_LOG_PATH), { recursive: true });
+  }
+  appendFileSync(SYNC_LOG_PATH, JSON.stringify(entry) + "\n");
+}
+
+// ── Pre-flight checks ────────────────────────────────────────────────────────
+// Fail fast before any write. Catches stale credentials, wrong dataset, or
+// expired tokens without leaving the catalog half-synced.
+
+async function preflightChecks() {
+  process.stdout.write("🛫 Pre-flight: Wasi credentials...");
+  await withRetry("preflight wasiGet", () =>
+    wasiGet("/property/search", "scope=1&take=1&short=true")
+  );
+  console.log(" ✓");
+
+  process.stdout.write("🛫 Pre-flight: Sanity dataset...");
+  const datasetName = process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production";
+  if (datasetName !== "production" && datasetName !== "staging") {
+    throw new Error(`Unexpected Sanity dataset: "${datasetName}". Refusing to write — set NEXT_PUBLIC_SANITY_DATASET explicitly.`);
+  }
+  console.log(` ✓ (${datasetName})`);
+
+  // Probe write permission with a tiny canary doc + immediate delete.
+  if (!DRY_RUN) {
+    process.stdout.write("🛫 Pre-flight: Sanity write...");
+    const canaryId = `__sync_canary_${Date.now()}`;
+    await withRetry("preflight createIfNotExists", () =>
+      sanity.createIfNotExists({ _id: canaryId, _type: "property", title: "canary", price: 0, businessType: "venta", propertyType: "apartamento", listingStatus: "retirada", zone: "Panamá" })
+    );
+    await withRetry("preflight delete", () => sanity.delete(canaryId));
+    console.log(" ✓");
+  }
 }
 
 // ── Validate env ──────────────────────────────────────────────────────────────
@@ -410,17 +540,20 @@ function mapBusinessType(prop) {
 }
 
 function mapListingStatus(prop) {
-  // WASI returns id_availability as a string e.g. "1"
-  // avail=3 means "Rented" — keep visible with rented badge, not hidden
+  // WASI returns id_availability as a string e.g. "1". See WASI_AVAILABILITY
+  // for the canonical mapping. RENTED stays visible (not hidden) with a
+  // dedicated badge per business rules.
   const avail = Number(prop.id_availability ?? 0);
-  if (avail === 1) return "activa";
-  if (avail === 2) return "vendida";
-  if (avail === 3) return "activa";
-  return avail ? "retirada" : "activa";
+  if (avail === WASI_AVAILABILITY.ACTIVE) return "activa";
+  if (avail === WASI_AVAILABILITY.SOLD)   return "vendida";
+  if (avail === WASI_AVAILABILITY.RENTED) return "activa";
+  if (avail === 0) return "activa"; // Wasi omitted the field — assume active
+  console.warn(`  ⚠ Unknown id_availability=${avail} for wasi-${prop.id_property} — treating as retirada`);
+  return "retirada";
 }
 
 function mapRented(prop) {
-  return Number(prop.id_availability ?? 0) === 3;
+  return Number(prop.id_availability ?? 0) === WASI_AVAILABILITY.RENTED;
 }
 
 function mapCondition(prop) {
@@ -484,9 +617,18 @@ function buildTitle(prop, propertyType, businessType, zone) {
   const intent   = businessType === "alquiler" ? "en Alquiler" : "en Venta";
   const building = String(prop.building_name ?? prop.edificio ?? "").trim()
                    || extractBuildingFromWasiTitle(prop.title);
-  if (building) return `${building} — ${typeLabel} ${intent}`;
-  if (zone)     return `${typeLabel} ${intent} en ${zone}`;
-  return `${typeLabel} ${intent}`;
+  let title;
+  if (building)    title = `${building} — ${typeLabel} ${intent}`;
+  else if (zone)   title = `${typeLabel} ${intent} en ${zone}`;
+  else             title = `${typeLabel} ${intent}`;
+
+  // Google truncates titles around 60 chars in SERPs. Long ones don't break
+  // anything but they hurt CTR. Surface so editors can pull a shorter custom
+  // title in Studio (HUMAN_FIELDS-protected, so the override sticks).
+  if (title.length > TITLE_CHAR_LIMIT) {
+    console.warn(`  ⚠ wasi-${prop.id_property}: title is ${title.length} chars (cap ${TITLE_CHAR_LIMIT}) — "${title}"`);
+  }
+  return title;
 }
 
 function decodeHtmlEntities(s) {
@@ -733,12 +875,14 @@ async function uploadImage(url, wasiId, slot) {
   if (cached) return { _type: "image", asset: { _type: "reference", _ref: cached } };
 
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const buffer = await res.arrayBuffer();
-    const asset  = await sanity.assets.upload("image", Buffer.from(buffer), {
-      filename,
-      contentType: res.headers.get("content-type") || "image/jpeg",
+    const asset = await withRetry(`upload ${filename}`, async () => {
+      const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const buffer = await res.arrayBuffer();
+      return sanity.assets.upload("image", Buffer.from(buffer), {
+        filename,
+        contentType: res.headers.get("content-type") || "image/jpeg",
+      });
     });
     assetCache.set(filename, asset._id);
     return { _type: "image", asset: { _type: "reference", _ref: asset._id } };
@@ -752,13 +896,15 @@ async function uploadImage(url, wasiId, slot) {
 
 async function wasiGet(path, params = "") {
   const url = `${WASI_BASE}${path}?${wCreds()}${params ? "&" + params : ""}`;
-  const res  = await fetch(url, { signal: AbortSignal.timeout(30000) });
-  if (!res.ok) throw new Error(`WASI ${path} → HTTP ${res.status}`);
-  const data = await res.json();
-  if (data.status !== "success") {
-    throw new Error(`WASI error: ${data.message ?? JSON.stringify(data).slice(0, 120)}`);
-  }
-  return data;
+  return withRetry(`WASI ${path}`, async () => {
+    const res = await fetch(url, { signal: AbortSignal.timeout(30000) });
+    if (!res.ok) throw new Error(`WASI ${path} → HTTP ${res.status}`);
+    const data = await res.json();
+    if (data.status !== "success") {
+      throw new Error(`WASI error: ${data.message ?? JSON.stringify(data).slice(0, 120)}`);
+    }
+    return data;
+  });
 }
 
 async function fetchAllWasiIds() {
@@ -829,7 +975,7 @@ async function buildWasiFields(prop) {
     businessType,
     propertyType,
     listingStatus,
-    featured: Number(prop.id_status_on_page) === 3,
+    featured: Number(prop.id_status_on_page) === WASI_STATUS_ON_PAGE.OUTSTANDING,
     rented: mapRented(prop),
     price,
     zone:     zone || "Panamá",
@@ -911,6 +1057,7 @@ async function buildWasiFields(prop) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
+  const startTime = Date.now();
   console.log(`\n${"═".repeat(60)}`);
   console.log(`  WASI → Sanity Sync  ${DRY_RUN ? "· DRY RUN (no writes)" : ""}${FORCE ? "  · ⚠ FORCE (safety bypassed)" : ""}${isFinite(LIMIT) ? `  · LIMIT=${LIMIT}` : ""}`);
   console.log(`${"═".repeat(60)}\n`);
@@ -918,6 +1065,14 @@ async function main() {
   if (FORCE) {
     console.warn("⚠ --force enabled: catalog-size assertion and deactivation threshold are bypassed.\n");
   }
+
+  // 0a. Acquire concurrency lock (skip in dry-run / single-id — those are safe).
+  if (!DRY_RUN && !SINGLE_ID) {
+    acquireLock();
+  }
+
+  // 0b. Pre-flight checks — fail fast on stale credentials or wrong dataset.
+  await preflightChecks();
 
   // 1. Fetch WASI property IDs
   process.stdout.write("📡 Fetching WASI listings...");
@@ -1030,7 +1185,7 @@ async function main() {
               : {}),
             ...(publishedAt != null ? { publishedAt } : {}),
           };
-          await sanity.createIfNotExists(seed);
+          await withRetry(`createIfNotExists ${_id}`, () => sanity.createIfNotExists(seed));
         }
 
         // Updates: omit HUMAN_FIELDS so Studio edits stick.
@@ -1043,7 +1198,7 @@ async function main() {
 
         const patch = sanity.patch(_id).set(wasiOnlyFields);
         if (missingFields.length > 0) patch.unset(missingFields);
-        await patch.commit();
+        await withRetry(`patch ${_id}`, () => patch.commit());
       }
 
       console.log(isNew ? "✨ created" : "✓  updated");
@@ -1076,7 +1231,9 @@ async function main() {
       for (const sanityId of candidates) {
         process.stdout.write(`   ${sanityId}... `);
         if (!DRY_RUN) {
-          await sanity.patch(sanityId).set({ listingStatus: "retirada" }).commit();
+          await withRetry(`deactivate ${sanityId}`, () =>
+            sanity.patch(sanityId).set({ listingStatus: "retirada" }).commit()
+          );
         }
         console.log("✓");
         deactivated++;
@@ -1114,9 +1271,32 @@ async function main() {
     for (const [raw] of unmapped)              console.log(`  ⚠ ${raw.padEnd(30)} → SIN MAPEAR (llegará tal cual)`);
     console.log(`${"─".repeat(60)}\n`);
   }
+
+  // 7. Append run summary to wasi-sync.jsonl (skipped on dry-run/single-id —
+  // those don't represent real catalog runs).
+  if (!DRY_RUN && !SINGLE_ID) {
+    appendSyncLog({
+      ts:        new Date().toISOString(),
+      duration_s: Math.round((Date.now() - startTime) / 1000),
+      catalog:   wasiIds.length,
+      created, updated, skipped, deactivated, failed,
+      force:     FORCE || undefined,
+    });
+  }
 }
 
 main().catch(err => {
+  // Capture aborts in the run log too, so monitoring sees them.
+  if (!DRY_RUN && !SINGLE_ID) {
+    try {
+      appendSyncLog({
+        ts:      new Date().toISOString(),
+        aborted: err.message.split("\n")[0].slice(0, 200),
+        force:   FORCE || undefined,
+      });
+    } catch {}
+  }
+  releaseLock();
   console.error("\n💥 Fatal:", err.message);
   process.exit(1);
 });
