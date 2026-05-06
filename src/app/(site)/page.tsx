@@ -35,6 +35,12 @@ export default async function HomePage() {
       .map((n) => [n.slug, urlFor(n.photo!).width(700).height(930).fit("crop").url()])
   );
 
+  const neighborhoodLqips = Object.fromEntries(
+    allNbhContent
+      .filter((n) => n.photo?.lqip)
+      .map((n) => [n.slug, n.photo!.lqip!])
+  );
+
   const neighborhoodPrices = Object.fromEntries(
     allNbhContent
       .filter((n) => n.avgPricePerM2)
@@ -50,6 +56,7 @@ export default async function HomePage() {
       <NeighborhoodCards
         counts={neighborhoodCounts}
         photos={neighborhoodPhotos}
+        lqips={neighborhoodLqips}
         prices={neighborhoodPrices}
         locale="es"
       />

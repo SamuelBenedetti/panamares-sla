@@ -301,6 +301,11 @@ const ZONE_MAP = {
   "Farallon":         "Farallón",
   "Río Hato":         "Farallón",
   "Rio Hato":         "Farallón",
+  "David":            "David",
+  "Antón":            "Antón",
+  "Anton":            "Antón",
+  "Arraiján":         "Arraiján",
+  "Arraijan":         "Arraiján",
 };
 
 const ZONE_TO_SLUG = {
@@ -330,6 +335,9 @@ const ZONE_TO_SLUG = {
   "Río Mar":         "rio-mar",
   "Panamá Pacífico": "panama-pacifico",
   "Farallón":        "farallon",
+  "David":           "david",
+  "Antón":           "anton",
+  "Arraiján":        "arraijan",
 };
 
 // ── Field helpers ─────────────────────────────────────────────────────────────

@@ -14,6 +14,7 @@ import type { Property } from "@/lib/types";
 import { localizeConditionLabel } from "@/lib/i18n";
 import { getCopy } from "@/lib/copy";
 import { resolveI18nString } from "@/lib/i18n/resolveI18n";
+import { SetTranslationBlocked } from "@/lib/translation-gate";
 import { formatPrice } from "@/lib/utils";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -117,12 +118,17 @@ export default async function PropertyDetailPage({ params }: Props) {
     currentSlug: params.slug,
   });
 
-  const galleryImages: { url: string; alt: string }[] = (property.gallery ?? []).map((img) => ({
-    url: urlFor(img).width(1200).height(800).url(),
-    alt: img.alt ?? property.title,
+  const galleryImages: { url: string; alt: string; lqip?: string }[] = (property.gallery ?? []).map((img) => ({
+    url:  urlFor(img).width(1200).height(800).url(),
+    alt:  img.alt ?? property.title,
+    lqip: img.lqip,
   }));
   if (galleryImages.length === 0 && property.mainImage) {
-    galleryImages.push({ url: urlFor(property.mainImage).width(1200).height(800).url(), alt: property.title });
+    galleryImages.push({
+      url:  urlFor(property.mainImage).width(1200).height(800).url(),
+      alt:  property.title,
+      lqip: property.mainImage.lqip,
+    });
   }
   if (galleryImages.length === 0) {
     galleryImages.push({ url: "/hero-bg.jpg", alt: property.title });
@@ -177,6 +183,9 @@ export default async function PropertyDetailPage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdListing) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
+
+      {/* Disables the LangToggle EN button until Igor approves the EN copy. */}
+      <SetTranslationBlocked blocked={!property.humanReviewed} />
 
       {/* LCP preload — first gallery image */}
       <link rel="preload" as="image" href={galleryImages[0].url} fetchPriority="high" />

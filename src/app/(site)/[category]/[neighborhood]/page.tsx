@@ -14,6 +14,7 @@ import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import { canonical, alternates } from "@/lib/seo";
 import { getEnUrl } from "@/lib/i18n";
 import { resolveI18nString } from "@/lib/i18n/resolveI18n";
+import { SetTranslationBlocked } from "@/lib/translation-gate";
 
 // Generates the Tier 3 header SEO block specific to type × intent × neighborhood combo.
 function buildGeoSeoBlock(
@@ -164,6 +165,11 @@ export default async function GeoTypePage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdList) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
+
+      {/* Disables the LangToggle EN button until Igor approves the EN copy
+          for this neighborhood. EN counterpart 308s to ES while gated. */}
+      <SetTranslationBlocked blocked={nbhContent?.humanReviewed !== true} />
+
       <WhatsAppButton message={`Hola, busco ${typeLabel} en ${neighborhood.name}`} variant="floating" locale="es" />
 
       <ListingPageHeader
