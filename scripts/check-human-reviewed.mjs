@@ -27,3 +27,12 @@ const nbh = await sanity.fetch(
   }`
 );
 console.log("\nNEIGHBORHOOD punta-pacifica:", JSON.stringify(nbh, null, 2));
+
+const allNbh = await sanity.fetch(
+  `*[_type == "neighborhood"]{ "slug": slug.current, name, humanReviewed } | order(humanReviewed desc, name asc)`
+);
+console.log("\nALL NEIGHBORHOODS humanReviewed status:");
+for (const n of allNbh) {
+  const flag = n.humanReviewed === true ? "✅" : "  ";
+  console.log(`  ${flag} ${n.slug.padEnd(28)} ${n.name}`);
+}

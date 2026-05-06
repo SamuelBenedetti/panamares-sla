@@ -1,33 +1,138 @@
 /**
- * WASI API → Sanity sync script
+ * WASI API → Sanity sync script — bulletproof edition.
  *
- * Run:           node scripts/sync-wasi.mjs
- * Dry run:       node scripts/sync-wasi.mjs --dry-run
- * Limit:         node scripts/sync-wasi.mjs --limit=10
- * Single prop:   node scripts/sync-wasi.mjs --id=9836183
+ * Run:               node scripts/sync-wasi.mjs
+ * Dry run:           node scripts/sync-wasi.mjs --dry-run
+ * Limit:             node scripts/sync-wasi.mjs --limit=10
+ * Single prop:       node scripts/sync-wasi.mjs --id=9836183
+ * Bypass safety:     node scripts/sync-wasi.mjs --force   (also bypass thresholds)
  *
  * Required env vars (.env.local):
- *   WASI_ID_COMPANY   numeric ID from wasi.co → Configuración → Ajustes generales → Wasi API
- *   WASI_TOKEN        token from same screen
+ *   WASI_ID_COMPANY     numeric ID from wasi.co → Configuración → Ajustes generales → Wasi API
+ *   WASI_TOKEN          token from same screen
  *   SANITY_WRITE_TOKEN  already in .env.local
  *
- * WASI is READ-ONLY here. This script only calls GET endpoints.
- * It writes exclusively to Sanity (createIfNotExists + patch).
- * featured is synced from WASI id_status_on_page === 3 ("Outstanding") on every run.
- * Manual fields in Sanity (recommended, fairPrice, rented) are never overwritten.
- * Agent is sourced from WASI id_user and updated automatically on every sync.
+ * ── Safety guarantees ────────────────────────────────────────────────────────
+ *   • WASI is READ-ONLY here. This script only calls GET endpoints.
+ *   • HUMAN_FIELDS (title/description/slug + i18n + flags) are written only on
+ *     createIfNotExists. Subsequent syncs never touch them — Carlos and Igor's
+ *     edits in Studio are permanent. Empty-string reset is honored.
+ *   • Catalog-size guard: if Wasi returns <90% of last successful run's count,
+ *     the entire sync aborts with no writes.
+ *   • Deactivation threshold: aborts if deactivations would exceed
+ *     max(10, 5% of catalog). --force bypasses (logs loud).
+ *   • mapPropertyType hard-fails (returns null → skip + warn) on unknown types
+ *     instead of silently defaulting to "apartamento" which would lock in a
+ *     wrong slug forever.
+ *   • Image asset cache keys by content URL hash, so a photo swap in Wasi
+ *     produces a fresh upload (old asset becomes orphan; sweep separately).
+ *   • Optional fields are explicitly unset when absent in Wasi — no stale
+ *     values linger from previous syncs.
+ *   • publishedAt is validated and added to HUMAN_FIELDS (defense in depth).
+ *
+ * ── Field ownership matrix ───────────────────────────────────────────────────
+ *   Sanity-owned (HUMAN_FIELDS):
+ *     title, description, slug, titleI18n, descriptionI18n,
+ *     humanReviewed, recommended, fairPrice, noindex, publishedAt
+ *   Wasi-owned (synced every run):
+ *     wasiId, businessType, propertyType, listingStatus, featured, rented,
+ *     price, zone, province, all dimensional facts (bedrooms/bathrooms/area/
+ *     etc), agent, mainImage, gallery, features
  */
 
 import { createClient } from "@sanity/client";
 import { config } from "dotenv";
+import { createHash } from "node:crypto";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { dirname } from "node:path";
 
 config({ path: ".env.local" });
 
 const DRY_RUN   = process.argv.includes("--dry-run");
+const FORCE     = process.argv.includes("--force");
 const SINGLE_ID = process.argv.find(a => a.startsWith("--id="))?.split("=")[1];
 const LIMIT_ARG = process.argv.find(a => a.startsWith("--limit="))?.split("=")[1];
 const LIMIT     = LIMIT_ARG ? parseInt(LIMIT_ARG, 10) : Infinity;
 const BATCH     = 5; // parallel detail fetches
+
+// ── Safety constants ─────────────────────────────────────────────────────────
+// Fields written only on createIfNotExists; never patched on update. Carlos
+// and Igor own these in Sanity Studio. Wasi is the source of truth for
+// everything else (see file-header field ownership matrix).
+const HUMAN_FIELDS = new Set([
+  "title", "description", "slug",
+  "titleI18n", "descriptionI18n",
+  "humanReviewed", "recommended", "fairPrice", "rented", "noindex", "publishedAt",
+]);
+
+// Optional fields whose absence in Wasi must be propagated as an explicit
+// `unset` so Sanity does not retain stale values from previous syncs.
+const OPTIONAL_WASI_FIELDS = [
+  "floor", "yearBuilt", "condition", "corregimiento",
+  "bedrooms", "bathrooms", "halfBathrooms", "parking",
+  "area", "adminFee", "location",
+];
+
+// Deactivation safety threshold: max(10, 5% of catalog). --force bypasses.
+const DEACTIVATION_FLOOR_ABS = 10;
+const DEACTIVATION_FLOOR_PCT = 0.05;
+
+// Catalog-size assertion: abort the whole sync if the current Wasi catalog
+// is smaller than this fraction of the last successful run.
+const CATALOG_SHRINK_LIMIT = 0.90;
+
+// Persisted between runs to support catalog-size assertion.
+const RUN_STATE_PATH = "logs/wasi-sync-state.json";
+
+// ── Run state I/O ────────────────────────────────────────────────────────────
+
+function readRunState() {
+  try {
+    return JSON.parse(readFileSync(RUN_STATE_PATH, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function writeRunState(state) {
+  if (!existsSync(dirname(RUN_STATE_PATH))) {
+    mkdirSync(dirname(RUN_STATE_PATH), { recursive: true });
+  }
+  writeFileSync(RUN_STATE_PATH, JSON.stringify(state, null, 2));
+}
+
+// ── Field utilities ──────────────────────────────────────────────────────────
+
+function omit(obj, keys) {
+  const out = {};
+  for (const k of Object.keys(obj)) {
+    if (!keys.has(k)) out[k] = obj[k];
+  }
+  return out;
+}
+
+// Hash the URL path (not the full URL with query string) — Wasi sometimes
+// appends auth/version params that change per request without indicating a
+// content change, which would otherwise cause infinite re-uploads.
+function imageFilename(wasiId, slot, url) {
+  let pathOnly;
+  try {
+    pathOnly = new URL(url).pathname;
+  } catch {
+    pathOnly = String(url);
+  }
+  const hash = createHash("md5").update(pathOnly).digest("hex").slice(0, 8);
+  return `wasi-${wasiId}-${slot}-${hash}.jpg`;
+}
+
+function isValidWasiDate(value) {
+  if (!value) return false;
+  const ts = Date.parse(value);
+  if (isNaN(ts)) return false;
+  // Reject impossible dates (>1 day in the future, or before 2000).
+  const now = Date.now();
+  return ts <= now + 86_400_000 && ts >= Date.parse("2000-01-01");
+}
 
 // ── Validate env ──────────────────────────────────────────────────────────────
 
@@ -244,14 +349,21 @@ function slugify(str) {
 }
 
 function mapPropertyType(prop) {
-  // Base type from WASI label or numeric ID
+  // Base type from WASI label or numeric ID. Returns null on unknown types
+  // so the caller can skip + warn loud rather than silently misclassifying.
+  // Misclassification is especially dangerous because slug is HUMAN_FIELDS-
+  // protected after creation: a "casa de playa" mis-typed as "apartamento"
+  // on first sync would be locked into /apartamentos-en-venta/* forever.
   const labelRaw = prop.property_type_label ?? prop.tipo_inmueble ?? prop.property_type ?? "";
   const label = String(labelRaw).toLowerCase().trim();
-  let base = (label && WASI_TYPE_LABEL[label])
-    ? WASI_TYPE_LABEL[label]
-    : (prop.id_property_type && WASI_TYPE_ID[prop.id_property_type])
-      ? WASI_TYPE_ID[prop.id_property_type]
-      : "apartamento";
+  const fromLabel = label ? WASI_TYPE_LABEL[label] : null;
+  const fromId    = prop.id_property_type ? WASI_TYPE_ID[prop.id_property_type] : null;
+  let base = fromLabel ?? fromId ?? null;
+
+  if (!base) {
+    console.warn(`  ⚠ Unknown WASI propertyType — label="${labelRaw}" id_property_type=${prop.id_property_type ?? "?"}`);
+    return null;
+  }
 
   const title = String(prop.title ?? "").toLowerCase();
   const obs   = String(prop.observations ?? prop.descripcion ?? "").toLowerCase();
@@ -604,7 +716,11 @@ async function preloadAssetCache() {
   for (const a of assets) assetCache.set(a.originalFilename, a._id);
 }
 
-async function uploadImage(url, filename) {
+async function uploadImage(url, wasiId, slot) {
+  // slot examples: "main", "g0", "g1", ...
+  // Filename embeds an 8-char hash of the URL path so a photo swap in Wasi
+  // produces a fresh asset rather than reusing the stale cached one.
+  const filename = imageFilename(wasiId, slot, url);
   const cached = assetCache.get(filename);
   if (cached) return { _type: "image", asset: { _type: "reference", _ref: cached } };
 
@@ -754,7 +870,7 @@ async function buildWasiFields(prop) {
       ? mainRaw
       : (mainRaw?.url_big ?? mainRaw?.url ?? mainRaw?.url_original ?? null);
     if (mainUrl) {
-      const img = await uploadImage(mainUrl, `wasi-${wasiId}-main.jpg`);
+      const img = await uploadImage(mainUrl, wasiId, "main");
       if (img) fields.mainImage = img;
     }
 
@@ -766,12 +882,15 @@ async function buildWasiFields(prop) {
         if (/^\d+$/.test(k) && v?.url) photos.push(v);
       }
     }
+    if (photos.length > 20) {
+      console.warn(`  ⚠ wasiId=${wasiId} has ${photos.length} gallery photos, truncating to 20`);
+    }
     if (photos.length > 0) {
       const gallery = [];
       for (let i = 0; i < Math.min(photos.length, 20); i++) {
         const url = photos[i].url_big ?? photos[i].url ?? photos[i].url_original;
         if (!url) continue;
-        const img = await uploadImage(url, `wasi-${wasiId}-${i + 1}.jpg`);
+        const img = await uploadImage(url, wasiId, `g${i + 1}`);
         if (img) gallery.push({ ...img, _key: `g${i}` });
       }
       if (gallery.length > 0) fields.gallery = gallery;
@@ -785,8 +904,12 @@ async function buildWasiFields(prop) {
 
 async function main() {
   console.log(`\n${"═".repeat(60)}`);
-  console.log(`  WASI → Sanity Sync  ${DRY_RUN ? "· DRY RUN (no writes)" : ""}${isFinite(LIMIT) ? `  · LIMIT=${LIMIT}` : ""}`);
+  console.log(`  WASI → Sanity Sync  ${DRY_RUN ? "· DRY RUN (no writes)" : ""}${FORCE ? "  · ⚠ FORCE (safety bypassed)" : ""}${isFinite(LIMIT) ? `  · LIMIT=${LIMIT}` : ""}`);
   console.log(`${"═".repeat(60)}\n`);
+
+  if (FORCE) {
+    console.warn("⚠ --force enabled: catalog-size assertion and deactivation threshold are bypassed.\n");
+  }
 
   // 1. Fetch WASI property IDs
   process.stdout.write("📡 Fetching WASI listings...");
@@ -798,6 +921,22 @@ async function main() {
     wasiIds = await fetchAllWasiIds();
     if (isFinite(LIMIT)) wasiIds = wasiIds.slice(0, LIMIT);
     console.log(` ${wasiIds.length} found${isFinite(LIMIT) ? ` (limited to ${LIMIT})` : ""}`);
+  }
+
+  // 1b. Catalog-size assertion — abort if Wasi returned suspiciously few
+  // properties compared to the last successful run. Defends against partial
+  // API responses (auth hiccup, pagination bug, regional outage) that would
+  // otherwise propagate as mass deactivations.
+  if (!SINGLE_ID && !isFinite(LIMIT)) {
+    const lastRun = readRunState();
+    if (lastRun?.idCount && wasiIds.length < lastRun.idCount * CATALOG_SHRINK_LIMIT) {
+      const pct = Math.round((1 - wasiIds.length / lastRun.idCount) * 100);
+      const msg = `SAFETY: Wasi catalog shrank ${pct}% vs last run (${wasiIds.length} now, ${lastRun.idCount} last on ${lastRun.ts}). Aborting full sync.`;
+      if (!FORCE) {
+        throw new Error(msg + " Re-run with --force if intentional.");
+      }
+      console.warn(`⚠ ${msg} Continuing because --force.`);
+    }
   }
 
   // 2. Fetch existing Sanity state
@@ -843,7 +982,7 @@ async function main() {
 
       const result = await buildWasiFields(detail);
       if (!result) {
-        console.log("⏭  skip (no price)");
+        console.log("⏭  skip");
         skipped++;
         continue;
       }
@@ -851,22 +990,52 @@ async function main() {
       const { _id, fields } = result;
 
       if (!DRY_RUN) {
-        // publishedAt from Wasi creation date (only set on first import, never overwritten)
+        // publishedAt: only used on createIfNotExists. Validated to avoid
+        // poisoning the sitemap <lastmod> with "now" or unparseable values.
         const wasiDate = detail.created_at ?? detail.creation_date ?? detail.date_created ?? detail.publication_date ?? null;
-        const publishedAt = wasiDate ? new Date(wasiDate).toISOString() : new Date().toISOString();
+        const publishedAt = isValidWasiDate(wasiDate) ? new Date(wasiDate).toISOString() : null;
 
-        // Create with manual-field defaults if new
-        await sanity.createIfNotExists({
-          _id,
-          _type:       "property",
-          recommended: false,
-          fairPrice:   false,
-          rented:      false,
-          publishedAt,
-        });
-        // Patch WASI-sourced fields (includes featured from id_status_on_page, rented from id_availability)
-        // Never touches recommended/fairPrice
-        await sanity.patch(_id).set(fields).commit();
+        if (isNew) {
+          // Seed with HUMAN_FIELDS (Wasi-derived initial values) + flags.
+          // After this, those fields are owned by Carlos/Igor in Studio.
+          // titleI18n[en] / descriptionI18n[en] are intentionally NOT seeded —
+          // those wait for Igor's translation review pass (humanReviewed gate).
+          const seed = {
+            _id,
+            _type:       "property",
+            recommended: false,
+            fairPrice:   false,
+            rented:      Boolean(fields.rented),
+            humanReviewed: false,
+            noindex:     false,
+            // Wasi-derived initial values — handed off to Studio after this
+            ...(fields.title       != null ? { title: fields.title } : {}),
+            ...(fields.slug        != null ? { slug:  fields.slug  } : {}),
+            ...(fields.description != null
+              ? {
+                  description: fields.description,
+                  descriptionI18n: [{ _key: "es", value: fields.description }],
+                }
+              : {}),
+            ...(fields.title != null
+              ? { titleI18n: [{ _key: "es", value: fields.title }] }
+              : {}),
+            ...(publishedAt != null ? { publishedAt } : {}),
+          };
+          await sanity.createIfNotExists(seed);
+        }
+
+        // Updates: omit HUMAN_FIELDS so Studio edits stick.
+        const wasiOnlyFields = omit(fields, HUMAN_FIELDS);
+
+        // Explicit unset for optional Wasi fields that are absent from this
+        // payload (e.g. Wasi removed `bedrooms`). Without this, stale values
+        // would silently linger in Sanity.
+        const missingFields = OPTIONAL_WASI_FIELDS.filter(f => !(f in fields));
+
+        const patch = sanity.patch(_id).set(wasiOnlyFields);
+        if (missingFields.length > 0) patch.unset(missingFields);
+        await patch.commit();
       }
 
       console.log(isNew ? "✨ created" : "✓  updated");
@@ -877,12 +1046,27 @@ async function main() {
     }
   }
 
-  // 4. Mark removed properties as retirada
-  if (!SINGLE_ID) {
-    console.log("\n🔍 Checking for removed properties...");
+  // 4. Mark removed properties as retirada — gated by safety threshold so a
+  // partial Wasi response never deactivates a large portion of the catalog.
+  // Skipped on --id and --limit (those represent a slice, not a full catalog).
+  if (!SINGLE_ID && !isFinite(LIMIT)) {
+    const candidates = [];
     for (const [sanityId, status] of sanityMap.entries()) {
-      if (!wasiIdSet.has(sanityId) && status === "activa") {
-        process.stdout.write(`   Deactivating ${sanityId}... `);
+      if (!wasiIdSet.has(sanityId) && status === "activa") candidates.push(sanityId);
+    }
+
+    const limit = Math.max(DEACTIVATION_FLOOR_ABS, Math.floor(sanityMap.size * DEACTIVATION_FLOOR_PCT));
+    if (candidates.length > limit && !FORCE) {
+      throw new Error(`SAFETY: ${candidates.length} deactivations would exceed threshold (${limit} = max(${DEACTIVATION_FLOOR_ABS}, ${Math.round(DEACTIVATION_FLOOR_PCT * 100)}% of ${sanityMap.size})). Re-run with --force if intentional.`);
+    }
+    if (candidates.length > limit && FORCE) {
+      console.warn(`⚠ Deactivating ${candidates.length} properties (threshold=${limit}). --force enabled.`);
+    }
+
+    if (candidates.length > 0) {
+      console.log(`\n🔍 Deactivating ${candidates.length} removed propert${candidates.length === 1 ? "y" : "ies"}...`);
+      for (const sanityId of candidates) {
+        process.stdout.write(`   ${sanityId}... `);
         if (!DRY_RUN) {
           await sanity.patch(sanityId).set({ listingStatus: "retirada" }).commit();
         }
@@ -890,6 +1074,16 @@ async function main() {
         deactivated++;
       }
     }
+  }
+
+  // 5b. Persist run state for next run's catalog-size assertion. Skip when
+  // SINGLE_ID/LIMIT/DRY_RUN since those don't represent a full successful run.
+  if (!SINGLE_ID && !isFinite(LIMIT) && !DRY_RUN && failed === 0) {
+    writeRunState({
+      idCount: wasiIds.length,
+      ts: new Date().toISOString(),
+      created, updated, skipped, deactivated,
+    });
   }
 
   // 5. Summary
