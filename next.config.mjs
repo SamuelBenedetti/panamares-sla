@@ -7,6 +7,13 @@ const withBundleAnalyzer = bundleAnalyzer({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // Custom loader bypasses Vercel's /_next/image optimizer for Sanity
+    // assets (which already transform via URL params on their own CDN).
+    // Avoids the monthly optimizer budget cap that was returning 402 for
+    // newly-added neighborhood photos. See ticket P2-02 in the SEO impl
+    // guide and src/lib/image-loader.ts for the implementation.
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
     remotePatterns: [
       {
         protocol: "https",
