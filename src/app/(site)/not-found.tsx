@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/client";
 import { featuredPropertiesQuery } from "@/sanity/lib/queries";
 import type { Property } from "@/lib/types";
-import PropertyGrid from "@/components/properties/PropertyGrid";
+import FeaturedProperties from "@/components/home/FeaturedProperties";
 import CTA from "@/components/home/CTA";
 
 export const metadata: Metadata = {
@@ -15,8 +15,7 @@ export const metadata: Metadata = {
 export default async function NotFound() {
   let featured: Property[] = [];
   try {
-    const all = await sanityFetch<Property[]>(featuredPropertiesQuery);
-    featured = all.slice(0, 8);
+    featured = await sanityFetch<Property[]>(featuredPropertiesQuery);
   } catch {
     featured = [];
   }
@@ -56,19 +55,7 @@ export default async function NotFound() {
 
       {/* Featured properties — recovery surface */}
       {featured.length > 0 && (
-        <section className="py-16 md:py-20 bg-white">
-          <div className="max-w-[1400px] mx-auto px-[30px]">
-            <div className="mb-10 text-center md:text-left">
-              <p className="font-body font-medium text-[#0c1834]/40 text-[12px] uppercase tracking-[3px]">
-                Te puede interesar
-              </p>
-              <h2 className="font-heading font-normal text-[#0c1834] text-[clamp(28px,4vw,42px)] leading-tight tracking-[-0.02em] mt-2">
-                Propiedades destacadas
-              </h2>
-            </div>
-            <PropertyGrid properties={featured} cols={4} locale="es" />
-          </div>
-        </section>
+        <FeaturedProperties properties={featured} locale="es" />
       )}
 
       {/* Homepage CTA */}
