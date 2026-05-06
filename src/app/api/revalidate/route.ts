@@ -111,6 +111,12 @@ export async function POST(req: NextRequest) {
       revalidateTag("agents");
     }
 
+    // Blanket Sanity-query cache invalidation — every sanityFetch call is
+    // tagged with "sanity" (see src/sanity/lib/client.ts). Without this, path
+    // revalidation regenerates the page but reads stale doc data from the
+    // 60s-cached fetch layer, which masks humanReviewed gate flips.
+    revalidateTag("sanity");
+
     return NextResponse.json({
       revalidated: true,
       docType,
