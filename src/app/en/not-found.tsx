@@ -16,7 +16,7 @@ export default async function NotFoundEn() {
   let featured: Property[] = [];
   try {
     const all = await sanityFetch<Property[]>(featuredPropertiesQuery);
-    featured = all.slice(0, 4);
+    featured = all.slice(0, 8);
   } catch {
     featured = [];
   }
