@@ -55,6 +55,8 @@ export interface Copy {
         titleLine1: string;
         titleLine2Italic: string;
         subtitle: { regular: string; bold: string };
+        guidedSearchTagline: string;
+        guidedSearchCta: string;
       };
       propertyTypeShortcuts: {
         eyebrow: string;

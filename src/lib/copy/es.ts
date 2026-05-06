@@ -59,6 +59,9 @@ export const es: Copy = {
           regular: "Propiedades exclusivas en ",
           bold: "las mejores zonas de la ciudad.",
         },
+        guidedSearchTagline:
+          "¿No sabes por dónde empezar? Te ayudamos a encontrar tu próxima propiedad.",
+        guidedSearchCta: "Búsqueda guiada",
       },
       propertyTypeShortcuts: {
         eyebrow: "Explorar por tipo",

@@ -59,6 +59,9 @@ export const en: Copy = {
           regular: "Exclusive properties in ",
           bold: "the city's most desirable areas.",
         },
+        guidedSearchTagline:
+          "Not sure where to start? We'll help you find your next property.",
+        guidedSearchCta: "Guided search",
       },
       propertyTypeShortcuts: {
         eyebrow: "Browse by type",

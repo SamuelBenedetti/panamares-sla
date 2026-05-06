@@ -1,6 +1,9 @@
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import SearchBar from "./SearchBar";
 import { getCopy, type Locale } from "@/lib/copy";
+import { localePath } from "@/lib/i18n";
 
 export default function Hero({ locale = "es" }: { locale?: Locale }) {
   const t = getCopy(locale).pages.home.hero;
@@ -58,6 +61,22 @@ export default function Hero({ locale = "es" }: { locale?: Locale }) {
         {/* Search */}
         <div className="w-full max-w-[700px]">
           <SearchBar />
+        </div>
+
+        {/* Guided search CTA — tagline + About-style link, subdued by default */}
+        <div className="flex flex-col items-center gap-2 pt-4">
+          <p className="font-body text-white/60 text-[12px] leading-[18px]">
+            {t.guidedSearchTagline}
+          </p>
+          <Link
+            href={localePath("/buscar/", locale)}
+            className="inline-flex items-center gap-[8px] border-b border-white pb-[4px] opacity-60 hover:opacity-100 transition-opacity"
+          >
+            <span className="font-body font-medium text-[12px] text-white uppercase tracking-[1.2px]">
+              {t.guidedSearchCta}
+            </span>
+            <ArrowRight className="text-white" size={11} aria-hidden="true" />
+          </Link>
         </div>
       </div>
     </section>
