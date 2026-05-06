@@ -2,14 +2,21 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { getLocaleFromPath, getEnUrl, getEsUrl } from "@/lib/i18n";
+import { useTranslationGate } from "@/lib/translation-gate";
 
 export default function LangToggle({ isLight }: { isLight: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const currentLocale = getLocaleFromPath(pathname);
   const isEN = currentLocale === "en";
+  const { blocked } = useTranslationGate();
+
+  // Disabled only when on ES and the EN counterpart is gated by humanReviewed
+  // on the current page. EN → ES never blocks (ES is always rendered).
+  const isDisabled = !isEN && blocked;
 
   function handleToggle() {
+    if (isDisabled) return;
     const target = isEN ? getEsUrl(pathname) : getEnUrl(pathname);
     if (target) {
       // Preserve scroll-state hint so the navbar stays styled correctly across navigation.
@@ -21,14 +28,24 @@ export default function LangToggle({ isLight }: { isLight: boolean }) {
     }
   }
 
+  const titleText = isDisabled
+    ? "Traducción al inglés pendiente de revisión"
+    : isEN
+      ? "Cambiar a Español"
+      : "Switch to English";
+
   return (
     <button
       onClick={handleToggle}
-      className={`flex items-center gap-[4px] border-[0.5px] px-[8px] py-[7px] backdrop-blur-[10px] hover:bg-black/5 transition-colors ${
+      disabled={isDisabled}
+      className={`flex items-center gap-[4px] border-[0.5px] px-[8px] py-[7px] backdrop-blur-[10px] transition-colors ${
         isLight ? "border-[#0c1834]" : "border-white"
+      } ${
+        isDisabled ? "opacity-40 cursor-not-allowed" : "hover:bg-black/5"
       }`}
-      title={isEN ? "Cambiar a Español" : "Switch to English"}
-      aria-label={isEN ? "Cambiar a Español" : "Switch to English"}
+      title={titleText}
+      aria-label={titleText}
+      aria-disabled={isDisabled || undefined}
     >
       <span
         className={`fi fi-pa transition-opacity duration-150 ${isEN ? "opacity-40" : "opacity-100"}`}
