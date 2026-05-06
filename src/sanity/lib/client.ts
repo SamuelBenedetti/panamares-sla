@@ -16,7 +16,14 @@ export const client = createClient({
   projectId: projectId ?? "unconfigured",
   dataset,
   apiVersion: "2026-05-07",
-  useCdn: true,
+  // useCdn:false hits Sanity's API directly instead of the ~30-60 s edge cache.
+  // Required because the humanReviewed gate must reflect a publish in seconds:
+  // even after revalidateTag("sanity") clears the Next.js fetch cache, a CDN
+  // hit would return stale data and the gate would not flip until the CDN
+  // edge node refreshed (~60 s). Trade-off: slightly higher per-request
+  // latency to Sanity. Acceptable at Panamares traffic; the on-demand
+  // revalidation flow keeps user-facing pages cached at the Next.js layer.
+  useCdn: false,
 });
 
 /**
