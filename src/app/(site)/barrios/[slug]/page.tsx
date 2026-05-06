@@ -20,6 +20,7 @@ import { notFound } from "next/navigation";
 import { getCopy } from "@/lib/copy";
 import { neighborhoodsEs } from "@/lib/copy/neighborhoods.es";
 import { resolveI18nString, resolveI18nText } from "@/lib/i18n/resolveI18n";
+import { SetTranslationBlocked } from "@/lib/translation-gate";
 
 const copy = getCopy("es");
 const t = copy.components.neighborhoodDetail;
@@ -212,6 +213,10 @@ export default async function NeighborhoodGuidePage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdPlace) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
+
+      {/* Disables the LangToggle EN button until Igor approves the EN copy. */}
+      <SetTranslationBlocked blocked={nbhContent?.humanReviewed !== true} />
+
       <WhatsAppButton message={waMsg} variant="floating" locale="es" />
 
       {/* ═══════════════════════════════════════════════════════════════════════
