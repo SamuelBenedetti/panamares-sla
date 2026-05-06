@@ -63,19 +63,19 @@ export default function Hero({ locale = "es" }: { locale?: Locale }) {
           <SearchBar />
         </div>
 
-        {/* Guided search CTA — tagline + About-style link */}
-        <div className="flex flex-col items-center gap-3 pt-4">
-          <p className="font-body text-white text-[14px] leading-[20px]">
+        {/* Guided search CTA — tagline + About-style link, subdued by default */}
+        <div className="flex flex-col items-center gap-2 pt-4">
+          <p className="font-body text-white/60 text-[12px] leading-[18px]">
             {t.guidedSearchTagline}
           </p>
           <Link
             href={localePath("/buscar/", locale)}
-            className="inline-flex items-center gap-[8px] border-b border-white pb-[5px] hover:opacity-60 transition-opacity"
+            className="inline-flex items-center gap-[8px] border-b border-white pb-[4px] opacity-60 hover:opacity-100 transition-opacity"
           >
-            <span className="font-body font-medium text-[14px] text-white uppercase tracking-[1.4px]">
+            <span className="font-body font-medium text-[12px] text-white uppercase tracking-[1.2px]">
               {t.guidedSearchCta}
             </span>
-            <ArrowRight className="text-white" size={13} aria-hidden="true" />
+            <ArrowRight className="text-white" size={11} aria-hidden="true" />
           </Link>
         </div>
       </div>
