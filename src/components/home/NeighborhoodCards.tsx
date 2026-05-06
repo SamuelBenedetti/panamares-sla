@@ -8,6 +8,8 @@ export interface NeighborhoodCardData {
   name: string;
   slug: string;
   image: string;
+  /** Sanity LQIP base64 — passed to next/image as blurDataURL when present. */
+  lqip?: string;
   avgPrice: string;
   count: number;
 }
@@ -31,6 +33,8 @@ interface Props {
   counts?: Record<string, number>;
   /** Resolved photo URLs keyed by slug (homepage usage) */
   photos?: Record<string, string>;
+  /** Sanity LQIP base64 strings keyed by slug (homepage usage) */
+  lqips?: Record<string, string>;
   /** Formatted price strings keyed by slug, e.g. "$3,200/m²" */
   prices?: Record<string, string>;
   /** Override full neighborhood data (barrios page usage) */
@@ -44,6 +48,7 @@ interface Props {
 export default function NeighborhoodCards({
   counts,
   photos,
+  lqips,
   prices,
   neighborhoods,
   eyebrow,
@@ -59,6 +64,7 @@ export default function NeighborhoodCards({
     ?? DEFAULT_NEIGHBORHOODS.map((n) => ({
         ...n,
         image: photos?.[n.slug] ?? n.image ?? "/hero-bg.jpg",
+        lqip: lqips?.[n.slug],
         avgPrice: prices?.[n.slug] ?? n.avgPrice,
         count: counts?.[COUNT_KEYS[n.slug]] ?? 0,
       }));
@@ -93,6 +99,7 @@ export default function NeighborhoodCards({
                 quality={75}
                 className="object-cover scale-105 group-hover:scale-110 transition-transform duration-500 will-change-transform"
                 sizes="(max-width: 1024px) 100vw, 25vw"
+                {...(n.lqip ? { placeholder: "blur" as const, blurDataURL: n.lqip } : {})}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[rgba(29,33,43,0.8)] via-[rgba(29,33,43,0.2)] to-[rgba(29,33,43,0)]" />
 
