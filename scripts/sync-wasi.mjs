@@ -31,13 +31,19 @@
  *   • publishedAt is validated and added to HUMAN_FIELDS (defense in depth).
  *
  * ── Field ownership matrix ───────────────────────────────────────────────────
- *   Sanity-owned (HUMAN_FIELDS):
+ *   Sanity-owned (HUMAN_FIELDS) — seeded once on createIfNotExists, then owned
+ *   by Carlos / Igor in Studio. The cron never patches these:
  *     title, description, slug, titleI18n, descriptionI18n,
- *     humanReviewed, recommended, fairPrice, noindex, publishedAt
+ *     humanReviewed, recommended, fairPrice, rented, featured,
+ *     noindex, publishedAt
  *   Wasi-owned (synced every run):
- *     wasiId, businessType, propertyType, listingStatus, featured, rented,
- *     price, zone, province, all dimensional facts (bedrooms/bathrooms/area/
- *     etc), agent, mainImage, gallery, features
+ *     wasiId, businessType, propertyType, listingStatus, price, zone, province,
+ *     all dimensional facts (bedrooms/bathrooms/area/etc), agent, mainImage,
+ *     gallery, features
+ *
+ *   Note: `featured` and `rented` are seeded from Wasi (id_status_on_page === 3
+ *   and id_availability === 3 respectively) on the first sync, then become
+ *   editor-controlled. Homepage curation is human — Wasi is operational.
  */
 
 import { createClient } from "@sanity/client";
@@ -62,7 +68,8 @@ const BATCH     = 5; // parallel detail fetches
 const HUMAN_FIELDS = new Set([
   "title", "description", "slug",
   "titleI18n", "descriptionI18n",
-  "humanReviewed", "recommended", "fairPrice", "rented", "noindex", "publishedAt",
+  "humanReviewed", "recommended", "fairPrice", "rented", "featured",
+  "noindex", "publishedAt",
 ]);
 
 // Optional fields whose absence in Wasi must be propagated as an explicit
@@ -1169,6 +1176,10 @@ async function main() {
             recommended: false,
             fairPrice:   false,
             rented:      Boolean(fields.rented),
+            // featured initial seed from Wasi id_status_on_page === 3 ("Outstanding").
+            // After this seed, Carlos owns it in Studio — homepage curation is
+            // human, not driven by Wasi.
+            featured:    Boolean(fields.featured),
             humanReviewed: false,
             noindex:     false,
             // Wasi-derived initial values — handed off to Studio after this
