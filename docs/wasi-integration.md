@@ -199,10 +199,82 @@ Los secrets se configuran en GitHub → Settings → Secrets del repositorio.
 
 ---
 
+## Safety guarantees (post-PR-K1)
+
+El sync `scripts/sync-wasi.mjs` corre en cron cada 6h (cuando se active). Estas son las garantías que protegen el catálogo y el trabajo manual de Carlos/Igor:
+
+### 1. HUMAN_FIELDS — Carlos y Igor son dueños
+
+Estos campos se escriben **solo en la creación inicial** del doc. Después, el sync **nunca los toca**:
+
+| Campo | Quién lo controla post-create |
+|---|---|
+| `title`, `description`, `slug` | Carlos en Studio |
+| `titleI18n`, `descriptionI18n` | Igor en Studio (review pass) |
+| `humanReviewed` | Igor en Studio |
+| `recommended`, `fairPrice`, `rented`, `noindex` | Carlos en Studio |
+| `publishedAt` | Sanity al crear (immutable) |
+
+Patrón: Wasi siembra el valor inicial al primer sync, después es del editor. Excepción intencional: si Carlos vacía el campo en Studio (ej. `title: ""`), el siguiente sync lo re-llena desde Wasi como reset.
+
+### 2. Wasi-owned fields — sync siempre actualiza
+
+Todo lo demás (precio, dimensiones, status, fotos, features, agente) se sincroniza desde Wasi en cada corrida.
+
+### 3. Catalog-size assertion
+
+Antes de hacer cualquier deactivation, el script compara la cantidad de propiedades que devolvió Wasi contra la última corrida exitosa. Si Wasi devuelve **<90%** del último count → **abort total**, sin escribir nada. Defiende contra:
+- Auth hiccup en Wasi
+- Bug en paginación de Wasi
+- Timeout regional
+
+Estado persistido en `logs/wasi-sync-state.json`.
+
+### 4. Deactivation threshold
+
+Si después de procesar el catálogo el script va a marcar más de `max(10, 5% del catálogo)` propiedades como `retirada`, **abort**. Pasable con `--force` (loguea warning ruidoso para audit trail).
+
+### 5. mapPropertyType hard-fail
+
+Si Wasi devuelve un tipo de propiedad desconocido (label nuevo o `id_property_type` no mapeado), el script **skipea esa propiedad y emite warning**, en lugar de defaultear silenciosamente a "apartamento". Crítico porque el `slug` se freeze después de la creación: una mis-classification al crear queda permanente.
+
+### 6. Image cache by URL hash
+
+El `originalFilename` de cada asset incluye un hash de 8 chars del path de la URL Wasi. Si Carlos cambia una foto en Wasi (URL distinta), el hash cambia → upload fresh. Old asset queda orphan (TODO: cleanup script mensual).
+
+### 7. Field unset on absence
+
+Si Wasi tenía `bedrooms:3` y luego ese campo desaparece de la respuesta, Sanity hace `unset` explícito. Sin esto, el valor stale quedaría indefinido.
+
+### 8. publishedAt validation
+
+Si Wasi devuelve fecha basura/null, `publishedAt` se deja `null` (Sanity aplica `initialValue`) en lugar de defaultear a `new Date()` (que arruinaría el `<lastmod>` del sitemap con "todas publicadas hoy").
+
+### Webhook → revalidación
+
+Cualquier publish en Sanity Studio (incluyendo cambios manuales de Carlos sobre HUMAN_FIELDS) dispara un webhook que llama `/api/revalidate` con el secret. El endpoint:
+- Revalida los paths ES + EN del doc
+- Llama `revalidateTag("sanity")` para purgar todo el cache de fetches
+- Combinado con `useCdn: false` (ver [ADR-001](./adr-001-sanity-cdn.md)) → cambios visibles al usuario en **<1 segundo**.
+
+### `--force` flag
+
+Para casos legítimos donde sí se quiere bypass del threshold (ej. Carlos vendió 30 propiedades de golpe, o limpieza grande):
+
+```
+node scripts/sync-wasi.mjs --force
+```
+
+El flag loguea `⚠ --force enabled — safety thresholds bypassed` para que quede en el audit trail.
+
+---
+
 ## Pendiente para arrancar
 
-- [ ] Carlos genera el token en su cuenta de WASI y lo comparte
-- [ ] Agregar `WASI_ID_COMPANY` y `WASI_TOKEN` a `.env.local` y a secrets de GitHub
-- [ ] Adaptar `scripts/import-wasi.mjs` → `scripts/sync-wasi.mjs` con paginación y galería completa
-- [ ] Configurar GitHub Action
-- [ ] Probar con 1 propiedad antes de sincronización completa
+- [x] Carlos genera el token en su cuenta de WASI y lo comparte
+- [x] Agregar `WASI_ID_COMPANY` y `WASI_TOKEN` a `.env.local`
+- [x] Adaptar `scripts/import-wasi.mjs` → `scripts/sync-wasi.mjs` con paginación y galería completa
+- [x] Probar con 1 propiedad antes de sincronización completa
+- [ ] Agregar secrets a GitHub (`WASI_ID_COMPANY`, `WASI_TOKEN`, `SANITY_WRITE_TOKEN`, `REVALIDATION_SECRET`)
+- [ ] Configurar GitHub Action (cron 6h con safety nets activos)
+- [ ] Cleanup mensual de assets orphan (post-launch)
