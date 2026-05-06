@@ -212,10 +212,12 @@ Estos campos se escriben **solo en la creación inicial** del doc. Después, el 
 | `title`, `description`, `slug` | Carlos en Studio |
 | `titleI18n`, `descriptionI18n` | Igor en Studio (review pass) |
 | `humanReviewed` | Igor en Studio |
-| `recommended`, `fairPrice`, `rented`, `noindex` | Carlos en Studio |
+| `recommended`, `fairPrice`, `rented`, `featured`, `noindex` | Carlos en Studio |
 | `publishedAt` | Sanity al crear (immutable) |
 
 Patrón: Wasi siembra el valor inicial al primer sync, después es del editor. Excepción intencional: si Carlos vacía el campo en Studio (ej. `title: ""`), el siguiente sync lo re-llena desde Wasi como reset.
+
+**Nota sobre `featured` y `rented`:** se siembran desde Wasi en el primer sync (desde `id_status_on_page === 3` y `id_availability === 3` respectivamente), después quedan bajo control de Carlos. La curaduría del homepage es decisión humana — Wasi es operacional, no editorial. Si Carlos quiere agregar/quitar una propiedad de la vitrina del homepage, lo hace en Sanity Studio.
 
 ### 2. Wasi-owned fields — sync siempre actualiza
 
