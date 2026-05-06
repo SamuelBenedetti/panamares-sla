@@ -2,6 +2,7 @@ import type { Property, Agent, Neighborhood, SanityImage } from "@/lib/types";
 import type { PortableTextBlock } from "@portabletext/types";
 import type { Locale } from "@/lib/copy";
 import { resolveI18nString, resolveI18nPortableText, resolveI18nText } from "@/lib/i18n/resolveI18n";
+import { deriveEnSlug } from "@/lib/i18n";
 import {
   BASE_URL,
   PANAMARES_PHONE,
@@ -253,24 +254,31 @@ export function listingSchema(property: Property, locale: Locale = "es") {
   };
 }
 
-// Category pages (Tier 2 & 3) — ItemList with top 5 listings
+// Category pages (Tier 2 & 3) — ItemList with top 5 listings.
+// Resolves localized title from `titleI18n` (fallback to legacy `title`) and
+// emits the locale-correct detail URL (`/en/properties/{enSlug}` for EN).
 export function itemListSchema(
   pageUrl: string,
   pageName: string,
-  listings: Pick<Property, "_id" | "title" | "slug">[]
+  listings: Pick<Property, "_id" | "title" | "titleI18n" | "slug">[],
+  locale: Locale = "es",
 ) {
+  const basePath = locale === "en" ? "/en/properties" : "/propiedades";
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: pageName,
     url: `${BASE_URL}${pageUrl}`,
     numberOfItems: listings.length,
-    itemListElement: listings.slice(0, 5).map((p, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: p.title,
-      url: `${BASE_URL}/propiedades/${p.slug.current}`,
-    })),
+    itemListElement: listings.slice(0, 5).map((p, i) => {
+      const slugForLocale = locale === "en" ? deriveEnSlug(p.slug.current) : p.slug.current;
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        name: resolveI18nString(p.titleI18n, locale, p.title),
+        url: `${BASE_URL}${basePath}/${slugForLocale}`,
+      };
+    }),
   };
 }
 

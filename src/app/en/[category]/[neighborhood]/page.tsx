@@ -14,7 +14,7 @@ import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import { canonical, alternates } from "@/lib/seo";
 import { getCopy } from "@/lib/copy";
 import { getEsUrl, SLUG_MAP_ES_TO_EN } from "@/lib/i18n";
-import { resolveI18nText } from "@/lib/i18n/resolveI18n";
+import { resolveI18nString, resolveI18nText } from "@/lib/i18n/resolveI18n";
 
 // Generates the Tier 3 header SEO block specific to type × intent × neighborhood
 // combo, in EN. Mirrors the ES helper in `(site)/[category]/[neighborhood]/page.tsx`
@@ -194,7 +194,7 @@ export default async function GeoTypePageEn({ params }: Props) {
     .map((p) => ({
       lat: p.location!.lat,
       lng: p.location!.lng,
-      title: p.title,
+      title: resolveI18nString(p.titleI18n, "en", p.title),
       slug: p.slug.current,
       price: p.price,
       bedrooms: p.bedrooms,
@@ -220,7 +220,7 @@ export default async function GeoTypePageEn({ params }: Props) {
       properties.length
     );
 
-  const jsonLdList = itemListSchema(enPageUrl, h1, properties);
+  const jsonLdList = itemListSchema(enPageUrl, h1, properties, "en");
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: copy.layout.breadcrumb.inicio, url: "/en/" },
     { name: cat.h1, url: `/en/${params.category}/` },

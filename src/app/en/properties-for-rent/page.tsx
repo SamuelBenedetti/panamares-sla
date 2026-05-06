@@ -57,7 +57,7 @@ export default async function PropertiesForRentPage({
       categorySlug: "propiedades-en-alquiler",
     }));
 
-  const jsonLdList = itemListSchema("/en/properties-for-rent/", t.h1, properties);
+  const jsonLdList = itemListSchema("/en/properties-for-rent/", t.h1, properties, "en");
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: copy.layout.breadcrumb.inicio, url: "/en/" },
     { name: t.breadcrumbLabel, url: "/en/properties-for-rent/" },

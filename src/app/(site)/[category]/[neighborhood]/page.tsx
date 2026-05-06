@@ -13,6 +13,7 @@ import CTA from "@/components/home/CTA";
 import WhatsAppButton from "@/components/properties/WhatsAppButton";
 import { canonical, alternates } from "@/lib/seo";
 import { getEnUrl } from "@/lib/i18n";
+import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 
 // Generates the Tier 3 header SEO block specific to type × intent × neighborhood combo.
 function buildGeoSeoBlock(
@@ -142,7 +143,7 @@ export default async function GeoTypePage({ params }: Props) {
     .map((p) => ({
       lat: p.location!.lat,
       lng: p.location!.lng,
-      title: p.title,
+      title: resolveI18nString(p.titleI18n, "es", p.title),
       slug: p.slug.current,
       price: p.price,
       bedrooms: p.bedrooms,
