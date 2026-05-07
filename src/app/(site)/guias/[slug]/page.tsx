@@ -39,11 +39,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? urlFor(guide.coverImage).width(1200).height(630).url()
     : undefined;
 
+  // Hreflang reciprocity: only emit `en` link when the EN counterpart is
+  // reviewable. While humanReviewed:false the EN URL 308s to ES, so emitting
+  // an alternate would be an asymmetric signal Google ignores. Mirrors the
+  // gate used in src/app/sitemap.ts (reviewedGuideSlugs) and the property
+  // detail page. Without this, Google treats ES + EN as separate pages.
+  const enPath = guide.humanReviewed ? `/en/guides/${params.slug}` : null;
+
   return {
     title: localizedTitle,
     description: guide.excerpt,
     robots: { index: true, follow: true },
-    alternates: { canonical: canonical(`/guias/${params.slug}`), languages: alternates(`/guias/${params.slug}`, null) },
+    alternates: { canonical: canonical(`/guias/${params.slug}`), languages: alternates(`/guias/${params.slug}`, enPath) },
     openGraph: {
       title: localizedTitle,
       description: guide.excerpt,
