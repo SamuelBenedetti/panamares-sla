@@ -1,0 +1,64 @@
+name: Wasi sync (daily)
+
+# Runs the Wasi → Sanity catalog sync on a daily schedule.
+#
+# Why GitHub Actions (not Vercel Cron):
+#   The sync script (~10–15 min: API pagination + image asset uploads + retries)
+#   exceeds Vercel function timeouts (60–300s). GitHub Actions allows up to 6h
+#   per job and runs the existing Node script directly, no HTTP wrapper needed.
+#
+# Required GitHub Secrets (Settings → Secrets and variables → Actions):
+#   - SANITY_WRITE_TOKEN
+#   - WASI_TOKEN
+#   - WASI_ID_COMPANY
+# Until these are set, scheduled runs will fail at the env-validation step in
+# scripts/sync-wasi.mjs (lines 291–296).
+
+on:
+  schedule:
+    # 08:00 UTC = 03:00 America/Panama — low-traffic window, no DST in Panama
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+# Prevent overlapping runs. If a previous sync is still going (e.g. heavy image
+# upload day), queue the next one instead of cancelling it. The script also has
+# its own lockfile (scripts/sync-wasi.mjs ~line 222), so this is belt-and-
+# suspenders against the rare case where a runner is killed mid-run.
+concurrency:
+  group: wasi-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Wasi sync
+        env:
+          SANITY_WRITE_TOKEN: ${{ secrets.SANITY_WRITE_TOKEN }}
+          WASI_TOKEN: ${{ secrets.WASI_TOKEN }}
+          WASI_ID_COMPANY: ${{ secrets.WASI_ID_COMPANY }}
+          NEXT_PUBLIC_SANITY_PROJECT_ID: 2hojajwk
+          NEXT_PUBLIC_SANITY_DATASET: production
+        run: node scripts/sync-wasi.mjs
+
+      - name: Upload sync log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wasi-sync-log-${{ github.run_id }}
+          path: logs/wasi-sync.jsonl
+          if-no-files-found: ignore
+          retention-days: 30
