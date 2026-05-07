@@ -3,6 +3,7 @@ import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
 import { internationalizedArray } from "sanity-plugin-internationalized-array";
 import { schemaTypes } from "./schemaTypes";
+import { structure } from "./structure";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "placeholder";
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
@@ -13,7 +14,7 @@ export default defineConfig({
   projectId,
   dataset,
   plugins: [
-    structureTool(),
+    structureTool({ structure }),
     visionTool(),
     // Phase 2 PR-A: per-field translations via sanity-plugin-internationalized-array.
     // Registers types: internationalizedArrayString, internationalizedArrayText,
