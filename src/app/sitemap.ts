@@ -208,7 +208,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // ── Content pages ────────────────────────────────────────────────────────
     { url: `${BASE_URL}/barrios`,        alternates: altsFromEs("/barrios"),        changeFrequency: "weekly",  priority: 0.7 },
     { url: `${BASE_URL}/agentes`,        alternates: altsFromEs("/agentes"),        changeFrequency: "weekly",  priority: 0.6 },
-    { url: `${BASE_URL}/guias`,                                                     changeFrequency: "weekly",  priority: 0.65 },
+    // /guias list is noindex (thin hub, only 1 guide). Re-add when guide count >= 3.
     { url: `${BASE_URL}/sobre-nosotros`, alternates: altsFromEs("/sobre-nosotros"), changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/contacto`,       alternates: altsFromEs("/contacto"),       changeFrequency: "monthly", priority: 0.5 },
 
