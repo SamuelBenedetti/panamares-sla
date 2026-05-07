@@ -622,8 +622,13 @@ function buildTitle(prop, propertyType, businessType, zone) {
     "finca":         "Finca",
   }[propertyType] ?? "Propiedad";
   const intent   = businessType === "alquiler" ? "en Alquiler" : "en Venta";
-  const building = String(prop.building_name ?? prop.edificio ?? "").trim()
-                   || extractBuildingFromWasiTitle(prop.title);
+  // Decode Wasi-editor free text before composing the title so we don't bake
+  // `&ndash;` / `&nbsp;` / etc into a permanent HUMAN_FIELD on first sync.
+  const building = decodeHtmlEntities(
+    String(prop.building_name ?? prop.edificio ?? "").trim()
+    || extractBuildingFromWasiTitle(prop.title)
+    || ""
+  );
   let title;
   if (building)    title = `${building} — ${typeLabel} ${intent}`;
   else if (zone)   title = `${typeLabel} ${intent} en ${zone}`;
@@ -638,19 +643,62 @@ function buildTitle(prop, propertyType, businessType, zone) {
   return title;
 }
 
+// Defensive decoder for HTML entities that leak in from Carlos's copy-paste
+// out of Word/web into the WASI editor. Covers Spanish accents (the original
+// motivation), the most common Word-paste artifacts (en/em dash, ellipsis,
+// smart quotes), structural entities, and numeric refs (decimal + hex).
+//
+// Idempotent: decoded text contains no `&xxx;` sequences, so a second pass
+// is a no-op. Safe to run on already-clean input.
+//
+// Named-entity lookup (case-insensitive). Order doesn't matter — we replace
+// via a single global regex that captures the name and looks it up here.
+const HTML_ENTITIES = {
+  // Spanish accents (original list)
+  ntilde: "ñ", aacute: "á", eacute: "é", iacute: "í", oacute: "ó",
+  uacute: "ú", uuml:   "ü",
+  // Structural
+  amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ",
+  // Word-paste artifacts
+  ndash: "–", mdash: "—", hellip: "…",
+  laquo: "«", raquo: "»",
+  lsquo: "‘", rsquo: "’", ldquo: "“", rdquo: "”",
+  // Symbols
+  copy: "©", reg: "®", trade: "™",
+  // Math / typographic — common in real-estate listings (m², m³, ½, ¼, ¾)
+  sup2: "²", sup3: "³",
+  frac12: "½", frac14: "¼", frac34: "¾",
+  deg: "°", times: "×", divide: "÷", plusmn: "±",
+  micro: "µ", middot: "·", bull: "•",
+};
+
 function decodeHtmlEntities(s) {
-  return s
-    .replace(/&ntilde;/gi, "ñ").replace(/&Ntilde;/gi, "Ñ")
-    .replace(/&aacute;/gi, "á").replace(/&eacute;/gi, "é")
-    .replace(/&iacute;/gi, "í").replace(/&oacute;/gi, "ó")
-    .replace(/&uacute;/gi, "ú").replace(/&uuml;/gi,   "ü")
-    .replace(/&Aacute;/gi, "Á").replace(/&Eacute;/gi, "É")
-    .replace(/&Iacute;/gi, "Í").replace(/&Oacute;/gi, "Ó")
-    .replace(/&Uacute;/gi, "Ú")
-    .replace(/&amp;/gi, "&").replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">").replace(/&quot;/gi, '"')
-    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
-    .replace(/&nbsp;/gi, " ");
+  if (!s) return s;
+  return String(s)
+    // Named entities (case-insensitive on the name; entity names may contain
+    // digits, e.g. &sup2;, &frac12;).
+    .replace(/&([a-zA-Z][a-zA-Z0-9]*);/g, (m, name) => {
+      const lower = name.toLowerCase();
+      if (HTML_ENTITIES[lower] != null) {
+        const v = HTML_ENTITIES[lower];
+        // Preserve case for letter entities (Ntilde → Ñ, Aacute → Á, …)
+        if (name[0] === name[0].toUpperCase() && lower !== name) {
+          return v.toUpperCase();
+        }
+        return v;
+      }
+      return m; // unknown entity — leave intact rather than mangling text
+    })
+    // Hex numeric: &#xHHHH; or &#XHHHH;
+    .replace(/&#[xX]([0-9a-fA-F]+);/g, (_, h) => {
+      const n = parseInt(h, 16);
+      return Number.isFinite(n) ? String.fromCodePoint(n) : "";
+    })
+    // Decimal numeric: &#NNNN;
+    .replace(/&#(\d+);/g, (_, d) => {
+      const n = Number(d);
+      return Number.isFinite(n) ? String.fromCodePoint(n) : "";
+    });
 }
 
 function textToPortableText(text) {
@@ -677,10 +725,18 @@ function textToPortableText(text) {
       });
     }
   } else {
+    // Plain-text branch: WASI sometimes returns text with literal HTML entities
+    // (`&ndash;`, `&nbsp;`, etc) pasted from Word/web — decode here too, not
+    // only on the HTML branch above. Decoder is per-span (Portable Text
+    // structure preserved — we never decode JSON-stringified blocks).
     raw.split(/\n{2,}/).filter(p => p.trim()).forEach((para, i) => {
       blocks.push({
         _type: "block", _key: `p${i}`, style: "normal", markDefs: [],
-        children: [{ _type: "span", _key: `s${i}`, text: para.replace(/\n/g, " ").trim(), marks: [] }],
+        children: [{
+          _type: "span", _key: `s${i}`,
+          text: decodeHtmlEntities(para.replace(/\n/g, " ").trim()),
+          marks: [],
+        }],
       });
     });
   }
@@ -1172,6 +1228,30 @@ async function main() {
       }
 
       const { _id, fields } = result;
+
+      // Dry-run + single-id: surface the built title and description plain
+      // text so we can eyeball that the entity decoder ran (e.g. `&ndash;`
+      // → `–`). Cheap, no writes, scoped to the single-id path.
+      if (DRY_RUN && SINGLE_ID) {
+        console.log("\n── Built fields preview ───────────────────────────");
+        console.log(`title: ${fields.title ?? "(none)"}`);
+        const blocks = Array.isArray(fields.description) ? fields.description : [];
+        if (blocks.length === 0) {
+          console.log("description: (none)");
+        } else {
+          blocks.forEach((b, i) => {
+            const text = (b.children ?? []).map(c => c.text).join("");
+            console.log(`description[${i}]: ${text}`);
+          });
+        }
+        // Detect any leftover entities — should be zero after decoder.
+        const anyText = `${fields.title ?? ""}\n` + blocks
+          .flatMap(b => (b.children ?? []).map(c => c.text))
+          .join("\n");
+        const leftover = anyText.match(/&[a-zA-Z][a-zA-Z0-9]*;|&#\d+;|&#[xX][0-9a-fA-F]+;/g) ?? [];
+        console.log(`leftover HTML entities: ${leftover.length === 0 ? "none ✓" : leftover.join(", ")}`);
+        console.log("───────────────────────────────────────────────────\n");
+      }
 
       if (!DRY_RUN) {
         // publishedAt: only used on createIfNotExists. Validated to avoid
