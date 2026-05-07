@@ -11,6 +11,10 @@ import { urlFor } from "@/sanity/lib/image";
 import type { Guide } from "@/lib/types";
 import { breadcrumbSchema, articleSchema } from "@/lib/jsonld";
 import { canonical, alternates } from "@/lib/seo";
+import {
+  resolveI18nString,
+  resolveI18nPortableText,
+} from "@/lib/i18n/resolveI18n";
 
 const CATEGORY_LABELS: Record<string, string> = {
   comprar:  "Comprar",
@@ -27,23 +31,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const guide = await sanityFetch<Guide | null>(guideBySlugQuery, { slug: params.slug });
   if (!guide) return {};
 
+  // Read i18n title (es) with legacy fallback. Mirrors the EN guide page so
+  // Studio edits to titleI18n.es propagate to metadata + OG/Twitter.
+  const localizedTitle = resolveI18nString(guide.titleI18n, "es", guide.title);
+
   const ogImage = guide.coverImage
     ? urlFor(guide.coverImage).width(1200).height(630).url()
     : undefined;
 
   return {
-    title: guide.title,
+    title: localizedTitle,
     description: guide.excerpt,
     robots: { index: true, follow: true },
     alternates: { canonical: canonical(`/guias/${params.slug}`), languages: alternates(`/guias/${params.slug}`, null) },
     openGraph: {
-      title: guide.title,
+      title: localizedTitle,
       description: guide.excerpt,
       images: ogImage ? [{ url: ogImage }] : [],
     },
     twitter: {
       card: "summary_large_image",
-      title: guide.title,
+      title: localizedTitle,
       description: guide.excerpt,
       images: ogImage ? [ogImage] : [],
     },
@@ -58,17 +66,23 @@ export default async function GuideDetailPage({ params }: Props) {
     ? urlFor(guide.coverImage).width(1400).height(700).url()
     : "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1400&h=700&fit=crop";
 
+  // Read i18n title + body (es) with legacy fallbacks. Mirrors the EN page —
+  // Studio edits to titleI18n.es / bodyI18n.es propagate to render, JSON-LD,
+  // breadcrumb, and image alt.
+  const localizedTitle = resolveI18nString(guide.titleI18n, "es", guide.title);
+  const localizedBody = resolveI18nPortableText(guide.bodyI18n, "es", guide.body);
+
   const catLabel = CATEGORY_LABELS[guide.category] ?? "";
 
   // JSON-LD schemas
   const jsonLdBreadcrumb = breadcrumbSchema([
     { name: "Inicio",  url: "/" },
     { name: "Guías",   url: "/guias/" },
-    { name: guide.title, url: `/guias/${params.slug}/` },
+    { name: localizedTitle, url: `/guias/${params.slug}/` },
   ]);
 
   const jsonLdArticle = articleSchema({
-    title: guide.title,
+    title: localizedTitle,
     description: guide.excerpt,
     url: `/guias/${params.slug}/`,
     datePublished: guide._createdAt,
@@ -91,7 +105,7 @@ export default async function GuideDetailPage({ params }: Props) {
             items={[
               { label: "Inicio", href: "/" },
               { label: "Guías", href: "/guias/" },
-              { label: guide.title },
+              { label: localizedTitle },
             ]}
           />
 
@@ -110,7 +124,7 @@ export default async function GuideDetailPage({ params }: Props) {
           </div>
 
           <h1 className="font-heading font-normal text-[clamp(28px,3.8vw,52px)] text-white leading-none tracking-[-1.8px] max-w-[800px]">
-            {guide.title}
+            {localizedTitle}
           </h1>
 
           {guide.excerpt && (
@@ -158,7 +172,7 @@ export default async function GuideDetailPage({ params }: Props) {
       <div className="relative h-[240px] sm:h-[380px] xl:h-[500px] overflow-hidden">
         <Image
           src={imgUrl}
-          alt={guide.title}
+          alt={localizedTitle}
           fill
           className="object-cover"
           priority
@@ -172,7 +186,7 @@ export default async function GuideDetailPage({ params }: Props) {
           <div className="max-w-[740px] flex flex-col gap-[48px]">
 
             {/* Body */}
-            {guide.body ? (
+            {localizedBody.length > 0 ? (
               <div className="
                 font-body text-[16px] xl:text-[17px] text-[#3a3a3a] leading-[1.8]
                 [&_h2]:font-heading [&_h2]:font-normal [&_h2]:text-[clamp(24px,3vw,36px)] [&_h2]:text-[#0c1834] [&_h2]:tracking-[-1px] [&_h2]:leading-none [&_h2]:mt-[48px] [&_h2]:mb-[16px]
@@ -185,7 +199,7 @@ export default async function GuideDetailPage({ params }: Props) {
                 [&_blockquote]:border-l-[3px] [&_blockquote]:border-[#d4a435] [&_blockquote]:pl-[20px] [&_blockquote]:text-[#5a6478] [&_blockquote]:italic [&_blockquote]:my-[32px]
                 [&_table]:w-full [&_table]:border-collapse [&_table]:text-[14px] [&_th]:bg-[#0c1834] [&_th]:text-white [&_th]:px-[12px] [&_th]:py-[8px] [&_th]:text-left [&_td]:px-[12px] [&_td]:py-[8px] [&_td]:border-b [&_td]:border-[#e8ecf2]
               ">
-                <PortableText value={guide.body} />
+                <PortableText value={localizedBody} />
               </div>
             ) : (
               <p className="font-body text-[16px] text-[#5a6478]">Contenido próximamente.</p>

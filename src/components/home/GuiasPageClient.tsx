@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Guide } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
+import { resolveI18nString } from "@/lib/i18n/resolveI18n";
 import { Clock, ArrowRight } from "lucide-react";
 
 const CATEGORIES = [
@@ -53,6 +54,11 @@ export default function GuiasPageClient({ guides }: { guides: Guide[] }) {
 
             const catLabel = CATEGORIES.find((c) => c.value === guide.category)?.label ?? "";
 
+            // Locale hardcoded to "es" — this component is currently only
+            // rendered by /guias/ (ES list). If/when an EN list page is built
+            // at /en/guides/, accept a `locale: Locale` prop and pass it here.
+            const localizedTitle = resolveI18nString(guide.titleI18n, "es", guide.title);
+
             return (
               <Link
                 key={guide._id}
@@ -63,7 +69,7 @@ export default function GuiasPageClient({ guides }: { guides: Guide[] }) {
                 <div className="relative h-[200px] sm:h-[220px] overflow-hidden shrink-0">
                   <Image
                     src={imgUrl}
-                    alt={guide.title}
+                    alt={localizedTitle}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                     sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
@@ -87,7 +93,7 @@ export default function GuiasPageClient({ guides }: { guides: Guide[] }) {
                   </div>
 
                   <h3 className="font-heading font-normal text-[20px] xl:text-[22px] text-[#0c1834] leading-tight tracking-[-0.5px] line-clamp-2 group-hover:opacity-70 transition-opacity">
-                    {guide.title}
+                    {localizedTitle}
                   </h3>
 
                   {guide.excerpt && (
