@@ -29,6 +29,9 @@
  *   • Optional fields are explicitly unset when absent in Wasi — no stale
  *     values linger from previous syncs.
  *   • publishedAt is validated and added to HUMAN_FIELDS (defense in depth).
+ *   • Zone resolution chain (PR-K4): zone_label → city_label → title-scan
+ *     against Sanity neighborhood catalog. Word-boundary matching with
+ *     longest-match-first sort prevents false positives.
  *
  * ── Field ownership matrix ───────────────────────────────────────────────────
  *   Sanity-owned (HUMAN_FIELDS) — seeded once on createIfNotExists, then owned
@@ -56,10 +59,22 @@ config({ path: ".env.local" });
 
 const DRY_RUN   = process.argv.includes("--dry-run");
 const FORCE     = process.argv.includes("--force");
-const SINGLE_ID = process.argv.find(a => a.startsWith("--id="))?.split("=")[1];
+// Support both --id=NNNN and --id NNNN (space-separated) for ergonomics
+const SINGLE_ID = (() => {
+  const eqForm = process.argv.find(a => a.startsWith("--id="))?.split("=")[1];
+  if (eqForm) return eqForm;
+  const idx = process.argv.indexOf("--id");
+  return idx !== -1 ? process.argv[idx + 1] : undefined;
+})();
 const LIMIT_ARG = process.argv.find(a => a.startsWith("--limit="))?.split("=")[1];
 const LIMIT     = LIMIT_ARG ? parseInt(LIMIT_ARG, 10) : Infinity;
 const BATCH     = 5; // parallel detail fetches
+
+// ── Module-level zone catalog (PR-K4) ─────────────────────────────────────────
+// Populated once per sync from Sanity neighborhood docs. Used as the fallback
+// table for resolveZoneFromTitle() when Wasi returns neither zone_label nor a
+// recognizable city_label. See buildWasiFields() for the resolution chain.
+let zoneCatalog = [];
 
 // ── Safety constants ─────────────────────────────────────────────────────────
 // Fields written only on createIfNotExists; never patched on update. Carlos
@@ -580,6 +595,39 @@ function normalizeZone(raw) {
   return ZONE_MAP[s] ?? s;
 }
 
+// PR-K4: resolve zone by scanning the property title for a known neighborhood
+// name. Used as a third fallback when Wasi returns neither zone_label nor a
+// recognizable city_label. Word-boundary matching guards against false
+// positives ("Costa del Este" must beat "Este"); diacritic-insensitive so
+// "Anton" in a sloppy Wasi title still matches "Antón".
+//
+// Returns the canonical zone name string (e.g. "Antón") that slots directly
+// into the property.zone string field, or null if no match.
+function resolveZoneFromTitle(title, catalog) {
+  if (!title || !Array.isArray(catalog) || catalog.length === 0) return null;
+  const stripDiacritics = (s) => String(s).normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+  const escapeRegex = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const normalizedTitle = stripDiacritics(title);
+
+  // Sort by name length desc so multi-word zones win over substrings of them
+  // (e.g. "Costa del Este" before "Este"). This is the primary anti-collision
+  // guard, paired with \b word boundaries.
+  const sorted = [...catalog].sort((a, b) =>
+    (b.name?.length ?? 0) - (a.name?.length ?? 0)
+  );
+
+  for (const entry of sorted) {
+    if (!entry?.name) continue;
+    const needle = stripDiacritics(entry.name);
+    if (!needle) continue;
+    const re = new RegExp(`\\b${escapeRegex(needle)}\\b`, "u");
+    if (re.test(normalizedTitle)) {
+      return entry.name; // canonical, accented form
+    }
+  }
+  return null;
+}
+
 function buildSlug(wasiId, propertyType, businessType, zone) {
   const typeSlug = TYPE_SLUG_PLURAL[propertyType] ?? slugify(propertyType || "propiedad");
   const intent   = businessType === "alquiler" ? "alquiler" : "venta";
@@ -973,10 +1021,24 @@ async function buildWasiFields(prop) {
   const rawZone = String(prop.zone_label ?? prop.neighborhood ?? prop.barrio ?? "").trim();
   // Fallback to city_label if zone_label is empty and city matches a known zone
   const rawZoneFallback = !rawZone ? String(prop.city_label ?? "").trim() : rawZone;
-  const zone = normalizeZone(rawZoneFallback) ?? rawZoneFallback;
 
-  // Skip if still no recognizable zone after fallback
-  if (!rawZoneFallback || !normalizeZone(rawZoneFallback)) {
+  // PR-K4: third fallback — scan the Wasi title against the neighborhood
+  // catalog when the first two label-based attempts produce nothing the
+  // ZONE_MAP recognizes. Real-world trigger: FINCA Antón listings where Wasi
+  // returns empty zone_label and a region-only city_label.
+  let zone = normalizeZone(rawZoneFallback) ?? rawZoneFallback;
+  const labelResolvedToKnownZone = !!normalizeZone(rawZoneFallback);
+  if (!labelResolvedToKnownZone) {
+    const titleResolved = resolveZoneFromTitle(prop.title ?? prop.titulo ?? "", zoneCatalog);
+    if (titleResolved) {
+      console.log(`  🔎 zone resolved from title: "${titleResolved}" (wasiId=${wasiId}, title="${(prop.title ?? prop.titulo ?? "").trim()}")`);
+      zone = titleResolved;
+    }
+  }
+
+  // Skip only if all three fallbacks (zone_label, city_label, title) failed
+  // to resolve to a known canonical zone.
+  if (!normalizeZone(zone)) {
     console.log(`  ⚠️  SKIP wasiId=${wasiId} — no zone_label (${prop.city_label ?? "?"}, ${prop.region_label ?? "?"})`);
     return null;
   }
@@ -1093,6 +1155,17 @@ async function main() {
 
   // 0b. Pre-flight checks — fail fast on stale credentials or wrong dataset.
   await preflightChecks();
+
+  // 0c. Load zone catalog from Sanity (PR-K4). One GROQ per sync, used as the
+  // title-fallback table when Wasi returns no usable zone_label / city_label.
+  // Filtered to neighborhoods whose canonical name appears in ZONE_MAP values
+  // — this prevents a rogue or test neighborhood doc from causing false
+  // positives via short-name title matches.
+  process.stdout.write("📚 Loading zone catalog...");
+  const knownCanonicalNames = new Set(Object.values(ZONE_MAP));
+  const allNeighborhoods = await sanity.fetch(`*[_type=='neighborhood' && defined(name)]{ _id, name, "slug": slug.current }`);
+  zoneCatalog = allNeighborhoods.filter(n => knownCanonicalNames.has(n.name));
+  console.log(` ${zoneCatalog.length} zones (filtered from ${allNeighborhoods.length} neighborhood docs)`);
 
   // 1. Fetch WASI property IDs
   process.stdout.write("📡 Fetching WASI listings...");
