@@ -1235,6 +1235,30 @@ async function main() {
     console.log(` ${wasiIds.length} found${isFinite(LIMIT) ? ` (limited to ${LIMIT})` : ""}`);
   }
 
+  // 1a. Load Sanity-managed exclusion list (singleton `syncConfig`).
+  // IDs Igor agrega aquí no se vuelven a crear en Sanity aunque sigan activos
+  // en Wasi — útil después de dedup-cleanups. Default seguro: lista vacía.
+  process.stdout.write("🚫 Loading exclusion list...");
+  let excludedWasiIds = new Set();
+  try {
+    const cfg = await sanity.fetch(`*[_id == "syncConfig"][0]{ excludedWasiIds }`);
+    const ids = Array.isArray(cfg?.excludedWasiIds) ? cfg.excludedWasiIds : [];
+    excludedWasiIds = new Set(ids.map(s => String(s).trim()).filter(Boolean));
+    console.log(` ${excludedWasiIds.size} wasi-ID(s) excluded`);
+  } catch (err) {
+    console.log(` ⚠ failed to load (${err.message}) — proceeding with empty exclusion list`);
+  }
+
+  // Filter out excluded IDs before any per-property work runs. Single-ID mode
+  // also honors the list — if you're explicitly testing an excluded ID, that's
+  // a footgun we want to surface clearly.
+  const beforeExclusion = wasiIds.length;
+  wasiIds = wasiIds.filter(id => !excludedWasiIds.has(String(id)));
+  const excluded = beforeExclusion - wasiIds.length;
+  if (excluded > 0) {
+    console.log(`🚫 Skipped ${excluded} listing(s) via exclusion list`);
+  }
+
   // 1b. Catalog-size assertion — abort if Wasi returned suspiciously few
   // properties compared to the last successful run. Defends against partial
   // API responses (auth hiccup, pagination bug, regional outage) that would
@@ -1254,7 +1278,13 @@ async function main() {
   // 2. Fetch existing Sanity state
   process.stdout.write("🗂  Fetching Sanity state...");
   const sanityMap  = await fetchSanityWasiMap();
-  const wasiIdSet  = new Set(wasiIds.map(id => `wasi-${id}`));
+  // Excluded IDs are also marked as "present" so any leftover Sanity doc with
+  // that ID isn't picked up by the deactivation sweep. Exclusion = "leave alone
+  // entirely", not "deactivate".
+  const wasiIdSet  = new Set([
+    ...wasiIds.map(id => `wasi-${id}`),
+    ...[...excludedWasiIds].map(id => `wasi-${id}`),
+  ]);
   console.log(` ${sanityMap.size} existing docs`);
 
   if (!DRY_RUN) {
@@ -1445,7 +1475,7 @@ async function main() {
     writeRunState({
       idCount: wasiIds.length,
       ts: new Date().toISOString(),
-      created, updated, unchanged, skipped, deactivated,
+      created, updated, unchanged, skipped, excluded, deactivated,
     });
   }
 
@@ -1456,6 +1486,7 @@ async function main() {
   console.log(`  ✓  Updated:     ${updated}`);
   console.log(`  ≡  Unchanged:   ${unchanged}`);
   console.log(`  ⏭  Skipped:     ${skipped}`);
+  console.log(`  🚫 Excluded:    ${excluded}`);
   console.log(`  🔴 Deactivated: ${deactivated}`);
   console.log(`  ❌ Failed:      ${failed}`);
   console.log(`${"─".repeat(60)}\n`);
@@ -1478,7 +1509,7 @@ async function main() {
       ts:        new Date().toISOString(),
       duration_s: Math.round((Date.now() - startTime) / 1000),
       catalog:   wasiIds.length,
-      created, updated, unchanged, skipped, deactivated, failed,
+      created, updated, unchanged, skipped, excluded, deactivated, failed,
       force:     FORCE || undefined,
     });
   }

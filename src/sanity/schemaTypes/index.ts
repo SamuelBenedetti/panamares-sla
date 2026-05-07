@@ -6,5 +6,6 @@ import neighborhood from "./neighborhood";
 import guide from "./guide";
 import feature from "./feature";
 import portableText from "./portableText";
+import syncConfig from "./syncConfig";
 
-export const schemaTypes = [property, agent, author, lead, neighborhood, guide, feature, portableText];
+export const schemaTypes = [property, agent, author, lead, neighborhood, guide, feature, portableText, syncConfig];
