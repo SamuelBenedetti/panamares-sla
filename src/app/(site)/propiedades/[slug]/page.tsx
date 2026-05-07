@@ -61,9 +61,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (property.listingStatus !== "activa") {
     return { robots: { index: false, follow: false } };
   }
+  // Read i18n title (es) with legacy fallback. Mirrors the EN page pattern so
+  // Studio edits to the "Título" tab ES propagate to metadata + OG/Twitter.
+  const localizedTitle = resolveI18nString(property.titleI18n, "es", property.title);
   // CMS-level noindex toggle (demo, duplicates, unpublished).
   if (property.noindex) {
-    return { title: property.title, robots: { index: false, follow: false } };
+    return { title: localizedTitle, robots: { index: false, follow: false } };
   }
 
   const zone = property.zone ?? "Panama";
@@ -86,10 +89,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const ogImage = property.mainImage ? urlFor(property.mainImage).width(1200).height(630).url() : undefined;
   const ogImages = ogImage
-    ? [{ url: ogImage, width: 1200, height: 630, alt: property.title }]
+    ? [{ url: ogImage, width: 1200, height: 630, alt: localizedTitle }]
     : [];
   const twitterImages = ogImage
-    ? [{ url: ogImage, alt: property.title }]
+    ? [{ url: ogImage, alt: localizedTitle }]
     : [];
 
   // Hreflang: only emit `en` link when the EN counterpart is reviewable.
@@ -126,20 +129,25 @@ export default async function PropertyDetailPage({ params }: Props) {
     currentSlug: params.slug,
   });
 
+  // Read i18n title (es) with legacy fallback. Mirrors the EN page pattern.
+  // Studio edits to the "Título" tab ES propagate everywhere title is rendered
+  // (gallery alt, H1, breadcrumb, share button, JSON-LD via listingSchema).
+  const localizedTitle = resolveI18nString(property.titleI18n, "es", property.title);
+
   const galleryImages: { url: string; alt: string; lqip?: string }[] = (property.gallery ?? []).map((img) => ({
     url:  urlFor(img).width(1200).height(800).url(),
-    alt:  img.alt ?? property.title,
+    alt:  img.alt ?? localizedTitle,
     lqip: img.lqip,
   }));
   if (galleryImages.length === 0 && property.mainImage) {
     galleryImages.push({
       url:  urlFor(property.mainImage).width(1200).height(800).url(),
-      alt:  property.title,
+      alt:  localizedTitle,
       lqip: property.mainImage.lqip,
     });
   }
   if (galleryImages.length === 0) {
-    galleryImages.push({ url: "/hero-bg.jpg", alt: property.title });
+    galleryImages.push({ url: "/hero-bg.jpg", alt: localizedTitle });
   }
 
   // Derive category slug (e.g. "apartamentos-en-venta") — single source of truth.
@@ -160,13 +168,13 @@ export default async function PropertyDetailPage({ params }: Props) {
 
   const neighborhoodSlug = property.zone ? getSlugByName(property.zone) : undefined;
 
-  const waMessage = `Hola, me interesa la propiedad ID ${property._id}${property.zone ? ` en ${property.zone}` : ""}: ${property.title} — ${BASE_URL}/propiedades/${property.slug.current}`;
+  const waMessage = `Hola, me interesa la propiedad ID ${property._id}${property.zone ? ` en ${property.zone}` : ""}: ${localizedTitle} — ${BASE_URL}/propiedades/${property.slug.current}`;
   const tagsCopy = getCopy("es").components.propertyCard;
 
   // Build breadcrumb items — Inicio → Categoría → Barrio → Título limpio
   // El geo-nivel usa solo el nombre del barrio (no repite la categoría).
   // El título elimina sufijos de intent que Wasi añade (ej. "- Casa en venta en X").
-  const cleanTitle = property.title
+  const cleanTitle = localizedTitle
     .replace(/\s*[-–]\s*(apartamento|casa|penthouse|oficina|local|terreno)\s+en\s+(venta|alquiler).*/i, "")
     .trim();
 
@@ -212,7 +220,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-[28px] items-start">
 
               {/* LEFT: Gallery */}
-              <PropertyGallery images={galleryImages} propertyTitle={property.title} contained />
+              <PropertyGallery images={galleryImages} propertyTitle={localizedTitle} contained />
 
               {/* RIGHT: Sticky panel — zone, title, stats, price card */}
               <div className="lg:sticky lg:top-[100px] flex flex-col gap-[12px]">
@@ -236,7 +244,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                 {/* H1 */}
                 <h1 className="font-body font-semibold text-[clamp(20px,2.2vw,28px)] text-[#0c1834] tracking-[-0.3px] leading-tight">
-                  {property.title}
+                  {localizedTitle}
                 </h1>
 
 
@@ -401,7 +409,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   </a>
                   <ShareButton
                     url={`${BASE_URL}/propiedades/${property.slug.current}`}
-                    title={property.title}
+                    title={localizedTitle}
                     locale="es"
                   />
                 </div>
@@ -522,7 +530,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <PropertyMap
                       lat={property.location.lat}
                       lng={property.location.lng}
-                      title={property.title}
+                      title={localizedTitle}
                       className="w-full h-[256px]"
                     />
                     {property.zone && (
