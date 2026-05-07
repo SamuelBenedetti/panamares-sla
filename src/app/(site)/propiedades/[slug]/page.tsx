@@ -13,7 +13,7 @@ import { getSlugByName } from "@/lib/neighborhoods";
 import type { Property } from "@/lib/types";
 import { localizeConditionLabel, deriveEnSlug } from "@/lib/i18n";
 import { getCopy } from "@/lib/copy";
-import { resolveI18nString } from "@/lib/i18n/resolveI18n";
+import { resolveI18nString, resolveI18nPortableText } from "@/lib/i18n/resolveI18n";
 import { SetTranslationBlocked } from "@/lib/translation-gate";
 import { formatPrice } from "@/lib/utils";
 import { sanityFetch } from "@/sanity/lib/client";
@@ -435,15 +435,23 @@ export default async function PropertyDetailPage({ params }: Props) {
         <div className="px-[30px] xl:px-[60px] 2xl:px-[160px] max-w-[1920px] mx-auto py-[36px]">
           <div className="max-w-[1440px] mx-auto flex flex-col gap-[32px]">
 
-              {/* Description */}
-              {property.description && (
-                <div className="flex flex-col gap-[12px]">
-                  <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Descripción</h2>
-                  <div className="font-body font-normal text-[14px] text-[#5a6478] leading-[21px] [&_p]:mb-3 [&_p:last-child]:mb-0 max-w-[760px]">
-                    <PortableText value={property.description} />
+              {/* Description — read i18n field (es), fall back to legacy `description`. */}
+              {(() => {
+                const descriptionBlocks = resolveI18nPortableText(
+                  property.descriptionI18n,
+                  "es",
+                  property.description
+                );
+                if (descriptionBlocks.length === 0) return null;
+                return (
+                  <div className="flex flex-col gap-[12px]">
+                    <h2 className="font-body font-bold text-[17px] text-[#0c1834] tracking-[-0.4px] leading-6">Descripción</h2>
+                    <div className="font-body font-normal text-[14px] text-[#5a6478] leading-[21px] [&_p]:mb-3 [&_p:last-child]:mb-0 max-w-[760px]">
+                      <PortableText value={descriptionBlocks} />
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Características — 3 categorías */}
               {(property.featuresInterior ?? []).length > 0 && (
