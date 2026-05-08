@@ -87,7 +87,7 @@ export default async function SobreNosotrosPage() {
               src="/oficina.jpg"
               alt={t.oficina.imageAlt}
               fill
-              className="object-cover"
+              className="object-cover object-top"
               sizes="(max-width: 1920px) 100vw"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[rgba(13,24,53,0.6)] to-transparent mix-blend-multiply" />
