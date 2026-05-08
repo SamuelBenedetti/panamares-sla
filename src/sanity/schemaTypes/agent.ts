@@ -54,19 +54,6 @@ export default defineType({
       description: "Ejemplo: +50766123456",
     }),
     defineField({
-      name: "bioI18n",
-      title: "Biografía",
-      type: "internationalizedArrayPortableText",
-      description: "Biografía del agente en cada idioma. Aparece en su perfil público.",
-    }),
-    defineField({
-      name: "bio",
-      title: "Biografía anterior (oculto)",
-      type: "array",
-      of: [{ type: "block" }],
-      hidden: true,
-    }),
-    defineField({
       name: "humanReviewed",
       title: "Traducción al inglés revisada",
       type: "boolean",

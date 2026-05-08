@@ -8,14 +8,15 @@
  *   2. Fetch /user/get/{id} for each user (with retry on transient failures)
  *   3. Upload photo to Sanity Assets — filename keyed by URL-path hash so a
  *      photo swap in Wasi produces a fresh asset
- *   4. createIfNotExists + patch in Sanity (manual fields like `bio` are
- *      never overwritten — only Wasi-derived fields land in the patch)
+ *   4. createIfNotExists + patch in Sanity (any future editor-owned fields go
+ *      into HUMAN_FIELDS so they're never overwritten on update)
  *
  * Hardening parity with sync-wasi.mjs:
  *   - withRetry wrapper on Wasi GET + Sanity writes (3 attempts, expo backoff)
  *   - Image filename hashed by URL path (no infinite re-uploads on Wasi
  *     query-string changes)
- *   - Manual `bio` field kept in HUMAN_FIELDS (never patched on update)
+ *   - HUMAN_FIELDS set is the place to register editor-owned fields that the
+ *     sync should never patch on update.
  */
 
 import { createClient } from "@sanity/client";
@@ -35,8 +36,9 @@ const RETRY_BASE_MS  = 1000;
 const RETRY_FACTOR   = 3;
 
 // Manual fields the editor owns in Sanity — sync seeds them on createIfNotExists
-// but never patches them on update.
-const HUMAN_FIELDS = new Set(["bio"]);
+// but never patches them on update. Empty for now (bio was removed from the
+// agent schema 2026-05; re-add field names here if editor-owned fields return).
+const HUMAN_FIELDS = new Set();
 
 const WASI_BASE = "https://api.wasi.co/v1";
 const creds     = () => `id_company=${process.env.WASI_ID_COMPANY}&wasi_token=${process.env.WASI_TOKEN}`;
@@ -187,7 +189,7 @@ async function main() {
         sanity.createIfNotExists({ _id: docId, _type: "agent" })
       );
 
-      // Updates: omit HUMAN_FIELDS (e.g. bio) so Studio edits stick.
+      // Updates: omit HUMAN_FIELDS so editor-owned Studio edits stick.
       const wasiOnlyFields = omit(fields, HUMAN_FIELDS);
       await withRetry(`patch ${docId}`, () =>
         sanity.patch(docId).set(wasiOnlyFields).commit()
