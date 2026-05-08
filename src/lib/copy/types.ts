@@ -469,6 +469,54 @@ export interface Copy {
       whatsappMessageAlquiler: string;
       whatsappMessageCategoryTpl: (h1: string) => string;
     };
+    compare: {
+      // CompareBar — sticky bottom bar shown when ids exist in localStorage
+      bar: {
+        selectedSingular: string; // "propiedad seleccionada" / "property selected"
+        selectedPlural: string;   // "propiedades seleccionadas" / "properties selected"
+        button: string;           // "Comparar" / "Compare"
+        clearAria: string;        // aria-label on the X (clear) button
+      };
+      // CompareButton — icon button rendered on PropertyCard
+      button: {
+        aria: string;             // aria-label on the toggle button
+        titleAdd: string;         // tooltip when not yet added
+        titleRemove: string;      // tooltip when already added
+        titleAtMax: string;       // tooltip when MAX_COMPARE reached
+      };
+      // ComparePageClient — the /comparar (or /en/compare) page
+      page: {
+        meta: { title: string; description: string };
+        breadcrumbLabel: string;
+        h1: string;
+        subtitleBold: string;
+        subtitleRegular: string;
+        eyebrowTags: string;          // "Tags" sidebar eyebrow
+        eyebrowCharacteristics: string; // "Características" / "Features"
+        tags: {
+          oferta: string;
+          economico: string;
+          ubicacion: string;
+          espacio: string;
+        };
+        badges: {
+          winner: string;             // top-rank badge
+          second: string;
+          third: string;
+        };
+        rows: {
+          precio: string;
+          precioM2: string;
+          area: string;
+          dormitorios: string;
+          banos: string;
+          barrio: string;
+          parking: string;
+        };
+        verPropiedad: string;          // "Ver propiedad" / "View property"
+        whatsappPrefix: string;        // prefix for the per-property WA message
+      };
+    };
   };
 
   // ── Categorías (extraído de lib/categories.ts) ────────────────────────────

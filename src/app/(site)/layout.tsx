@@ -14,7 +14,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       navCounts={navCounts}
       locale="es"
       footer={<Footer locale="es" />}
-      compareBar={<CompareBar />}
+      compareBar={<CompareBar locale="es" />}
     >
       {children}
     </LayoutShell>

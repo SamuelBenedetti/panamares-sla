@@ -2,10 +2,12 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { getCompareIds, toggleCompare, MAX_COMPARE } from "@/lib/compare";
+import { getCopy, type Locale } from "@/lib/copy";
 
-export default function CompareButton({ id }: { id: string }) {
+export default function CompareButton({ id, locale = "es" }: { id: string; locale?: Locale }) {
   const [checked, setChecked] = useState(false);
   const [atMax, setAtMax] = useState(false);
+  const t = getCopy(locale).components.compare.button;
 
   const sync = useCallback(() => {
     const ids = getCompareIds();
@@ -24,7 +26,7 @@ export default function CompareButton({ id }: { id: string }) {
       type="button"
       onClick={(e) => { e.preventDefault(); toggleCompare(id); }}
       disabled={atMax}
-      title={checked ? "Quitar de comparación" : atMax ? "Máximo 3 propiedades" : "Comparar"}
+      title={checked ? t.titleRemove : atMax ? t.titleAtMax : t.titleAdd}
       className={`absolute top-[10px] right-[10px] w-[26px] h-[26px] flex items-center justify-center border transition-colors ${
         checked
           ? "bg-[#0c1834] border-[#0c1834]"
@@ -32,7 +34,7 @@ export default function CompareButton({ id }: { id: string }) {
           ? "bg-white/50 border-white/30 cursor-not-allowed"
           : "bg-white/80 border-white/60 hover:bg-white hover:border-[#0c1834]"
       }`}
-      aria-label="Comparar propiedad"
+      aria-label={t.aria}
     >
       {checked ? (
         <svg width="12" height="10" viewBox="0 0 12 10" fill="none">

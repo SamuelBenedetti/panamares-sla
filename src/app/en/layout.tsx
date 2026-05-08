@@ -41,7 +41,7 @@ export default async function EnSiteLayout({ children }: { children: React.React
       navCounts={navCounts}
       locale="en"
       footer={<Footer locale="en" />}
-      compareBar={<CompareBar />}
+      compareBar={<CompareBar locale="en" />}
     >
       {children}
     </LayoutShell>

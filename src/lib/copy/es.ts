@@ -562,6 +562,56 @@ export const es: Copy = {
       whatsappMessageCategoryTpl: (h1: string) =>
         `Hola, busco propiedades en ${h1}`,
     },
+    compare: {
+      bar: {
+        selectedSingular: "propiedad seleccionada",
+        selectedPlural: "propiedades seleccionadas",
+        button: "Comparar",
+        clearAria: "Limpiar selección",
+      },
+      button: {
+        aria: "Comparar propiedad",
+        titleAdd: "Comparar",
+        titleRemove: "Quitar de comparación",
+        titleAtMax: "Máximo 3 propiedades",
+      },
+      page: {
+        meta: {
+          title: "Comparar Propiedades",
+          description: "Compara lado a lado las propiedades que seleccionaste.",
+        },
+        breadcrumbLabel: "Comparar propiedades",
+        h1: "Lista comparada de propiedades",
+        subtitleBold:
+          "Compara lado a lado las propiedades que seleccionaste y visualiza rápidamente las diferencias en precio, tamaño, ubicación y potencial de valorización.",
+        subtitleRegular:
+          "Usa esta vista clara para identificar la mejor oportunidad y tomar una decisión con mayor confianza.",
+        eyebrowTags: "Tags",
+        eyebrowCharacteristics: "Características",
+        tags: {
+          oferta: "Mejor oferta",
+          economico: "Más económico",
+          ubicacion: "Mejor ubicación",
+          espacio: "Más espacio",
+        },
+        badges: {
+          winner: "Winner",
+          second: "2º",
+          third: "3º",
+        },
+        rows: {
+          precio: "Precio",
+          precioM2: "Precio / m²",
+          area: "Área",
+          dormitorios: "Dormitorios",
+          banos: "Baños",
+          barrio: "Barrio",
+          parking: "Plazas de aparcamiento",
+        },
+        verPropiedad: "Ver propiedad",
+        whatsappPrefix: "Hola, me interesa esta propiedad: ",
+      },
+    },
   },
 
   categories: {
