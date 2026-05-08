@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
@@ -8,16 +8,11 @@ import { urlFor } from "@/sanity/lib/image";
 import { BASE_URL, whatsappLink } from "@/lib/config";
 import { formatPrice } from "@/lib/utils";
 import { resolveI18nString } from "@/lib/i18n/resolveI18n";
+import { deriveEnSlug, localePath } from "@/lib/i18n";
+import { getCopy, type Locale } from "@/lib/copy";
 import ListingPageHeader from "@/components/properties/ListingPageHeader";
 
 type Tag = "oferta" | "economico" | "ubicacion" | "espacio";
-
-const TAGS: { key: Tag; label: string }[] = [
-  { key: "oferta",    label: "Mejor oferta" },
-  { key: "economico", label: "Más económico" },
-  { key: "ubicacion", label: "Mejor ubicación" },
-  { key: "espacio",   label: "Más espacio" },
-];
 
 const ZONE_PRESTIGE: Record<string, number> = {
   "Punta Pacífica": 1, "Punta Paitilla": 2, "Avenida Balboa": 3,
@@ -42,12 +37,6 @@ function rankProperties(properties: Property[], tag: Tag) {
     .map((item, i) => ({ ...item, rank: i + 1 }));
 }
 
-const BADGE_STYLES: Record<number, { bg: string; label: string }> = {
-  1: { bg: "bg-[#00b424]", label: "Winner" },
-  2: { bg: "bg-[#007ecd]", label: "2º" },
-  3: { bg: "bg-[#737b8c]", label: "3º" },
-};
-
 const PLACEHOLDERS = [
   "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop",
   "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop",
@@ -69,37 +58,55 @@ const PLACEHOLDERS = [
 // So: IMG_H = 304 - 20 = 284px
 const IMG_H = 284;
 
-interface Props { properties: Property[] }
+interface Props {
+  properties: Property[];
+  locale?: Locale;
+}
 
-export default function ComparePageClient({ properties }: Props) {
+export default function ComparePageClient({ properties, locale = "es" }: Props) {
   const [activeTag, setActiveTag] = useState<Tag>("oferta");
   const ranked = useMemo(() => rankProperties(properties, activeTag), [properties, activeTag]);
+  const t = getCopy(locale).components.compare.page;
+  const layoutT = getCopy(locale).layout.breadcrumb;
+
+  const TAGS: { key: Tag; label: string }[] = [
+    { key: "oferta",    label: t.tags.oferta },
+    { key: "economico", label: t.tags.economico },
+    { key: "ubicacion", label: t.tags.ubicacion },
+    { key: "espacio",   label: t.tags.espacio },
+  ];
+
+  const BADGE_STYLES: Record<number, { bg: string; label: string }> = {
+    1: { bg: "bg-[#00b424]", label: t.badges.winner },
+    2: { bg: "bg-[#007ecd]", label: t.badges.second },
+    3: { bg: "bg-[#737b8c]", label: t.badges.third },
+  };
 
   const rows: { label: string; value: (p: Property) => string }[] = [
-    { label: "Precio",                 value: (p) => formatPrice(p.price) },
-    { label: "Precio / m²",            value: (p) => p.area && p.area > 0 ? `${formatPrice(Math.round(p.price / p.area))}/m²` : "—" },
-    { label: "Área",                   value: (p) => p.area != null ? `${p.area} m²` : "—" },
-    { label: "Dormitorios",            value: (p) => p.bedrooms != null ? `${p.bedrooms} hab.` : "—" },
-    { label: "Baños",                  value: (p) => p.bathrooms != null ? `${p.bathrooms} baños` : "—" },
-    { label: "Barrio",                 value: (p) => p.zone ?? "—" },
-    { label: "Plazas de aparcamiento", value: (p) => p.parking != null ? String(p.parking) : "—" },
+    { label: t.rows.precio,      value: (p) => formatPrice(p.price) },
+    { label: t.rows.precioM2,    value: (p) => p.area && p.area > 0 ? `${formatPrice(Math.round(p.price / p.area))}/m²` : "—" },
+    { label: t.rows.area,        value: (p) => p.area != null ? `${p.area} m²` : "—" },
+    { label: t.rows.dormitorios, value: (p) => p.bedrooms != null ? `${p.bedrooms} hab.` : "—" },
+    { label: t.rows.banos,       value: (p) => p.bathrooms != null ? `${p.bathrooms} baños` : "—" },
+    { label: t.rows.barrio,      value: (p) => p.zone ?? "—" },
+    { label: t.rows.parking,     value: (p) => p.parking != null ? String(p.parking) : "—" },
   ];
 
   return (
     <>
       <ListingPageHeader
         breadcrumbs={[
-          { label: "Inicio", href: "/" },
-          { label: "Comparar propiedades" },
+          { label: layoutT.inicio, href: localePath("/", locale) },
+          { label: t.breadcrumbLabel },
         ]}
-        title="Lista comparada de propiedades"
+        title={t.h1}
         subtitle={
           <p className="font-body text-[14px] text-[#0c1834] leading-[22px] max-w-[700px]">
             <span className="font-semibold">
-              Compara lado a lado las propiedades que seleccionaste y visualiza rápidamente las diferencias en precio, tamaño, ubicación y potencial de valorización.
+              {t.subtitleBold}
             </span>{" "}
             <span className="font-normal">
-              Usa esta vista clara para identificar la mejor oportunidad y tomar una decisión con mayor confianza.
+              {t.subtitleRegular}
             </span>
           </p>
         }
@@ -117,19 +124,19 @@ export default function ComparePageClient({ properties }: Props) {
             {/* Tags */}
             <div className="flex flex-col gap-[12px]">
               <p className="font-body font-medium text-[#5a6478] text-[13px] leading-[20px] tracking-[3.2px] uppercase">
-                Tags
+                {t.eyebrowTags}
               </p>
-              {TAGS.map((t) => (
+              {TAGS.map((tag) => (
                 <button
-                  key={t.key}
-                  onClick={() => setActiveTag(t.key)}
+                  key={tag.key}
+                  onClick={() => setActiveTag(tag.key)}
                   className={`text-left px-[16px] h-[36px] font-body text-[14px] transition-colors border ${
-                    activeTag === t.key
+                    activeTag === tag.key
                       ? "bg-[#727b8c] text-white border-[#727b8c] font-semibold"
                       : "border-[#e6e6e6] text-[rgba(12,25,53,0.3)] hover:border-[#0c1834] hover:text-[#0c1834]"
                   }`}
                 >
-                  {t.label}
+                  {tag.label}
                 </button>
               ))}
             </div>
@@ -137,7 +144,7 @@ export default function ComparePageClient({ properties }: Props) {
             {/* Características labels — aligned with card data rows via IMG_H */}
             <div className="flex flex-col gap-[16px]">
               <p className="font-body font-medium text-[#5a6478] text-[13px] leading-[20px] tracking-[3.2px] uppercase">
-                Características
+                {t.eyebrowCharacteristics}
               </p>
               {rows.map((r) => (
                 <p key={r.label} className="font-body font-medium text-[#0c1935] text-[15px] leading-[30px]">
@@ -155,8 +162,15 @@ export default function ComparePageClient({ properties }: Props) {
               const imgSrc = p.mainImage
                 ? urlFor(p.mainImage).width(700).height(IMG_H).url()
                 : PLACEHOLDERS[placeholderIdx];
-              const localizedTitle = resolveI18nString(p.titleI18n, "es", p.title);
-              const waMsg = `Hola, me interesa esta propiedad: ${localizedTitle} — ${BASE_URL}/propiedades/${p.slug?.current}`;
+              const localizedTitle = resolveI18nString(p.titleI18n, locale, p.title);
+              const esSlug = p.slug?.current ?? "";
+              // Locale-aware property detail URL — same logic as PropertyCard:
+              // EN derives the EN-form leaf slug; ES uses the canonical Sanity slug.
+              const propertyHref =
+                locale === "en"
+                  ? `/en/properties/${deriveEnSlug(esSlug)}`
+                  : `/propiedades/${esSlug}`;
+              const waMsg = `${t.whatsappPrefix}${localizedTitle} — ${BASE_URL}${propertyHref}`;
 
               return (
                 <article
@@ -210,10 +224,10 @@ export default function ComparePageClient({ properties }: Props) {
                         WhatsApp
                       </a>
                       <Link
-                        href={`/propiedades/${p.slug?.current}`}
+                        href={propertyHref}
                         className="flex-1 h-[38px] flex items-center justify-center whitespace-nowrap border border-[#dfe5ef] text-[#0c1834] font-body font-medium text-[13px] px-[14px] hover:bg-gray-50 transition-colors"
                       >
-                        Ver propiedad
+                        {t.verPropiedad}
                       </Link>
                     </div>
                   </div>

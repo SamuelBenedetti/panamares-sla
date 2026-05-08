@@ -61,7 +61,7 @@ export default function PropertyCard({
             {...(mainImage?.lqip ? { placeholder: "blur" as const, blurDataURL: mainImage.lqip } : {})}
           />
         </Link>
-        {property.wasiId != null && <CompareButton id={String(property.wasiId)} />}
+        {property.wasiId != null && <CompareButton id={String(property.wasiId)} locale={locale} />}
         {/* Tags — stack vertically top-left */}
         <div className="absolute top-[11px] left-[10px] flex flex-col gap-[4px]">
           {recommended && (

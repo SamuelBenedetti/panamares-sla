@@ -26,6 +26,10 @@ export const SLUG_MAP_ES_TO_EN: Record<string, string> = {
   "/propiedades-en-venta": "/en/properties-for-sale",
   "/propiedades-en-alquiler": "/en/properties-for-rent",
   "/buscar": "/en/search",
+  // Compare flow — both sides emit `noindex, nofollow` (functional, not indexable).
+  // Mapped here so `localePath("/comparar", "en")` and the LangToggle resolve
+  // the EN counterpart for parity even though neither URL is exposed to crawlers.
+  "/comparar": "/en/compare",
   "/apartamentos-en-venta": "/en/apartments-for-sale",
   "/apartamentos-en-alquiler": "/en/apartments-for-rent",
   "/casas-en-venta": "/en/houses-for-sale",
