@@ -11,6 +11,11 @@ export default function LangToggle({ isLight }: { isLight: boolean }) {
   const isEN = currentLocale === "en";
   const { blocked } = useTranslationGate();
 
+  // Compare feature has noindex pages with query-param state; toggling locale
+  // mid-compare loses ?ids=... and lands on notFound. Hide instead of patching
+  // the param-preservation logic — compare flow is transitory.
+  if (pathname === "/comparar" || pathname === "/en/compare") return null;
+
   // Disabled only when on ES and the EN counterpart is gated by humanReviewed
   // on the current page. EN → ES never blocks (ES is always rendered).
   const isDisabled = !isEN && blocked;
