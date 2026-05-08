@@ -36,7 +36,7 @@ export default defineType({
       title: "Latitud",
       type: "number",
       description:
-        "Centroide geográfico del barrio. Usado en JSON-LD Place schema (rich results SEO). Backfilleado desde Google Maps; editar solo si tenés data más precisa.",
+        "Centroide geográfico del barrio. Usado en JSON-LD Place schema (rich results SEO). Backfilleado desde Google Maps; editar solo si tienes data más precisa.",
       validation: (r) => r.min(-90).max(90),
     }),
     defineField({
