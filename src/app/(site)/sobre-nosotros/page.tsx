@@ -82,7 +82,7 @@ export default async function SobreNosotrosPage() {
       {/* ── Nuestra oficina ── */}
       <section className="bg-[#f9f9f9] px-[30px] xl:px-[60px] 2xl:px-[160px]">
         <div className="max-w-[1440px] mx-auto">
-          <div className="relative aspect-[390/720] xl:aspect-auto xl:h-[720px] overflow-hidden flex flex-col justify-end p-[30px] xl:p-0">
+          <div className="relative aspect-[390/720] xl:aspect-auto xl:h-[500px] overflow-hidden flex flex-col justify-end p-[30px] xl:p-0">
             <Image
               src="/oficina.jpg"
               alt={t.oficina.imageAlt}
