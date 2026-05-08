@@ -115,14 +115,16 @@ const nextConfig = {
           },
         ],
       },
-      // P0-02: Deindex staging (any non-production host)
-      {
+      // P0-02: Deindex staging (any non-production host).
+      // Gate: setting STAGING_DEINDEX_OFF=true in Vercel disables this header
+      // temporarily — used ONLY for the pre-cutover SF formal crawl, then revert.
+      ...(process.env.STAGING_DEINDEX_OFF === "true" ? [] : [{
         source: "/:path*",
         has: [{ type: "host", value: "(?!panamares\\.com$).*" }],
         headers: [
           { key: "X-Robots-Tag", value: "noindex, nofollow" },
         ],
-      },
+      }]),
       {
         source: "/(apartamentos|apartaestudios|casas|casas-de-playa|penthouses|oficinas|locales|locales-comerciales|terrenos|lotes-comerciales|edificios|fincas|propiedades-en-venta|propiedades-en-alquiler|barrios)/:path*",
         headers: [
