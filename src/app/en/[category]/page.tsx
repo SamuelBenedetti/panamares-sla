@@ -71,10 +71,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const enUrl = `/en/${params.category}`;
   const esUrl = `/${esSlug}`;
   const shouldIndex = properties.length >= 2;
+  // Hreflang only for indexable pages — Google ignores the cluster if any
+  // member is noindex (SF flag: "URLs with noindex return links"). Self-canon
+  // stays regardless so the page still has a stable address signal.
+  const languagesAlternates = shouldIndex ? alternates(esUrl, enUrl) : undefined;
   return {
     title: cat.metaTitle,
     description: cat.metaDescription,
-    alternates: { canonical: canonical(enUrl), languages: alternates(esUrl, enUrl) },
+    alternates: {
+      canonical: canonical(enUrl),
+      ...(languagesAlternates && { languages: languagesAlternates }),
+    },
     robots: { index: shouldIndex, follow: true },
     ...(ogImage && {
       openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },

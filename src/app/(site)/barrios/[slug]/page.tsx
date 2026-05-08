@@ -65,6 +65,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? `/en/neighborhoods/${params.slug}`
     : null;
 
+  // Hreflang only for indexable pages — Google ignores the cluster if any
+  // member is noindex (SF flag: "URLs with noindex return links"). Self-canon
+  // stays regardless so the page still has a stable address signal.
+  const languagesAlternates = shouldIndex
+    ? alternates(`/barrios/${params.slug}`, enPath)
+    : undefined;
+
   return {
     title: `Propiedades en ${neighborhood.name}, Panama`,
     description:
@@ -72,7 +79,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       `Guía completa de ${neighborhood.name}: propiedades disponibles, precios por m², estilo de vida y todo lo que necesitas para vivir o invertir en esta zona de Panama City.`,
     alternates: {
       canonical: canonical(`/barrios/${params.slug}`),
-      languages: alternates(`/barrios/${params.slug}`, enPath),
+      ...(languagesAlternates && { languages: languagesAlternates }),
     },
     robots: { index: shouldIndex, follow: true },
     ...(ogImage && {

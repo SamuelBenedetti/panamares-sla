@@ -59,6 +59,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     seoBlockEn ?? nbhContent?.seoBlock ?? neighborhoodsEs[params.slug]?.seoBlock
   );
 
+  // Hreflang only for indexable pages — Google ignores the cluster if any
+  // member is noindex (SF flag: "URLs with noindex return links"). Self-canon
+  // stays regardless so the page still has a stable address signal.
+  const languagesAlternates = shouldIndex
+    ? alternates(`/barrios/${params.slug}`, `/en/neighborhoods/${params.slug}`)
+    : undefined;
+
   return {
     title: `Properties in ${neighborhood.name}, Panama`,
     description:
@@ -66,7 +73,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       `Complete guide to ${neighborhood.name}: available properties, price per m², lifestyle and everything you need to live or invest in this Panama City area.`,
     alternates: {
       canonical: canonical(`/en/neighborhoods/${params.slug}`),
-      languages: alternates(`/barrios/${params.slug}`, `/en/neighborhoods/${params.slug}`),
+      ...(languagesAlternates && { languages: languagesAlternates }),
     },
     robots: { index: shouldIndex, follow: true },
     ...(ogImage && {
