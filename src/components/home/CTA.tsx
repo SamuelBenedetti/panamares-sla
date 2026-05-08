@@ -10,22 +10,24 @@ export default function CTA({ locale = "es" }: { locale?: Locale }) {
   return (
     <section className="relative bg-[#121e3e] py-14 md:py-[80px] px-6 xl:px-[60px] 2xl:px-[160px] overflow-hidden">
 
-      {/* Palm tree — left */}
-      <div className="absolute left-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block">
+      {/* Palm tree — left (decorative) */}
+      <div className="absolute left-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block" aria-hidden="true">
         <Image
           src="/palm-left.svg"
           alt=""
+          aria-hidden="true"
           fill
           className="object-cover object-right"
           sizes="300px"
         />
       </div>
 
-      {/* Palm tree — right (flipped) */}
-      <div className="absolute right-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block" style={{ transform: "scaleX(-1)" }}>
+      {/* Palm tree — right (decorative, flipped) */}
+      <div className="absolute right-0 top-0 bottom-0 w-[300px] pointer-events-none select-none hidden lg:block" style={{ transform: "scaleX(-1)" }} aria-hidden="true">
         <Image
           src="/palm-right.svg"
           alt=""
+          aria-hidden="true"
           fill
           className="object-cover object-left"
           sizes="300px"
