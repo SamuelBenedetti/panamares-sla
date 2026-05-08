@@ -87,8 +87,6 @@ export interface Agent {
   phone?: string;
   whatsapp?: string;
   email?: string;
-  bio?: PortableTextBlock[];
-  bioI18n?: import("./i18n/resolveI18n").I18nPortableText[];
   humanReviewed?: boolean;
   properties?: Property[];
 }

@@ -332,8 +332,6 @@ export const agentBySlugQuery = groq`
     phone,
     whatsapp,
     email,
-    bio,
-    bioI18n[]{_key, value},
     "properties": *[_type == "property" && listingStatus == "activa" && references(^._id)] | order(_createdAt desc) {
       ${CARD_FIELDS}
     }

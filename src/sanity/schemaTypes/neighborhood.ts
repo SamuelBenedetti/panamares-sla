@@ -32,6 +32,21 @@ export default defineType({
       validation: (r) => r.positive(),
     }),
     defineField({
+      name: "latitude",
+      title: "Latitud",
+      type: "number",
+      description:
+        "Centroide geográfico del barrio. Usado en JSON-LD Place schema (rich results SEO). Backfilleado desde Google Maps; editar solo si tienes data más precisa.",
+      validation: (r) => r.min(-90).max(90),
+    }),
+    defineField({
+      name: "longitude",
+      title: "Longitud",
+      type: "number",
+      description: "Centroide geográfico del barrio. Usado en JSON-LD Place schema.",
+      validation: (r) => r.min(-180).max(180),
+    }),
+    defineField({
       name: "seoBlockI18n",
       title: "Descripción del barrio",
       type: "internationalizedArrayText",
