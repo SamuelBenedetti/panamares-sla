@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     canonical: canonical("/en/search"),
     languages: alternates("/buscar", "/en/search"),
   },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: true },
 };
 
 interface Props {

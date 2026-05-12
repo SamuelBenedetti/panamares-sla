@@ -166,6 +166,7 @@ export function getEsUrl(enPath: string): string | null {
 const PROPERTY_SLUG_TOKEN_MAP: Record<string, string> = {
   // Multi-word tokens (must match before single-word ones).
   "locales-comerciales": "commercial-spaces",
+  "lotes-comerciales": "commercial-lots",
   "casas-de-playa": "beach-houses",
   // Type tokens.
   apartamentos: "apartments",
@@ -175,6 +176,7 @@ const PROPERTY_SLUG_TOKEN_MAP: Record<string, string> = {
   oficinas: "offices",
   terrenos: "land",
   fincas: "farms",
+  edificios: "buildings",
   // Transaction tokens.
   "en-venta": "for-sale",
   "en-alquiler": "for-rent",

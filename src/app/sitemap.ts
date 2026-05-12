@@ -211,6 +211,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // /guias list is noindex (thin hub, only 1 guide). Re-add when guide count >= 3.
     { url: `${BASE_URL}/sobre-nosotros`, alternates: altsFromEs("/sobre-nosotros"), changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/contacto`,       alternates: altsFromEs("/contacto"),       changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE_URL}/terminos`,       alternates: altsFromEs("/terminos"),       changeFrequency: "yearly",  priority: 0.3 },
+    { url: `${BASE_URL}/privacidad`,     alternates: altsFromEs("/privacidad"),     changeFrequency: "yearly",  priority: 0.3 },
 
     // ── Agent profiles (no ?page=N) ──────────────────────────────────────────
     ...agents.map((a) => ({
