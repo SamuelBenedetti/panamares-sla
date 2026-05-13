@@ -8,11 +8,13 @@ import {
   PANAMARES_PHONE,
   PANAMARES_STREET,
   PANAMARES_LOCALITY,
+  PANAMARES_POSTAL_CODE,
   PANAMARES_LAT,
   PANAMARES_LNG,
   PANAMARES_OPENING_HOURS,
   PANAMARES_EMAIL_INFO,
   PANAMARES_EMAIL_VENTAS,
+  PANAMARES_PRICE_RANGE,
 } from "@/lib/config";
 
 // Resolve a Sanity image ref to a CDN URL plus the dimensions encoded in the
@@ -75,6 +77,7 @@ export function organizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": ["RealEstateAgent", "Organization"],
+    "@id": `${BASE_URL}/#organization`,
     name: "Panamares",
     url: BASE_URL,
     logo: {
@@ -87,11 +90,13 @@ export function organizationSchema() {
     description:
       "Panamares — inmobiliaria de lujo en Panama City. Apartamentos, casas, penthouses, oficinas y más en las mejores zonas de la ciudad.",
     telephone: PANAMARES_PHONE,
+    priceRange: PANAMARES_PRICE_RANGE,
     address: {
       "@type": "PostalAddress",
       streetAddress: PANAMARES_STREET,
       addressLocality: PANAMARES_LOCALITY,
       addressRegion: "Panamá",
+      postalCode: PANAMARES_POSTAL_CODE,
       addressCountry: "PA",
     },
     geo: {
@@ -202,11 +207,7 @@ export function listingSchema(property: Property, locale: Locale = "es") {
             ? "https://schema.org/InStock"
             : "https://schema.org/SoldOut",
         url: propertyUrl,
-        seller: {
-          "@type": "RealEstateAgent",
-          name: "Panamares",
-          url: BASE_URL,
-        },
+        seller: { "@id": `${BASE_URL}/#organization` },
         ...(isRental && {
           // Monthly unit-price specification distinguishes rentals from sales
           // for Google's structured-data parser.
@@ -232,6 +233,7 @@ export function listingSchema(property: Property, locale: Locale = "es") {
       ...(property.corregimiento && { streetAddress: property.corregimiento }),
       ...(property.zone && { addressLocality: property.zone }),
       addressRegion: property.province ?? "Panamá",
+      postalCode: PANAMARES_POSTAL_CODE,
       addressCountry: "PA",
     },
     ...(property.location && {
@@ -310,10 +312,7 @@ export function agentSchema(agent: Agent) {
     url: `${BASE_URL}/agentes/${agent.slug?.current ?? ""}`,
     ...(agent.phone && { telephone: agent.phone }),
     ...(agent.email && { email: agent.email }),
-    worksFor: {
-      "@type": "RealEstateAgent",
-      name: "Panamares",
-    },
+    worksFor: { "@id": `${BASE_URL}/#organization` },
   };
 }
 
@@ -447,11 +446,13 @@ export function contactPointSchema() {
     name: "Panamares",
     url: `${BASE_URL}/contacto`,
     telephone: PANAMARES_PHONE,
+    priceRange: PANAMARES_PRICE_RANGE,
     address: {
       "@type": "PostalAddress",
       streetAddress: PANAMARES_STREET,
       addressLocality: PANAMARES_LOCALITY,
       addressRegion: "Panamá",
+      postalCode: PANAMARES_POSTAL_CODE,
       addressCountry: "PA",
     },
     geo: {
