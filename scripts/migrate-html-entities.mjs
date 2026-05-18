@@ -4,11 +4,12 @@
  * Why this exists
  * ───────────────
  * PR #56 added `decodeHtmlEntities` to `scripts/sync-wasi.mjs` so future
- * Wasi-sourced text gets decoded at create-time. But `title` and
- * `descriptionI18n` are in HUMAN_FIELDS (Sanity-owned after seed), so the
- * regular sync deliberately won't patch them — Igor's edits would be
- * clobbered. That leaves a handful of pre-existing docs with literal
- * `&ndash;` (and possibly other entities) baked into their copy.
+ * Wasi-sourced text gets decoded at create-time. But `title`, `description`
+ * (root, Portable Text) and `descriptionI18n` are in HUMAN_FIELDS
+ * (Sanity-owned after seed), so the regular sync deliberately won't patch
+ * them — Igor's edits would be clobbered. That leaves a handful of
+ * pre-existing docs with literal `&ndash;` (and possibly other entities)
+ * baked into their copy.
  *
  * This script does the cleanup, scoped to the entity-decoding fix only.
  * It is intentionally a one-shot: not part of the cron, not part of the sync.
@@ -21,8 +22,9 @@
  * Behavior
  * ────────
  *   • Scans ALL property docs (published + drafts) — defensive, not just the
- *     4 known. `title` (string) and `descriptionI18n[].value` (Portable Text
- *     blocks) are decoded per-span. Structure preserved.
+ *     known set. `title` (string), `description` (Portable Text blocks) and
+ *     `descriptionI18n[].value` (Portable Text blocks) are decoded per-span.
+ *     Structure preserved.
  *   • Idempotent: decoded text has no `&xxx;` sequences, so re-runs are no-ops.
  *   • Pre-flight asserts dataset === "production" or "staging". Bails otherwise.
  *   • `--apply` is the only confirmation gate (no interactive prompt).
@@ -151,6 +153,7 @@ async function main() {
       _id,
       _rev,
       title,
+      description,
       descriptionI18n
     }`
   );
@@ -173,6 +176,16 @@ async function main() {
         fieldChanges.push(`title: ${n} entit${n === 1 ? "y" : "ies"}`);
         docEntityCount += n;
         patch.title = newTitle;
+      }
+    }
+
+    // ── description (root, Portable Text blocks) ──
+    if (Array.isArray(doc.description)) {
+      const { value, decoded } = decodePortableText(doc.description);
+      if (decoded > 0) {
+        fieldChanges.push(`description: ${decoded} entit${decoded === 1 ? "y" : "ies"}`);
+        docEntityCount += decoded;
+        patch.description = value;
       }
     }
 
