@@ -20,10 +20,17 @@ interface Props {
   searchParams: { q?: string };
 }
 
+// When a `q` param is present (e.g. Google's sitelinks search box, the
+// WebSite SearchAction urlTemplate, or an external link), bypass the wizard
+// and forward straight to results so users land on filtered listings instead
+// of the four-step funnel.
+// Note: the query param key remains `buscar` (Spanish) because the EN listing
+// handler shares the same searchParams shape as ES — see
+// `src/app/en/properties-for-sale/page.tsx`. Param name parity intentional.
 export default function SearchPageEn({ searchParams }: Props) {
   const q = searchParams.q?.trim();
   if (q) {
-    redirect(`/en/properties-for-sale/?buscar=${encodeURIComponent(q)}`);
+    redirect(`/en/properties-for-sale?buscar=${encodeURIComponent(q)}`);
   }
   return <Wizard locale="en" />;
 }
