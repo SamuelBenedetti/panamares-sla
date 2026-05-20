@@ -27,7 +27,7 @@ interface Props {
 export default function BuscarPage({ searchParams }: Props) {
   const q = searchParams.q?.trim();
   if (q) {
-    redirect(`/propiedades-en-venta/?buscar=${encodeURIComponent(q)}`);
+    redirect(`/propiedades-en-venta?buscar=${encodeURIComponent(q)}`);
   }
   return <Wizard locale="es" />;
 }
