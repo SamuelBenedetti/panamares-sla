@@ -10,6 +10,31 @@ export const BASE_URL =
     ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
     : "http://localhost:3000");
 
+/**
+ * Production host detection by hostname, NOT by NEXT_PUBLIC_VERCEL_ENV.
+ *
+ * On Vercel, deploys to the `main` branch are flagged as the "Production"
+ * environment regardless of the URL they're served on. That includes
+ * panamares-sla.vercel.app (our staging URL). Using VERCEL_ENV to gate
+ * crawl-blocking behavior (X-Robots-Tag, robots.txt) caused staging to
+ * serve production-style "indexable" signals — the regression P0-02 was
+ * meant to prevent.
+ *
+ * The only host that is truly production is panamares.com (the apex
+ * domain we'll DNS-cut over to at launch). Treat everything else
+ * (preview deploys, panamares-sla.vercel.app, localhost) as non-prod.
+ *
+ * Accepts the value from `headers().get("host")`. Falls back to false on
+ * null/undefined — preserves the safer default of "block crawl unless
+ * we're certain this is production".
+ */
+export function isProductionHost(host: string | null | undefined): boolean {
+  if (!host) return false;
+  // Strip port if present (e.g. "panamares.com:443")
+  const hostname = host.split(":")[0].toLowerCase();
+  return hostname === "panamares.com" || hostname === "www.panamares.com";
+}
+
 // ── Contacto ──────────────────────────────────────────────────────────────────
 export const PANAMARES_TEL      = "+50765871849";
 export const PANAMARES_PHONE    = "+507 6587-1849"; // formato display

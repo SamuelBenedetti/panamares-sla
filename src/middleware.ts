@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { VALID_CATEGORY_SLUGS } from "@/lib/categories";
+import { isProductionHost } from "@/lib/config";
 import { VALID_NEIGHBORHOOD_SLUGS } from "@/lib/neighborhoods";
 
 /**
@@ -107,6 +108,20 @@ function isInvalidEsPath(pathname: string): boolean {
  *
  * Also intercepts invalid ES root-level slugs (P0-06 hardening) and rewrites
  * to /_force-not-found to ensure HTTP 404 status code is emitted.
+ *
+ * P0-02 (restored): Emits `X-Robots-Tag: noindex, nofollow` for every
+ * response served from a non-production host (anything that is not
+ * panamares.com / www.panamares.com — i.e. previews, panamares-sla, local).
+ *
+ * Previous implementation lived in next.config.mjs `headers()` with a `has`
+ * rule using a PCRE negative-lookahead regex (`(?!panamares\.com$).*`).
+ * Next.js routes `has` values through path-to-regexp, which does NOT support
+ * negative lookahead, so the rule never matched and the header was never
+ * emitted. Middleware-based emission is the correct primitive here.
+ *
+ * Escape hatch: setting `STAGING_DEINDEX_OFF=true` in Vercel env disables
+ * the header (used briefly for the pre-cutover SF formal crawl, then
+ * removed). Production hosts are unaffected regardless of this flag.
  */
 export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
@@ -120,9 +135,18 @@ export function middleware(req: NextRequest) {
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-pathname", pathname);
 
-  return NextResponse.next({
+  const response = NextResponse.next({
     request: { headers: requestHeaders },
   });
+
+  // Deindex any non-production host. Skip when the escape hatch is on.
+  const host = req.headers.get("host");
+  const escapeHatchOn = process.env.STAGING_DEINDEX_OFF === "true";
+  if (!escapeHatchOn && !isProductionHost(host)) {
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
+
+  return response;
 }
 
 export const config = {
