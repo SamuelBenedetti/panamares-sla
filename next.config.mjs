@@ -115,16 +115,14 @@ const nextConfig = {
           },
         ],
       },
-      // P0-02: Deindex staging (any non-production host).
-      // Gate: setting STAGING_DEINDEX_OFF=true in Vercel disables this header
-      // temporarily — used ONLY for the pre-cutover SF formal crawl, then revert.
-      ...(process.env.STAGING_DEINDEX_OFF === "true" ? [] : [{
-        source: "/:path*",
-        has: [{ type: "host", value: "(?!panamares\\.com$).*" }],
-        headers: [
-          { key: "X-Robots-Tag", value: "noindex, nofollow" },
-        ],
-      }]),
+      // P0-02 was previously implemented here with a `has`-rule using
+      // `value: "(?!panamares\\.com$).*"`. Next.js routes `has` values
+      // through path-to-regexp, which does NOT support PCRE negative
+      // lookahead — the rule never matched and the X-Robots-Tag header
+      // was never emitted on staging. Detection now lives in
+      // src/middleware.ts, which can read the request host at runtime
+      // and emit the header per-response. See `isProductionHost()` in
+      // src/lib/config.ts and the middleware for the new logic.
       {
         source: "/(apartamentos|apartaestudios|casas|casas-de-playa|penthouses|oficinas|locales|locales-comerciales|terrenos|lotes-comerciales|edificios|fincas|propiedades-en-venta|propiedades-en-alquiler|barrios)/:path*",
         headers: [
